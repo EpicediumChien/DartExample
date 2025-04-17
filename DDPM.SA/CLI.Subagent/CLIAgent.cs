@@ -41,7 +41,7 @@ namespace CLI.Subagent
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
 
         private Agent _Agent;
-        private ILog _Log;
+        private ILog _Log = null;
 
         //DDPM.Subagent
         private ICliManagerIT _CliManagerPlugin;
@@ -112,9 +112,9 @@ namespace CLI.Subagent
 
             if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(LogLocation, out string info))
             {
-                _Log.Error($"[CLI][StartAsync] error: {info}");
+                WriteLog($"[StartAsync] error: {info}", log_type.error);
 #if DEBUG
-                Console.WriteLine("[CLI][StartAsync] " + info);
+                Console.WriteLine("[StartAsync] " + info);
 #endif
             }
 
@@ -128,7 +128,8 @@ namespace CLI.Subagent
         {
             if (!runMode)//0724 only allow elevated privilege to perform action
             {
-                _exitcode = ICLICommandTable.Response_UnelevatedError();
+                WriteLog($"[RunManagement] runMode:{runMode}", log_type.error);
+                _exitcode = ICLICommandTable.Response_UnelevatedError(_Log);
                 return;
             }
             // 2024-08-28 Casper: move upper to let command parser work earlier
@@ -151,7 +152,7 @@ namespace CLI.Subagent
             //1115 Dean add null check
             if (commandLineInputs == null || commandLineInputs.Count == 0)
             {
-                _exitcode = ICLICommandTable.Response_FormatError();
+                _exitcode = ICLICommandTable.Response_FormatError(_Log);
                 return;
             }
             // 2024-06-07 Elie, we have to check if it's null before using it.
@@ -159,29 +160,32 @@ namespace CLI.Subagent
             int idx = commandLineInputs.FindIndex(x => x.isCliCommandsProcessCompleted == false);
             if (idx >= 0)
             {
-                _exitcode = ICLICommandTable.Response_FormatErrorRecommendation(commandLineInputs[idx]); //parsing fail
+                _exitcode = ICLICommandTable.Response_FormatErrorRecommendation(commandLineInputs[idx], _Log); //parsing fail
+                WriteLog($"Format error with ExitCode({_exitcode}), stage [Parsing]", log_type.error);
                 return;
             }
 
             // 2024-08-24 Casper: Add Help command
-            //idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP") && x.TargetFeature != "DISPLAY");
             idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP"));
             if (idx >= 0)
             {
                 _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInputs[idx]);
+                WriteLog($"Call help with ExitCode({_exitcode})");
                 return;
             }
             idx = commandLineInputs.FindIndex(x => x.DeviceIndex.Contains("-1"));
             if (idx >= 0)
             {
-                _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInputs[idx]);
+                _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInputs[idx], _Log);
+                WriteLog($"Device index check with ExitCode({_exitcode})");
                 return;
             }
 
             idx = commandLineInputs.FindIndex(x => x.TargetType != "DISPLAY" && x.SerialNumber.Count > 0);
             if (idx >= 0)
             {
-                _exitcode = ICLICommandTable.Response_FormatError();
+                _exitcode = ICLICommandTable.Response_FormatError(_Log);
+                WriteLog($"Format error with ExitCode({_exitcode}), stage [DISPLAY/SN_count]", log_type.error);
                 return;
             }
 
@@ -224,20 +228,21 @@ namespace CLI.Subagent
                 //Console.WriteLine($"idx: {idx}, option_count: {commandLineInputs[idx].Options.Count}, targetfeature: {commandLineInputs[idx].TargetFeature} {tmp}");
                 if (commandLineInputs[idx].Options.Count <= 0 && TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature)) < 0) //set command without option value --> fail
                 {
-                    _exitcode = ICLICommandTable.Response_FormatError();
+                    _exitcode = ICLICommandTable.Response_FormatError(_Log);
+                    WriteLog($"Format error with ExitCode({_exitcode}), stage [SET]", log_type.error);
                     return;
                 }
                 else
                 {
                     //check if set command with correct targettype and targetfeature
-                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} Option Count: {commandLineInputs[idx].Options.Count}");
                     var matchingItems = ICLICommandTable.CLIHelpCommandStructure.FeatureList.Where(dict =>
                         dict["TargetType"].ToString().Equals(commandLineInputs[idx].TargetType.ToString(), StringComparison.OrdinalIgnoreCase) &&
                         dict["TargetFeature"].ToString().Equals(commandLineInputs[idx].TargetFeature.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
-                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, match: {matchingItems.Count}");
+
                     if (matchingItems.Count <= 0) //targettype and targetfeature are not meet pre-defined value
                     {
-                        _exitcode = ICLICommandTable.Response_FormatError();
+                        _exitcode = ICLICommandTable.Response_FormatError(_Log);
+                        WriteLog($"Format error with ExitCode({_exitcode}), stage [MatchItem]", log_type.error);
                         return;
                     }
                     else
@@ -245,51 +250,29 @@ namespace CLI.Subagent
                         //check if Option Value meet requirement
                         foreach (var option in commandLineInputs[idx].Options) //check each option value
                         {
-
-
                             string[] ov = option.Option_Value.Split(',');
-                            //Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value}");
-                            //Console.WriteLine($"Option count: {commandLineInputs[idx].Options.Count} ov_length: {ov.Length} ov_count:{ov.Count()}");
-                            //check the Option Value of Firmwareupdate, since it will need to support CLI and CMA  commandLineInputs[idx].Options.Count <= 1 && 
-                            if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")))// && (DeviceType.FindIndex(x => x.Equals(option.Option_Value)) < 0))
+                            if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")))
                             {
-                                //Console.WriteLine($"ov_0: {ov[0]} index: {DeviceType.FindIndex(x => x.Equals(ov[0]))}");
-                                //if (commandLineInputs[idx].Options.Count <= 1 && !string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) < 0))
                                 if (!string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) >= 0))
                                 {
                                     break;
                                 }
                                 else
                                 {
-                                    _exitcode = ICLICommandTable.Response_FormatError();
+                                    _exitcode = ICLICommandTable.Response_FormatError(_Log);
+                                    WriteLog($"Format error with ExitCode({_exitcode}), stage [FWUpdate]", log_type.error);
                                     return;
                                 }
-
-                                //_exitcode = ICLICommandTable.Response_FormatError();
-                                //return;
                             }
                             //Console.WriteLine($"Option_Name: {option.Option_Name}");
                             if (Valid_Option_Name.FindIndex(x => x.Equals(option.Option_Name)) < 0)
                             {
-                                _exitcode = ICLICommandTable.Response_FormatError();
+                                _exitcode = ICLICommandTable.Response_FormatError(_Log);
+                                WriteLog($"Format error with ExitCode({_exitcode}), stage [OptionName]", log_type.error);
                                 return;
                             }
                         }
                     }
-                    //}
-                    //else
-                    //{
-                    //    foreach (var option in commandLineInputs[idx].Options)
-                    //    {
-                    //        Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value} Option count: {commandLineInputs[idx].Options.Count}");
-                    //        string[] ov = option.Option_Value.Split(',');
-                    //        if (ov.Length > 0)
-                    //        {
-
-                    //        }
-
-                    //    }
-                    //}
                 }
             }
 
@@ -299,6 +282,7 @@ namespace CLI.Subagent
                 if (_CliManagerPlugin == null)
                 {
                     _exitcode = (int)CLI_ExitCode.null_cli_manager;
+                    WriteLog($"Seek cli manager and got timeout with ExitCode({_exitcode})", log_type.error);
                     return;
                 }
 
@@ -318,16 +302,21 @@ namespace CLI.Subagent
                         {
                             if (commandLineInput.Options.Any(_ => _.Option_Value.Contains(",FORCEWITHNONOTICE")))
                             {
-                                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput, _Log);
+                                WriteLog($"Check key [FORCEWITHNONOTICE] with ExitCode({_exitcode})", log_type.error);
                                 return;
                             }
                             if (!CLIFWUpdateCheckDevice(args, commandLineInput))
+                            {
+                                WriteLog($"Check device under [FORCEWITHNONOTICE]", log_type.error);
                                 return;
+                            }
                         }
 
                         // check if command not supported defer, forceWithNotice, forceWithNoNotice
                         if (IsNotSupportDeferCommand(commandLineInput))
                         {
+                            WriteLog($"[SET][IsNotSupportDeferCommand] got exit return", log_type.error);
                             return;
                         }
 
@@ -345,6 +334,7 @@ namespace CLI.Subagent
                                     isDefer = true;
                                     if (CLIDefer(args, commandLineInput, option))
                                     {
+                                        WriteLog($"check [DEFER] and got exit return", log_type.error);
                                         return;
                                     }
                                     break;
@@ -353,11 +343,13 @@ namespace CLI.Subagent
                                 {
                                     isForceWithNotice = true;
                                     CLIForceWithNotice(args);
+                                    WriteLog($"check [FORCEWITHNOTICE] and set to true", log_type.info);
                                     break;
                                 }
                                 else if (option.Option_Value.Contains(",FORCEWITHNONOTICE") && commandLineInput.TargetFeature == "UPDATE")
                                 {
                                     isForceWithNoNotice = true;
+                                    WriteLog($"check [FORCEWITHNONOTICE][UPDATE] and set to true", log_type.info);
                                     break;
                                 }
                             }
@@ -365,6 +357,7 @@ namespace CLI.Subagent
                             if (!(isDefer || isForceWithNotice || isForceWithNoNotice) &&
                                 CLIDefer(args, commandLineInput))
                             {
+                                WriteLog($"check isDefer({isDefer}),isForceWithNotice({isForceWithNotice}),isForceWithNoNotice({isForceWithNoNotice}) and CLIDefer() be true, got exit return", log_type.error);
                                 return;
                             }
                         }
@@ -374,21 +367,6 @@ namespace CLI.Subagent
                         /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
                         else if (commandLineInput.Options.Count > 0)
                         {
-                            //if (IsTelemetryConsentInAppUpdateUpdateSourceLocation(commandLineInput))
-                            //{
-                            //    
-                            //    if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
-                            //    {
-                            //        _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
-                            //        return;
-                            //    }
-
-                            //    if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
-                            //    {
-                            //        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
-                            //    }
-                            //}
-
                             foreach (var option in commandLineInput.Options)
                             {
                                 if (option.Option_Value.Contains("DEFER"))
@@ -396,6 +374,7 @@ namespace CLI.Subagent
                                     isDefer = true;
                                     if (CLIDefer(args, commandLineInput, option))
                                     {
+                                        WriteLog($"contain [DEFER] and CLIDefer() be true, got exit return", log_type.error);
                                         return;
                                     }
                                     break;
@@ -403,19 +382,22 @@ namespace CLI.Subagent
                                 else if (option.Option_Value.Contains("FORCEWITHNOTICE"))
                                 {
                                     isForceWithNotice = true;
-                                    CLIForceWithNotice(args, option);
+                                    WriteLog($"contain [FORCEWITHNOTICE] then call CLIForceWithNotice", log_type.info);
+                                    CLIForceWithNotice(args, option);                                    
                                     break;
                                 }
                                 else if (option.Option_Value.Contains("FORCEWITHNONOTICE"))
                                 {
                                     isForceWithNoNotice = true;
-                                    CLIForceWithNoNotice(option);
+                                    WriteLog($"contain [FORCEWITHNONOTICE] then call CLIForceWithNoNotice", log_type.info);
+                                    CLIForceWithNoNotice(option);                                    
                                     break;
                                 }
                             }
 
                             if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
                             {
+                                WriteLog($"commandLineInput.Options.Count:{commandLineInput.Options.Count}, isDefer({isDefer}),isForceWithNotice({isForceWithNotice}),isForceWithNoNotice({isForceWithNoNotice})", log_type.info);
                                 CLIForceWithNotice(args);
                             }
 
@@ -424,57 +406,12 @@ namespace CLI.Subagent
                         }
                         else if (!commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))
                         {
+                            WriteLog($"else not the [SILENTFWUPDATE], call CLIForceWithNotice()", log_type.info);
                             CLIForceWithNotice(args);
                         }
                     }
                 }
                 #endregion
-
-                /*
-                // add start @ 20250120 stephen: test for defer and firmware with connect check
-                bool hasDefer = false;
-                bool hasFwUpdate = false;
-                string cmds = string.Empty;
-
-
-                foreach (string arg in args)
-                {
-                    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
-
-                    cmds = cmds + arg + " ";
-                    if (arg.ToLower().Contains("firmwareupdate"))
-                    {
-                        hasFwUpdate = true;
-                    }
-
-                    if (arg.ToLower().Contains("defer"))
-                    {
-                        hasDefer = true;
-                    }
-                }
-
-                if (hasFwUpdate) {
-                    if (!_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim(), cmds).Result)
-                    {
-                        // true: device not found
-                        Console.WriteLine("hasFwUpdate = true, checkDeviceConn = false, device not found ");
-                        return;
-                    }
-
-                }
-
-                if (hasDefer)
-                {
-                    //Console.WriteLine("@@@@stephen check Defer Result ");
-
-                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
-                    {
-                        Console.WriteLine("hasDefer = true, checkDefer = true, add to defer schedule ");
-                        return;
-                    }
-                }
-                // add end @ 20250120
-                */
 
                 List<int> returnCode = new List<int>();
                 foreach (CommandLineInput commandLineInput in commandLineInputs)
@@ -485,9 +422,10 @@ namespace CLI.Subagent
                     //CLIProxy should handle all possible condition and return json serialize string included in CLIEventResult
                     //***
                     CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-                    //_exitcode = result.ExitCode;
                     returnCode.Add(result.ExitCode);
                     Console.WriteLine(result.serialize_Json_response);
+                    WriteLog($"[Pass to CLIProxy] Command ID:{result.command_guid_string}, ExitCode:{result.ExitCode}");
+                    WriteLog($"[Response]: {result.serialize_Json_response}");
                 }
                 int n = returnCode.FindIndex(x => (x != (int)CLI_ExitCode.success));
                 if (n >= 0)
@@ -499,9 +437,8 @@ namespace CLI.Subagent
             }
             else
             {
-                //_Log.Error($"{nameof(IDisplayService)} was not found after {TIMEOUT_IN_SECONDS}s.");
-                _Log.Error($"{nameof(ICliManagerIT)} was not found after {TIMEOUT_IN_SECONDS}s.");
-                _exitcode = ICLICommandTable.Response_TimeoutError(commandLineInputs[0]);
+                WriteLog($"{nameof(ICliManagerIT)} was not found after {TIMEOUT_IN_SECONDS}s.", log_type.error);
+                _exitcode = ICLICommandTable.Response_TimeoutError(commandLineInputs[0], _Log);
                 return;
             }
         }
@@ -520,7 +457,8 @@ namespace CLI.Subagent
                 commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")) &&
                 notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
             {
-                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput, _Log);
+                WriteLog($"[IsNotSupportDeferCommand] ResponseNotSupportValue, exit({_exitcode})");
                 return true;
             }
             if (commandLineInput.Options.Count > 0 &&
@@ -537,27 +475,13 @@ namespace CLI.Subagent
             return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("UPDATE");
         }
 
-        //private bool IsTelemetryConsentInAppUpdateUpdateSourceLocation(CommandLineInput commandLineInput)
-        //{
-        //    var validFeatures = new HashSet<string>
-        //    {
-        //        "TELEMETRYCONSENT",
-        //        "UPDATESOURCELOCATION",
-        //        "INAPPUPDATE"
-        //    };
-
-        //    if (commandLineInput.TargetType.Equals("APP") && validFeatures.Contains(commandLineInput.TargetFeature))
-        //        return true;
-        //    else 
-        //        return false;
-        //}
-
         private bool CLIFWUpdateCheckDevice(string[] args, CommandLineInput commandLineInput)
         {
             var cmds = string.Join(" ", args.Select(_ => _.ToUpper()));
 
             if (!_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim(), cmds).Result)
             {
+                WriteLog("[CLIFWUpdateCheckDevice] _CliManagerPlugin.checkDeviceConn got false return");
                 _exitcode = ICLICommandTable.ResponseFWUpdateDeviceNotConnected(commandLineInput);
                 return false;
             }
@@ -585,7 +509,7 @@ namespace CLI.Subagent
 
             if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
             {
-                _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                _exitcode = ICLICommandTable.ResponseDefer(commandLineInput, _Log);
                 return true;
             }
             return false;
@@ -614,14 +538,11 @@ namespace CLI.Subagent
             }
             catch (Exception ex)
             {
-                _Log.Error($"[CLI] CLIForceWithNotice exception: {ex.ToString}");
+                WriteLog($"[CLI] CLIForceWithNotice exception: {ex.ToString}", log_type.error);
 #if DEBUG
                 Console.WriteLine($"[CLI] CLIForceWithNotice exception: {ex.ToString}");
 #endif
             }
-
-
-            //Task.Delay(5000).Wait();
         }
         #endregion
 
@@ -665,11 +586,11 @@ namespace CLI.Subagent
 
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _Log.Info($"{nameof(GetCurrentCliManagerPluginCondition)} - Cli Manager Plugin is in an error condition");
+                        _Log?.Info($"{nameof(GetCurrentCliManagerPluginCondition)} - Cli Manager Plugin is in an error condition");
                     }
                     else if (pluginCondition is PluginRunningCondition)//cross subagent
                     {
-                        _Log.Info($"{nameof(GetCurrentCliManagerPluginCondition)} - Cli Manager Plugin is in running condition");
+                        _Log?.Info($"{nameof(GetCurrentCliManagerPluginCondition)} - Cli Manager Plugin is in running condition");
                         _PluginAvailabilityTrigger_CliManager.Set();
                     }
                 }
@@ -698,6 +619,26 @@ namespace CLI.Subagent
             InitializeCliManagerPlugin();
         }
 
+        #endregion
+
+        #region private method
+        private void WriteLog(string text, log_type log_type = log_type.info)
+        {
+            string logString = $"[CLI.Subagent] {text}";
+            if (_Log != null)
+            {
+                if (log_type == log_type.info)
+                    _Log.Info(logString);
+                else
+                    _Log.Error(logString);
+            }
+        }
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
         #endregion
     }
 }
