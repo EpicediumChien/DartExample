@@ -370,10 +370,11 @@ namespace DDPM.UI.Module.Color
                     //ColorViewModel vm = (ColorViewModel)DataContext;
                     if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
                         DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.Is_Game_DeviceName, vm.IsAutoColorPreset_Lock); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                    //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-                    //int i = 0;
 
-                    if (!vm.Is_ColorPreset_ManualFirst)
+                    //PIMS-353317, Dean: Not sure why set the 2nd expend to the category Manual should read preset via setting from SA?!
+                    //Below code cause the category switch: Manual -> Auto -> Manual may set color preset to wrong index (last selection) after restore to default
+                    //temporary remove it and to see if any side effect by long time test.
+                    /*if (!vm.Is_ColorPreset_ManualFirst)
                     {
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
 
@@ -403,7 +404,8 @@ namespace DDPM.UI.Module.Color
                         }
                     }
                     else
-                        vm.Is_ColorPreset_ManualFirst = false;
+                        vm.Is_ColorPreset_ManualFirst = false;*/
+                    //End PIMS-353317
                 }));
             }
             else if (expander_sender.Name == "Expander_Auto")
