@@ -8776,10 +8776,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
-                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.SerialNumber}"));
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SerialNumberChanged",
+                                    e.DeviceId, $"Headset_SerialNumberChanged:{e.SerialNumber}"));
 
-            writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"[Headset] Catch event Headset_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)

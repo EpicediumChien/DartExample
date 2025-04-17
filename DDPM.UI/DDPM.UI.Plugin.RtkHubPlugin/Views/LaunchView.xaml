@@ -93,7 +93,7 @@
                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                         </Border.Resources>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding FirmwareVersion2}" />
+                                            <TextBlock Text="{Binding FirmwareVersion}" />
                                         </StackPanel>
                                     </Border>
                                 </ToolTip>

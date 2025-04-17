@@ -163,7 +163,7 @@ namespace DDPM.UI.Common
         private void UpdateConnectionType()
         {
             //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
-            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB"))
+            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB") || (GlobalDefinitions.isSupport210 && ConnectionType == "24"))
             {
                 if (DdpmCommonHelper.isDarkMode())
                 {
@@ -200,6 +200,10 @@ namespace DDPM.UI.Common
                         txt1.Text = Strings.USB_C_DP_14;
                     }
                 }
+                else if (GlobalDefinitions.isSupport210 && ConnectionType == "24")
+                {
+                    txt1.Text = Strings.USB_C;
+                }
                 txt1.Visibility = Visibility.Visible;
                 return;
             }
@@ -223,17 +227,8 @@ namespace DDPM.UI.Common
             }
             else
             {
-                if (GlobalDefinitions.isSupport210 && ConnectionType == "24")
-                {
-                    ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Port");
-                    txt1.Text = Strings.USB_C;
-                    txt1.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
-                    ConnectionTypeImage.Source = bitmapImage;
-                }
+                BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
+                ConnectionTypeImage.Source = bitmapImage;
             }
             UpdateBatteryLevelIndicator();
         }

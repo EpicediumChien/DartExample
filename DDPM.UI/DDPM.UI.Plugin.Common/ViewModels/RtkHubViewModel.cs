@@ -648,7 +648,7 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("RtkHub"))
+                if (deviceInfo.LogicalDeviceType.Contains("25")) //RtkHub
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
             }
         }
