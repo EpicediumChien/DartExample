@@ -99,23 +99,26 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                         DdpmCommonHelper.WriteUILog($"AddDevice Device PlugIn event received.");
                         if (_vm.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _vm.CurrentDongle.ID)
                         {
-                            _vm.NewDevice = e.device_peripherals;
+                            //_vm.NewDevice = e.device_peripherals;
                             //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                             while (IsRequested && !_vm.IsPairingLoaded)
                             {
                                 Task.Delay(1000).Wait();
                             }
-                            //if (WaitingModalDialogIsOpen)
-                            //{
-                            WaitingModalDialogIsOpen = false;
+                            if (WaitingModalDialogIsOpen)
+                            {
+                                WaitingModalDialogIsOpen = false;
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    waitingModalDialog?.Close();
+                                }));
+                            }
                             Dispatcher.Invoke(new Action(() =>
                             {
-                                waitingModalDialog?.Close();
-                                //_vm.GotoNewDevice();
                                 DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
+                                //_vm.GotoNewDevice();
                                 _console.ShowHomePage();
                             }));
-                            //}
                         }
                         else
                             Dispatcher.Invoke(new Action(() =>

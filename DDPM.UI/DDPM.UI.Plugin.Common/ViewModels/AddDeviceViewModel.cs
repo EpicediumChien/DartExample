@@ -432,7 +432,7 @@ namespace DDPM.UI.Plugin.ViewModels
             IsPairing = false;
         }
 
-        public DeviceInfo? NewDevice = null;
+        //public DeviceInfo? NewDevice = null;
         public string WacomVersion = "";
 
         //public void GotoNewDevice()
