@@ -37,6 +37,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
         private EzArrangeViewModel? vm;
         private DisplayViewModel? vmDisplay;
         private Mock<IEasyArrangeService>? easyArrange;
+        private Common.UserControls.SplitItem splitItem;
 
 
         [SetUp]
@@ -66,7 +67,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
             log = logMock.Object;
             easyArrange = new Mock<IEasyArrangeService>();
             HomeDevice.DeviceManagerSA = deviceManagerSA;
-            vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange.Object) { SelectedHomeDevice = new Common.Models.HomeDevice() { vmEzArrange = new EzArrangeViewModel(new Common.Models.HomeDevice()) { SelectedSplitItem = new Common.UserControls.SplitItem() }, MonitorInfo = new VcpCore.Common.MonitorInfo() { DisplayName = "NAME" } } };
+            splitItem = new();
+            vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange.Object) { SelectedHomeDevice = new Common.Models.HomeDevice() { vmEzArrange = new EzArrangeViewModel(new Common.Models.HomeDevice()) { SelectedSplitItem = splitItem }, MonitorInfo = new VcpCore.Common.MonitorInfo() { DisplayName = "NAME" } } };
             ezArrangeRightVierw = new EzArrangeRightVierw(vmDisplay);
             privateObject = new PrivateObject(ezArrangeRightVierw);
         }
@@ -119,6 +121,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
                 ezArrangeRightVierw.Dispose();
                 ezArrangeRightVierw = null;
             }
+
+            splitItem.Dispose();
         }
     }
 }
