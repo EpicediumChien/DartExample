@@ -2828,9 +2828,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"{nameof(Rearrange)} start");
             try
             {
-                //Define sorting priorities
-                var priority = new Dictionary<DeviceType, int>
+                 Dictionary<DeviceType, int> priority;
+               //Define sorting priorities
+                if (GlobalDefinitions.isSupport210)
                 {
+                    priority = new Dictionary<DeviceType, int>
+                    {
                     { DeviceType.PhysicalDongle, 1 },
                     { DeviceType.PhysicalAudioDongle, 2 },
 
@@ -2856,7 +2859,38 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     { DeviceType.Unknown, 96 }, // Display
                     { DeviceType.PhysicalWiredDock, 98 },
                     { DeviceType.LogicalDock, 99 }
-                };
+                    };
+                }
+                else
+                {
+                    priority = new Dictionary<DeviceType, int>
+                    {
+                    { DeviceType.PhysicalDongle, 1 },
+                    { DeviceType.PhysicalAudioDongle, 2 },
+
+                    { DeviceType.LogicalMouse, 3 },
+                    { DeviceType.LogicalKeyboard, 4 },
+
+                    { DeviceType.LogicalWebcam, 5 },
+                    { DeviceType.PhysicalWebcam, 6 },
+
+                    { DeviceType.LogicalPen, 7 },
+                    { DeviceType.PhysicalPen, 8 },
+
+                    { DeviceType.LogicalWiredAudio, 9 },
+                    { DeviceType.PhysicalWiredAudio, 10 },
+                    { DeviceType.PhysicalBluetoothAudio, 11 },
+                    { DeviceType.LogicalHeadset, 12 },
+
+                    { DeviceType.PhysicalBootloader, 13 },
+                    { DeviceType.LogicalBootloader, 14 },
+
+                    { DeviceType.Unknown, 96 }, // Display
+                    { DeviceType.PhysicalWiredDock, 98 },
+                    { DeviceType.LogicalDock, 99 }
+                    };
+                }
+
 
                 fWUpdateInfos.Sort((x, y) =>
                 {
