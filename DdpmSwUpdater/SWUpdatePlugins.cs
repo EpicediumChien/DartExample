@@ -131,11 +131,11 @@ namespace DdpmSwUpdater
             }
             else
             {
-            swUpdateInfos.Add(new SWUpdateInfo()
-            {
-                SoftwareName = "DDPM",
+                swUpdateInfos.Add(new SWUpdateInfo()
+                {
+                    SoftwareName = "DDPM",
                     SWUErrorCode = SWUErrorCode.FileCheckFail
-            });
+                });
                 return Task.FromResult(swUpdateInfos);
             }
             LogManage.LogMessage($"swUpdateInfos ok");
@@ -341,15 +341,15 @@ namespace DdpmSwUpdater
                                 swUpdateInfos[i].InstallPaths = exeFilePath;
                                 swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
                             }
-                LogManage.LogMessage($"Install done");
+                            LogManage.LogMessage($"Install done");
                             if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
-                {
-                    NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
-                }
-                else
-                {
-                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                }
+                            {
+                                NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
+                            }
+                            else
+                            {
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -941,6 +941,7 @@ namespace DdpmSwUpdater
                     string nextProcess_str = (registryKey.GetValue("NextProcess")?.ToString());
                     if (!string.IsNullOrEmpty(curProcess_str) && int.TryParse(curProcess_str, out int curProcess))
                     {
+                        _CurrentMini = curProcess;
                         //_CurrentProcess = curProcess;
                         //UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         //{
@@ -954,10 +955,6 @@ namespace DdpmSwUpdater
                     if (!string.IsNullOrEmpty(nextProcess_str) && int.TryParse(nextProcess_str, out int nextProcess))
                     {
                         _CurrentProcessLimit = nextProcess;
-                        if (_CurrentProcessLimit >= 90)
-                        {
-                            _CurrentProcessLimit = 100;
-                        }
                     }
                     LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess_str}");
                     LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess_str}");
@@ -965,6 +962,7 @@ namespace DdpmSwUpdater
                 }
             }
         }
+        bool check_In75 = false;
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcess :{_CurrentProcess}");
@@ -993,25 +991,37 @@ namespace DdpmSwUpdater
                     difference = (float)_CurrentProcess / (float)_CurrentMini;
                 }
                 LogManage.LogMessage($"InstallingProcessTimer_Elapsed difference :{difference}");
-                if (difference <= 0.75)
+                if (_CurrentProcessLimit == 75)
                 {
-                    _processTimer.Interval = TimeSpan.FromSeconds(0.5).TotalMilliseconds;
-                }
-                else if (difference <= 0.95)
-                {
-                    _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
+                    if (!check_In75)
+                    {
+                        check_In75 = true;
+                        int totalSeconds = 2 * 60; // 總秒數
+                        int intervalMilliseconds = totalSeconds / (75 - _CurrentProcess);
+                        LogManage.LogMessage($"totalSeconds : {totalSeconds}");
+                        LogManage.LogMessage($"intervalMilliseconds : {intervalMilliseconds}");
+                        _processTimer.Interval = TimeSpan.FromSeconds(intervalMilliseconds).TotalMilliseconds;
+                    }
                 }
                 else
                 {
-                    _processTimer.Interval = TimeSpan.FromSeconds(3).TotalMilliseconds;
-                }
-                if (_CurrentProcessLimit >= 100)
-                {
-                    _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
-                }
-                if (_CurrentMini >= 100)
-                {
-                    _processTimer.Interval = TimeSpan.FromSeconds(0.3).TotalMilliseconds;
+                    if (difference <= 0.7)
+                    {
+                        _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
+
+                    }
+                    else if (difference <= 0.95)
+                    {
+                        _processTimer.Interval = TimeSpan.FromSeconds(3).TotalMilliseconds;
+                    }
+                    else
+                    {
+                        _processTimer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+                    }
+                    if (_CurrentProcessLimit >= 98)
+                    {
+                        _processTimer.Interval = TimeSpan.FromSeconds(0.1).TotalMilliseconds;
+                    }
                 }
                 LogManage.LogMessage($"InstallingProcessTimer_Elapsed _processTimer.Interval :{_processTimer.Interval}");
             }
