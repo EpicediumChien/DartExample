@@ -105,17 +105,17 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                             {
                                 Task.Delay(1000).Wait();
                             }
-                            if (WaitingModalDialogIsOpen)
+                            //if (WaitingModalDialogIsOpen)
+                            //{
+                            WaitingModalDialogIsOpen = false;
+                            Dispatcher.Invoke(new Action(() =>
                             {
-                                WaitingModalDialogIsOpen = false;
-                                Dispatcher.Invoke(new Action(() =>
-                                {
-                                    waitingModalDialog?.Close();
-                                    //_vm.GotoNewDevice();
-                                    DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
-                                    _console.ShowHomePage();
-                                }));
-                            }
+                                waitingModalDialog?.Close();
+                                //_vm.GotoNewDevice();
+                                DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
+                                _console.ShowHomePage();
+                            }));
+                            //}
                         }
                         else
                             Dispatcher.Invoke(new Action(() =>
@@ -189,6 +189,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                             Dispatcher.Invoke(new Action(() =>
                                             {
                                                 waitingModalDialog?.Close();
+                                                DdpmCommonHelper.WriteUILog($"AddDevice pairing closed by Stopped status");
                                             }));
                                         }
                                         IsRequested = false;
@@ -200,6 +201,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                             Dispatcher.Invoke(new Action(() =>
                                             {
                                                 waitingModalDialog?.Close();
+                                                DdpmCommonHelper.WriteUILog($"AddDevice pairing closed by TimeOut status");
                                             }));
                                         }
                                         Dispatcher.Invoke(new Action(() =>
