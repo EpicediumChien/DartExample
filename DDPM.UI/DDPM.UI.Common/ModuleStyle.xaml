@@ -380,7 +380,7 @@
     <ControlTemplate x:Key="icon_Contrast"
                      TargetType="ContentControl">
         <Canvas Width="16" Height="16">
-            <Path Data="M8,2.35294 C4.68629,2.35294 2,5.03923 2,8.35294 C2,11.6666 4.68629,14.3529 8,14.3529 L8,2.35294 Z M8,2.82353 A5.5,5.5 0 1 1 8,13.8824 A5.5,5.5 0 1 1 8,2.82353 Z" 
+            <Path Data="M7,1.35294 C3.68629,1.35294 1,4.03923 1,7.35294 C1,10.6666 3.68629,13.3529 7,13.3529 L7,1.35294 Z M7,1.82353 A5.5,5.5 0 1 1 7,12.8824 A5.5,5.5 0 1 1 7,1.82353 Z" 
                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" 
                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"/>
         </Canvas>
@@ -1964,7 +1964,7 @@
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
         <Setter Property="Foreground" Value="{DynamicResource HomePageKeyFeature_TxtColor}" />
         <Setter Property="FontSize" Value="24" />
-        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}" />
     </Style>
 
 

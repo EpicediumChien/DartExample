@@ -202,8 +202,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
-            DTPEventHandler?.Invoke(this, e);
+            _ = Task.Run(() => DTPEventHandler?.Invoke(this, e));
         }
+
+        public event EventHandler<CMAIDEventArgs> CMAEventHandler;
+
+        public void UpdateCMANotify(CMAIDEventArgs e)
+        {
+            _ = Task.Run(() => CMAEventHandler?.Invoke(this, e));
+        }
+
 
         public void DTPProxyPluginSDKNotify(UpdateDTPProxyNotify e)
         {
@@ -8327,6 +8335,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8379,6 +8388,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8426,6 +8436,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
                 _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
                 _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
+                _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChangedForCMA;
                 _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                 _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                 _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8594,6 +8605,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8776,10 +8788,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
-                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.SerialNumber}"));
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SerialNumberChanged",
+                                    e.DeviceId, $"Headset_SerialNumberChanged:{e.SerialNumber}"));
 
-            writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"[Headset] Catch event Headset_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SerialNumberChangedForCMA(object sender, SerialNumberChangedArgs e)
+        {
+            string devicename = GetHeadsetDeviceNameAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicename))
+                devicename = string.Empty;
+
+            string devicefw = GetHeadsetFirmwareVersionAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicefw))
+                devicefw = string.Empty;
+
+            SendDTPEventToCMA("Headset", e.DeviceId, e.SerialNumber, devicename, devicefw);
+            writelog($"[Headset] Catch event Headset_SerialNumberChangedForCMA : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
@@ -8855,6 +8881,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             UpdateUINotify headsetEventNotify = new UpdateUINotify();
             headsetEventNotify.UI_Field_Name = $"{sendMsg}";
             OnUIUpdateNotify(headsetEventNotify);
+        }
+
+        public void SendDTPEventToCMA(string deviceType, string GUID, string SNnumber, string Model, string FWversion)
+        {
+            writelog($"[SendDTPEventToCMA] deviceType : {deviceType}, GUID : {GUID}, SNnumber : {SNnumber}, Model : {Model}, FWversion : {FWversion}");
+            CMAIDEventArgs dtpEventToCMANotify = new CMAIDEventArgs();
+            dtpEventToCMANotify.deviceType = deviceType;
+            dtpEventToCMANotify.guid = GUID;
+            dtpEventToCMANotify.snNumber = SNnumber;
+            dtpEventToCMANotify.model = Model;
+            dtpEventToCMANotify.fwVersion = FWversion;
+            UpdateCMANotify(dtpEventToCMANotify);
         }
 
         #endregion Headset Event
@@ -11372,7 +11410,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
                     _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                     _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
-                    _Webcamcom.IsAllSupportedResolutionsFoundChanged += _Webcamcom_IsAllSupportedResolutionsFoundChanged;
 
                     writelog($"Webcam Commodity {_Webcamcom.DeviceName}/{_Webcamcom.DeviceId}/{_Webcamcom.ModelNumber} events registered successfully");
 
@@ -11391,14 +11428,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
-        }
-
-        private void _Webcamcom_IsAllSupportedResolutionsFoundChanged(object sender, IsAllSupportedResolutionsFoundChangedArgs e)
-        {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAllSupportedResolutionsFoundChanged",
-                                    e.DeviceId, $"NewValue:{e.IsAllSupportedResolutionsFound}"));
-
-            writelog($"Catch event _Webcamcom_IsAllSupportedResolutionsFoundChanged, NewValue:{e.IsAllSupportedResolutionsFound}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
@@ -12036,10 +12065,83 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
-                                    e.DeviceId, $"NewValue:{e.SerialNumber}"));
+            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+            //                        e.DeviceId, $"NewValue:{e.SerialNumber}"));
 
-            writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            string devicename = GetWebcamNameAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicename))
+                devicename = string.Empty;
+
+            string devicefw = GetWebcamFirmwareVersionAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicefw))
+                devicefw = string.Empty;
+
+            writelog($"[Webcam] Catch event SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now:hh.mm.ss.ffffff}");
+            SendDTPEventToCMA("Webcam", e.DeviceId, e.SerialNumber, devicename, devicefw);
+        }
+
+        private async Task<string> GetWebcamNameAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceName");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned null for DeviceName.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamNameAsync] Successfully retrieved DeviceName: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned a non-string value for DeviceName.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamNameAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
+        }
+
+        private async Task<string> GetWebcamFirmwareVersionAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "FirmwareVersion");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned null for FirmwareVersion.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamFirmwareVersionAsync] Successfully retrieved FirmwareVersion: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned a non-string value for FirmwareVersion.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamFirmwareVersionAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
         }
 
         //private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)

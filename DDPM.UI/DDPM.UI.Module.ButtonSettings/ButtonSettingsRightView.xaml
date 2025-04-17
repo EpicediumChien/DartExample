@@ -34,7 +34,7 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16" MouseLeftButtonDown="GoBackClicked">
           </Image>
           <!-- ELSA 20050106 For PIMS [PIMS-334908] add Width="260" TextTrimming="CharacterEllipsis" -->
-          <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="{StaticResource RobotoFontMedium}" Width="260" TextTrimming="CharacterEllipsis"
+                    <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="{StaticResource RobotoFont}" Width="260" TextTrimming="CharacterEllipsis"
                                             VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
         </StackPanel>
         <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
@@ -185,7 +185,7 @@
             <Border Name="bdrMultimedia" MaxHeight="420" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,5000" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave">
               <StackPanel>
                 <Grid>
-                  <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                  <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" Width="240" TextTrimming="CharacterEllipsis" />
                   <Image x:Name="imgMultimedia" Source="{DynamicResource down_Expand}"  MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                     <Image.RenderTransform>

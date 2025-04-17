@@ -5791,6 +5791,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
+        public void OnCMAUpdateNotify(CMAIDEventArgs e)
+        {
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... in ");
+            EventHandler<CMAIDEventArgs> Handler = DTPEventForCMAChanged;
+            if (Handler != null)
+            {
+                _ = Task.Run(() => Handler.Invoke(this, e));
+                writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged be Invoked");
+            }
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... out ");
+        }
+
         #endregion
 
         #region display properties implementation
@@ -9276,6 +9289,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
                 if ((int)backendImportResult > 0)
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings successfully.");
                     // Apply new Hotkey setting
                     ReloadHotkeyConfigData();
                     RegistHotkey(true);
@@ -9333,6 +9347,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
+#if DEBUG
+                                        Debug.WriteLine($"[DisplayImportSettings] ALSConfig : {impVCPSequence.ALSConfig.ToString()}");
+#endif
                                         foreach (VCPCode code in vcps)
                                         {
                                             if (code.Code != null && (code.Value != null && code.Value.Count > 0))
@@ -9436,6 +9453,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings failed. Import DDM settings.");
                     //Import DDMSettings
                     DDMImpSettings impSettings = new DDMImpSettings();
                     impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;
@@ -11480,7 +11498,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
                 writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
-
+#if DEBUG
+                Debug.WriteLine($"GetWebcamDeviceCount = {devCnt}, _GlobalSettingParam = {_GlobalSettingParam}, isWindowsScreenNotLocked = {isWindowsScreenNotLocked}, _GlobalSettingParam.GlobalSetting_WidgetSettings = {_GlobalSettingParam.GlobalSetting_WidgetSettings}");
+#endif
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
                                                                              //QAMWebcamDeviceGuid == string.Empty ||
@@ -12028,7 +12048,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     //_QAM.Show();
-                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    _QAM?.Dispatcher.Invoke(() => {
+                        _QAM?.Show();
+                        _QAM?.Activate();
+                    });
                     //Dispatcher.Run(); //may block the process Derek 1219
 
                     writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
@@ -12322,6 +12345,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
 
                             var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
+                            //04/16 Jason Lin add InitDisplayData due to timing
+                            _DisplayManagerPlugin.InitDisplayData(NewMonitors.ToList()).Wait(token);
                             var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
 
                             // add @ 20250303 stephen
@@ -13055,7 +13080,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
+                    //_DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
                     for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
                     {
@@ -13107,7 +13132,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"monitor count {e.monitors.Count} ...");
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
-
+            //04/16 Jason Lin add InitDisplayData due to timing
+            _DisplayManagerPlugin.InitDisplayData((e.monitors).ToList()).Wait(CancellationToken.None);
             Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
@@ -14158,6 +14184,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        _DTPProxyPlugin.CMAEventHandler += DTPEventForCMAChanged;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         if (_AirAudioHelper == null)
                             _AirAudioHelper = new PeripheralAirAudioHelper(Log);
@@ -17683,6 +17710,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
+
+                    if (_DTPProxyPlugin != null)
+                        _DTPProxyPlugin.CMAEventHandler -= DTPEventForCMAChanged;
                 }
 
                 IsDisposed = true;

@@ -6054,29 +6054,39 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         firmwares_item.UpdateTime = "";
                                         _logs.DebugMsg($"[DisplayMangerPlugin] data[{model}].UpdateTime is null");
                                     }
-                                    int newVersion = -1;
-                                    int oldVersion = -1;
-                                    for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} firmwares_item.CurrentVersion is null or empty : {string.IsNullOrEmpty(firmwares_item.CurrentVersion)}");
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} firmwares_item.TheLastVersion is null or empty : {string.IsNullOrEmpty(firmwares_item.TheLastVersion)}");
+                                    if (!string.IsNullOrEmpty(firmwares_item.CurrentVersion) &&
+                                        !string.IsNullOrEmpty(firmwares_item.TheLastVersion))
                                     {
-                                        if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} firmwares_item.CurrentVersion : {firmwares_item.CurrentVersion}");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} firmwares_item.TheLastVersion : {firmwares_item.TheLastVersion}");
+                                        int newVersion = -1;
+                                        int oldVersion = 9999;
+                                        for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
                                         {
-                                            int index = j + 1;
-                                            int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
-                                            break;
+                                            if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                            {
+                                                int index = j + 1;
+                                                int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
+                                                break;
+                                            }
                                         }
-                                    }
-                                    for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
-                                    {
-                                        if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                        for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
                                         {
-                                            int index = j + 1;
-                                            int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
-                                            break;
+                                            if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                            {
+                                                int index = j + 1;
+                                                int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
+                                                break;
+                                            }
                                         }
-                                    }
-                                    if (newVersion > oldVersion)
-                                    {
-                                        ret.Firmwares.Add(firmwares_item);
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} newVersion : {newVersion}");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} oldVersion : {oldVersion}");
+                                        if (newVersion > oldVersion)
+                                        {
+                                            ret.Firmwares.Add(firmwares_item);
+                                        }
                                     }
                                 }
                             }

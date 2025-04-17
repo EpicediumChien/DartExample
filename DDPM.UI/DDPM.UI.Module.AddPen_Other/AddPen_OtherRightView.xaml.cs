@@ -70,15 +70,17 @@ namespace DDPM.UI.Module.AddPen_Other
             else
                 ChangeToHorizontalLayout();
 
-            AdjustBorderHeight();
+            //AdjustBorderHeight();
         }
 
         private void ChangeToVerticalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Vertical;
 
-            stepsBorder1.Width = stepsBorder2.Width = this.ActualWidth - 58;
-            txtStep1.Width = txtStep2.Width = this.ActualWidth - 110;
+            stepsBorder1.Width = stepsBorder2.Width = this.ActualWidth - 38;
+            txtStep1.Width = txtStep2.Width = this.ActualWidth - 80;
+            stepsBorder2.Height = stepsBorder1.Height = double.NaN;
+            stepsBorder2.Margin = new Thickness(0, 0, 0, 7);
         }
 
         private void ChangeToHorizontalLayout()
@@ -86,7 +88,9 @@ namespace DDPM.UI.Module.AddPen_Other
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
             txtStep1.Width = txtStep2.Width = this.ActualWidth / 2 - 70;
-            stepsBorder1.Width = stepsBorder2.Width = this.ActualWidth / 2 - 25;
+            stepsBorder1.Width = stepsBorder2.Width = this.ActualWidth / 2 - 22;
+            stepsBorder1.Height = stepsBorder2.Height = 240;
+            stepsBorder2.Margin = new Thickness(7, 0, 0, 7);
         }
 
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
@@ -132,12 +136,12 @@ namespace DDPM.UI.Module.AddPen_Other
             {
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             }
-            AdjustBorderHeight();
+            //AdjustBorderHeight();
         }
 
-        private void AdjustBorderHeight()
-        {
-            stepsBorder1.Height = stepsBorder2.ActualHeight;
-        }
+        //private void AdjustBorderHeight()
+        //{
+        //    //stepsBorder1.Height = stepsBorder2.ActualHeight;
+        //}
     }
 }

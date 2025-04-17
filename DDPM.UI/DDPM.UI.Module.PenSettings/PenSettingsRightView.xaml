@@ -30,7 +30,8 @@
             </Border.Height> -->
       <StackPanel>
         <Grid Margin="0,0,0,20">
-          <UXControls:UXTextBlock Name="txtCaption" Margin="18,24" Style="{StaticResource ModuleCaptionStyle}" />
+                    <UXControls:UXTextBlock Name="txtCaption" Margin="18,24" FontFamily="{StaticResource RobotoFont}" 
+                                            Style="{StaticResource ModuleCaptionStyle}" />
         </Grid>
         <Grid VerticalAlignment="top" Margin="0,0,0,20">
           <Border Background="{DynamicResource MouseSettingMenu_BgColor99}"  CornerRadius="6" Width="488" Height="190" VerticalAlignment="Top">
