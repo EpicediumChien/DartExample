@@ -2851,9 +2851,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     { DeviceType.PhysicalBootloader, 13 },
                     { DeviceType.LogicalBootloader, 14 },
 
-                    { DeviceType.Unknown, 15 }, // Display
-                    { DeviceType.PhysicalWiredDock, 16 },
-                    { DeviceType.LogicalDock, 17 }
+                    { DeviceType.LogicalAirAudio, 15 },
+
+                    { DeviceType.Unknown, 96 }, // Display
+                    { DeviceType.PhysicalWiredDock, 98 },
+                    { DeviceType.LogicalDock, 99 }
                 };
 
                 fWUpdateInfos.Sort((x, y) =>

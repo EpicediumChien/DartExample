@@ -8815,7 +8815,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                     {
-                        MiniMizeDDPMUI().Wait();
+                        //MiniMizeDDPMUI().Wait();
                         writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
                         string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
                         string SW_Available_date = swUpdateInfos[0].Available_date;
@@ -8844,6 +8844,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (isRestoreDDPM)
                 {
                     RestoreDDPMUI();
+                }
+                else
+                {
+                    MiniMizeDDPMUI().Wait();
                 }
                 return Task.FromResult(retSWUpdateInfos);
             }
