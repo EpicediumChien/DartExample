@@ -3496,7 +3496,7 @@
     <value>ID dispositivo</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
-    <value>Questa funzione consente agli occhi di adattarsi all'ambiente desiderato</value>
+    <value>Questa funzione consente agli occhi di adattarsi all&apos;ambiente desiderato</value>
   </data>
   <data name="Kvm.30" xml:space="preserve">
     <value>Condivisione dei file facile e sicura tra PC (Mac e Windows)</value>
@@ -3514,10 +3514,10 @@
     <value>slot disponibili</value>
   </data>
   <data name="Hotkey.10" xml:space="preserve">
-    <value>Il tasto di scelta rapida è in conflitto con un tasto configurato in un'altra applicazione. Usare una combinazione di tasti diversa.</value>
+    <value>Il tasto di scelta rapida è in conflitto con un tasto configurato in un&apos;altra applicazione. Usare una combinazione di tasti diversa.</value>
   </data>
   <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
-    <value>L'aggiornamento firmware di più ricevitori USB senza fili dello stesso tipo non è supportato. Tenere collegato un ricevitore USB senza fili di destinazione.</value>
+    <value>L&apos;aggiornamento firmware di più ricevitori USB senza fili dello stesso tipo non è supportato. Tenere collegato un ricevitore USB senza fili di destinazione.</value>
   </data>
   <data name="DisplayAlert" xml:space="preserve">
     <value>Il monitor è attualmente occupato. È possibile controllare solo funzioni limitate.</value>
@@ -3526,7 +3526,7 @@
     <value>Il colore non è disponibile quando</value>
   </data>
   <data name="LearnMoreMsg.0" xml:space="preserve">
-    <value>Eseguire la scansione per scaricare l'app Dell Audio per personalizzare le cuffie</value>
+    <value>Eseguire la scansione per scaricare l&apos;app Dell Audio per personalizzare le cuffie</value>
   </data>
   <data name="EzArrange.11" xml:space="preserve">
     <value>Salva immagini icone...</value>
@@ -3556,13 +3556,13 @@
     <value>Le funzioni si applicano automaticamente quando si ascoltano brani musicali e altri contenuti</value>
   </data>
   <data name="Cardi.5" xml:space="preserve">
-    <value>Limita il rumore del microfono near-end per offrire agli altri un'esperienza audio migliore</value>
+    <value>Limita il rumore del microfono near-end per offrire agli altri un&apos;esperienza audio migliore</value>
   </data>
   <data name="Cardi.6" xml:space="preserve">
-    <value>Limita il rumore del microfono far-end per offrire un'esperienza audio migliore</value>
+    <value>Limita il rumore del microfono far-end per offrire un&apos;esperienza audio migliore</value>
   </data>
   <data name="Cardi.7" xml:space="preserve">
-    <value>L'equalizzatore si regola in base alla preimpostazione scelta</value>
+    <value>L&apos;equalizzatore si regola in base alla preimpostazione scelta</value>
   </data>
   <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
     <value>Personalizza inclinazione scorrimento a sinistra</value>
@@ -3589,13 +3589,13 @@
     <value>Salva report sugli asset del dock</value>
   </data>
   <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
-    <value>L'aggiornamento per più ricevitori USB senza fili dello stesso tipo non è supportato. Tenere collegato un ricevitore USB senza fili di destinazione.</value>
+    <value>L&apos;aggiornamento per più ricevitori USB senza fili dello stesso tipo non è supportato. Tenere collegato un ricevitore USB senza fili di destinazione.</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
-    <value>Il completamento dell'aggiornamento potrebbe richiedere dai 10 ai 30 minuti, a seconda del modello e della configurazione del monitor (ad esempio, in base al tipo di connessione). L'aggiornamento di più monitor dello stesso modello potrebbe richiedere più tempo. Non spegnere lo schermo o scollegare i cavi durante il download dell'aggiornamento.</value>
+    <value>Il completamento dell&apos;aggiornamento potrebbe richiedere dai 10 ai 30 minuti, a seconda del modello e della configurazione del monitor (ad esempio, in base al tipo di connessione). L&apos;aggiornamento di più monitor dello stesso modello potrebbe richiedere più tempo. Non spegnere lo schermo o scollegare i cavi durante il download dell&apos;aggiornamento.</value>
   </data>
   <data name="Update_Mouse_Alert2" xml:space="preserve">
-    <value>Premere un pulsante o un tasto sul dispositivo per abilitare l'aggiornamento</value>
+    <value>Premere un pulsante o un tasto sul dispositivo per abilitare l&apos;aggiornamento</value>
   </data>
   <data name="Update_BatteryLow_Alert2" xml:space="preserve">
     <value>Il livello della batteria sul dispositivo è basso. Sostituire/ricaricare la batteria per abilitare questo aggiornamento.</value>
@@ -3608,7 +3608,7 @@
     <value>Collegare il monitor utilizzando la porta USB upstream per evitare errori durante il processo di aggiornamento firmware</value>
   </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value>Impossibile caricare l'app Dell Display and Peripheral Manager. Chiudere l'applicazione e riprovare.</value>
+    <value>Impossibile caricare l&apos;app Dell Display and Peripheral Manager. Chiudere l&apos;applicazione e riprovare.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
     <value>Utilizzare un massimo di {0} caratteri</value>
@@ -3617,52 +3617,12 @@
     <value>Utilizzare solo caratteri alfanumerici e i seguenti caratteri speciali {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>Il percorso del file supera il limite massimo di 260 caratteri, utilizza un nome file riservato o contiene caratteri non validi &amp;lt; &amp;gt; : " / \ | ?</value>
+    <value>Il percorso del file supera il limite massimo di 260 caratteri, utilizza un nome file riservato o contiene caratteri non validi &amp;lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>Inserire solo un percorso URL completo, non un percorso relativo</value>
   </data>
   <data name="ErrorMsg.0" xml:space="preserve">
-    <value>Impossibile caricare l'app Dell Display and Peripheral Manager. Chiudere l'applicazione e riprovare.</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="RtkHub.02" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.03" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.04" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.05" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.06" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.07" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.08" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.09" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.10" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.11" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.12" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.13" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.14" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Impossibile caricare l&apos;app Dell Display and Peripheral Manager. Chiudere l&apos;applicazione e riprovare.</value>
   </data>
 </root>

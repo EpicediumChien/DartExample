@@ -3616,52 +3616,12 @@
     <value>英数字と次の特殊文字のみを使用します {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>ファイル パスが260文字の上限を超えているか、予約済みファイル名を使用しているか、無効な文字(&amp;lt; &amp;gt; : " / \ | ?)があります</value>
+    <value>ファイル パスが260文字の上限を超えているか、予約済みファイル名を使用しているか、無効な文字(&amp;lt; &amp;gt; : &quot; / \ | ?)があります</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>相対パスではなく、完全なURLパスのみを入力します</value>
   </data>
   <data name="ErrorMsg.0" xml:space="preserve">
     <value>現時点でDell Display and Peripheral Managerアプリをロードできません。アプリを閉じて再試行してください。</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="RtkHub.02" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.03" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.04" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.05" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.06" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.07" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.08" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.09" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.10" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.11" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.12" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.13" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.14" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
 </root>
