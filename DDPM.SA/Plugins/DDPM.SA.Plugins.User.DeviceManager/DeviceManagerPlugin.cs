@@ -15074,6 +15074,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+
             /*iTest++;
             if (iTest % 2 == 1)
             {

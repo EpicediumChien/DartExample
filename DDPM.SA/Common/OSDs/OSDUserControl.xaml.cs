@@ -382,5 +382,15 @@ namespace DDPM.OSDs
 
             return result;
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (animationTimer != null)
+            {
+                animationTimer.Stop();
+                animationTimer.Tick -= RunTimerTick;
+                animationTimer = null;
+            }
+        }
     }
 }
