@@ -73,7 +73,7 @@
                                             Margin="0,18,0,0" Width="290" LineHeight="24" VerticalAlignment="Top" HorizontalAlignment="Left" />
 
           <Border x:Name="btnRestore" Style="{StaticResource Button1BorderStyle}" Cursor="Hand" Width="245" Height="40" IsEnabled="{Binding IsRestoreEnable}" MouseLeftButtonDown="btnRestoreClicked" Margin="0,431,0,0">
-            <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" />
+            <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" TextTrimming="CharacterEllipsis" Padding="5,0" />
           </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Name="Section2" Margin="0,16,0,5000">
