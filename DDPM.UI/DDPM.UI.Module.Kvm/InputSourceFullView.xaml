@@ -424,14 +424,20 @@
                             </Style>
                         </Grid.Resources>
                         <Canvas Visibility="{Binding PCImage_2}">
-                            <Path Data="M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z" StrokeThickness="1.5">
+                            <Path Data="M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z" Fill="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="0.1">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="-125" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.3" ScaleY="1"/>
+                                        <TranslateTransform X="-165" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
-                            <Path Data="M1.00001 122 V77.8526 C1.00001 70.6729 6.82031 64.8526 14 64.8526H113C120.18 64.8526 126 59.0323 126 51.8526V0" StrokeThickness="2">
+                            <Path Data="M126 122V77.8526C126 70.6729 131.82 64.8526 139 64.8526H238C245.18 64.8526 251 59.0323 251 51.8526V0" StrokeThickness="2">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="0" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.3" ScaleY="1" />
+                                        <TranslateTransform X="-165" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Canvas RenderTransformOrigin="0,0">
@@ -451,9 +457,12 @@
                             </Canvas>
                         </Canvas>
                         <Canvas Visibility="{Binding PCImage_3}">
-                            <Path Data="M146.293 96.7071C146.683 97.0976 147.317 97.0976 147.707 96.7071L154.071 90.3431C154.462 89.9526 154.462 89.3195 154.071 88.9289C153.681 88.5384 153.047 88.5384 152.657 88.9289L147 94.5858L141.343 88.9289C140.953 88.5384 140.319 88.5384 139.929 88.9289C139.538 89.3195 139.538 89.9526 139.929 90.3431L146.293 96.7071ZM148 96V64.0316H146V96H148ZM134 50.0316H14V52.0316H134V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM148 64.0316C148 56.2996 141.732 50.0316 134 50.0316V52.0316C140.627 52.0316 146 57.4042 146 64.0316H148Z" StrokeThickness="1.5">
+                            <Path Data="M146.293 96.7071C146.683 97.0976 147.317 97.0976 147.707 96.7071L154.071 90.3431C154.462 89.9526 154.462 89.3195 154.071 88.9289C153.681 88.5384 153.047 88.5384 152.657 88.9289L147 94.5858L141.343 88.9289C140.953 88.5384 140.319 88.5384 139.929 88.9289C139.538 89.3195 139.538 89.9526 139.929 90.3431L146.293 96.7071ZM148 96V64.0316H146V96H148ZM134 50.0316H14V52.0316H134V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM148 64.0316C148 56.2996 141.732 50.0316 134 50.0316V52.0316C140.627 52.0316 146 57.4042 146 64.0316H148Z" Fill="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="0.1">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="-145" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                        <TranslateTransform X="-180" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Path StrokeThickness="2">
@@ -466,7 +475,10 @@
                             </Path>
                             <Path Data="M1.00001 96V64.0316C1.00001 56.8519 6.8203 51.0316 14 51.0316H133C140.18 51.0316 146 45.2113 146 38.0316V0" StrokeThickness="2">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="0" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                        <TranslateTransform X="0" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Canvas RenderTransformOrigin="0,0">
@@ -486,24 +498,36 @@
                             </Canvas>
                         </Canvas>
                         <Canvas Visibility="{Binding PCImage_4}">
-                            <Path Data="M216.293 96.7071C216.683 97.0976 217.317 97.0976 217.707 96.7071L224.071 90.3431C224.462 89.9526 224.462 89.3195 224.071 88.9289C223.681 88.5384 223.047 88.5384 222.657 88.9289L217 94.5858L211.343 88.9289C210.953 88.5384 210.319 88.5384 209.929 88.9289C209.538 89.3195 209.538 89.9526 209.929 90.3431L216.293 96.7071ZM218 96V64.0316H216V96H218ZM204 50.0316H14V52.0316H204V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM218 64.0316C218 56.2996 211.732 50.0316 204 50.0316V52.0316C210.627 52.0316 216 57.4042 216 64.0316H218Z" StrokeThickness="1.5">
+                            <Path Data="M216.293 96.7071C216.683 97.0976 217.317 97.0976 217.707 96.7071L224.071 90.3431C224.462 89.9526 224.462 89.3195 224.071 88.9289C223.681 88.5384 223.047 88.5384 222.657 88.9289L217 94.5858L211.343 88.9289C210.953 88.5384 210.319 88.5384 209.929 88.9289C209.538 89.3195 209.538 89.9526 209.929 90.3431L216.293 96.7071ZM218 96V64.0316H216V96H218ZM204 50.0316H14V52.0316H204V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM218 64.0316C218 56.2996 211.732 50.0316 204 50.0316V52.0316C210.627 52.0316 216 57.4042 216 64.0316H218Z" Fill="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="0.1">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="-215" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                        <TranslateTransform X="-265" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Path Data="M72 96V64.0316C72 56.8519 66.1797 51.0316 59 51.0316H14C6.8203 51.0316 1 45.2113 1 38.0316V0" StrokeThickness="2">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="-70" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                        <TranslateTransform X="-90" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Path Data="M0.999997 96V64.0316C0.999997 56.8519 6.8203 51.0316 14 51.0316H59C66.1797 51.0316 72 45.2113 72 38.0316V0" StrokeThickness="2">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="0" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                        <TranslateTransform X="0" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Path Data="M0.999996 96V64.0316C0.999996 56.8519 6.82029 51.0316 14 51.0316H204C211.18 51.0316 217 45.2113 217 38.0316V0" StrokeThickness="2">
                                 <Path.RenderTransform>
-                                    <TranslateTransform X="0" />
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                        <TranslateTransform X="0" />
+                                    </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
                             <Canvas RenderTransformOrigin="0,0">
