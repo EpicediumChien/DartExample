@@ -143,8 +143,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (!string.IsNullOrEmpty(dDPMImpExpSettings?.MonitorSettings?.Model))
                         {
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
-                            if (!string.IsNullOrEmpty(dDPMImpExpSettings.MonitorSettings?.Model)
-                                && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
+                            if (dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                             {
                                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
                                 if (isSameModelFlag)
@@ -178,7 +177,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                             else
                             {
-                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
+                                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings.ServiceTag is same: {serviceTag}.");
                             }
                         }
                         else

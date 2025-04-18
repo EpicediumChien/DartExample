@@ -728,8 +728,6 @@ namespace DDPM.SA.Common
 
         event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
 
-        void OnCMAUpdateNotify(CMAIDEventArgs e);
-
 
         #endregion public for CMA/CLI
 

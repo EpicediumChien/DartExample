@@ -241,6 +241,10 @@ namespace DDPM.SA.Plugins.User.CMAProxy
 
             _DevManagerPlugin.DownloadAndInstall_Result_Notify += _FwUpdateStatus;  // add @ 20241129 stephen
 
+            // add @ 20250417 stephen : get serial number from dtp
+            _DevManagerPlugin.DTPEventForCMAChanged += _deviceManager_DTPEventForCMAChanged;
+
+
             relay_registered = true;
         }
 
@@ -308,6 +312,45 @@ namespace DDPM.SA.Plugins.User.CMAProxy
             }
         }
         // add end @ 20250303 stephen
+
+        // add @ 20250417 stephen
+        private void _deviceManager_DTPEventForCMAChanged(object? sender, CMAIDEventArgs e)
+        {
+
+            WriteLog("_deviceManager_DTPEventForCMAChanged() executed");
+
+            if (e != null)
+            {
+
+                WriteLog("_deviceManager_DTPEventForCMAChanged() CMAIDEventArgs e.deviceType = " + e.deviceType);
+                WriteLog("_deviceManager_DTPEventForCMAChanged() CMAIDEventArgs e.guid = " + e.guid);
+                WriteLog("_deviceManager_DTPEventForCMAChanged() CMAIDEventArgs e.snNumber = " + e.snNumber);
+                WriteLog("_deviceManager_DTPEventForCMAChanged() CMAIDEventArgs e.model = " + e.model);
+                WriteLog("_deviceManager_DTPEventForCMAChanged() CMAIDEventArgs e.fwVersion = " + e.fwVersion);
+
+                if (_CMAManagerPlugin != null)
+                {
+                    _CMAManagerPlugin.UpdateDtpDeviceInfo(new CmaDeviceInfo()
+                    {
+                        type = e.deviceType.ToLower(),
+                        guid = e.guid,
+                        model = e.model,
+                        serialnumber = e.snNumber,
+                        fwversion = e.fwVersion
+
+                    });
+                }
+                else
+                {
+                    WriteLog("_CMAManagerPlugin is null then can't pass call _deviceManager_DTPEventForCMAChanged");
+                }
+            }
+            else
+            {
+                WriteLog("_CMAManagerPlugin _deviceManager_DTPEventForCMAChanged, e == null.");
+            }
+        }
+        // add end @ 20250417 stephen
 
         // remove start @ 20250304 stephen
         /*private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)

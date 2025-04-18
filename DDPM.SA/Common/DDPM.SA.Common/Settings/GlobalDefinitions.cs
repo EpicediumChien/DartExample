@@ -1,6 +1,7 @@
 ﻿//#define SUPPORT_200
 //#define SUPPORT_210
 #define REMOVE_EA_SPLITTERS //Robert_Lin 2025-4-15, Define this symbol to remove all (unused VSplitters and HSplitters)
+#define DISABLE_LOCK
 
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,13 @@ namespace DDPM.SA.Common.Settings
 #else
         public const bool isSupport200 = false;//for 2.0.1
         public const bool isSupport210 = false;
+#endif
+
+        //2025/4/18 Dean: this flag is used to disable lock functionality
+#if DISABLE_LOCK
+        public const bool isDisableLock = true;
+#else
+        public const bool isDisableLock = false;
 #endif
         public const bool enableCurrentColorCache = true;
         public const string major_url = "https://clientperipherals.dell.com/DDPM/";

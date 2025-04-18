@@ -5,6 +5,15 @@
     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    <!-- Global font key to support roboto -->
+    <!-- For Roboto Bold, please use FontWeight as Bold with "RobotoFont" -->
+    <FontFamily x:Key="RobotoFont">
+        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto
+    </FontFamily>
+    <FontFamily x:Key="RobotoFontMedium">
+        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto Medium
+    </FontFamily>
+
     <!-- #region Control Element Default Styles-->
     <!-- Common -->
     <LinearGradientBrush x:Key="DDPMBackground" ColorInterpolationMode="SRgbLinearInterpolation" EndPoint="1,1" MappingMode="RelativeToBoundingBox" 
@@ -2293,7 +2302,7 @@
     </Style>
     <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
-        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
@@ -2640,13 +2649,5 @@
     <SolidColorBrush x:Key="Slider_TxtColor" Color="#A4B8CD"/>
     <SolidColorBrush x:Key="Slider_ValueColor" Color="#A4B8CD"/>
     
-    <!-- Global font key to support roboto -->
-    <!-- For Roboto Bold, please use FontWeight as Bold with "RobotoFont" -->
-    <FontFamily x:Key="RobotoFont">
-        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto
-    </FontFamily>
-    <FontFamily x:Key="RobotoFontMedium">
-        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto Medium
-    </FontFamily>
 
 </ResourceDictionary>

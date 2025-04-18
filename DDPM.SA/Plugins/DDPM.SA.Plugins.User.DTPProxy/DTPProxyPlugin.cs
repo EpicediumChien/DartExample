@@ -10852,21 +10852,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         {
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
-
-                        writelog($"Find IAiraudioCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                        _airaudioInterfaceType = FindCommodityInterfaceType("IAiraudioCommodity");
-                        if (_airaudioInterfaceType != null)
+                        if (GlobalDefinitions.isSupport210)
                         {
-                            _airaudioMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                        .MakeGenericMethod(_airaudioInterfaceType);
+                            writelog($"Find IAiraudioCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            _airaudioInterfaceType = FindCommodityInterfaceType("IAiraudioCommodity");
+                            if (_airaudioInterfaceType != null)
+                            {
+                                _airaudioMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                            .MakeGenericMethod(_airaudioInterfaceType);
 
-                            writelog($"Find IAiraudioCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                                writelog($"Find IAiraudioCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
+                            else
+                            {
+                                writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
                         }
-                        else
-                        {
-                            writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                        }
-
                         DTPProxyPluginReady = true;
                         DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
@@ -11097,42 +11098,48 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"IWebcamCommodity not find");
 
             writelog($"Register AirAudio Commodity event by DellPeripheral.AirAudio...");
-            _comdityAirAudio = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId("DellPeripheral.AirAudio"), CancellationToken.None);
-            if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _airaudiocom)
+            if (GlobalDefinitions.isSupport210)
             {
-                try
+                _comdityAirAudio = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId("DellPeripheral.AirAudio"), CancellationToken.None);
+                if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _airaudiocom)
                 {
-                    _airaudiocom.Connected += AirAudio_Connected;
-                    _airaudiocom.Disconnected += AirAudio_Disconnected;
-                    writelog($"AirAudio Commodity event registered, connected _airaudiocom.DeviceItems = {_airaudiocom.DeviceItems.Length}");
-                    int i = 0;
-                    foreach (var item in _airaudiocom.DeviceItems)
+                    try
                     {
-                        writelog($"connected _airaudiocom.DeviceItems[{i}] = {item}");
-                        string jsonStr = _airaudiocom.DeviceItemsEx[i++].ToString();
-                        writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
-
-                        if (jsonStr != null && jsonStr != string.Empty)
+                        _airaudiocom.Connected += AirAudio_Connected;
+                        _airaudiocom.Disconnected += AirAudio_Disconnected;
+                        writelog($"AirAudio Commodity event registered, connected _airaudiocom.DeviceItems = {_airaudiocom.DeviceItems.Length}");
+                        int i = 0;
+                        foreach (var item in _airaudiocom.DeviceItems)
                         {
-                            AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
-                            jsonObject.airaudioCommodity = null;
-                            jsonObject.airaudioIndex = item;
-                            writelog($"jsonObject values: {jsonObject.airaudioIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
-                            airaudioList.Add(jsonObject);
+                            writelog($"connected _airaudiocom.DeviceItems[{i}] = {item}");
+                            string jsonStr = _airaudiocom.DeviceItemsEx[i++].ToString();
+                            writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
+
+                            if (jsonStr != null && jsonStr != string.Empty)
+                            {
+                                AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
+                                jsonObject.airaudioCommodity = null;
+                                jsonObject.airaudioIndex = item;
+                                writelog($"jsonObject values: {jsonObject.airaudioIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                                airaudioList.Add(jsonObject);
+                            }
                         }
+                        writelog($"connected _airaudiocom.DeviceItemsEx.Count = {_airaudiocom.DeviceItemsEx.Count}");
                     }
-                    writelog($"connected _airaudiocom.DeviceItemsEx.Count = {_airaudiocom.DeviceItemsEx.Count}");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    catch (Exception e)
+                    {
+                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    }
                 }
             }
             await RegisterEventsForAllConnectedWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
+            if (GlobalDefinitions.isSupport210)
+            {
 
-            await RegisterEventsForAllAirAudioAsync();
+                await RegisterEventsForAllAirAudioAsync();
+            }
             //for test
             //await UnsubscribeDTPGlobalEventsAsync();
         }
@@ -16147,6 +16154,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> RegisterEventsForAirAudioAsync(string deviceID)
         {
+            if (!GlobalDefinitions.isSupport210)
+            {
+                return false;
+            }
             if (null == _comdityAirAudio || deviceID == null || deviceID == string.Empty)
             {
                 writelog($"null == _comdityAirAudio || deviceID == null || deviceID == string.Empty");

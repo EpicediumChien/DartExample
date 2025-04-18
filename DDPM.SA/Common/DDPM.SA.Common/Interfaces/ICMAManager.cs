@@ -24,6 +24,17 @@ namespace DDPM.SA.Common
         public List<MonitorInfo> mos = null;
         public List<DeviceInfo> devices = null;
     }
+
+    // add @ 2050417 stephen : object for device infoemation
+    public class CmaDeviceInfo
+    {
+        public string type { get; set; } = string.Empty;
+        public string guid { get; set; } = string.Empty;
+        public string model { get; set; } = string.Empty;
+        public string serialnumber { get; set; } = string.Empty;
+        public string fwversion { get; set; } = string.Empty;
+
+    }
     #endregion
 
     public interface ICMAManagerSA : IFrameworkPlugin
@@ -34,6 +45,9 @@ namespace DDPM.SA.Common
 
         // add @ 20241129 stephen for receive fw update result
         Task UpdateFwStatus(List<FWUpdateInfo> datas);
+
+        // add @ 20250417 stephen : for get device infomation
+        public Task UpdateDtpDeviceInfo(CmaDeviceInfo data);
     }
 
     public interface ICMAProxy : IFrameworkPlugin
