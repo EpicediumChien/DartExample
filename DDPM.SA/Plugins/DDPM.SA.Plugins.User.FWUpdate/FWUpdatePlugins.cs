@@ -1220,7 +1220,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                            if (deviceInfo.BatteryLevel <= 20)
+                            
+                            if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
                             {
                                 if (currentFWInfo.DeviceType == DeviceType.LogicalKeyboard || currentFWInfo.DeviceType == DeviceType.LogicalMouse)//Fix PIMS-344498
                                 {
@@ -1231,6 +1232,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 else
                                 {
                                     _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} device battery <= 20% but device is no KB or MS so no need stop");
+                                }
+                            }
+                            else if (deviceInfo.BatteryLevel < 0)
+                            {
+                                if (currentFWInfo.DeviceType == DeviceType.LogicalKeyboard || currentFWInfo.DeviceType == DeviceType.LogicalMouse)//Fix PIMS-344498
+                                {
+                                    fWUErrorCode = FWUErrorCode.DeviceIsEnterSleepMode;
+                                    _notificationStr = $"{LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                    ret = true;
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} device battery < 0% but device is no KB or MS so no need stop");
                                 }
                             }
                         }
