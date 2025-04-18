@@ -333,6 +333,7 @@ namespace DDPM.Easy.Common
         ~SplitCtrl4E()
         {
             Dispose(false);
+            vm?.Dispose();//SDL: Improper Resource Shutdown or Release
         }
         #endregion
 

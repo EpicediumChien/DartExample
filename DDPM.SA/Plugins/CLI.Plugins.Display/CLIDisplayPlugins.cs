@@ -1081,6 +1081,23 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     return audio;
+                case "LogicalAirAudio":
+                    if (GlobalDefinitions.isSupport210)
+                    {
+                        writelog("LogicalAirAudio entry");
+                        var airAudio = new DeviceDataAudioResponse(index, device);
+                        writelog("_devMgr.GetAirAudioSerialNumberAsync entry");
+                        airAudio.SerialNumber = _devMgr.GetAirAudioSerialNumberAsync(guid).Result ?? "N/A";
+                        writelog("_devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync entry");
+                        if (_devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(guid).Result)
+                        {
+                            writelog("_devMgr.GetAirAudioMicNoiseCancellationAsync entry");
+                            airAudio.MicNoiseCancellation = _devMgr.GetAirAudioMicNoiseCancellationAsync(guid).Result ? "ON" : "OFF";
+                        }
+                        return airAudio;
+                    }
+                    return default;
+                    break;
                 case "LogicalKeyboard":
                     return new DeviceDataKeyboardResponse(index, device);
                 case "LogicalMouse":
@@ -1311,44 +1328,63 @@ namespace DDPM.CLI.Plugins.Display
                         case "PEN":
                         case "DOCK":
                         case "AIRAUDIO"://20250313 Elsa add for ConnectedDevices support guid/servicetag/model
-                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
+                            if (GlobalDefinitions.isSupport210)
                             {
-                                var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                if (match != null)
+                                if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                                 {
-                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                    if (match != null)
                                     {
-                                        recode_per = true;
-                                        output = GetPeripheralResponse(0, output, match);
+                                        if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            recode_per = true;
+                                            output = GetPeripheralResponse(0, output, match);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Invalidcommand(commandLineInput, output, ref output_2, "guid");
+                                    }
+                                }
+                                else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
+                                {
+                                    var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag.ToString(), StringComparison.OrdinalIgnoreCase));
+                                    if (match != null)
+                                    {
+                                        if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            recode_per = true;
+                                            output = GetPeripheralResponse(0, output, match);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Invalidcommand(commandLineInput, output, ref output_2, "ServiceTag");
+                                    }
+                                }
+                                else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                                {
+                                    var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                    if (match.Count > 0)
+                                    {
+                                        foreach (var g in match)
+                                        {
+                                            if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                index_per++;
+                                                recode_per = true;
+                                                output = GetPeripheralResponse(index_per, output, g);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Invalidcommand(commandLineInput, output, ref output_2, "Model");
                                     }
                                 }
                                 else
                                 {
-                                    return Invalidcommand(commandLineInput, output, ref output_2, "guid");
-                                }
-                            }
-                            else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
-                            {
-                                var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag.ToString(), StringComparison.OrdinalIgnoreCase));
-                                if (match != null)
-                                {
-                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        recode_per = true;
-                                        output = GetPeripheralResponse(0, output, match);
-                                    }
-                                }
-                                else
-                                {
-                                    return Invalidcommand(commandLineInput, output, ref output_2, "ServiceTag");
-                                }
-                            }
-                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
-                            {
-                                var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                if (match.Count > 0)
-                                {
-                                    foreach (var g in match)
+                                    foreach (var g in _deviceinfo)
                                     {
                                         if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
                                         {
@@ -1356,22 +1392,6 @@ namespace DDPM.CLI.Plugins.Display
                                             recode_per = true;
                                             output = GetPeripheralResponse(index_per, output, g);
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    return Invalidcommand(commandLineInput, output, ref output_2, "Model");
-                                }
-                            }
-                            else
-                            {
-                                foreach (var g in _deviceinfo)
-                                {
-                                    if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        index_per++;
-                                        recode_per = true;
-                                        output = GetPeripheralResponse(index_per, output, g);
                                     }
                                 }
                             }
@@ -12816,7 +12836,60 @@ namespace DDPM.CLI.Plugins.Display
                     case "MICNOISECANCELLATION":
                         writelog("MICNOISECANCELLATION entry");
                         writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
-                        if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
+                        if (GlobalDefinitions.isSupport210)
+                        {
+                            var isAirAudio = device.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
+                            if (isAirAudio)
+                            {
+                                var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result;
+
+                                if (Airsupport)
+                                {
+                                    if (property.Value.ToString() == "ON")
+                                    {
+                                        if (isAirAudio)
+                                        {
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                            _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
+                                        }
+                                        else
+                                        {
+                                            writelog("_devMgr.SetMicNoiseCancellation entry");
+                                            _devMgr.SetMicNoiseCancellation(true, device.ID);
+                                            writelog("_devMgr.SetMicNoiseCancellation exit");
+                                        }
+                                    }
+                                    else if (property.Value.ToString() == "OFF")
+                                    {
+                                        if (isAirAudio)
+                                        {
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                            _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
+                                        }
+                                        else
+                                        {
+                                            writelog("_devMgr.SetMicNoiseCancellation entry");
+                                            _devMgr.SetMicNoiseCancellation(false, device.ID);
+                                            writelog("_devMgr.SetMicNoiseCancellation exit");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        resultMessages.Add("MICNOISECANCELLATION is wrong value");
+                                        ispass = false;
+                                    }
+                                }
+                                else
+                                {
+                                    resultMessages.Add("MICNOISECANCELLATION not support");
+                                }
+                                break; 
+                            }
+                        }
+                        var support = device.IsMicNoiseCancellationSupported;
+                        if (support)
                         {
                             if (property.Value.ToString() == "ON")
                             {
@@ -12858,6 +12931,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             resultMessages.Add("MICNOISECANCELLATION not support");
                         }
+                        
                         break;
                     case "WEARDETECTION":
                         writelog("WEARDETECTION entry");

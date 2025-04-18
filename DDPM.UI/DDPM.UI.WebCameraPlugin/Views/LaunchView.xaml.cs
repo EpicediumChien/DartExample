@@ -433,10 +433,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("check_PresenceFunction() v1 start");
 
             //需要特殊邏輯處理的型號
-            List<string> SpecialCase = new List<string>()
-            {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022","P2426HEB","P2726DEB","P3426WEB"
-            };
+            //List<string> SpecialCase = new List<string>()
+            //{
+            //    "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022","P2426HEB","P2726DEB","P3426WEB"
+            //};
 
             string? model = _vm.CurrentDeviceInfo?.ModelNumber;
 
@@ -447,12 +447,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
 
-            if (!SpecialCase.Contains(model))
-                return;
+            //if (!SpecialCase.Contains(model))
+            //    return;
             DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound Before {AllSupportedResolutions}");
             //check usb 2.0 / 3.0
-            AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA?.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
-            DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
+            //AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA?.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
+            //DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
+            AllSupportedResolutions = _vm.IsUSB3;
             //api回傳camera硬體是否支援windows hello
 
 
@@ -473,7 +474,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //SUT 指電腦本身 DUT 外接Cam
             //
             is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
-            if (_vm.CurrentDeviceInfo != null) 
+            if (_vm.CurrentDeviceInfo != null)
             {
                 _vm.CurrentDeviceInfo.IsWindowsHelloSupported = is_WindwosHelloSupport;
             }
@@ -515,7 +516,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 CheckDisplayWebcamTestCase();
             }
-            else 
+            else
             {
                 noPresenceFunction = false;
                 _vm.UPD_Visibility = Visibility.Collapsed; //HPD
@@ -678,7 +679,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public bool check_DellPc(string modelName)
         {
-            if (modelName.StartsWith("AW")|| modelName.ToUpper().Contains("Alienware".ToUpper()))
+            if (modelName.StartsWith("AW") || modelName.ToUpper().Contains("Alienware".ToUpper()))
             {
                 return false;
             }
@@ -777,7 +778,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             return false;
         }
-        string[] DisplayWebcameList = new string[] { "U3223QZ", "U3224KB", "U3224KBA", "P2424HEB", "P2724DEB", "P3424WEB","P3426WEB","P2726DEB","P2426HEB"};
+        string[] DisplayWebcameList = new string[] { "U3223QZ", "U3224KB", "U3224KBA", "P2424HEB", "P2724DEB", "P3424WEB", "P3426WEB", "P2726DEB", "P2426HEB" };
         public int check_camera_dell7(string model)
         {
             //hard code 指定特定型號是否為internal
@@ -816,12 +817,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
 
-            //需要特殊邏輯處理的型號
-            List<string> SpecialCase = new List<string>()
-            {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022","P2426HEB","P2726DEB","P3426WEB"
-            };
-
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
 
             if (model == null)
@@ -831,13 +826,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
 
-            print_debug("CheckUSBtype() s1 model-" + model);
+            //print_debug("CheckUSBtype() s1 model-" + model);
 
-            if (!SpecialCase.Contains(model))
-                return;
-
-
-            print_debug("CheckUSBtype() s2");
+            //print_debug("CheckUSBtype() s2");
 
             //Dean 2025/3/24 remove test code.
             //硬體與條件狀態模擬測試 rd測試用
@@ -857,7 +848,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }*/
 
             print_debug("CheckUSBtype() s3 AllSupportedResolutions- " + AllSupportedResolutions);
-
 
             switch (model)
             {
@@ -1204,9 +1194,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.is_ProximitySensor_enable = true;
                 //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
             }
-
-
-
             print_debug("CheckUSBtype() end");
         }
 
@@ -1214,7 +1201,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm.bdrPrioritize_show = !is_WindwosHelloSupport ? Visibility.Collapsed : visibility;
         }
-
 
         //bool WebcamGrid_old_ststus = false;
         private void status_change()

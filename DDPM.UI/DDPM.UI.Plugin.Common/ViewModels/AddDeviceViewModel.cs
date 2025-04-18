@@ -171,6 +171,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 ModuleGroup? selGroup = SelectedGroup;
                 if (selGroup != null)
                 {
+                    if(RightViewHeaderSelectedIndex < 0)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[AddDeviceViewModel][RightViewHeaderSelectedIndex] index is {RightViewHeaderSelectedIndex}, set to 0");
+                        RightViewHeaderSelectedIndex = 0;
+                    }
                     RightViewHeader selHeader = selGroup.Headers[RightViewHeaderSelectedIndex];
                     if (selHeader != null)
                     {
@@ -432,7 +437,7 @@ namespace DDPM.UI.Plugin.ViewModels
             IsPairing = false;
         }
 
-        public DeviceInfo? NewDevice = null;
+        //public DeviceInfo? NewDevice = null;
         public string WacomVersion = "";
 
         //public void GotoNewDevice()

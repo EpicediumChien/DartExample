@@ -43,6 +43,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private ILog? log;
         private Mock<ILog>? logMock;
+        private ModuleGroup moduleGroup;
         [SetUp]
         public void Setup()
         {
@@ -67,6 +68,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             log = logMock.Object;
             displayViewModel = new DisplayViewModel(console, log, deviceManagerSA, easyArrangeService);
             privateObject = new PrivateObject(displayViewModel);
+            moduleGroup = new();
         }
 
         [Test]
@@ -156,7 +158,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         public void TestSetModuleGroups()
         {
             var ddpmModuleMock = new Mock<IDdpmModule?>();
-            var moduleGroup=new ModuleGroup();
+            moduleGroup=new ModuleGroup();
             PrivateObject pro = new PrivateObject(moduleGroup);
             var headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = ddpmModuleMock.Object } };
             pro.SetFieldOrProperty("_headers", headers);
@@ -181,7 +183,7 @@ namespace DDPM.UI.Plugin.Common.Tests
 
             var dDdpmModuleMock = new Mock<IDdpmModule>();
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -205,7 +207,7 @@ namespace DDPM.UI.Plugin.Common.Tests
 
             var dDdpmModuleMock = new Mock<IDdpmModule>();
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -276,7 +278,7 @@ namespace DDPM.UI.Plugin.Common.Tests
 
             // Act
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -309,7 +311,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             var dDdpmModuleMock = new Mock<IDdpmModule>();
             dDdpmModuleMock.Setup(x=>x.GetLeftView()).Returns(defaultLeftView);
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -331,7 +333,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             var dDdpmModuleMock = new Mock<IDdpmModule>();
             dDdpmModuleMock.Setup(x => x.GetRightView()).Returns(new System.Windows.Controls.UserControl());
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -377,7 +379,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             var dDdpmModuleMock = new Mock<IDdpmModule>();
             dDdpmModuleMock.Setup(x => x.ModuleName).Returns("ModuleName");
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -457,7 +459,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         {
             var ddpmModuleMock = new Mock<IDdpmModule>();
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = ddpmModuleMock.Object } };
-            var moduleGroup = new ModuleGroup();
+            moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
@@ -476,6 +478,18 @@ namespace DDPM.UI.Plugin.Common.Tests
             {
                 Assert.Fail("not invoked");
             }
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            moduleGroup.Dispose();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            moduleGroup.Dispose();
         }
 
     }

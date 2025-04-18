@@ -8,6 +8,7 @@ using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
@@ -27,9 +28,9 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly HeadsetViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 530, 530, 530 };
-        private readonly string AudioSettings = Strings.HeadsetAudioSettings;
-        private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
-        private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
+        private readonly string AudioSettings = LangHelper.Instance["AudioSettings"];
+        private readonly string AutomatedActions = LangHelper.Instance["AutomatedActions"];
+        private readonly string DeviceSettings = LangHelper.Instance["DeviceSettings"];
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
 
@@ -75,10 +76,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
                     //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
                     //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                    txtSystemName3.Text = _vm.VisiblePairedHostName1.Trim();
                     txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
                     txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                    txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
+                    txtAudioBLText.Text = string.Format(LangHelper.Instance["PairedInfo.0"], _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
                     if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
                         DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -599,8 +600,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
                 if (_vm?.ConnectionType == "Dongle")
                 {
-                    txtSystemName3.Text = " " + Strings.USBWirelessReceiver;
-                    txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
+                    txtSystemName3.Text = LangHelper.Instance["USBWirelessReceiver"];
+                    txtFirmware.Text = $"{LangHelper.Instance["ReceiverFirmwareVersion"]} {_vm.PhysicalDeviceFWVersion}";
                     txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
                     DdpmCommonHelper.WriteUILog("[Headset_LaunchView] BatteryIndicator_MouseEnter Dongle ... ");
@@ -644,7 +645,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     if (string.IsNullOrEmpty(pairedHostName1))
                     {
                         Host1.Visibility = Visibility.Collapsed;
-                        txtBLHost1.Text = Strings.ReadyToBePaired;
+                        txtBLHost1.Text = LangHelper.Instance["ReadyToBePaired"];
                     }
                     else
                     {
@@ -657,7 +658,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     if (string.IsNullOrEmpty(pairedHostName2))
                     {
                         Host2.Visibility = Visibility.Collapsed;
-                        txtBLHost2.Text = Strings.ReadyToBePaired;
+                        txtBLHost2.Text = LangHelper.Instance["ReadyToBePaired"];
                     }
                     else
                     {

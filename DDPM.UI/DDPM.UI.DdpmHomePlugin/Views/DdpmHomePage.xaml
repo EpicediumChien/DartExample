@@ -147,12 +147,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- #region UIDebugPanel -->
-        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden" d:Visibility="Visible">
+        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Collapsed" d:Visibility="Visible">
 
             <!--<UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
                                     TextBlockType="Header2" />-->
@@ -180,7 +179,7 @@
         </StackPanel>
         <!-- #endregion UIDebugPanel -->
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
 
             <!-- #region Add Your first device -->
             <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Auto" 
@@ -275,10 +274,10 @@
                         <Style TargetType="ListViewItem">
                             <Setter Property="SnapsToDevicePixels" Value="True" />
                             <Setter Property="Margin" Value="40,0,0,40" />
-                            <Setter Property="MinWidth" Value="{Binding ItemMinWidth}" />
-                            <Setter Property="MinHeight" Value="{Binding ItemMinWidth}" />
-                            <Setter Property="MaxWidth" Value="{Binding ItemMaxWidth}" />
-                            <Setter Property="MaxHeight" Value="{Binding ItemMaxWidth}" />
+                            <Setter Property="MinWidth" Value="250" />
+                            <Setter Property="MinHeight" Value="250" />
+                            <Setter Property="MaxWidth" Value="500" />
+                            <Setter Property="MaxHeight" Value="500" />
                             <Setter Property="Width" Value="{Binding ItemWidth}"/>
                             <Setter Property="Height" Value="{Binding ItemWidth}"/>
                             <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
@@ -302,7 +301,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="{Binding OrderingWidth}"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
 

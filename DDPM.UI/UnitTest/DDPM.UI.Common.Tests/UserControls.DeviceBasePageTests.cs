@@ -26,6 +26,9 @@ namespace DDPM.UI.Common.Tests
         private Mock<ILog>? logMock;
         private ILog? log;
         private Mock<IConsole>? myConsoleMock;
+        private ModuleGroup moduleGroup_1;
+        private ModuleGroup moduleGroup_2;
+
 
         [SetUp]
         public void Setup()
@@ -45,6 +48,8 @@ namespace DDPM.UI.Common.Tests
             myConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(log);
             deviceBasePage = new DeviceBasePage();
             privateObject = new PrivateObject(deviceBasePage);
+            moduleGroup_1 = new();
+            moduleGroup_2 = new();
         }
 
         [Test]
@@ -140,7 +145,9 @@ namespace DDPM.UI.Common.Tests
 
             try
             {
-                var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup(), new ModuleGroup() } };
+                moduleGroup_1 = new();
+                moduleGroup_2 = new();
+                var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { moduleGroup_1, moduleGroup_2 } };
                 var privateobject = new PrivateObject(deviceBasePageViewModel);
                 privateObject.SetFieldOrProperty("_viewModel", deviceBasePageViewModel);
                 DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
@@ -182,7 +189,9 @@ namespace DDPM.UI.Common.Tests
             var result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
             Assert.That(result, Is.EqualTo(false));
 
-            deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup() { GroupName = "InputSource" }, new ModuleGroup() } };
+            moduleGroup_1 = new ModuleGroup() { GroupName = "InputSource" };
+            moduleGroup_2 = new();
+            deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { moduleGroup_1, moduleGroup_2 } };
             privateObject.SetFieldOrProperty("_viewModel", deviceBasePageViewModel);
             result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
             Assert.That(result, Is.EqualTo(true));
@@ -197,6 +206,11 @@ namespace DDPM.UI.Common.Tests
                 deviceBasePage.Dispose();
                 deviceBasePage = null;
             }
+
+            moduleGroup_1?.Dispose();
+            moduleGroup_1 = null;
+            moduleGroup_2?.Dispose();
+            moduleGroup_2 = null;
         }
 
 

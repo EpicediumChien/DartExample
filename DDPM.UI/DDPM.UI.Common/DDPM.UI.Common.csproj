@@ -166,11 +166,15 @@
 		<None Remove="Resources\Vbar_Keyboard_Illumin.png" />
 		<None Remove="Resources\VertNavBar.png" />
 		<None Remove="Resources\Warring.png" />
+		<None Remove="Resources\WD19.png" />
+		<None Remove="Resources\WD19DC.png" />
 		<None Remove="Resources\WD19DCS.png" />
 		<None Remove="Resources\WD19S.png" />
 		<None Remove="Resources\WD19S_130W.png" />
 		<None Remove="Resources\WD19S_180W.png" />
 		<None Remove="Resources\WD19TB.png" />
+		<None Remove="Resources\WD19TBS.png" />
+		<None Remove="Resources\WD19_130W.png" />
 		<None Remove="Resources\WD22TB4.png" />
 		<None Remove="Resources\WD25.png" />
 		<None Remove="Resources\WD25TB4.png" />
@@ -350,10 +354,22 @@
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\WD19.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19DC.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\WD19S.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD19TB.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19TBS.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19_130W.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD25.png">

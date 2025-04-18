@@ -1271,7 +1271,7 @@ namespace DDPM.EABroker
                     cellBd.CellName = $"{idxScr + 1}";
 
                     TextBlock text = new TextBlock();
-    ㄓ                 text.Text = $"{idxScr + 1}";
+                    text.Text = $"{idxScr + 1}";
                     text.Style = FindResource("MonitorIdTextStyle") as Style;
                     cellBd.AddChild(text);
 

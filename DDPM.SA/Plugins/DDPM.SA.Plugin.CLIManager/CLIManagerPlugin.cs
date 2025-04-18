@@ -20,12 +20,14 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
@@ -181,6 +183,10 @@ namespace DDPM.SA.Plugin.CLIManager
                 WriteLog("Empty command input from CLI subagent");
                 return Task.FromResult(Response_EmptyCommandInput());
             }
+
+            string temp = JsonConvert.SerializeObject(commandLineInput, Formatting.Indented);
+            WriteLog("[PerformCommandLineRelay] CMA/CLI request info");
+            WriteLog(JToken.FromObject(commandLineInput).ToString());
 
             CLIEventArgs arg = new CLIEventArgs()
             {
@@ -1072,7 +1078,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 deferResponse.Add(defer_id, isDefer);
             }
         }
-        public Task<bool> checkDefer(int from, string guid, string commanddata)
+        public Task<bool> checkDefer(int from, string guid, string commanddata, string cli_command = "")
         {
             try
             {
@@ -1086,7 +1092,8 @@ namespace DDPM.SA.Plugin.CLIManager
                         defer_id = did,
                         toast_message = commanddata,
                         is_defer = true,
-                        defer_item = item
+                        defer_item = item,
+                        cli_command_format = cli_command
                     });
                 }
 
