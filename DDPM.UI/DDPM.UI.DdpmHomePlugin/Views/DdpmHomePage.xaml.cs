@@ -719,6 +719,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.BootloaderPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
             }
+            //0415 Wayne 新增RTKHUB UI
+            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.RtkHub)
+            {
+                //Check if it's fake device
+                if (selectedHomeDevice.DeviceInfo == null)
+                    return;
+
+                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.RtkHubPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
+            }
         }
 
         #endregion HomeDevice Selection and Navigate to Landing Page
