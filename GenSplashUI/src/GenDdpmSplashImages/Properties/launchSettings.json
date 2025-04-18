@@ -2,7 +2,7 @@
   "profiles": {
     "GenDdpmSplashImages": {
       "commandName": "Project",
-      "commandLineArgs": "-Year 2025 -Build 2.0.1.9"
+      "commandLineArgs": "-Year 2025 -Build 2.0.2.8 -Color light -Size 4k"
     }
   }
 }
