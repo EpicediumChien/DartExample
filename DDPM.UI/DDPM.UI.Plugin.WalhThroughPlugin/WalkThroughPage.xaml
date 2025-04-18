@@ -14,10 +14,10 @@
     </UserControl.Resources>
 
     <Grid Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}">
-        <Image x:Name="imgBkGlow"
+        <!--<Image x:Name="imgBkGlow"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
-               HorizontalAlignment="Center" VerticalAlignment="Center" />
+               HorizontalAlignment="Center" VerticalAlignment="Center" />-->
         <!--<Image x:Name="imgBkGlow" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" Stretch="UniformToFill" HorizontalAlignment="Center"  VerticalAlignment="Center" />-->
         <StackPanel VerticalAlignment="Center">
             <!--ConsentPageVisibility-->
