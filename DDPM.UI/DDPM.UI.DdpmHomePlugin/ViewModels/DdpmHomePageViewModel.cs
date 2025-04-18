@@ -394,11 +394,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 case "U3224KBA": // internal webcamera
                                     imagepath = "Resources/WebCamModel_U3224KB_Small.png";
                                     break;
-
+                                case "P2426HEB":
                                 case "P2424HEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;
-
+                                case "P2726DEB":
                                 case "P2724DEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;
@@ -990,6 +990,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         {
             get => _isSmallScreenResolution;
             set => SetProperty(ref _isSmallScreenResolution, value);
+        }
+
+        private double _orderingWidth = 0.0;
+
+        public double OrderingWidth
+        {
+            get => _orderingWidth;
+            set => SetProperty(ref _orderingWidth, value);
         }
     }
 }

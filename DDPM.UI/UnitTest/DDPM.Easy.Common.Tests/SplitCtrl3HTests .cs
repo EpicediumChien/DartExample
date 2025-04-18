@@ -197,5 +197,22 @@ namespace DDPM.Easy.Common.Tests
                 vm = null;
             }
         }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            if (splitCtrl3H != null)
+            {
+                splitCtrl3H.Dispose();
+                splitCtrl3H = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
+
+            privateObject = null;
+        }
     }
 }

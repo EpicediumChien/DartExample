@@ -39,6 +39,15 @@ namespace DDPM.SA.Common
         public string UI_Field_Name { get; set; } = string.Empty;
     }
 
+    public class CMAIDEventArgs : EventArgs
+    {
+        public string deviceType { get; set; } = string.Empty;
+        public string guid { get; set; } = string.Empty;
+        public string snNumber { get; set; } = string.Empty;
+        public string model { get; set; } = string.Empty;
+        public string fwVersion { get; set; } = string.Empty;
+    }
+
     public class UpdateDTPProxyNotify : EventArgs
     {
         public string State { get; set; } = string.Empty;
@@ -716,6 +725,9 @@ namespace DDPM.SA.Common
         event EventHandler<UpdateUINotify> UIUpdateNotify;
 
         void OnUIUpdateNotify(UpdateUINotify e);
+
+        event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
+
 
         #endregion public for CMA/CLI
 

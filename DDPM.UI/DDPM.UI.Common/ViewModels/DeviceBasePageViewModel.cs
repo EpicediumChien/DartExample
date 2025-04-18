@@ -26,6 +26,10 @@ namespace DDPM.UI.Common.ViewModels
         #region Private memebrs
         //To prevent Dispose() is called multiple times
         private bool _isDisposed = false;
+        //
+        private bool _isFullViewOpened = false;
+
+        private VbarItem1 m_vbarItem = new();
         #endregion
 
         #region ctor
@@ -67,6 +71,8 @@ namespace DDPM.UI.Common.ViewModels
                         vb1.Dispose();
                     }
                     VbarItems.Clear();
+
+                    m_vbarItem.Dispose();
 
                     RightViewHeaders.Clear();
 
@@ -245,7 +251,7 @@ namespace DDPM.UI.Common.ViewModels
             foreach (ModuleGroup mg in ModuleGroups)
             {
                 //Use IconImage
-                VbarItem1 vbarItem = new VbarItem1()
+                m_vbarItem = new VbarItem1()
                 {
                     Index = idx++,
                     //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
@@ -254,7 +260,7 @@ namespace DDPM.UI.Common.ViewModels
                     IconImage = mg.GroupIcon,
                     IconCanvas = mg.GroupIconCanvas
                 };
-                KeyboardNavigation.SetTabIndex(vbarItem, _vbarItemTabIndexBase + idx); 
+                KeyboardNavigation.SetTabIndex(m_vbarItem, _vbarItemTabIndexBase + idx);
                 //Use IconTemplate (But it not workable)
                 //VbarItem1 vbarItem = new VbarItem1()
                 //{
@@ -263,8 +269,8 @@ namespace DDPM.UI.Common.ViewModels
                 //    IconTemplate = mg.IconTemplate
                 //    //IconImage = mg.GroupIcon
                 //};
-                vbarItem.ClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked);
-                _vbarItems.Add(vbarItem);
+                m_vbarItem.ClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked);
+                _vbarItems.Add(m_vbarItem);
                 //idx++;  //Robert_Lin 2025-2-27 fix, remove dupliacte idx++
             }
             OnPropertyChanged("VbarItems");
@@ -720,45 +726,54 @@ namespace DDPM.UI.Common.ViewModels
             //if (OpenFullViewCommand != null)
             //    OpenFullViewCommand?.Execute(this);
             FullView = content;
-            FullView.Visibility = Visibility.Visible;
+            //FullView.Visibility = Visibility.Visible;
+            IsFullViewOpened = true;
             OnPropertyChanged("IsFullViewOpened");
         }
 
         public void CloseFullView()
         {
             FullView = null;
-            OnPropertyChanged("IsFullViewOpened");
+            IsFullViewOpened = false;
+            //OnPropertyChanged("IsFullViewOpened");
         }
 
+        //Robert_Lin 2025-4-16 comment-out unused method
         //Robert_Lin 2025-1-11 added to hide (Visibilily=Collapsed) the FullView 
-        public void HideFullView()
-        {
-            if (FullView != null)
-            {
-                FullView.Visibility = Visibility.Collapsed;
-                OnPropertyChanged("IsFullViewOpened");
-            }
-        }
-        public void ShowFullView()
-        {
-            if (FullView != null)
-            {
-                FullView.Visibility = Visibility.Visible;
-                OnPropertyChanged("IsFullViewOpened");
-            }
-        }
+        //public void HideFullView()
+        //{
+        //    if (FullView != null)
+        //    {
+        //        FullView.Visibility = Visibility.Collapsed;
+        //        OnPropertyChanged("IsFullViewOpened");
+        //    }
+        //}
+        //Robert_Lin 2025-4-16 comment-out unused method
+        //public void ShowFullView()
+        //{
+        //    if (FullView != null)
+        //    {
+        //        FullView.Visibility = Visibility.Visible;
+        //        OnPropertyChanged("IsFullViewOpened");
+        //    }
+        //}
  
         //Robert_Lin, 2025-1-11 a flag to indicate if FullView is opened
         public bool IsFullViewOpened
         {
             get
             {
-                if (FullView != null && 
-                    FullView.Visibility == Visibility.Visible)
-                {
-                    return true;
-                }
-                return false;
+                //if (FullView != null && 
+                //    FullView.Visibility == Visibility.Visible)
+                //{
+                //    return true;
+                //}
+                //return false;
+                return _isFullViewOpened;
+            }
+            set
+            {
+                SetProperty(ref _isFullViewOpened, value);
             }
         }
 

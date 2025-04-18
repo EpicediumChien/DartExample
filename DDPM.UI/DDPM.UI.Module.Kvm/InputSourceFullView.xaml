@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
+             mc:Ignorable="d" 
              d:DesignHeight="671" d:DesignWidth="1278" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -36,7 +36,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Image x:Name="imgBkGlow"
+        <Image x:Name="imgBkGlow" Visibility="Collapsed"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />

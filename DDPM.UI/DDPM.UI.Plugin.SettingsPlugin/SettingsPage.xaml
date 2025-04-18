@@ -19,11 +19,11 @@
     </UserControl.Resources>
     <Grid Margin="60,00,100,29" >
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,8,0,0">
             <!-- Robert_Lin 2025-3-5 -->
             <!-- OLD:
             <UXControls:UXTextBlock Grid.Row="0"
@@ -43,7 +43,7 @@
             <!-- NEW: -->
             <Button Width="24" Height="24" Margin="0,0,16,0"
                     Style="{StaticResource StatelessButton}"
-                    VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
+                    VerticalAlignment="Stretch" HorizontalAlignment="Left" Cursor="Hand"
                     KeyboardNavigation.TabIndex="11" 
                     AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
                     Click="backArrowButton_Click" 
@@ -53,12 +53,12 @@
                 </Grid>
             </Button>
 
-            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Settings], Source={x:Static lang:LangHelper.Instance}}"
-                                HorizontalAlignment="Left" TextBlockType="Header2"
-                                FontSize="28" Focusable="True"
+            <UXControls:UXTextBlock Text="{Binding [Settings], Source={x:Static lang:LangHelper.Instance}}"
+                                VerticalAlignment="Top" HorizontalAlignment="Left" TextBlockType="Header2"
+                                FontSize="24" FontFamily="{StaticResource RobotoFont}" Focusable="True"
                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
         </StackPanel>
-        <Grid Margin="38,24,0,0" Grid.Row="1">
+        <Grid Margin="40,44,0,0" Grid.Row="1">
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -80,7 +80,7 @@
                             Focusable="True"
                             AutomationProperties.Name="{Binding [General], Source={x:Static lang:LangHelper.Instance}}"
                     -->
-                    <Border Margin="0,4,4,4"
+                    <Border Margin="0,0,8,8"
                             Grid.Row="0"
                             Width="212" Height="64"
                             BorderThickness="2"
@@ -152,7 +152,7 @@
                     <!-- 
                             Focusable="True"
                     -->
-                    <Border Margin="0,4,4,4"
+                    <Border Margin="0,0,8,8"
                             Grid.Row="1"
                             Width="212" Height="64"
                             BorderThickness="2"
@@ -255,7 +255,7 @@
                     <!-- 
                             Focusable="True"
                     -->
-                    <Border Margin="0,4,4,4"
+                    <Border Margin="0,0,8,8"
                             Grid.Row="2"
                             Width="212" Height="64"
                             BorderThickness="2"
@@ -351,7 +351,7 @@
                     <!-- 
                             Focusable="True"
                     -->
-                    <Border Margin="0,4,4,4"
+                    <Border Margin="0,0,8,8"
                             Grid.Row="3"
                             Width="212" Height="64"
                             BorderThickness="2"
@@ -413,7 +413,7 @@
                     <!-- 
                             Focusable="True"
                     -->
-                    <Border Margin="0,4,4,4"
+                    <Border Margin="0,0,8,8"
                             Grid.Row="4"
                             Width="212" Height="64"
                             BorderThickness="2"
@@ -476,7 +476,7 @@
                 Move from bottom of this file.
                 -->
                 <!--20250331 Chewlin for PIMS-348208 change Margin="4,0,0,0" to Margin="4,4,4,4"-->
-                <Grid Grid.Column="1" Margin="4,4,4,4"  >
+                <Grid Grid.Column="1">
                     <ContentControl Content="{Binding FullView}"  />
                 </Grid>
 

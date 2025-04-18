@@ -8,14 +8,13 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
-
              mc:Ignorable="d" 
-             Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" 
              d:DesignWidth="1378"
              d:DataContext="{DynamicResource vmDesign}"
              Loaded="UserControl_Loaded">
     <!-- 
+             Background="{DynamicResource mainWindowBkColor}"
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
     -->
     <UserControl.Resources>
@@ -102,8 +101,15 @@
     </UserControl.Resources>
 
     <Grid>
-        <Image x:Name="imgBkGlow"
-               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
+        <!-- 
+        <Image x:Name="imgBkGlow" Visibility="Visible"
+              Source="/DDPM.UI.Common;component/Resources/Background_Glow.png"
+              Stretch="UniformToFill"
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Center" />
+       -->
+        <Image x:Name="imgBkGlow" Visibility="Collapsed"
+               Source="/DDPM.UI.Module.EzMemory;component/Background Glow.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Center" 
                VerticalAlignment="Center" />

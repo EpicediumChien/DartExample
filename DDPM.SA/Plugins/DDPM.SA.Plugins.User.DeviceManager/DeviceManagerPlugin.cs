@@ -717,8 +717,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_ColorProfileHelper == null)
                 _ColorProfileHelper = new ColorProfileHelper(deviceManagerSA, Log);
-            if (_AirAudioHelper == null)
-                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+            if (GlobalDefinitions.isSupport210)
+            {
+                if (_AirAudioHelper == null)
+                    _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+            }
             _disDevHelper = new DisplayDeviceHelper(Log, deviceManagerSA);
         }
 
@@ -5791,6 +5794,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
+
+        public void OnCMAUpdateNotify(object sender, CMAIDEventArgs e)
+        {
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... in ");
+            EventHandler<CMAIDEventArgs> Handler = DTPEventForCMAChanged;
+            if (Handler != null)
+            {
+                _ = Task.Run(() => Handler.Invoke(this, e));
+                writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged be Invoked");
+            }
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... out ");
+        }
+
         #endregion
 
         #region display properties implementation
@@ -7275,11 +7292,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     List<ALSConfig> ALSConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
 
-                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = true;
-                    else IsSourceLumiumce = false;
+                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = false;
+                    else IsSourceLumiumce = true;
 
-                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = true;
-                    else IsTargetLumiumce = false;
+                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = false;
+                    else IsTargetLumiumce = true;
 
                     var TargetALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(TargetMonitor.edid));
                     var SourceALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(SourceMonitor.edid));
@@ -8802,7 +8819,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                     {
-                        MiniMizeDDPMUI().Wait();
+                        //MiniMizeDDPMUI().Wait();
                         writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
                         string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
                         string SW_Available_date = swUpdateInfos[0].Available_date;
@@ -8831,6 +8848,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (isRestoreDDPM)
                 {
                     RestoreDDPMUI();
+                }
+                else
+                {
+                    MiniMizeDDPMUI().Wait();
                 }
                 return Task.FromResult(retSWUpdateInfos);
             }
@@ -9276,6 +9297,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
                 if ((int)backendImportResult > 0)
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings successfully.");
                     // Apply new Hotkey setting
                     ReloadHotkeyConfigData();
                     RegistHotkey(true);
@@ -9333,6 +9355,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
+#if DEBUG
+                                        Debug.WriteLine($"[DisplayImportSettings] ALSConfig : {impVCPSequence.ALSConfig.ToString()}");
+#endif
                                         foreach (VCPCode code in vcps)
                                         {
                                             if (code.Code != null && (code.Value != null && code.Value.Count > 0))
@@ -9436,6 +9461,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings failed. Import DDM settings.");
                     //Import DDMSettings
                     DDMImpSettings impSettings = new DDMImpSettings();
                     impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;
@@ -11480,7 +11506,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
                 writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
-
+#if DEBUG
+                Debug.WriteLine($"GetWebcamDeviceCount = {devCnt}, _GlobalSettingParam = {_GlobalSettingParam}, isWindowsScreenNotLocked = {isWindowsScreenNotLocked}, _GlobalSettingParam.GlobalSetting_WidgetSettings = {_GlobalSettingParam.GlobalSetting_WidgetSettings}");
+#endif
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
                                                                              //QAMWebcamDeviceGuid == string.Empty ||
@@ -12028,7 +12056,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     //_QAM.Show();
-                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    _QAM?.Dispatcher.Invoke(() =>
+                    {
+                        _QAM?.Show();
+                        _QAM?.Activate();
+                    });
                     //Dispatcher.Run(); //may block the process Derek 1219
 
                     writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
@@ -12322,6 +12354,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
 
                             var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
+                            //04/16 Jason Lin add InitDisplayData due to timing
+                            _DisplayManagerPlugin.InitDisplayData(NewMonitors.ToList()).Wait(token);
                             var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
 
                             // add @ 20250303 stephen
@@ -13055,7 +13089,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
+                    //_DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
                     for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
                     {
@@ -13107,7 +13141,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"monitor count {e.monitors.Count} ...");
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
-
+            //04/16 Jason Lin add InitDisplayData due to timing
+            _DisplayManagerPlugin.InitDisplayData((e.monitors).ToList()).Wait(CancellationToken.None);
             Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
@@ -14138,9 +14173,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
-                        if (_AirAudioHelper == null)
-                            _AirAudioHelper = new PeripheralAirAudioHelper(Log);
-                        _AirAudioHelper.UpdateDDPMPluginInstances(_DTPProxyPlugin);
+                        if (GlobalDefinitions.isSupport210)
+                        {
+                            if (_AirAudioHelper == null)
+                                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+                            _AirAudioHelper.UpdateDDPMPluginInstances(_DTPProxyPlugin);
+                        }
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -14158,10 +14196,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        _DTPProxyPlugin.CMAEventHandler += OnCMAUpdateNotify;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
-                        if (_AirAudioHelper == null)
-                            _AirAudioHelper = new PeripheralAirAudioHelper(Log);
-                        _AirAudioHelper?.UpdateDDPMPluginInstances(_DTPProxyPlugin);
+                        if (GlobalDefinitions.isSupport210)
+                        {
+                            if (_AirAudioHelper == null)
+                                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+                            _AirAudioHelper?.UpdateDDPMPluginInstances(_DTPProxyPlugin);
+                        }
                     }
                 }
             });
@@ -15035,22 +15077,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             /*iTest++;
             if (iTest % 2 == 1)
             {
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
             }
             else
             {
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
-                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
+                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Update in progress", "Dell Pro Premium Mouse(MS900) may be intermittently available. Do not disconnect the device during the update.", true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error", LangHelper.Instance["Timeout_error"], true));
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
@@ -17683,6 +17727,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
+
+                    if (_DTPProxyPlugin != null)
+                        _DTPProxyPlugin.CMAEventHandler -= OnCMAUpdateNotify;
                 }
 
                 IsDisposed = true;
@@ -20171,82 +20218,82 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioConnectionTypeAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioConnectionTypeAsync(Guid);
         }
 
         public async Task<JArray> GetAirAudioDeviceItemsAsync()
         {
-            return await _AirAudioHelper.GetAirAudioDeviceItemsAsync();
+            return await _AirAudioHelper?.GetAirAudioDeviceItemsAsync();
         }
 
         public async Task<string> GetAirAudioSerialNumberAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioSerialNumberAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioSerialNumberAsync(Guid);
         }
 
         public async Task<string> GetAirAudioDeviceBatteryStatusAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioDeviceBatteryStatusAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioDeviceBatteryStatusAsync(Guid);
         }
 
         public async Task<string> GetAirAudioPairingHostName1Async(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPairingHostName1Async(Guid);
+            return await _AirAudioHelper?.GetAirAudioPairingHostName1Async(Guid);
         }
 
         public async Task<string> GetAirAudioPairingHostName2Async(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPairingHostName2Async(Guid);
+            return await _AirAudioHelper?.GetAirAudioPairingHostName2Async(Guid);
         }
 
         public async Task<string> GetAirAudioPairingHostName3Async(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPairingHostName3Async(Guid);
+            return await _AirAudioHelper?.GetAirAudioPairingHostName3Async(Guid);
         }
 
         public async Task<string> GetAirAudioPairingStatusNameAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPairingStatusNameAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioPairingStatusNameAsync(Guid);
         }
 
         public async Task<string> GetAirAudioParentDeviceTypeAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioParentDeviceTypeAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioParentDeviceTypeAsync(Guid);
         }
 
         public async Task<string> GetAirAudioModelNumberAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioModelNumberAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioModelNumberAsync(Guid);
         }
 
         public async Task<string> GetAirAudioDeviceTypeAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioDeviceTypeAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioDeviceTypeAsync(Guid);
         }
 
         public async Task<string> GetAirAudioFirmwareVersionAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioFirmwareVersionAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioFirmwareVersionAsync(Guid);
         }
 
         public async Task<string> GetAirAudioPluginIdAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPluginIdAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioPluginIdAsync(Guid);
         }
 
         public async Task<string> GetAirAudioDeviceIdAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioDeviceIdAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioDeviceIdAsync(Guid);
         }
 
         public async Task<string> GetAirAudioDeviceNameAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioDeviceNameAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioDeviceNameAsync(Guid);
         }
 
         public async Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioDeviceInterfaceTypeAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioDeviceInterfaceTypeAsync(Guid);
         }
 
         //public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
@@ -20256,32 +20303,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioMuteStatusAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioMuteStatusAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioBoomMicAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBoomMicAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBoomMicAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsBoomMicSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsBoomMicSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsBoomMicSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioWearDetectionAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioWearDetectionAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioWearDetectionAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioVoiceGuidanceAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioVoiceGuidanceAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioVoiceGuidanceAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioBusyLightAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBusyLightAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBusyLightAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioSidetoneAsync(string Guid)
@@ -20291,12 +20338,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetAirAudioMicNCIncomingAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioMicNCIncomingAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioMicNCIncomingAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsMicNCIncomingSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsMicNCIncomingSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsMicNCIncomingSupportedAsync(Guid);
         }
 
         //public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
@@ -20306,72 +20353,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionMuteMicSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionMuteMicSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionPauseMusicSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionPauseMusicSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionPauseMusicSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionSensitivitySupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionSensitivitySupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionSensitivitySupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsANCSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsANCSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsANCSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsEqualizerSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsEqualizerSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsEqualizerSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsPresetsSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsPresetsSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsPresetsSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsVoiceGuidanceSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsVoiceGuidanceSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsVoiceGuidanceSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsBusyLightSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsBusyLightSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsBusyLightSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsSidetoneSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsSidetoneSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsSidetoneSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsMicNoiseCancellationSupportedAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsMicNoiseCancellationSupportedAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsMicNoiseCancellationSupportedAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsDirtyAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsDirtyAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsDirtyAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsReadyAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsReadyAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsReadyAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid)
@@ -20386,207 +20433,207 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioWearDetectionSensitivityAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioWearDetectionSensitivityAsync(Guid);
         }
 
         public async Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionQuickPauseAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionQuickPauseAsync(Guid);
         }
 
         public async Task<int> GetAirAudioAncGainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioAncGainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioAncGainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioAncModeAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioAncModeAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioAncModeAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBand1GainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBand1GainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBand1GainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBand2GainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBand2GainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBand2GainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBand3GainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBand3GainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBand3GainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBand4GainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBand4GainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBand4GainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBand5GainAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBand5GainAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBand5GainAsync(Guid);
         }
 
         public async Task<int> GetAirAudioSidetoneLevelAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioSidetoneLevelAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioSidetoneLevelAsync(Guid);
         }
 
         public async Task<int> GetAirAudioSelectedPresetAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioSelectedPresetAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioSelectedPresetAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBatteryLevelAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryLevelAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryLevelAsync(Guid);
         }
 
         public async Task<int> GetAirAudioPairedDeviceCountAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioPairedDeviceCountAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioPairedDeviceCountAsync(Guid);
         }
 
         public async Task<int> GetAirAudioMaxPairingSlotsAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioMaxPairingSlotsAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioMaxPairingSlotsAsync(Guid);
         }
 
         public async Task<int> GetAirAudioTotalNumberOfPairedHostNameAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioTotalNumberOfPairedHostNameAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioTotalNumberOfPairedHostNameAsync(Guid);
         }
 
         public async Task<int> GetAirAudioInstanceIdAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioInstanceIdAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioInstanceIdAsync(Guid);
         }
 
         public async Task<int> GetAirAudioInstanceNumberAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioInstanceNumberAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioInstanceNumberAsync(Guid);
         }
 
         public async Task<int> GetAirAudioODMIdAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioODMIdAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioODMIdAsync(Guid);
         }
 
         public async Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioMicNoiseCancellationAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioMicNoiseCancellationAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioSidetoneAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioSidetoneAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioSidetoneAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBusyLightAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBusyLightAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBusyLightAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioVoiceGuidanceAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioVoiceGuidanceAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioVoiceGuidanceAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioSelectedPresetAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioSelectedPresetAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioSelectedPresetAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioSidetoneLevelAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioSidetoneLevelAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioSidetoneLevelAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBandsGainAsync(string Guid, byte[] newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBandsGainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBandsGainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand1GainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBand1GainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBand1GainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand2GainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBand2GainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBand2GainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand3GainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBand3GainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBand3GainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand4GainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBand4GainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBand4GainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand5GainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBand5GainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioBand5GainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioAncModeAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioAncModeAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioAncModeAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioAncGainAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioAncGainAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioAncGainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioWearDetectionAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioWearDetectionAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioWearDetectionAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioFactoryResetAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioFactoryResetAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioFactoryResetAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioIsBoomMicSupportedAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioIsBoomMicSupportedAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioIsBoomMicSupportedAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioWearDetectionQuickPauseAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioWearDetectionQuickPauseAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioWearDetectionQuickPauseAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioWearDetectionSensitivityAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioWearDetectionSensitivityAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioWearDetectionSensitivityAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioMicNCIncomingAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioMicNCIncomingAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioMicNCIncomingAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioUnPairAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioUnPairAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioUnPairAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioIsWearDetectionMuteMicEnabledAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioIsWearDetectionMuteMicEnabledAsync(Guid, newValue);
         }
 
         public async Task<bool> GetDTPProxyPluginReady()
@@ -20596,87 +20643,87 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetAirAudioSerialNumberCaseAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioSerialNumberCaseAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioSerialNumberCaseAsync(Guid);
         }
 
         public async Task<string> GetAirAudioBatteryStatusLeftAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryStatusLeftAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryStatusLeftAsync(Guid);
         }
 
         public async Task<string> GetAirAudioBatteryStatusRightAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryStatusRightAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryStatusRightAsync(Guid);
         }
 
         public async Task<string> GetAirAudioBatteryStatusCaseAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryStatusCaseAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryStatusCaseAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsAutoPowerOffEnabledAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsAutoPowerOffEnabledAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsAutoPowerOffEnabledAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioMicNoiseCancellationAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioMicNoiseCancellationAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioMicNoiseCancellationAsync(Guid);
         }
 
         public async Task<int> GetAirAudioWearDetectionQuickPauseAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioWearDetectionQuickPauseAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioWearDetectionQuickPauseAsync(Guid);
         }
 
         public async Task<bool> GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(Guid);
         }
 
         public async Task<int> GetAirAudioAutoPowerOffIntervalAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioAutoPowerOffIntervalAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioAutoPowerOffIntervalAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryLevelLeftAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryLevelLeftAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBatteryLevelRightAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryLevelRightAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryLevelRightAsync(Guid);
         }
 
         public async Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioBatteryLevelCaseAsync(Guid);
+            return await _AirAudioHelper?.GetAirAudioBatteryLevelCaseAsync(Guid);
         }
 
         public async Task<int> GetAirAudioMaxAllowedPariedHost(string Guid)
         {
-            return await _AirAudioHelper.GetAirAudioMaxAllowedPariedHost(Guid);
+            return await _AirAudioHelper?.GetAirAudioMaxAllowedPariedHost(Guid);
         }
 
         public async Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetFactoryResetAsyncValueForAirAudioAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetFactoryResetAsyncValueForAirAudioAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioIsAutoPowerOffEnabledAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioIsAutoPowerOffEnabledAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioIsAutoPowerOffEnabledAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid, bool newValue)
         {
-            return await _AirAudioHelper.SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioAutoPowerOffIntervalAsync(string Guid, int newValue)
         {
-            return await _AirAudioHelper.SetAirAudioAutoPowerOffIntervalAsync(Guid, newValue);
+            return await _AirAudioHelper?.SetAirAudioAutoPowerOffIntervalAsync(Guid, newValue);
         }
 
         #endregion

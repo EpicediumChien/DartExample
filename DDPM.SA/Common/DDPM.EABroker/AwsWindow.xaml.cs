@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -855,10 +856,14 @@ namespace DDPM.EABroker
 
             Trace.WriteLine("@ Dispatcher_RefreshCellRects()");
 
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0, _vm.rcIcont0))
-            {
-                _areCellRectsRefreshed = false;
-            }
+            //Robert_Lin 2025-4-17 comment-out
+            //The Cell rects has been created when the CellList is creating in Dispatcher_RefreshIcon0()
+            //But UI_RefreshAwsIconCellRects() is called when LocationChanged, and when it's running, the AwsIcon may
+            //not been displayed, so it will get an empty rect to CellList.CellObj.rc
+            //if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0, _vm.rcIcont0))
+            //{
+            //    _areCellRectsRefreshed = false;
+            //}
 
             _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
             //_vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
@@ -1222,16 +1227,13 @@ namespace DDPM.EABroker
         #endregion ViewModel Event Handlers
 
         #region Icon0 - Monitors
+        //Robert_Lin, this method is workable, it will be removed due to
+        //1 The purpose of this method is create the CellBorders for AwsIcon0, it's OK
+        //2 But it also calculate
         private void Dispatcher_RefreshIcon0()
         {
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
-                //if (_vm.AwsIcon0 != null)
-                //{
-                //    UI_RefreshIcon0_SplitCtrl0B();
-                //    return;
-                //}
-
+            try
+            {
                 if (icon0Canvas.ActualWidth == 0)
                     return;
 
@@ -1239,8 +1241,6 @@ namespace DDPM.EABroker
                 if ((rcVirtualScreen.Width <= 0) || (rcVirtualScreen.Height <= 0))
                     return;
 
-                double cxView = 1.000;
-                double cyView = 1.000;
                 double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
                 double ratioY = icon0Canvas.ActualHeight / (double)rcVirtualScreen.Height;
                 bool isHorzFit = (ratioX < ratioY);
@@ -1265,14 +1265,6 @@ namespace DDPM.EABroker
 
                 foreach (Screen scr in Screen.AllScreens)
                 {
-                    //AddMsg($"[{idxScr}] {scr.DeviceName} {(scr.Primary ? "Primary" : "")}");
-                    //AddMsg($"   {FormatRecttangle(scr.Bounds)}");
-
-                    //Border bd = new Border();
-                    //bd.Width = scr.Bounds.Width * ratioBorder;
-                    //bd.Height = scr.Bounds.Height * ratioBorder;
-                    //bd.Style = FindResource("CellBorderStyle") as Style;
-
                     CellBorder cellBd = new CellBorder();
                     cellBd.Width = scr.Bounds.Width * ratioBorder;
                     cellBd.Height = scr.Bounds.Height * ratioBorder;
@@ -1286,40 +1278,47 @@ namespace DDPM.EABroker
                     double left = (scr.Bounds.Left - rcVirtualScreen.Left) * ratioBorder;
                     double top = (scr.Bounds.Top - rcVirtualScreen.Top) * ratioBorder;
 
-                    //AddMsg($"    Border at ({left},{top}) {bd.Width}x{bd.Height}");
-
                     System.Windows.Point topLeft = new System.Windows.Point(left, top);
                     topLeft = icon0Canvas.PointToScreen(topLeft);
-                    cellBd.rect = new Rect(topLeft.X, 
-                        topLeft.Y, cellBd.Width, cellBd.Height);
+                    //cellBd.rect = new Rect(topLeft.X,
+                    //    topLeft.Y, cellBd.Width, cellBd.Height);
 
                     icon0Canvas.Children.Add(cellBd);
                     Canvas.SetLeft(cellBd, left);
                     Canvas.SetTop(cellBd, top);
 
                     CellObj cellObj = new CellObj(text.Text, cellBd);
-               //cellObj.rc = new Rect(left, top, cellBd.Width, cellBd.Height);
-                cellObj.rc = new Rect(topLeft.X + left, topLeft.Y + top, cellBd.Width, cellBd.Height);
-                _vm.AwsIcon0.CellList.Add(cellObj);
+                    //cellObj.rc = new Rect(left, top, cellBd.Width, cellBd.Height);
+                    //double scalerc = 1.00;///_vm.ScreenScale;
+                    double xrc = topLeft.X;// (topLeft.X  - left * scalerc);
+                    double yrc = topLeft.Y; // (topLeft.Y  + top * scalerc);
+                    double wrc = cellBd.Width;
+                    double hrc = cellBd.Height;
+                    cellObj.rc = new Rect(xrc, yrc, wrc, hrc);
 
-                    if (isHorzFit)
-                    {
-                        icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                        icon0Canvas.VerticalAlignment = VerticalAlignment.Center;
-                    }
-                    else
-                    {
-                        icon0Canvas.VerticalAlignment = VerticalAlignment.Stretch;
-                        icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-                    }
-
+                    _vm.AwsIcon0.CellList.Add(cellObj);
 
                     idxScr++;
                 }
+
+                if (isHorzFit)
+                {
+                    icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                    icon0Canvas.VerticalAlignment = VerticalAlignment.Center;
+                }
+                else
+                {
+                    icon0Canvas.VerticalAlignment = VerticalAlignment.Stretch;
+                    icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                }
+
+
+
                 _vm.OnPropertyChanged_AwsIconInfos();
-            //}));
-
-
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void HoverCellInAwsIcon0(string hoverName)

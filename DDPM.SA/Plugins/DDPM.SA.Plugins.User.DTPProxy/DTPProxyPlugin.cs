@@ -202,8 +202,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
-            DTPEventHandler?.Invoke(this, e);
+            _ = Task.Run(() => DTPEventHandler?.Invoke(this, e));
         }
+
+        public event EventHandler<CMAIDEventArgs> CMAEventHandler;
+
+        public void UpdateCMANotify(CMAIDEventArgs e)
+        {
+            _ = Task.Run(() => CMAEventHandler?.Invoke(this, e));
+        }
+
 
         public void DTPProxyPluginSDKNotify(UpdateDTPProxyNotify e)
         {
@@ -8327,6 +8335,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8379,6 +8388,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8426,6 +8436,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
                 _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
                 _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
+                _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChangedForCMA;
                 _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                 _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                 _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8594,6 +8605,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
                     _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChangedForCMA;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
@@ -8776,10 +8788,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
-                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.SerialNumber}"));
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SerialNumberChanged",
+                                    e.DeviceId, $"Headset_SerialNumberChanged:{e.SerialNumber}"));
 
-            writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"[Headset] Catch event Headset_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SerialNumberChangedForCMA(object sender, SerialNumberChangedArgs e)
+        {
+            string devicename = GetHeadsetDeviceNameAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicename))
+                devicename = string.Empty;
+
+            string devicefw = GetHeadsetFirmwareVersionAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicefw))
+                devicefw = string.Empty;
+
+            SendDTPEventToCMA("Headset", e.DeviceId, e.SerialNumber, devicename, devicefw);
+            writelog($"[Headset] Catch event Headset_SerialNumberChangedForCMA : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
@@ -8855,6 +8881,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             UpdateUINotify headsetEventNotify = new UpdateUINotify();
             headsetEventNotify.UI_Field_Name = $"{sendMsg}";
             OnUIUpdateNotify(headsetEventNotify);
+        }
+
+        public void SendDTPEventToCMA(string deviceType, string GUID, string SNnumber, string Model, string FWversion)
+        {
+            writelog($"[SendDTPEventToCMA] deviceType : {deviceType}, GUID : {GUID}, SNnumber : {SNnumber}, Model : {Model}, FWversion : {FWversion}");
+            CMAIDEventArgs dtpEventToCMANotify = new CMAIDEventArgs();
+            dtpEventToCMANotify.deviceType = deviceType;
+            dtpEventToCMANotify.guid = GUID;
+            dtpEventToCMANotify.snNumber = SNnumber;
+            dtpEventToCMANotify.model = Model;
+            dtpEventToCMANotify.fwVersion = FWversion;
+            UpdateCMANotify(dtpEventToCMANotify);
         }
 
         #endregion Headset Event
@@ -10814,21 +10852,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         {
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
-
-                        writelog($"Find IAiraudioCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                        _airaudioInterfaceType = FindCommodityInterfaceType("IAiraudioCommodity");
-                        if (_airaudioInterfaceType != null)
+                        if (GlobalDefinitions.isSupport210)
                         {
-                            _airaudioMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                        .MakeGenericMethod(_airaudioInterfaceType);
+                            writelog($"Find IAiraudioCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            _airaudioInterfaceType = FindCommodityInterfaceType("IAiraudioCommodity");
+                            if (_airaudioInterfaceType != null)
+                            {
+                                _airaudioMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                            .MakeGenericMethod(_airaudioInterfaceType);
 
-                            writelog($"Find IAiraudioCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                                writelog($"Find IAiraudioCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
+                            else
+                            {
+                                writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
                         }
-                        else
-                        {
-                            writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                        }
-
                         DTPProxyPluginReady = true;
                         DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
@@ -11059,42 +11098,48 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"IWebcamCommodity not find");
 
             writelog($"Register AirAudio Commodity event by DellPeripheral.AirAudio...");
-            _comdityAirAudio = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId("DellPeripheral.AirAudio"), CancellationToken.None);
-            if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _airaudiocom)
+            if (GlobalDefinitions.isSupport210)
             {
-                try
+                _comdityAirAudio = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId("DellPeripheral.AirAudio"), CancellationToken.None);
+                if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _airaudiocom)
                 {
-                    _airaudiocom.Connected += AirAudio_Connected;
-                    _airaudiocom.Disconnected += AirAudio_Disconnected;
-                    writelog($"AirAudio Commodity event registered, connected _airaudiocom.DeviceItems = {_airaudiocom.DeviceItems.Length}");
-                    int i = 0;
-                    foreach (var item in _airaudiocom.DeviceItems)
+                    try
                     {
-                        writelog($"connected _airaudiocom.DeviceItems[{i}] = {item}");
-                        string jsonStr = _airaudiocom.DeviceItemsEx[i++].ToString();
-                        writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
-
-                        if (jsonStr != null && jsonStr != string.Empty)
+                        _airaudiocom.Connected += AirAudio_Connected;
+                        _airaudiocom.Disconnected += AirAudio_Disconnected;
+                        writelog($"AirAudio Commodity event registered, connected _airaudiocom.DeviceItems = {_airaudiocom.DeviceItems.Length}");
+                        int i = 0;
+                        foreach (var item in _airaudiocom.DeviceItems)
                         {
-                            AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
-                            jsonObject.airaudioCommodity = null;
-                            jsonObject.airaudioIndex = item;
-                            writelog($"jsonObject values: {jsonObject.airaudioIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
-                            airaudioList.Add(jsonObject);
+                            writelog($"connected _airaudiocom.DeviceItems[{i}] = {item}");
+                            string jsonStr = _airaudiocom.DeviceItemsEx[i++].ToString();
+                            writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
+
+                            if (jsonStr != null && jsonStr != string.Empty)
+                            {
+                                AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
+                                jsonObject.airaudioCommodity = null;
+                                jsonObject.airaudioIndex = item;
+                                writelog($"jsonObject values: {jsonObject.airaudioIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                                airaudioList.Add(jsonObject);
+                            }
                         }
+                        writelog($"connected _airaudiocom.DeviceItemsEx.Count = {_airaudiocom.DeviceItemsEx.Count}");
                     }
-                    writelog($"connected _airaudiocom.DeviceItemsEx.Count = {_airaudiocom.DeviceItemsEx.Count}");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    catch (Exception e)
+                    {
+                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    }
                 }
             }
             await RegisterEventsForAllConnectedWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
+            if (GlobalDefinitions.isSupport210)
+            {
 
-            await RegisterEventsForAllAirAudioAsync();
+                await RegisterEventsForAllAirAudioAsync();
+            }
             //for test
             //await UnsubscribeDTPGlobalEventsAsync();
         }
@@ -11372,7 +11417,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
                     _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                     _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
-                    _Webcamcom.IsAllSupportedResolutionsFoundChanged += _Webcamcom_IsAllSupportedResolutionsFoundChanged;
 
                     writelog($"Webcam Commodity {_Webcamcom.DeviceName}/{_Webcamcom.DeviceId}/{_Webcamcom.ModelNumber} events registered successfully");
 
@@ -11391,14 +11435,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
-        }
-
-        private void _Webcamcom_IsAllSupportedResolutionsFoundChanged(object sender, IsAllSupportedResolutionsFoundChangedArgs e)
-        {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAllSupportedResolutionsFoundChanged",
-                                    e.DeviceId, $"NewValue:{e.IsAllSupportedResolutionsFound}"));
-
-            writelog($"Catch event _Webcamcom_IsAllSupportedResolutionsFoundChanged, NewValue:{e.IsAllSupportedResolutionsFound}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
@@ -12036,10 +12072,83 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
-                                    e.DeviceId, $"NewValue:{e.SerialNumber}"));
+            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+            //                        e.DeviceId, $"NewValue:{e.SerialNumber}"));
 
-            writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            string devicename = GetWebcamNameAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicename))
+                devicename = string.Empty;
+
+            string devicefw = GetWebcamFirmwareVersionAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicefw))
+                devicefw = string.Empty;
+
+            writelog($"[Webcam] Catch event SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now:hh.mm.ss.ffffff}");
+            SendDTPEventToCMA("Webcam", e.DeviceId, e.SerialNumber, devicename, devicefw);
+        }
+
+        private async Task<string> GetWebcamNameAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceName");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned null for DeviceName.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamNameAsync] Successfully retrieved DeviceName: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned a non-string value for DeviceName.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamNameAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
+        }
+
+        private async Task<string> GetWebcamFirmwareVersionAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "FirmwareVersion");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned null for FirmwareVersion.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamFirmwareVersionAsync] Successfully retrieved FirmwareVersion: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned a non-string value for FirmwareVersion.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamFirmwareVersionAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
         }
 
         //private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
@@ -16045,6 +16154,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> RegisterEventsForAirAudioAsync(string deviceID)
         {
+            if (!GlobalDefinitions.isSupport210)
+            {
+                return false;
+            }
             if (null == _comdityAirAudio || deviceID == null || deviceID == string.Empty)
             {
                 writelog($"null == _comdityAirAudio || deviceID == null || deviceID == string.Empty");

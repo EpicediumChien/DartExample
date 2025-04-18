@@ -6,8 +6,11 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Color"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}" Loaded="UserControl_Loaded"
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="735" d:DesignWidth="1378">
+    <!-- 
+     Background="{DynamicResource mainWindowBkColor}"
+    -->
     <UserControl.Resources>
         <ResourceDictionary>
             <Color x:Key="ColorWhite">#FFFFFF</Color>

@@ -3645,4 +3645,7 @@
   <data name="WebCameraSettings.31" xml:space="preserve">
     <value>Portrait</value>
   </data>
+  <data name="AddDevice.Pen.5" xml:space="preserve">
+    <value>Pens with Active Electrostatic technology (PN5122W) can be connected with this method</value>
+  </data>
 </root>

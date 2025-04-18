@@ -41,7 +41,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private readonly IConsole _console;
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = LangHelper.Instance["AddDevice"];
         private int selectedTab = -1;
         private readonly string Display = LangHelper.Instance["AddDevice.Display"];
         private readonly string Webcam = LangHelper.Instance["AddDevice.Webcam"];
@@ -80,7 +79,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
-            txtCaption.Text = Caption;
             //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
@@ -101,7 +99,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                         DdpmCommonHelper.WriteUILog($"AddDevice Device PlugIn event received.");
                         if (_vm.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _vm.CurrentDongle.ID)
                         {
-                            _vm.NewDevice = e.device_peripherals;
+                            //_vm.NewDevice = e.device_peripherals;
                             //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                             while (IsRequested && !_vm.IsPairingLoaded)
                             {
@@ -113,11 +111,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                 Dispatcher.Invoke(new Action(() =>
                                 {
                                     waitingModalDialog?.Close();
-                                    //_vm.GotoNewDevice();
-                                    DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
-                                    _console.ShowHomePage();
                                 }));
                             }
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
+                                //_vm.GotoNewDevice();
+                                _console.ShowHomePage();
+                            }));
                         }
                         else
                             Dispatcher.Invoke(new Action(() =>
@@ -191,6 +192,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                             Dispatcher.Invoke(new Action(() =>
                                             {
                                                 waitingModalDialog?.Close();
+                                                DdpmCommonHelper.WriteUILog($"AddDevice pairing closed by Stopped status");
                                             }));
                                         }
                                         IsRequested = false;
@@ -202,6 +204,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                             Dispatcher.Invoke(new Action(() =>
                                             {
                                                 waitingModalDialog?.Close();
+                                                DdpmCommonHelper.WriteUILog($"AddDevice pairing closed by TimeOut status");
                                             }));
                                         }
                                         Dispatcher.Invoke(new Action(() =>
@@ -231,11 +234,11 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         }
 
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            ArrowLeft.Source = null;
-            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
-        }
+        //private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        //{
+        //    ArrowLeft.Source = null;
+        //    ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        //}
 
         private void BuildModuleGroups()
         {
@@ -338,6 +341,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void GoBackHomepage(object sender, MouseButtonEventArgs e)
         {
+            //Robert_Lin 2025-4-16, move to new added method GoBackToPreviousPage()
+            GoBackToPreviousPage();
+
             //Robert_Lin 2025-3-5 for the back arrow to go back to the "previous" page.
             //PIMS-301474 Clicking back arrow didn't bring the UI back to the DDPM page previously, before the
             // settings gear icon is selected
@@ -346,21 +352,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //OLD:
             //_console.ShowHomePage();
             //NEW:
-            IShowPluginManager? showPluginManager = AddDevicePlugin.PluginIoc.GetService<IShowPluginManager>();
-            if (showPluginManager == null)
-                return;
-            if (showPluginManager.HideTakeoverPlugin())
-            {
-                //Request to show "AddDevice" icon on Masthead
-                if (_console != null)
-                {
-                    var args = new EventManagerArgs();
-                    bool isShow = true;
-                    bool isEnabled = true;
-                    args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
-                    _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
-                }
-            }
+            //IShowPluginManager? showPluginManager = AddDevicePlugin.PluginIoc.GetService<IShowPluginManager>();
+            //if (showPluginManager == null)
+            //    return;
+            //if (showPluginManager.HideTakeoverPlugin())
+            //{
+            //    //Request to show "AddDevice" icon on Masthead
+            //    if (_console != null)
+            //    {
+            //        var args = new EventManagerArgs();
+            //        bool isShow = true;
+            //        bool isEnabled = true;
+            //        args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+            //        _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+            //    }
+            //}
         }
 
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
@@ -446,9 +452,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = true;
 
             //Robert_Ln 2025-2-19 for Narrator, setup the focus to the left Arrow at start up
-            ArrowLeft.Focus();
+            //ArrowLeft.Focus(); Robert_Lin 2025-4-16 change to backArrow button.
+            backArrow.Focus();
 
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
@@ -475,7 +482,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            //DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= AddDeviceView_DeviceChanged;
             _vm.StopPairing();
@@ -485,13 +492,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             moduleGroup.Dispose();
         }
 
-        private void ArrowLeft_PreviewKeyDown(object sender, KeyEventArgs e)
+        //Robert_Lin, 2025-4-16 unused method.
+        private void ArrowLeft_PreviewKeyDown(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                e.Handled = true;
-                _console.ShowHomePage();
-            }
+            //if (e.Key == Key.Enter)
+            //{
+            //    e.Handled = true;
+            //    _console.ShowHomePage();
+            //}
         }
 
         private bool _hasInitialized = false;
@@ -516,6 +524,37 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 var _deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
                 _vm?.PrepareDongleInfo(_deviceHelper.dongleInfo);
+            }
+        }
+
+        private void backArrowButton_Click(object sender, RoutedEventArgs e)
+        {
+            GoBackToPreviousPage();
+        }
+        private void GoBackToPreviousPage()
+        {
+            //Robert_Lin 2025-3-5 for the back arrow to go back to the "previous" page.
+            //PIMS-301474 Clicking back arrow didn't bring the UI back to the DDPM page previously, before the
+            // settings gear icon is selected
+            //PIMS-314264 The DDPM can not back to previous page after select the Back Arrow in top left.
+            //
+            //OLD:
+            //_console.ShowHomePage();
+            //NEW:
+            IShowPluginManager? showPluginManager = AddDevicePlugin.PluginIoc.GetService<IShowPluginManager>();
+            if (showPluginManager == null)
+                return;
+            if (showPluginManager.HideTakeoverPlugin())
+            {
+                //Request to show "AddDevice" icon on Masthead
+                if (_console != null)
+                {
+                    var args = new EventManagerArgs();
+                    bool isShow = true;
+                    bool isEnabled = true;
+                    args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+                    _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+                }
             }
         }
     }

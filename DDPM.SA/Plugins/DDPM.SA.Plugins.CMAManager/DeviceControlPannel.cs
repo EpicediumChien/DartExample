@@ -15,10 +15,16 @@ namespace DDPM.SA.Plugins.CMAManager
         private static List<MonitorInfo> monitors;
         private static List<DeviceInfo> deivces;
 
+        // add @ 20250417 stephen : to manager device info from dtp event
+        private static List<CmaDeviceInfo> cmaDevices;
+
         public DeviceControlPannel()
         {
             monitors = new List<MonitorInfo>();
             deivces = new List<DeviceInfo>();
+
+            // add @ 20250417 stephen
+            cmaDevices = new List<CmaDeviceInfo>();
         }
 
         public NotifyArgs OnDeviceChnaged(CMADeviceChanges _CMADeviceChanges)
@@ -159,6 +165,52 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
 
+        #region CmaDevice method
+        public bool updateCmaDeviceList(CmaDeviceInfo item)
+        {
+
+            if (cmaDevices.Count == 0)
+            {
+                cmaDevices.Add(item);
+
+                return true;
+            }
+
+            bool isUpdated = false;
+
+            foreach (CmaDeviceInfo cmaDeviceInfo in cmaDevices)
+            {
+                if (cmaDeviceInfo.guid.ToLower().Equals(item.guid.ToLower()))
+                {
+                    cmaDeviceInfo.serialnumber = item.serialnumber.ToLower();
+                    isUpdated = true;
+                }
+            }
+
+            if (!isUpdated)
+            {
+                cmaDevices.Add(item);
+            }
+
+            return true;
+        }
+
+        public string getSerialNumber(string model)
+        {
+            string result = "N/A";
+
+            foreach (CmaDeviceInfo cmaDeviceInfo in cmaDevices)
+            {
+                if (cmaDeviceInfo.model.ToLower().Equals(model.ToLower()))
+                {
+                    result = cmaDeviceInfo.serialnumber;
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
 
 
         private class ItemMonitor

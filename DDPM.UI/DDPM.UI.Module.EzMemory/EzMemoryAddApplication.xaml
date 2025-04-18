@@ -8,7 +8,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" 
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
-             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
+             mc:Ignorable="d" 
              d:DesignHeight="735" d:DesignWidth="1378" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>

@@ -562,7 +562,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     _log?.Error($"[DisplayHotkeysViewModel] InputSourceList is empty");
                     return;//temp solution 0708
                 }
-                if (this.DisplayHotkeysModule.SelectedHomeDevice.HasCapability_PipPbp)
+                /*if (this.DisplayHotkeysModule.SelectedHomeDevice.HasCapability_PipPbp)
                 {
                     ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
                     if (ret_PxP != null && ret_PxP.result)
@@ -572,7 +572,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             _curPxpMode = 0;
                         }
                     }
-                }
+                }*/
                 OnPropertyChanged("InputsList");
                 OnPropertyChanged("FavoriteInput_Selected");
                 OnPropertyChanged("SwitchInput1_Selected");
@@ -677,62 +677,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
         public const string PipMode_SizeToggle = "01";
         public const string PipMode_PositionToggle = "02";
 
-        private UInt16 _curPxpMode = 0;
+        //private UInt16 _curPxpMode = 0;
 
         public bool HasCapability_Pxp
         {
             get
             {
                 HomeDevice homeDevice = DisplayHotkeysModule.SelectedHomeDevice;
-                //PIMS-356227 TC:also hide if PBP mode on
-                bool ret = false;
-                if (homeDevice.HasCapability_PipPbp)
+                if (homeDevice != null && homeDevice.MonitorInfo != null)
                 {
-                    switch (_curPxpMode)
-                    {
-                        case 0x00://off
-                            ret = true;
-                            break;
-                        case 0x21://PIP small
-                            ret = true;
-                            break;
-
-                        case 0x22://PIP large
-                            ret = true;
-                            break;
-                        case 0x23:
-                        case 0x24:
-                        case 0x25:
-                        case 0x26:
-                        case 0x27:
-                        case 0x28:
-                        case 0x29:
-                        case 0x2A:
-                        case 0x2B:
-                        case 0x2C:
-                        case 0x2D:
-                        case 0x2E:
-                        case 0x2F:
-                        case 0x31:
-                        case 0x32:
-                        case 0x33:
-                        case 0x34:
-                        case 0x35:
-                        case 0x41:
-                        case 0x42:
-                            ret = false;
-                            break;
-                        default:
-                            ret = true;
-                            break;
-                    }
+                    DdpmCommonHelper.WriteUILog($"[displayHotkey]{homeDevice.MonitorInfo.modelName}={homeDevice.MonitorInfo.edid.ServiceTag} IsScreenPartition = {homeDevice.IsScreenPartition}");
+                    return homeDevice.HasCapability_PipPbp;
                 }
                 else
                 {
-                    ret = false;
+                    DdpmCommonHelper.WriteUILog("[displayHotkey]HasCapability_Pxp homeDevice is null");
+                    return false;
                 }
-
-                return ret;
             }
         }
 

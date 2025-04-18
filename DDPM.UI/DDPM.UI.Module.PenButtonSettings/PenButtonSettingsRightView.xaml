@@ -63,7 +63,8 @@
           <Image Name="imgBack" Margin="0,0,10,0" Source="{DynamicResource left_img}" Stretch="Uniform"
                            HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16" MouseLeftButtonDown="GoBackClicked">
           </Image>
-          <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="Roboto"
+                    <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" 
+                                            FontFamily="{StaticResource RobotoFont}"
                                             VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
         </StackPanel>
         <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
@@ -154,7 +155,7 @@
                 <Border Name="bdrSuggested" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,8,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
                   <StackPanel>
                     <Grid>
-                      <UXControls:UXTextBlock Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                      <UXControls:UXTextBlock Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" Width="224" TextTrimming="CharacterEllipsis" />
                       <Image x:Name="imgSuggested" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                       </Image>
@@ -187,7 +188,7 @@
                 <Border Name="bdrProductivity" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
                   <StackPanel>
                     <Grid>
-                      <UXControls:UXTextBlock Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                      <UXControls:UXTextBlock Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" Width="224" TextTrimming="CharacterEllipsis" />
                       <Image x:Name="imgProductivity" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                       </Image>
@@ -226,7 +227,7 @@
                 <Border Name="bdrWindows" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
                   <StackPanel>
                     <Grid>
-                      <UXControls:UXTextBlock Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                      <UXControls:UXTextBlock Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" Width="224" TextTrimming="CharacterEllipsis" />
                       <Image x:Name="imgWindows" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                       </Image>
@@ -260,7 +261,7 @@
                 <Border Name="bdrMultimedia" MaxHeight="420" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
                   <StackPanel>
                     <Grid>
-                      <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                      <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" Width="224" TextTrimming="CharacterEllipsis" />
                       <Image x:Name="imgMultimedia" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19" Cursor="">
                       </Image>

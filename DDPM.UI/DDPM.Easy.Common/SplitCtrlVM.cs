@@ -227,6 +227,7 @@ namespace DDPM.Easy.Common
         ~SplitCtrlVM()
         {
             Dispose(false);
+            settings?.Clear();
         }
         #endregion
     }

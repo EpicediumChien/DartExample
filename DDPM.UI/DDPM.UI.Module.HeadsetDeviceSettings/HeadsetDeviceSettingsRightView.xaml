@@ -99,7 +99,7 @@
                         <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" 
                                                 Style="{StaticResource ModuleCaptionStyle}" 
                                                 Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" 
-                                                FontFamily="Roboto" FontSize="20" Height="28" Width="550" 
+                                                FontFamily="{StaticResource RobotoFont}" FontSize="20" Height="28" Width="550" 
                                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                                 HorizontalAlignment="Left" 
                                                 Margin="0,6,20,22" />

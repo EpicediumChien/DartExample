@@ -149,9 +149,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     return false;
                 }
 
-                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbProgrammableKeys(instanceIDs.ToString());
-                var jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(jArray)}");
+                // << 250419 by Hess. removed unused code to improve performance
+                //Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbProgrammableKeys(instanceIDs.ToString());
+                //var jArray = JArray.FromObject(task1.Result);
+                //DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(jArray)}");
+                // >>
             }
             catch (Exception ex)
             {

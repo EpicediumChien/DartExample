@@ -37,25 +37,29 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
-                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                //2025/4/18 Dean: due to lock function is disabled currently, using a global flag to keep restore default enable always
+                if (!GlobalDefinitions.isDisableLock)
                 {
-                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();
+                    if (data != null)
                     {
-                        RestoreLockIcon.Visibility = Visibility.Visible;
-                        txtRestore.IsEnabled = false;
-                    }
-                    else
-                    {
-                        txtRestore.IsEnabled = !data.LockSettings.Lock_Display_RestoreFactoryDefaults;
-                        RestoreLockIcon.Visibility = data.LockSettings.Lock_Display_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
-
-                        //Lock Functionality 9/7
-                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Display]
-                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Display"))
+                        if (data.LockSettings.Lock_Setting_RestoreDefaults)
                         {
                             RestoreLockIcon.Visibility = Visibility.Visible;
                             txtRestore.IsEnabled = false;
+                        }
+                        else
+                        {
+                            txtRestore.IsEnabled = !data.LockSettings.Lock_Display_RestoreFactoryDefaults;
+                            RestoreLockIcon.Visibility = data.LockSettings.Lock_Display_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                            //Lock Functionality 9/7
+                            //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Display]
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Display"))
+                            {
+                                RestoreLockIcon.Visibility = Visibility.Visible;
+                                txtRestore.IsEnabled = false;
+                            }
                         }
                     }
                 }
