@@ -139,6 +139,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private CancellationTokenSource _deviceChangedDebounceCts;
 
+        //Robert_Lin 2025-4-18 added, to keep the DIspatcher, which will be used for Dispose static UI resources.
+        private readonly Dispatcher? uiDIspatcher = null;
+
   //      private WindowsServiceMonitor _dthMonitor = new WindowsServiceMonitor(UI.Common.Constants.DTH_ServiceName);
 
         /// <summary>
@@ -177,13 +180,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             // move to new position
             _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
 
-            //Dean 2025/4/17 remove it since sometines cause exception
-            /*
             //Robert_Lin 2025-4-15 Add for dispose when the process exit
+            uiDIspatcher = System.Windows.Application.Current.Dispatcher;
             AppDomain.CurrentDomain.ProcessExit += (s, e) =>
             {
-                ISplitCtrl.DisposeAll();
-            };*/
+                if (uiDIspatcher != null)
+                {
+                    if (uiDIspatcher.HasShutdownStarted)
+                    {
+                        //When the shutdown process has started, we should not to use Dispatcher 
+                        return;
+                    }
+                    uiDIspatcher.Invoke(() =>
+                    {
+                        ISplitCtrl.DisposeAll();
+                    });
+                }
+            };
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
