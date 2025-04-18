@@ -596,7 +596,7 @@
                                    FontFamily="Roboto"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                                   Text="{Binding ShowStringContent}">
+                                   Text="{Binding ShowStringContent,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextAlignment" Value="Center" />

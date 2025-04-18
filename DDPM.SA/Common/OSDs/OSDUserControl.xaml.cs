@@ -3,6 +3,7 @@ using DDPM.QAM;
 using DDPM.SA.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -59,6 +60,21 @@ namespace DDPM.OSDs
         private DispatcherTimer? animationTimer = null;
         private TimeSpan time;
 
+        public static readonly RoutedEvent OSDUserControl_Closed = EventManager.RegisterRoutedEvent(
+           "OSDUserControl_Closed", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(OSDUserControl));
+
+        public event RoutedEventHandler OSDUserControl_ClosedHanddler
+        {
+            add { AddHandler(OSDUserControl_Closed, value); }
+            remove { RemoveHandler(OSDUserControl_Closed, value); }
+        }
+
+        protected void RaiseMyCustomEvent()
+        {
+            RoutedEventArgs args = new RoutedEventArgs(OSDUserControl_Closed);
+            RaiseEvent(args);
+        }
+
         public string GUID
         {
             get { return (string)GetValue(GUIDProperty); }
@@ -102,7 +118,11 @@ namespace DDPM.OSDs
         public static readonly DependencyProperty ShowStringContentProperty =
             DependencyProperty.Register("ShowStringContent", typeof(string), typeof(OSDUserControl), new PropertyMetadata(""));
 
-
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public bool IsFadeOut
         {
@@ -133,6 +153,7 @@ namespace DDPM.OSDs
         public OSDUserControl()
         {
             InitializeComponent();
+            //DataContext = this;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -142,6 +163,53 @@ namespace DDPM.OSDs
              animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
              animationTimer.Tick += RunTimerTick;
              animationTimer.Start();*/
+            switch (OSDType_Device)
+            {
+                case OSDType_Device.QAM:
+                    time = TimeSpan.FromMilliseconds(5000);
+                    break;
+                case OSDType_Device.EasyMemory:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.FingerPrint:
+                    time = TimeSpan.FromMilliseconds(5000);
+                    break;
+                case OSDType_Device.CapsLockOn:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.CapsLockOff:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.NumLockOn:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.NumLockOff:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.ScrollLockOn:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.ScrollLockOff:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.Mute:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.UnMute:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.StartRecording:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
+                case OSDType_Device.WalkAwayLock:
+                    time = TimeSpan.FromMilliseconds(5000);
+                    break;
+            }
+            //RaiseMyCustomEvent();
+            animationTimer = new DispatcherTimer();
+            animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            animationTimer.Tick += RunTimerTick;
+            animationTimer.Start();
         }
         private void RunTimerTick(object? sender, EventArgs e)
         {
@@ -156,6 +224,23 @@ namespace DDPM.OSDs
             else
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
+                /*      switch (OSDType_Device)
+                      {
+                          case OSDType_Device.StartRecording:
+                              this.Dispatcher.Invoke(() =>
+                              {
+                                  this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
+                                  OnPropertyChanged("ShowStringContent");
+                              });
+                              break;
+                          case OSDType_Device.WalkAwayLock:
+                              this.Dispatcher.Invoke(() =>
+                              {
+                                  this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
+                                  OnPropertyChanged("ShowStringContent");
+                              });
+                              break;
+                      }*/
             }
         }
         private void InvokeFadeOutAnimation()
