@@ -15074,8 +15074,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-
             /*iTest++;
             if (iTest % 2 == 1)
             {
@@ -19167,7 +19165,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
                                         _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "7471D427-F152-4E19-918E-F84FF12FBBEE" : guid.ToString(), OSDType_Device.StartRecording, oSDType_Op, string.Empty, "3", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        await Task.Run(async () =>
+                                        /*await Task.Run(async () =>
                                         {
                                             for (int i = 2; i >= 0; i--)
                                             {
@@ -19176,7 +19174,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                             await Task.Delay(1000);
                                             _OSD_Controler.CloseMultipleOSDByGuidAndOp("7471D427-F152-4E19-918E-F84FF12FBBEE", OSDType_Op.None);
-                                        });
+                                        });*/
                                         /*if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                         }
@@ -19213,7 +19211,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
                                         _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09" : guid.ToString(), OSDType_Device.WalkAwayLock, oSDType_Op, LangHelper.Instance["Walk_Away_Lock"], "5", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        await Task.Run(async () =>
+                                        /*await Task.Run(async () =>
                                         {
                                             for (int i = 4; i >= 0; i--)
                                             {
@@ -19222,7 +19220,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                             await Task.Delay(1000);
                                             _OSD_Controler.CloseMultipleOSDByGuidAndOp("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", OSDType_Op.None);
-                                        });
+                                        });*/
                                         /*if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                         }

@@ -224,23 +224,23 @@ namespace DDPM.OSDs
             else
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
-                /*      switch (OSDType_Device)
-                      {
-                          case OSDType_Device.StartRecording:
-                              this.Dispatcher.Invoke(() =>
-                              {
-                                  this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
-                                  OnPropertyChanged("ShowStringContent");
-                              });
-                              break;
-                          case OSDType_Device.WalkAwayLock:
-                              this.Dispatcher.Invoke(() =>
-                              {
-                                  this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
-                                  OnPropertyChanged("ShowStringContent");
-                              });
-                              break;
-                      }*/
+                switch (OSDType_Device)
+                {
+                    case OSDType_Device.StartRecording:
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
+                            OnPropertyChanged("ShowStringContent");
+                        });
+                        break;
+                    case OSDType_Device.WalkAwayLock:
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.ShowStringContent = (Convert.ToInt32(this.ShowStringContent) - 1).ToString();
+                            OnPropertyChanged("ShowStringContent");
+                        });
+                        break;
+                }
             }
         }
         private void InvokeFadeOutAnimation()
