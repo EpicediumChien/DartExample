@@ -268,7 +268,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_ddpmHomePageViewModel != null)
             {
                 double newWidth = minWidth;
-
                 // MinWidth = 330
                 if (_ddpmHomePageViewModel.HomeDevices.Count == 1)
                 {
@@ -290,13 +289,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 4)
                 {
                     if (cxView < bkpt4) //1200
-                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView, 2);
+                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView, _ddpmHomePageViewModel.HomeDevices.Count);
                     else
                         newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView);
                 }
                 else if (_ddpmHomePageViewModel.HomeDevices.Count < 7)
                 {
-                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView, 2);
+                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView, _ddpmHomePageViewModel.HomeDevices.Count);
                 }
                 //2024-6-23, HomePage RWD, 4 items per row first, so never > 4 items/row
                 //ItemCount > 4
@@ -304,11 +303,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else
                 {
                     if (cxView < bkpt4)
-                        newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
+                    {
+                        newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView, _ddpmHomePageViewModel.HomeDevices.Count);
+                    }
                     else //2024-6-23, Robert_Lin, RWD 4 item per row first
                     {
                         //If ItemCount>4, and cxView>=bkpt4(1280), will show 4 items/row
-                        newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView);
+                        newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView, _ddpmHomePageViewModel.HomeDevices.Count);
                     }
                     //else if (cxView < bkpt5)
                     //    newWidth = CalculateItemWidth_ItemsPerRowN(cxView, cyView, 5);
@@ -382,8 +383,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return justifyMinMaxWidth(sizeItem);
         }
 
-        private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView, double rowCount = 1)
+        private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView, double devCount = 2)
         {
+            double rowCount = devCount / 2;
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
             //
@@ -401,8 +403,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return sizeItem;
         }
 
-        private double CalculateItemWidthV3_ItemsPerRow3(double cxView, double cyView, double rowCount = 1)
+        private double CalculateItemWidthV3_ItemsPerRow3(double cxView, double cyView, double devCount = 3)
         {
+            double rowCount = devCount / 3;
+            rowCount += devCount % 3 == 0 ? 0 : 1;
+
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             double hugeReduce = 0;
             if (cxView >= 2200)
@@ -418,11 +423,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return sizeItem;
         }
 
-        private double CalculateItemWidthV3_ItemsPerRow4(double cxView, double cyView)
+        private double CalculateItemWidthV3_ItemsPerRow4(double cxView, double cyView, double devCount = 4)
         {
+            double rowCount = devCount / 4;
+            rowCount += devCount % 4 == 0 ? 0 : 1;
+
             //Add margin in cxItem to avoid internal margin
             double cxItem = (cxView - (minGap * 5.000)) / 4.000;
-            double cyItem = (cyView - minGap) / 2.00;
+            double cyItem = (cyView - minGap) / rowCount;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
             if (_ddpmHomePageViewModel != null)
                 _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 4 + minGap * 5;
