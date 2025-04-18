@@ -548,9 +548,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             idxSpeaker++;
                         }
                         //250415 Wayn 新增RtkHub 
-                        else if (GlobalDefinitions.isSupport210 && devType.ToString().ToUpper().Contains("25"))
+                        else if (GlobalDefinitions.isSupport210 && (devType.ToString().ToUpper().Contains("25") || devType.ToString().Contains("LogicalHub", StringComparison.OrdinalIgnoreCase)))
                         {
-                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos RtkHub ... ");
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos RtkHub, devType : {devType.ToString()}... ");
                             dev.DeviceCategory = eDeviceCategory.RtkHub;
                             dev.SortOrder = (int)dev.DeviceCategory + idxRtkHub;
                             idxRtkHub++;
