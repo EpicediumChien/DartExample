@@ -991,5 +991,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             get => _isSmallScreenResolution;
             set => SetProperty(ref _isSmallScreenResolution, value);
         }
+
+        private double _orderingWidth = 0.0;
+
+        public double OrderingWidth
+        {
+            get => _orderingWidth;
+            set => SetProperty(ref _orderingWidth, value);
+        }
     }
 }

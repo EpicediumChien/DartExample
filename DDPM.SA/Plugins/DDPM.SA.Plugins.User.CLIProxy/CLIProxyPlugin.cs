@@ -821,14 +821,20 @@ namespace DDPM.SA.Plugin.User.CLIManager
             var header = string.Empty;
             bool is_model = false;
             WriteLog($"commandLine: {e.defer_item.commanddata}");
-            if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
+
+            string command_data = string.IsNullOrEmpty(e.cli_command_format) ? e.defer_item.commanddata : e.cli_command_format;
+            WriteLog($"is from CMA:({string.IsNullOrEmpty(e.cli_command_format)}), command:({command_data})");
+
+            //if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
+            if (command_data.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) ||
+               command_data.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
             {
                 WriteLog($"Firmware Update");
-                var deviceType = e.defer_item.commanddata.ToLower()
+                var deviceType = command_data.ToLower()// e.defer_item.commanddata.ToLower()
                                                          .Split()
                                                          .FirstOrDefault(_ => _.Contains("value"));
                 
-                var devicemodel = e.defer_item.commanddata.ToLower()
+                var devicemodel = command_data.ToLower()//e.defer_item.commanddata.ToLower()
                                                          .Split()
                                                          .FirstOrDefault(_ => _.Contains("model"));
                 var deviceName = "[Device Marketing Name with Model in parenthesis]";
@@ -892,7 +898,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
-            if (e.is_defer && e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase))
+#if DEBUG
+            Console.WriteLine($"e.is_defer:({e.is_defer}), e.defer_item.commanddata:({e.defer_item.commanddata}), message:({e.toast_message})");
+#endif
+            bool contain_fwupdate = e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.cli_command_format.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase);
+            if (e.is_defer && contain_fwupdate)
             {              
                 FWshowToast(e.defer_id, header, e.toast_message);
             }

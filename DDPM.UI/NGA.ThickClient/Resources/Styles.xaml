@@ -5,7 +5,7 @@
                     xmlns:ddpmCommonUC="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:Double x:Key="DefaultWindowHeight">735</system:Double>
+    <system:Double x:Key="DefaultWindowHeight">768</system:Double>
     <system:Double x:Key="DefaultWindowWidth">1378</system:Double>
 
     <system:Double x:Key="DdpmMinWindowHeight">400</system:Double>

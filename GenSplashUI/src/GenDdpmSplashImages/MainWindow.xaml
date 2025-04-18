@@ -13,8 +13,8 @@
                     <ColumnDefinition Width="5*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="5*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Grid.ColumnSpan="3" Source="{Binding ImageFilePath}" Width="{Binding ImageWidth}" Stretch="UniformToFill"/>
+                </Grid.ColumnDefinitions> 
+                <Image Grid.Column="0" Grid.ColumnSpan="3" Source="{Binding ImageFilePath}" Width="{Binding ImageWidth}" Stretch="Uniform"/>
                 <Viewbox Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid HorizontalAlignment="Center">
                         <!--<Grid.RenderTransform>

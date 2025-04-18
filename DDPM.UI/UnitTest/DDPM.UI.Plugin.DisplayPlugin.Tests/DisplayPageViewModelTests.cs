@@ -17,6 +17,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
     {
         private DisplayPageViewModel? displayPageViewModel;
         private readonly AddDeviceViewModel? _vm;
+        private ModuleGroup moduleGroup;        
 
         [SetUp]
         public void Setup()
@@ -26,6 +27,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
                 new System.Windows.Application();
             }
             displayPageViewModel = new DisplayPageViewModel();
+            moduleGroup = new();
         }
 
         [Test]
@@ -113,7 +115,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 
             //value < GroupCount
             List<ModuleGroup> groups = [];
-            ModuleGroup moduleGroup;
             moduleGroup = new ModuleGroup()
             {
                 GroupName = "Display",
@@ -418,6 +419,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             var selectedMonitorInfo = new MonitorInfo();
             displayPageViewModel.SelectedMonitorInfo = selectedMonitorInfo;
             Assert.That(displayPageViewModel.SelectedMonitorInfo, Is.EqualTo(selectedMonitorInfo));
+        }
+
+        [TearDown]
+        public void TeatDown()
+        {
+            moduleGroup?.Dispose();
+            moduleGroup = null;
         }
     }
 }
