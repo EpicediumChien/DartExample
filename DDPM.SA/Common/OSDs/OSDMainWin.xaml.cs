@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -135,6 +136,21 @@ namespace DDPM.OSDs
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private void OSDUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            OSDUserControl oSDUserControl = (OSDUserControl)sender;
+
+            if (oSDUserControl != null)
+            {
+                switch (oSDUserControl.OSDType_Device)
+                {
+                    case OSDType_Device.QAM:
+
+                        break;
+                }
             }
         }
     }

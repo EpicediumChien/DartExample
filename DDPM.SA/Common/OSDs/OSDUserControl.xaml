@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.OSDs"
              mc:Ignorable="d"
-             Loaded="UserControl_Loaded">
+             Loaded="UserControl_Loaded"
+             Unloaded="UserControl_Unloaded">
     <UserControl.Resources>
         <Storyboard x:Key="FadeOut">
             <DoubleAnimation 
@@ -596,7 +597,7 @@
                                    FontFamily="Roboto"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                                   Text="{Binding ShowStringContent}">
+                                   Text="{Binding ShowStringContent,RelativeSource={RelativeSource AncestorType={x:Type local:OSDUserControl}},UpdateSourceTrigger=PropertyChanged}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextAlignment" Value="Center" />
