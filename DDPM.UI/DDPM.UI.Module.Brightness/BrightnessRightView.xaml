@@ -333,7 +333,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -341,7 +341,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"-->
+                                                --><!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"--><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -349,14 +349,28 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                                                --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"--><!--
                                                                 <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
 
                                         <Image
                                             Grid.Column="1"
@@ -550,7 +564,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -571,7 +585,21 @@
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
 
                                         <Image
                                             Grid.Column="1"
@@ -713,7 +741,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -721,7 +749,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" -->
+                                                --><!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" --><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -729,14 +757,28 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                --><!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                                                 <TextBlock Text="{Binding [Brightness.7], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                         <Image
                                             Grid.Column="2"
                                             Width="16"
@@ -830,7 +872,7 @@
                                             TextBlockType="Display1"
                                             Visibility="{Binding AutoBrightnessRangeLevelVisible_invert}" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -838,7 +880,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" -->
+                                                --><!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" --><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -846,14 +888,29 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                --><!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                                                 <TextBlock Text="{Binding [Brightness.9], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+
                                         <Image
                                             Grid.Column="2"
                                             Width="16"
@@ -931,7 +988,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -939,7 +996,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" -->
+                                                --><!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" --><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -947,14 +1004,29 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                --><!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                                                 <TextBlock Text="{Binding [Brightness.11], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+
                                         <Image
                                             Grid.Column="2"
                                             Width="16"
@@ -1051,7 +1123,7 @@
                                             TextBlockType="Display1"
                                             Visibility="{Binding PrimaryMonitorForSyncVisible_invert}" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -1059,7 +1131,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" -->
+                                                --><!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" --><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -1067,14 +1139,28 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                --><!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                                                 <TextBlock Text="{Binding [Brightness.13], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                         <Image
                                             Grid.Column="2"
                                             Width="16"
@@ -1392,7 +1478,7 @@
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD  Margin="4,0,0,0"-->
-                                                            <Image
+                                                            <!--<Image
                                                                 Width="16"
                                                                 Height="16"
                                                                 HorizontalAlignment="Left"
@@ -1400,9 +1486,9 @@
                                                                 Margin="4,0,0,0"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                                                 Stretch="Uniform">
-                                                            <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
+                                                            --><!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"--><!--
                                                             <Image.ToolTip>
-                                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" --><!--
                                                                 <ToolTip Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
@@ -1416,8 +1502,22 @@
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
-                                                            </Image>
-                                                        </StackPanel>
+                                                            </Image>-->
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                                <!-- The (i) icon 16x16 -->
+                                                                <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                                <!-- ToolTip -->
+                                                                <Button.ToolTip>
+                                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Button.ToolTip>
+                                                            </Button>
+                                                    </StackPanel>
                                                         <!--20250319 Chewlin for PIMS-348370 ADD <TextBlock Text="{Binding StringFormat=D2}" />-->
                                                         <UXControls:UXComboBox
                                                             Name="PR1_Duration_UXComboBox"
@@ -1858,7 +1958,7 @@
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
                                                         <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="0,0,4,0" -->
-                                                        <Image
+                                                        <!--<Image
                                                                 Width="16"
                                                                 Height="16"
                                                                 Margin="4,0,0,0"
@@ -1866,9 +1966,9 @@
                                                                 VerticalAlignment="Center"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                                                 Stretch="Uniform">
-                                                            <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
+                                                            --><!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"--><!--
                                                             <Image.ToolTip>
-                                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" --><!--
                                                                 <ToolTip Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
@@ -1882,8 +1982,22 @@
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
-                                                            </Image>
-                                                        </StackPanel>
+                                                            </Image>-->
+                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <!-- The (i) icon 16x16 -->
+                                                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                            <!-- ToolTip -->
+                                                            <Button.ToolTip>
+                                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                    </Border>
+                                                                </ToolTip>
+                                                            </Button.ToolTip>
+                                                        </Button>
+                                                    </StackPanel>
                                                         <!--20250319 Chewlin for PIMS-348370 ADD <TextBlock Text="{Binding StringFormat=D2}" />-->
                                                         <UXControls:UXComboBox
                                                             Name="PR2_Duration_UXComboBox"
@@ -2128,7 +2242,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -2136,7 +2250,7 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                --><!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened" --><!--
                                                 <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
@@ -2144,15 +2258,28 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                                                 <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
 
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                         <Image
                                             Grid.Column="1"
                                             Width="16"
@@ -2406,7 +2533,7 @@
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
 
-                                                            <Image
+                                                            <!--<Image
                                                                 Width="16"
                                                                 Height="16"
                                                                 Margin="10,0"
@@ -2428,7 +2555,21 @@
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
-                                                            </Image>
+                                                            </Image>-->
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                                <!-- The (i) icon 16x16 -->
+                                                                <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                                <!-- ToolTip -->
+                                                                <Button.ToolTip>
+                                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                            <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Button.ToolTip>
+                                                            </Button>
                                                         </StackPanel>
 
                                                         <UXControls:UXComboBox
@@ -2712,7 +2853,7 @@
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
 
-                                                            <Image
+                                                            <!--<Image
                                                                 Width="16"
                                                                 Height="16"
                                                                 Margin="10,0"
@@ -2734,7 +2875,21 @@
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
-                                                            </Image>
+                                                            </Image>-->
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                                <!-- The (i) icon 16x16 -->
+                                                                <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                                <!-- ToolTip -->
+                                                                <Button.ToolTip>
+                                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                            <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Button.ToolTip>
+                                                            </Button>
                                                         </StackPanel>
 
                                                         <UXControls:UXComboBox
@@ -2858,7 +3013,7 @@
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
-                                        <Image
+                                        <!--<Image
                                             Grid.Column="1"
                                             Width="16"
                                             Height="16"
@@ -2879,8 +3034,21 @@
                                                     </Border>
                                                 </ToolTip>
                                             </Image.ToolTip>
-                                        </Image>
+                                        </Image>-->
+                                        <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                            <!-- The (i) icon 16x16 -->
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
 
+                                            <!-- ToolTip -->
+                                            <Button.ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                         <Image
                                             Grid.Column="1"
                                             Width="16"
