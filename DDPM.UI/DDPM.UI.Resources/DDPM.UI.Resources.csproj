@@ -283,6 +283,7 @@
 		<None Remove="Resources\Images\WB3023.png" />
 		<None Remove="Resources\Images\WB5023.png" />
 		<None Remove="Resources\Images\WB7022.png" />
+		<None Remove="Resources\Images\WD19.png" />
 		<None Remove="Resources\Images\WD19DC.png" />
 		<None Remove="Resources\Images\WD19DCS.png" />
 		<None Remove="Resources\Images\WD19S.png" />
@@ -655,6 +656,9 @@
 		<Resource Include="Resources\Images\undo2.png" />
 		<Resource Include="Resources\Images\UV514.png" />
 		<Resource Include="Resources\Images\WB5023.png" />
+		<Resource Include="Resources\Images\WD19.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Images\WD19DC.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
