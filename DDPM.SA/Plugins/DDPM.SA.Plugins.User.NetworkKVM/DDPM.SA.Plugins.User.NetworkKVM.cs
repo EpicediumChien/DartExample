@@ -1993,9 +1993,9 @@ namespace NetworkKVM.Plugins
                     DdpmJsonCommon.Monitor get_MonitorInfo = new DdpmJsonCommon.Monitor();
                     _AllInfoMonitors = GetMonitors().Result;
                     get_MONITORINFO_R.cid = get_MONITOR_INFO.cid;
+                    get_MONITORINFO_R.Success = true;
                     if (_AllInfoMonitors.Count != 0)
                     {
-                        get_MONITORINFO_R.Success = true;
                         foreach (var item in _AllInfoMonitors)
                         {
                             if (string.IsNullOrEmpty(item.CapabilityString))
@@ -2047,13 +2047,14 @@ namespace NetworkKVM.Plugins
                 else
                 {
                     _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
+                    get_MONITORINFO_R.Success = false;
                 }
             }
             else
             {
                 _logs.DebugMsg("[NetworkKVM] Not GET_MONITOR_INFO....");
+                get_MONITORINFO_R.Success = false;
             }
-            get_MONITORINFO_R.Success = false;
             get_MONITORINFO_R.Monitors = null;
             get_MONITORINFO_R.UpdateChecksum();
             if (get_MONITORINFO_R.ToJson() != string.Empty)
