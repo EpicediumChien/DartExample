@@ -21,6 +21,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 
@@ -183,6 +184,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
         }
 
+        //2025/4/24 mark this function as [Obsolete] due to checkmarx report the line sw.WriteLine() cause issue "Information Exposure Through an Error Message"
+        [Obsolete]
         private static void OutputLog(string output, CommandLineInput commandLineInput)
         {
             if (!string.IsNullOrEmpty(commandLineInput.LogPath))
@@ -799,8 +802,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 //write result back
                 if (cliEventResult != null)
                 {
+                    WriteLog($"[commandLineInput]: {JToken.FromObject(commandLineInput).ToString()}");
+                    WriteLog($"[Response]: {cliEventResult.serialize_Json_response}");
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
-                    OutputLog(cliEventResult.serialize_Json_response, commandLineInput);
+                    //OutputLog(cliEventResult.serialize_Json_response, commandLineInput); //This function may cause message with exception content to streambuilder, replace it by ILog
                 }
             });
         }
