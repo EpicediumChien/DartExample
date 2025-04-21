@@ -80,7 +80,7 @@
                 </Grid>
             </Grid>
             <!--Vbar-->
-                <!--<Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+            <!--<Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
                     <ItemsControl Name="vbarList" Margin="0,10,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
@@ -151,7 +151,7 @@
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Visible" x:Name="DongleConnection">
+                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Collapsed" x:Name="DongleConnection">
                             <Grid Margin="16">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto"/>
@@ -237,7 +237,7 @@
                                     <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
-                                    <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
+                                <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
                                     <Image.ToolTip>
@@ -257,10 +257,10 @@
                                 </Image>
                             </Grid>
                         </Border>
-            <Border Style="{StaticResource BorderUnpair}" Width="auto" MinWidth="105" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
+                        <Border Style="{StaticResource BorderUnpair}" Width="auto" MinWidth="105" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
                             <Grid>
                                 <Border Padding="10,0,10,0" BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
-                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource Unpair_FgColor}" VerticalAlignment="Center"
+                                    <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource Unpair_FgColor}" VerticalAlignment="Center"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
                             </Grid>
