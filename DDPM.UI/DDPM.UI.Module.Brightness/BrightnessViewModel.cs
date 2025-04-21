@@ -206,17 +206,15 @@ namespace DDPM.UI.Module.Brightness
             LuminanceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Luminance.png");
 
             SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
-            Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
-            Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
-
-            PR1Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
-            PR1Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
-            PR2Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
-            PR2Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
-
-            PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
-            PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
+            Contrast_Debouncer = new Debouncer(1500, Set_Contrast_Value);
+            Brightness_Debouncer = new Debouncer(1500, Set_Brightness_Value);
+            Luminance_Debouncer = new Debouncer(1500, Set_Luminance_Value);
+            PR1Contrast_Debouncer = new Debouncer(1500, Set_Contrast_Value);
+            PR1Brightness_Debouncer = new Debouncer(1500, Set_Brightness_Value);
+            PR2Contrast_Debouncer = new Debouncer(1500, Set_Contrast_Value);
+            PR2Brightness_Debouncer = new Debouncer(1500, Set_Brightness_Value);
+            PR1Luminance_Debouncer = new Debouncer(1500, Set_Luminance_Value);
+            PR2Luminance_Debouncer = new Debouncer(1500, Set_Luminance_Value);
 
             DdpmCommonHelper.MyConsole?.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
@@ -231,6 +229,7 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
             }
+
             DdpmCommonHelper.MyConsole.UnregisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
 
@@ -2494,16 +2493,68 @@ namespace DDPM.UI.Module.Brightness
 
         public void UpdateBrightnessContrast()
         {
-            Trace.WriteLine($"2.1. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
-            if (Brightness_Value < 0)
-                Get_Brightness_Value();
-            Trace.WriteLine($"2.2. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
-            //NotifyPropertyChanged("BrightnessValue");
-            if (Contrast_Value < 0)
-                Get_Contrast_Value();
-            Trace.WriteLine($"2.3. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
-            //NotifyPropertyChanged("ContrastValue");
-            //Trace.WriteLine($"2.4. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
+            if (SelectedHomeDevice != null)
+            {
+                var commands = new List<MultiCommandArch>();
+                commands.Add(new MultiCommandArch()
+                {
+                    MonitorInfo = SelectedHomeDevice.MonitorInfo,
+                    Action = MultiCommandAction.GetVCPCapability,
+                    Function = 0x10,
+                    Priority = Priority.SuperHigh,
+                    Opt = 0,
+                });
+
+                commands.Add(new MultiCommandArch()
+                {
+                    MonitorInfo = SelectedHomeDevice.MonitorInfo,
+                    Action = MultiCommandAction.GetVCPCapability,
+                    Function = 0x12,
+                    Priority = Priority.SuperHigh,
+                    Opt = 0,
+                });
+
+                var BriConValue = DdpmCommonHelper.DeviceManagerSA.MultiCommandsRun(commands).Result;
+
+                foreach (var item in BriConValue)
+                {
+                    if (item.Function is not null)
+                    {
+                        if (Convert.ToByte(item.Function).Equals(0x10))
+                        {
+                            if (!string.IsNullOrWhiteSpace(item.Result?.ToString()))
+                            {
+                                var objValue = Convert.ToUInt32(item.Result);
+
+                                Brightness_Value = Convert.ToDouble((uint)(long)objValue);
+
+                                NotifyPropertyChanged("BrightnessValue");
+                                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+                            }
+                        }
+                        else if (Convert.ToByte(item.Function).Equals(0x12))
+                        {
+                            if (!string.IsNullOrWhiteSpace(item.Result?.ToString()))
+                            {
+                                var objValue = Convert.ToUInt32(item.Result);
+                                Contrast_Value = Convert.ToDouble((uint)(long)objValue);
+
+                                NotifyPropertyChanged("ContrastValue");
+                            }
+                        }
+                    }
+                }
+
+                //if (Brightness_Value < 0 || Contrast_Value < 0)
+                //Get_Brightness_Value();
+
+                ////NotifyPropertyChanged("BrightnessValue");
+
+                //if (Contrast_Value < 0)
+                //Get_Contrast_Value();
+
+                ////NotifyPropertyChanged("ContrastValue");
+            }
         }
 
         public void UpdateHDRStatus()

@@ -422,19 +422,19 @@ namespace VcpCore.Plugins
             {
                 if (command.Action.Equals(MultiCommandAction.GetMonitors))
                 {
-                    var r = await GetMonitors().ConfigureAwait(false);
+                    var r = await Task.Run(() => GetMonitors());
                     command.Result = r;
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.GetCapabilitiesString))
                 {
-                    var r = await GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority).ConfigureAwait(false);
+                    var r = await Task.Run(() => GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority));
                     command.Result = r;
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.GetVCPCapabilities))
                 {
-                    var r = await GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority).ConfigureAwait(false);
+                    var r = await Task.Run(() => GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority));
                     command.Result = r;
                     return command;
                 }
@@ -442,11 +442,11 @@ namespace VcpCore.Plugins
                 {
                     ObjGetVCP r = new ObjGetVCP();
                     if (command.Function is string)
-                        r = await GetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Guid, command.Opt, command.Priority).ConfigureAwait(false);
+                        r = await Task.Run(() => GetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Guid, command.Opt, command.Priority));
                     else
-                        r = await GetVCPCapability(command.MonitorInfo, (byte)command.Function, command.Guid, command.Opt, command.Priority).ConfigureAwait(false);
+                        r = await Task.Run(() => GetVCPCapability(command.MonitorInfo, Convert.ToByte(command.Function), command.Guid, command.Opt, command.Priority));
 
-                    command.Result = r;
+                    command.Result = r.result ? r.value : string.Empty;
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.SetVCPCapability))
@@ -454,22 +454,22 @@ namespace VcpCore.Plugins
                     bool r = false;
 
                     if ((command.Function is string) && (command.Value is string))
-                        r = await SetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Value.ToString(), command.Guid, command.Priority).ConfigureAwait(false);
+                        r = await Task.Run(() => SetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Value.ToString(), command.Guid, command.Priority));
                     else
-                        r = await SetVCPCapability(command.MonitorInfo, (byte)command.Function, (uint)command.Value, command.Guid, command.Priority).ConfigureAwait(false);
+                        r = await Task.Run(() => SetVCPCapability(command.MonitorInfo, (byte)command.Function, (uint)command.Value, command.Guid, command.Priority));
 
                     command.Result = r;
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.GetVCPCacheTable))
                 {
-                    var r = await GetVCPCacheTable().ConfigureAwait(false);
+                    var r = await Task.Run(() => GetVCPCacheTable());
                     command.Result = r;
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.CancelVcpTask))
                 {
-                    await CancelVcpTask(command.Guid).ConfigureAwait(false);
+                    await Task.Run(() => CancelVcpTask(command.Guid));
                     return command;
                 }
                 else
