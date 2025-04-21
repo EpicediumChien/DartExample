@@ -2527,8 +2527,10 @@ namespace DDPM.UI.Module.Brightness
                                 var objValue = Convert.ToUInt32(item.Result);
 
                                 Brightness_Value = Convert.ToDouble((uint)(long)objValue);
-
+                                Luminance_Value = Brightness_Value;
+                                
                                 NotifyPropertyChanged("BrightnessValue");
+                                NotifyPropertyChanged("LuminanceValue");
                                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                             }
                         }

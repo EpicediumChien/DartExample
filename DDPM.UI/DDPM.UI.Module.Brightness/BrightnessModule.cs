@@ -98,7 +98,9 @@ namespace DDPM.UI.Module.Brightness
                 InitNewViewModel();
             }
 
-            vm.UpdateHDRStatus();
+            vm?.UpdateBrightnessContrast();
+            vm?.UpdateHDRStatus();
+
             if (_rightView == null)
                 return;
         }
