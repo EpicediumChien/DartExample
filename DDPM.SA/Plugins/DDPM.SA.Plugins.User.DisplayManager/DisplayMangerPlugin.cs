@@ -1924,7 +1924,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (!als_connected2[i].Edid.Equals(monitorInfoMain.edid))//sync AutoBrightness & AutoColorTemp value
                 {
                     if (!(als_connected2[i].isSupportALS == 2))
-                        return Task.FromResult(true);
+                        continue; //If no support, still continue next monitor
 
                     if (isprimarysupportlum) // Lum True
                     {
@@ -3081,9 +3081,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
                 if (alsConfig != null)// && alsConfig.AllValue != result)
                 {
-                    Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
+                    CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode);//JIRA DDPMW-770
                     int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
                     AllALSConfig[idx].isBusy = false;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs {AllALSConfig[idx].ModelName} : isBusy = false");
                 }
             }
 
