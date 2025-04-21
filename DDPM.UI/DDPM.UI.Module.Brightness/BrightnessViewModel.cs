@@ -2817,7 +2817,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
+        public void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
         {
             if (isLuminanceSupport == Visibility.Visible)
                 UpdateLuminance();
@@ -3366,7 +3366,7 @@ namespace DDPM.UI.Module.Brightness
             Debug.WriteLine("RefreshHotkeySettings done");
         }
 
-        private void RunWorkerCompleted_RefreshManualValue(object sender, RunWorkerCompletedEventArgs e)
+        public void RunWorkerCompleted_RefreshManualValue(object sender, RunWorkerCompletedEventArgs e)
         {
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
             {
