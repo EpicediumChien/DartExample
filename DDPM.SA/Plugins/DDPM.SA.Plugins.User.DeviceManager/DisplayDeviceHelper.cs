@@ -113,6 +113,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public void CheckAndTriggerToastWhileMonitorPlugged(int msec, List<MonitorInfo> mos, ISettingsManagerDev settingsManager)
         {
+            WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] Entrance.");
             string processName = "DDPM"; //"notepad";
             Process[] processes = Process.GetProcessesByName(processName);
             if (processes != null && processes.Length == 0)//means no UI pluged
