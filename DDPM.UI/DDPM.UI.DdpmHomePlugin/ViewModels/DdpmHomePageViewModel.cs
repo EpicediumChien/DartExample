@@ -584,12 +584,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             dev.InstanceNo = instanceNo;
                         }
 
-                        if (!GlobalDefinitions.isSupport210 && devType.ToString().ToUpper().Contains("25"))
-                            return;
+
                         //_homeDevices.Add(dev);
                         tempList.Add(dev);
-
-
                     }
                     //OnPropertyChanged("HomeDevices");
 
