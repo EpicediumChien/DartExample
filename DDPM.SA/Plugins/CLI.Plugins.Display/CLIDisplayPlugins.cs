@@ -858,8 +858,8 @@ namespace DDPM.CLI.Plugins.Display
                 return WriteALSResponse(_AllInfoMonitors, _AllInfoMonitors.Count.ToString(), input, CLI_ExitCode.null_device_manager, false, "");
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
 
             if (_AllInfoMonitors.Count == 0)
             {
@@ -1614,8 +1614,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
@@ -1678,8 +1678,8 @@ namespace DDPM.CLI.Plugins.Display
 
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
 
                 if (_AllInfoMonitors.Count > 0)
                 {
@@ -1722,8 +1722,8 @@ namespace DDPM.CLI.Plugins.Display
                 //value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
 
                 if (_AllInfoMonitors.Count > 0)
                 {
@@ -2077,8 +2077,8 @@ namespace DDPM.CLI.Plugins.Display
                 return false;
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             bool result = false;
 
@@ -2113,8 +2113,8 @@ namespace DDPM.CLI.Plugins.Display
                 return false;
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             bool result = false;
 
@@ -2136,8 +2136,8 @@ namespace DDPM.CLI.Plugins.Display
                 return new ObjGetVCP() { result = false, value = null };
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             ObjGetVCP result = new ObjGetVCP();
             if (_AllInfoMonitors.Exists(t => t.edid.SerialNumber == mo.edid.SerialNumber))
@@ -2167,8 +2167,8 @@ namespace DDPM.CLI.Plugins.Display
                 return new ObjGetVCP() { result = false, value = null };
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             ObjGetVCP result = new ObjGetVCP();
             if (_AllInfoMonitors.Exists(t => t.edid.SerialNumber == mo.edid.SerialNumber))
@@ -2198,8 +2198,8 @@ namespace DDPM.CLI.Plugins.Display
                 return new ObjGetVCP() { result = false, value = null };
             }
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             ObjGetVCP result = new ObjGetVCP();
             if (index < _AllInfoMonitors.Count)
@@ -2221,8 +2221,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -2628,8 +2628,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -3020,8 +3020,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
 
@@ -3308,8 +3308,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
             if (type == "GET")
@@ -3646,8 +3646,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
             if (type == "GET")
@@ -3887,8 +3887,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (type == "GET")
             {
@@ -3933,8 +3933,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
             if (type == "GET")
@@ -4269,8 +4269,8 @@ namespace DDPM.CLI.Plugins.Display
         //06.07 Jason
         private async Task<(int code, string result)> InputSource(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
             bool ispass = true;
             DDPMSettings data = devMgr.ReloadAppConfigData().Result;
@@ -4705,8 +4705,8 @@ namespace DDPM.CLI.Plugins.Display
             //    writelog("SetVCPCode: input null IDeviceManagerSA");
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
 
             string output = string.Empty;
             if (commandLineInput.Command == "GET")
@@ -4908,8 +4908,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("GetVCPCapabilities: input null IDeviceManagerSA");
                 return inputs;
             }
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();//_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();//_DisplayPlugin.GetMonitors();
 
             int i_index = System.Convert.ToInt32(index);
 
@@ -4964,8 +4964,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("GetVCPCapabilities: input null IDeviceManagerSA");
                 return "";
             }
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();// _DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();// _DisplayPlugin.GetMonitors();
 
             int i_index = System.Convert.ToInt32(index);
 
@@ -4982,8 +4982,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("GetVCPCapabilities: input null IDeviceManagerSA");
                 return "";
             }
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();// _DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();// _DisplayPlugin.GetMonitors();
 
             string current = mo.inputSource;//await devMgr.GetCurrentInput(_AllInfoMonitors[i_index], b_vcpcode, 0);
             System.Console.WriteLine("Current Input : " + current);
@@ -5029,8 +5029,8 @@ namespace DDPM.CLI.Plugins.Display
             //}
 
             writelog($"ReadColorPreset Entry");
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -5379,8 +5379,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -5701,8 +5701,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -5872,15 +5872,15 @@ namespace DDPM.CLI.Plugins.Display
 
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -5978,8 +5978,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -6020,8 +6020,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -6183,8 +6183,8 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> RestoreLevelDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -6338,8 +6338,8 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> RestoreColorDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -6492,8 +6492,8 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> OSD(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
 
             if (type == "SET")
@@ -6841,8 +6841,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
             int monitorCount = 0;
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
 
             monitorCount = _AllInfoMonitors.Count;
 
@@ -7683,8 +7683,8 @@ namespace DDPM.CLI.Plugins.Display
             {
                 return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.null_device_manager, false, "Input null IDeviceManagerSA");
             }
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = device.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = device.GetMonitors().Result;
 
             if (!int.TryParse(val, out _))
                 return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.unknow_command, false, "Unknow command");
@@ -7805,8 +7805,8 @@ namespace DDPM.CLI.Plugins.Display
             {
                 return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.null_device_manager, false, "");
             }
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = device.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = device.GetMonitors().Result;
 
             ALSConfig param = new ALSConfig();
             bool set_result = false;
@@ -8019,8 +8019,8 @@ namespace DDPM.CLI.Plugins.Display
             CLI_RESPONSE S_PowerNap_RESPONSE = new CLI_RESPONSE();
             CLI_RESPONSE G_PopwerNap_RESPONSE = new CLI_RESPONSE();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
             List<PowerNapSetting> read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
@@ -9718,8 +9718,8 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> Capabilitystring(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
@@ -9845,8 +9845,8 @@ namespace DDPM.CLI.Plugins.Display
 
             List<int> _monitorIndeies = new List<int>();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
             foreach (int idx in _monitorIndeies)
@@ -10065,8 +10065,8 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> Autocolorpreset(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             CLI_RESPONSE S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
             bool retcode = false;
             string on_off = string.Empty;
@@ -10475,8 +10475,8 @@ namespace DDPM.CLI.Plugins.Display
 
             List<int> _monitorIndeies = new List<int>();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
             foreach (int idx in _monitorIndeies)
@@ -10568,8 +10568,8 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"MonitorCounts default Entry");
             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             cli_Response.Command = commandLineInput.Command;
             cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -10862,8 +10862,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             ObjGetVCP rc = new ObjGetVCP();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
@@ -13591,8 +13591,8 @@ namespace DDPM.CLI.Plugins.Display
 
             List<int> _monitorIndeies = new List<int>();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
             monitorcount = _AllInfoMonitors.Count;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
             int ret = 0;
@@ -14000,8 +14000,8 @@ namespace DDPM.CLI.Plugins.Display
 
             List<int> _monitorIndeies = new List<int>();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
 
             var serviceTags = _AllInfoMonitors.Where(_ => commandLineInput.DeviceIndex.Count == 0 || commandLineInput.DeviceIndex.Contains((_.Index + 1).ToString()))
                                               .Where(_ => commandLineInput.ServiceTag.Count == 0 || commandLineInput.ServiceTag.Contains(_.edid.ServiceTag))
@@ -14205,8 +14205,8 @@ namespace DDPM.CLI.Plugins.Display
             bool retcode = false;
             bool vcp_value = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             switch (commandLineInput.Command)
             {
@@ -14658,8 +14658,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             switch (commandLineInput.Command)
             {
@@ -14823,8 +14823,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
@@ -14838,8 +14838,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("Easyarrange get entry");
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -14880,8 +14880,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("Easyarrange set entry");
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -14933,8 +14933,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
@@ -14948,8 +14948,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("Easyarrange get entry");
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -14985,8 +14985,8 @@ namespace DDPM.CLI.Plugins.Display
                 writelog("Easyarrange set entry");
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -15475,16 +15475,16 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15539,8 +15539,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15601,8 +15601,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
@@ -15616,8 +15616,8 @@ namespace DDPM.CLI.Plugins.Display
 
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -15665,8 +15665,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -15721,15 +15721,15 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15782,8 +15782,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15829,15 +15829,15 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15890,8 +15890,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15939,15 +15939,15 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -15998,8 +15998,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16046,14 +16046,14 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16103,8 +16103,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16150,8 +16150,8 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
             {
@@ -16160,8 +16160,8 @@ namespace DDPM.CLI.Plugins.Display
 
                     List<int> _monitorIndeies = new List<int>();
 
-                    if (_AllInfoMonitors == null)
-                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                    //if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
                     _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                     //foreach (int idx in _monitorIndeies)
@@ -16215,8 +16215,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16263,15 +16263,15 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET")
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16299,8 +16299,8 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 //foreach (int idx in _monitorIndeies)
@@ -16853,15 +16853,15 @@ namespace DDPM.CLI.Plugins.Display
 
             bool retcode = false;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "IMPORTSETTINGS")
             {
                 List<int> _monitorIndeies = new List<int>();
 
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
@@ -16894,8 +16894,8 @@ namespace DDPM.CLI.Plugins.Display
             else if (commandLineInput.Command == "GET" && commandLineInput.TargetFeature == "EXPORTSETTINGS")
             {
                 List<int> _monitorIndeies = new List<int>();
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
                 foreach (int idx in _monitorIndeies)
