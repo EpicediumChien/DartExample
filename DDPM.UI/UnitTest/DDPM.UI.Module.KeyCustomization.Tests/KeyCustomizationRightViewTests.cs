@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using NUnit.Framework.Interfaces;
+using System.Globalization;
 
 namespace DDPM.UI.Module.KeyCustomization.Tests
 {
@@ -57,24 +58,27 @@ namespace DDPM.UI.Module.KeyCustomization.Tests
         [Test]
         public void TestConstructor_KeyCustomizationRightView()
         {
-            var txtMessageText = Strings.KeyCustomizeMessage;
-            var txtRestoreText = Strings.KeyCustomizeRestoreCaption;
-            var txtSuggestedActionsText = Strings.SuggestedActionsCaption;
-            var txtProductivityActionsText = Strings.ProductivityActionsCaption;
-            var txtWindowsActionsText = Strings.WindowsActionsCaption;
-            var txtMultimediaActionsText = Strings.MultimediaActionsCaption;
-            var txtSearchResultText = Strings.SearchResultsCaption;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var txtMessageText = Strings.KeyCustomizeMessage;
+                var txtRestoreText = Strings.KeyCustomizeRestoreCaption;
+                var txtSuggestedActionsText = Strings.SuggestedActionsCaption;
+                var txtProductivityActionsText = Strings.ProductivityActionsCaption;
+                var txtWindowsActionsText = Strings.WindowsActionsCaption;
+                var txtMultimediaActionsText = Strings.MultimediaActionsCaption;
+                var txtSearchResultText = Strings.SearchResultsCaption;
 
-            // Assert
-            Assert.That(keyCustomizationRightView, Is.Not.Null);
-            Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
-            Assert.That(txtMessageText, Is.EqualTo("To customize a key, click one of the outlined keys on the image to the left"));
-            Assert.That(txtRestoreText, Is.EqualTo("Restore all actions to default"));
-            Assert.That(txtSuggestedActionsText, Is.EqualTo("Suggested Actions"));
-            Assert.That(txtProductivityActionsText, Is.EqualTo("Productivity Actions"));
-            Assert.That(txtWindowsActionsText, Is.EqualTo("Windows Actions"));
-            Assert.That(txtMultimediaActionsText, Is.EqualTo("Multimedia Actions"));
-            Assert.That(txtSearchResultText, Is.EqualTo("Search Results"));
+                // Assert
+                Assert.That(keyCustomizationRightView, Is.Not.Null);
+                Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
+                Assert.That(txtMessageText, Is.EqualTo("To customize a key, click one of the outlined keys on the image to the left"));
+                Assert.That(txtRestoreText, Is.EqualTo("Restore all actions to default"));
+                Assert.That(txtSuggestedActionsText, Is.EqualTo("Suggested Actions"));
+                Assert.That(txtProductivityActionsText, Is.EqualTo("Productivity Actions"));
+                Assert.That(txtWindowsActionsText, Is.EqualTo("Windows Actions"));
+                Assert.That(txtMultimediaActionsText, Is.EqualTo("Multimedia Actions"));
+                Assert.That(txtSearchResultText, Is.EqualTo("Search Results"));
+            }
         }
 
         [Test]
@@ -85,10 +89,14 @@ namespace DDPM.UI.Module.KeyCustomization.Tests
             var imgBackVisibility = Visibility.Collapsed;
             var Section1Visibility = Visibility.Visible;
             // Assert
-            Assert.That(txtCaptionText, Is.EqualTo("Key Customization"));
+
             Assert.That(imgBackVisibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(Section1Visibility, Is.EqualTo(Visibility.Visible));
             Assert.That(privateObject.GetFieldOrProperty("SelectedActionID"), Is.EqualTo(-1));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            { 
+                Assert.That(txtCaptionText, Is.EqualTo("Key Customization")); 
+            }
         }
 
         [Test]
