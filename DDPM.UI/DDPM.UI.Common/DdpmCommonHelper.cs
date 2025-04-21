@@ -172,6 +172,7 @@ namespace DDPM.UI.Common
         public static void DDPMPureMesssageBox(string title, string text, bool IsCloseButton, Window Owner)
         {
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner);
+            msgBox.Height = 172;
             msgBox.ShowDialog();
         }
 
