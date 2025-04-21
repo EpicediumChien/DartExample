@@ -13,7 +13,7 @@ namespace DDPM.Easy.Common
     {
         #region Private members
         private bool _isDisposed = false;
-        private CellBorder cellBorder = null;
+        //private CellBorder cellBorder = null; //Robert_Lin 2025-4-21 use local object instead.
         #endregion Private members
 
         #region ctor
@@ -231,10 +231,14 @@ namespace DDPM.Easy.Common
 
                 //Create a CellBorder
                 //
-                if(cellBorder == null)
-                {
-                    cellBorder = new CellBorder();
-                }
+
+                //Robert_Lin, 2025-4-21, the cellBorder cannot be reused (cannot add to visual twice)
+                //So remove class data member, and change it as local varaible below.
+                CellBorder cellBorder = new CellBorder();
+                //if(cellBorder == null)
+                //{
+                //    cellBorder = new CellBorder();
+                //}
                 cellBorder.CellName = cellName;
                 cellBorder.Width = settings[idxSettings + 2] * xRatio;
                 cellBorder.Height = settings[idxSettings + 3] * yRatio;
@@ -536,8 +540,10 @@ namespace DDPM.Easy.Common
                     InitCellList();
                     cellListH = null;
                     cellListV = null;
-                    cellBorder?.Dispose();
-                    cellBorder = null;
+
+                    //Robert_Lin 2025-4-21 this data member has been removed.
+                    //cellBorder?.Dispose();
+                    //cellBorder = null;
 #if !REMOVE_EA_SPLITTERS
                     InitSplitterList();
 #endif
