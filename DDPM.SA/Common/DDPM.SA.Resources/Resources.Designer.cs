@@ -1312,7 +1312,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update in progress.
+        ///   Looks up a localized string similar to Firmware update in progress.
         /// </summary>
         internal static string Update_in_progress {
             get {

@@ -6716,6 +6716,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string info = popupContentPackage.Info;
             bool isInfo = popupContentPackage.IsInfo;
             bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
+            bool isNeedButton = popupContentPackage.IsNeedButton;
             if (!string.IsNullOrEmpty(json))
             {
                 Task.Run(async () =>
@@ -6744,7 +6745,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddArgument(title);
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
-                        toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "");
+                        if (isNeedButton)
+                        {
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "");
+                        }
                     }
                     ClosePopup();
                     writelog("[CallPopup], popup Show.");
