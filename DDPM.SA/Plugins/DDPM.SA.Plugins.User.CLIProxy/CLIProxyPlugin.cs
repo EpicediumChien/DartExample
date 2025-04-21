@@ -872,11 +872,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 WriteLog($"device Type: {deviceType}, device model: {devicemodel} device name: {deviceName} dell device name: {delldevicetype}");
 
                 if (is_model && deviceType.Equals("display"))
-                    header = e.is_defer ? $"Dell Display {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"Dell Display ({devicemodel.ToUpper()}) firmware update" : "Update will be applied";
                 else if (is_model && !deviceType.Equals("display"))
-                    header = e.is_defer ? $"{delldevicetype} {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"{delldevicetype} ({devicemodel.ToUpper()}) firmware update" : "Update will be applied";
                 else
-                    header = e.is_defer ? $"{delldevicetype} {deviceName} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"{delldevicetype} ({deviceName}) firmware update" : "Update will be applied";
 
                 e.toast_message = e.is_defer ? $"During update, device usage may be intermittent. Do not disconnect the device. This update can be deferred {e.defer_item.count + 1} times." : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.";
             }

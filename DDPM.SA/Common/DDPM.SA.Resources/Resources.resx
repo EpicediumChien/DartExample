@@ -616,7 +616,7 @@
     <value>Update failed</value>
   </data>
   <data name="Update_in_progress" xml:space="preserve">
-    <value>Update in progress</value>
+    <value>Firmware update in progress</value>
   </data>
   <data name="Software_update_successful" xml:space="preserve">
     <value>Software update successful</value>

@@ -17,6 +17,7 @@
         public bool IsOnlyUpdate { get; set; }
         public bool StayOpen { get; set; }
         public int Timeout { get; set; }
+        public bool IsNeedButton { get; set; }
 
         /// <summary>
         /// Popup事件回傳的物件
@@ -30,6 +31,7 @@
             IsOnlyUpdate = false;
             StayOpen = false;
             Timeout = 5;
+            IsNeedButton = true;
             PopupType = PopupContentPackage_Enum.Unknow;
         }
     }
