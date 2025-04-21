@@ -584,7 +584,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             dev.InstanceNo = instanceNo;
                         }
 
-
                         //_homeDevices.Add(dev);
                         tempList.Add(dev);
                     }
