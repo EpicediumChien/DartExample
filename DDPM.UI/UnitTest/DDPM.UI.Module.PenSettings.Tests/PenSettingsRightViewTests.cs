@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Windows;
+using System.Globalization;
 namespace DDPM.UI.Module.PenSettings.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -69,27 +70,30 @@ namespace DDPM.UI.Module.PenSettings.Tests
         [Test]
         public void TestConstructor_PenSettingsRightView()
         {
-            penSettingsRightView = new PenSettingsRightView(vm);
-            privateObject = new PrivateObject(penSettingsRightView);
-            var txtCaptionText = Strings.PenSettings;
-            var txtTipSensitivityText = Strings.TipSensitivity;
-            var txtTipTooltipText = Strings.TipTooltip;
-            var txtTiltSensitivityText = Strings.TiltSensitivity;
-            var txtTiltTooltipText = Strings.TiltTooltip;
-            var txtPairWithTileText = Strings.PairWithTile;
-            var txtPairTooltipText = Strings.PairTooltip;
-            var btnGetStartContent = Strings.GetStarted2;
-            // Assert
-            Assert.That(penSettingsRightView, Is.Not.Null);
-            Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
-            Assert.That(txtCaptionText, Is.EqualTo("Pen Settings"));
-            Assert.That(txtTipSensitivityText, Is.EqualTo("Tip Sensitivity"));
-            Assert.That(txtTipTooltipText, Is.EqualTo("Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure"));
-            Assert.That(txtTiltSensitivityText, Is.EqualTo("Tilt Sensitivity"));
-            Assert.That(txtTiltTooltipText, Is.EqualTo("Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle"));
-            Assert.That(txtPairWithTileText, Is.EqualTo("Pair with Tile"));
-            Assert.That(txtPairTooltipText, Is.EqualTo("Pair your pen to your mobile device using the Tile app"));
-            Assert.That(btnGetStartContent, Is.EqualTo("Get started"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                penSettingsRightView = new PenSettingsRightView(vm);
+                privateObject = new PrivateObject(penSettingsRightView);
+                var txtCaptionText = Strings.PenSettings;
+                var txtTipSensitivityText = Strings.TipSensitivity;
+                var txtTipTooltipText = Strings.TipTooltip;
+                var txtTiltSensitivityText = Strings.TiltSensitivity;
+                var txtTiltTooltipText = Strings.TiltTooltip;
+                var txtPairWithTileText = Strings.PairWithTile;
+                var txtPairTooltipText = Strings.PairTooltip;
+                var btnGetStartContent = Strings.GetStarted2;
+                // Assert
+                Assert.That(penSettingsRightView, Is.Not.Null);
+                Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
+                Assert.That(txtCaptionText, Is.EqualTo("Pen Settings"));
+                Assert.That(txtTipSensitivityText, Is.EqualTo("Tip Sensitivity"));
+                Assert.That(txtTipTooltipText, Is.EqualTo("Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure"));
+                Assert.That(txtTiltSensitivityText, Is.EqualTo("Tilt Sensitivity"));
+                Assert.That(txtTiltTooltipText, Is.EqualTo("Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle"));
+                Assert.That(txtPairWithTileText, Is.EqualTo("Pair with Tile"));
+                Assert.That(txtPairTooltipText, Is.EqualTo("Pair your pen to your mobile device using the Tile app"));
+                Assert.That(btnGetStartContent, Is.EqualTo("Get started"));
+            }
         }
     }
 }

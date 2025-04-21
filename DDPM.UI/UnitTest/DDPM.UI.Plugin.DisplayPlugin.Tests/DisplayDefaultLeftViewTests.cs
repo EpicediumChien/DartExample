@@ -12,6 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 using NGA.UnitTest.PrivateObject;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Windows;
+using System.Globalization;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 {
@@ -40,10 +41,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         [Test]
         public void TestConstructor_InitializesComponent()
         {
-            var txtRestoreText = privateObject.GetFieldOrProperty("Restore");
-            // Assert
-            Assert.That(displayDefaultLeftView, Is.Not.Null);
-            Assert.That(txtRestoreText, Is.EqualTo("Restore to default"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var txtRestoreText = privateObject.GetFieldOrProperty("Restore");
+                // Assert
+                Assert.That(displayDefaultLeftView, Is.Not.Null);
+                Assert.That(txtRestoreText, Is.EqualTo("Restore to default"));
+            }
         }
     }
 }

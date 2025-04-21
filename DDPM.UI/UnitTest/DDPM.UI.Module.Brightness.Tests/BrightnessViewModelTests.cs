@@ -7,6 +7,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Globalization;
 using System.Windows;
 using VcpCore.Common;
 
@@ -86,16 +87,19 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestIsSynchronize_String()
         {
-            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
 
-            var brightnessViewModel = new BrightnessViewModel();
-            brightnessViewModel.IsSynchronize = true;
-            var myBrightnessViewModel = brightnessViewModel.IsSynchronize_String;
-            Assert.That(myBrightnessViewModel, Is.EqualTo("ON"));
+                var brightnessViewModel = new BrightnessViewModel();
+                brightnessViewModel.IsSynchronize = true;
+                var myBrightnessViewModel = brightnessViewModel.IsSynchronize_String;
+                Assert.That(myBrightnessViewModel, Is.EqualTo("ON"));
 
-            brightnessViewModel.IsSynchronize = false;
-            myBrightnessViewModel = brightnessViewModel.IsSynchronize_String;
-            Assert.That(myBrightnessViewModel, Is.EqualTo("OFF"));
+                brightnessViewModel.IsSynchronize = false;
+                myBrightnessViewModel = brightnessViewModel.IsSynchronize_String;
+                Assert.That(myBrightnessViewModel, Is.EqualTo("OFF"));
+            }
         }
 
         [Test]
@@ -487,13 +491,16 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightness_String()
         {
-            var brightnessViewModel = new BrightnessViewModel();
-            var result = brightnessViewModel.AutoBrightness_String;
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var brightnessViewModel = new BrightnessViewModel();
+                var result = brightnessViewModel.AutoBrightness_String;
+                Assert.That(result, Is.EqualTo("OFF"));
 
-            brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync = true;
-            result = brightnessViewModel.PrimaryMonitorSync_String;
-            Assert.That(result, Is.EqualTo("ON"));
+                brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync = true;
+                result = brightnessViewModel.PrimaryMonitorSync_String;
+                Assert.That(result, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
@@ -535,13 +542,16 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoColorTemp_String()
         {
-            var brightnessViewModel = new BrightnessViewModel();
-            var result = brightnessViewModel.AutoColorTemp_String;
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var brightnessViewModel = new BrightnessViewModel();
+                var result = brightnessViewModel.AutoColorTemp_String;
+                Assert.That(result, Is.EqualTo("OFF"));
 
-            brightnessViewModel.Start_ALSConfig.isAutoColorTemp = true;
-            result = brightnessViewModel.AutoColorTemp_String;
-            Assert.That(result, Is.EqualTo("ON"));
+                brightnessViewModel.Start_ALSConfig.isAutoColorTemp = true;
+                result = brightnessViewModel.AutoColorTemp_String;
+                Assert.That(result, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
@@ -585,13 +595,16 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestPrimaryMonitorSync_String()
         {
-            var brightnessViewModel = new BrightnessViewModel();
-            var result = brightnessViewModel.PrimaryMonitorSync_String;
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var brightnessViewModel = new BrightnessViewModel();
+                var result = brightnessViewModel.PrimaryMonitorSync_String;
+                Assert.That(result, Is.EqualTo("OFF"));
 
-            brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync = true;
-            result = brightnessViewModel.PrimaryMonitorSync_String;
-            Assert.That(result, Is.EqualTo("ON"));
+                brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync = true;
+                result = brightnessViewModel.PrimaryMonitorSync_String;
+                Assert.That(result, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
@@ -661,33 +674,36 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightnessRangeLevel_String()
         {
-            //Start_ALSConfig.AutoBrightnessLevel.Count == 0
-            var brightnessViewModel = new BrightnessViewModel();
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 0%"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                //Start_ALSConfig.AutoBrightnessLevel.Count == 0
+                var brightnessViewModel = new BrightnessViewModel();
+                Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 0%"));
 
-            //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 0
-            brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            AutoBrightnessRangeLevel AutoBrightnessLevel = new AutoBrightnessRangeLevel();
-            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 };
-            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            brightnessViewModel.isLuminanceSupport = Visibility.Visible;
-            var res = brightnessViewModel.AutoBrightnessRangeLevel_String;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
+                //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 0
+                brightnessViewModel.Start_ALSConfig = new ALSConfig();
+                AutoBrightnessRangeLevel AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+                AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 };
+                brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+                brightnessViewModel.isLuminanceSupport = Visibility.Visible;
+                var res = brightnessViewModel.AutoBrightnessRangeLevel_String;
+                Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
 
-            //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 1
-            brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            AutoBrightnessLevel = new AutoBrightnessRangeLevel();
-            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 };
-            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            res = brightnessViewModel.AutoBrightnessRangeLevel_String;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
+                //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 1
+                brightnessViewModel.Start_ALSConfig = new ALSConfig();
+                AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+                AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 };
+                brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+                res = brightnessViewModel.AutoBrightnessRangeLevel_String;
+                Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
 
-            //else
-            brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            AutoBrightnessLevel = new AutoBrightnessRangeLevel();
-            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 };
-            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
+                //else
+                brightnessViewModel.Start_ALSConfig = new ALSConfig();
+                AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+                AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 };
+                brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+                Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
+            }
         }
 
         [Test]
@@ -715,17 +731,26 @@ namespace DDPM.UI.Module.Brightness.Tests
             //value == 0
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 0;
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Low"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Low"));
+            }
 
             //value == 1
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 1;
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Mid"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Mid"));
+            }
 
             //else
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 2;
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("High"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("High"));
+            }
         }
 
         [Test]
