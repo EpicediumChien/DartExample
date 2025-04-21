@@ -2702,7 +2702,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             else
             {
                 _logs.DebugMsg_1($"BuildArgs display go");
-                arguments = $"-q --force --skip-app-retry -f";
+                arguments = $"-q --force -f";
                 if (!string.IsNullOrEmpty(logPath))
                 {
                     _logs.DebugMsg_1($"BuildArgs Log go");
