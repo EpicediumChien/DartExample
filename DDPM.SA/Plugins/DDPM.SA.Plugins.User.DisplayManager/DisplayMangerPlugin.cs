@@ -1819,7 +1819,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        if (AllALSConfig[i].isSupportALS > 0)
+                        if (AllALSConfig[i].isSupportALS == 2)
                             AllALSConfig[i].isBusy = true;
                         else
                             AllALSConfig[i].isBusy = false;
