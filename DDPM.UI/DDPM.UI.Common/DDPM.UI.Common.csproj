@@ -147,8 +147,12 @@
 		<None Remove="Resources\USBKVM_2PCs.png" />
 		<None Remove="Resources\USBKVM_3PCs.png" />
 		<None Remove="Resources\USBKVM_4PCs.png" />
+		<None Remove="Resources\USBKVM_light.png" />
 		<None Remove="Resources\USBKVM_MK_1.png" />
 		<None Remove="Resources\USBKVM_MK_2.png" />
+		<None Remove="Resources\USBKVM_MK_2_LM.png" />
+		<None Remove="Resources\USBKVM_MK_Dark.png" />
+		<None Remove="Resources\USBKVM_MK_light.png" />
 		<None Remove="Resources\Vbar.Display.EA.png" />
 		<None Remove="Resources\Vbar.Display.Gaming.png" />
 		<None Remove="Resources\Vbar.Display.InputSource.png" />
@@ -166,6 +170,7 @@
 		<None Remove="Resources\Vbar_Keyboard_Illumin.png" />
 		<None Remove="Resources\VertNavBar.png" />
 		<None Remove="Resources\Warring.png" />
+		<None Remove="Resources\WD19.png" />
 		<None Remove="Resources\WD19DC.png" />
 		<None Remove="Resources\WD19DCS.png" />
 		<None Remove="Resources\WD19S.png" />
@@ -353,7 +358,19 @@
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\WD19.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\WD19DC.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_MK_2_LM.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_MK_Dark.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_MK_light.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD19S.png">

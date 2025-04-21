@@ -43,6 +43,8 @@
 		<None Remove="Resources\Images\CloseX.png" />
 		<None Remove="Resources\Images\CloseXX.png" />
 		<None Remove="Resources\Images\ConsentBg.png" />
+		<None Remove="Resources\Images\DA225.png" />
+		<None Remove="Resources\Images\DA225_PortInfo.png" />
 		<None Remove="Resources\Images\Disconnected.png" />
 		<None Remove="Resources\Images\Dock.png" />
 		<None Remove="Resources\Images\Dock_light.png" />
@@ -283,6 +285,7 @@
 		<None Remove="Resources\Images\WB3023.png" />
 		<None Remove="Resources\Images\WB5023.png" />
 		<None Remove="Resources\Images\WB7022.png" />
+		<None Remove="Resources\Images\WD19.png" />
 		<None Remove="Resources\Images\WD19DC.png" />
 		<None Remove="Resources\Images\WD19DCS.png" />
 		<None Remove="Resources\Images\WD19S.png" />
@@ -451,6 +454,12 @@
 		<Resource Include="Resources\Images\CloseX.png" />
 		<Resource Include="Resources\Images\CloseXX.png" />
 		<Resource Include="Resources\Images\ConsentBg.png" />
+		<Resource Include="Resources\Images\DA225.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\DA225_PortInfo.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Images\Disconnected.png" />
 		<Resource Include="Resources\Images\Dock.png" />
 		<Resource Include="Resources\Images\Dock_light.png" />
@@ -655,6 +664,9 @@
 		<Resource Include="Resources\Images\undo2.png" />
 		<Resource Include="Resources\Images\UV514.png" />
 		<Resource Include="Resources\Images\WB5023.png" />
+		<Resource Include="Resources\Images\WD19.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Images\WD19DC.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>

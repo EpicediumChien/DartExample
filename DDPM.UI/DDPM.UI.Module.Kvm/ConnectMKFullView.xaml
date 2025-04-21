@@ -157,7 +157,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <!--<Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_1.png" />-->
                     <Grid Grid.Row="0" HorizontalAlignment="Center">
                         <Grid.Resources>
                             <Style TargetType="Path">
@@ -176,17 +175,14 @@
                         <Path Data="M79.3519 118.57H74.1953V119H79.3519V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                         <Path Data="M102.844 118.57H97.6875V119H102.844V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                     </Grid>
-                    <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="#1B385F" StrokeThickness="2"/>
+                    <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="2"/>
                     <Grid Grid.Row="2">
                         <!-- Elsa 20250108 For PIMS [PIMS-334923] remove Width="87" and add HorizontalAlignment="Center" -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}}" FontSize="14" LineHeight="18" Height="28.39" Padding="4" HorizontalAlignment="Center"/>
                     </Grid>
-                    <!--<Image Grid.Row="2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USB-A.png" />-->
                     <Path Grid.Row="3" HorizontalAlignment="Center"
                           Data="M2 0.985352C0.895431 0.985352 0 1.88078 0 2.98535V11.4854V13.9854C0 15.0899 0.895432 15.9854 2 15.9854H50C51.1046 15.9854 52 15.0899 52 13.9854V8.48535V2.98535C52 1.88078 51.1046 0.985352 50 0.985352H2ZM8.5 7.98535C8.22386 7.98535 8 8.20921 8 8.48535C8 8.76149 8.22386 8.98535 8.5 8.98535H43.5C43.7761 8.98535 44 8.76149 44 8.48535C44 8.20921 43.7761 7.98535 43.5 7.98535H8.5Z"/>
-                    <Image Grid.Row="4" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_2.png" />
-                    <!--<Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Connect_M_K.png"
-                    HorizontalAlignment="Center" />-->
+                    <Image Grid.Row="4" Margin="0,8" Source="{DynamicResource USBKVM_MK}" />
                 </Grid>
             </Grid>
         </StackPanel>

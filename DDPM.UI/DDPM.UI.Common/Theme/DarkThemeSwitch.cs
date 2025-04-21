@@ -464,6 +464,9 @@ namespace DDPM.UI.Common
                 UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
                 UpdateFreezable("Slider_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
                 UpdateFreezable("Slider_ValueColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
+                #region USBKVM
+                UpdateBitmapImage("USBKVM_MK", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_Dark.png", UriKind.RelativeOrAbsolute));
+                #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
             }

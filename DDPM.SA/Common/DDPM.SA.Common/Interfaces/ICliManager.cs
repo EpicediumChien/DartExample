@@ -137,7 +137,7 @@ namespace DDPM.SA.Common
         public string toast_message { get; set; }
         public bool is_defer { get; set; }
         public DeferItem defer_item { get; set; }
-        public string cli_command_format { get; set; }
+        public string cli_command_format { get; set; } = string.Empty;
     }
 
     // add @ 20250116 stephen
