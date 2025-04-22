@@ -316,6 +316,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 case DeviceType.PhysicalBluetooth:
                 case DeviceType.PhysicalDongle:
+                case DeviceType.PhysicalWiredHub:
                     ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
                     break;
 

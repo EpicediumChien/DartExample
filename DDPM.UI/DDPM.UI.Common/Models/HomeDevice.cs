@@ -1749,6 +1749,7 @@ namespace DDPM.UI.Common.Models
                 case DeviceType.PhysicalBluetooth:
                 case DeviceType.PhysicalDongle:
                 case DeviceType.PhysicalPen:
+                case DeviceType.PhysicalWiredHub:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
 
                 //0823 Bruce 新增Dock連線方式的濾字串的方式
@@ -1770,7 +1771,7 @@ namespace DDPM.UI.Common.Models
                     {
                         s = "USB-C (DP 1.4)";
                     }
-                    return s;
+                    return s;               
 
                 default:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
