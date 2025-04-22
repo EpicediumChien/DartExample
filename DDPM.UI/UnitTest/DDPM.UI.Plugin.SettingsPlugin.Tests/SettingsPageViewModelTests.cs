@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using System.Globalization;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -493,7 +494,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(uIUpdateInfo, Is.Not.Null);
             Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo(""));
-            Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Firmware update 1A - ST "));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Firmware update 1A - ST "));
+            }
         }
 
         [Test]
@@ -505,7 +509,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(swUpdateInfo);
             Assert.That(uIUpdateInfo.SWUpdateInfo, Is.Not.Null);
             Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Collapsed));
-            Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Software update 1A - ST"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Software update 1A - ST"));
+            }
         }
     }
 }

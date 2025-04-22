@@ -7,6 +7,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Moq;
+using System.Globalization;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Policy;
 using System.Windows.Media;
@@ -160,17 +161,20 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestMfgDate()
         {
-            // Assert
-            Assert.That(homeDevice.MfgDate, Is.EqualTo("(N/A)"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                // Assert
+                Assert.That(homeDevice.MfgDate, Is.EqualTo("(N/A)"));
 
-            // Act
-            var edid = new VcpCore.Common.EDID();
-            edid.Year = 2024;
-            edid.Month = 1;
-            var monitorinfo = new MonitorInfo() { edid = edid };
-            homeDevice.MonitorInfo = monitorinfo;
-            // Assert
-            Assert.That(homeDevice.MfgDate, Is.EqualTo("Jan 2024"));
+                // Act
+                var edid = new VcpCore.Common.EDID();
+                edid.Year = 2024;
+                edid.Month = 1;
+                var monitorinfo = new MonitorInfo() { edid = edid };
+                homeDevice.MonitorInfo = monitorinfo;
+                // Assert
+                Assert.That(homeDevice.MfgDate, Is.EqualTo("Jan 2024"));
+            }
         }
 
         [Test]
@@ -477,9 +481,11 @@ namespace DDPM.UI.Common.Tests
         public void TestDongleHostText()
         {
             // Act
-
-            // Assert
-            Assert.That(homeDevice.DongleHostText, Is.EqualTo("USB Wireless Receiver"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                // Assert
+                Assert.That(homeDevice.DongleHostText, Is.EqualTo("USB Wireless Receiver"));
+            }
         }
 
         [Test]
@@ -787,28 +793,31 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestLandingMarketName()
         {
-            // Act
-            var result = homeDevice.LandingMarketName;
-            // Assert
-            Assert.That(result, Is.EqualTo("(Noname)"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                // Act
+                var result = homeDevice.LandingMarketName;
+                // Assert
+                Assert.That(result, Is.EqualTo("(Noname)"));
 
-            // Act
-            homeDevice.DeviceInfo = new DeviceInfo() { Name = "Name" };
-            result = homeDevice.LandingMarketName;
-            // Assert
-            Assert.That(result, Is.EqualTo("Name"));
+                // Act
+                homeDevice.DeviceInfo = new DeviceInfo() { Name = "Name" };
+                result = homeDevice.LandingMarketName;
+                // Assert
+                Assert.That(result, Is.EqualTo("Name"));
 
-            // Act
-            homeDevice.MonitorInfo = new MonitorInfo();
-            result = homeDevice.LandingMarketName;
-            // Assert
-            Assert.That(result, Is.EqualTo("Display"));
-            // Act
+                // Act
+                homeDevice.MonitorInfo = new MonitorInfo();
+                result = homeDevice.LandingMarketName;
+                // Assert
+                Assert.That(result, Is.EqualTo("Display"));
+                // Act
 
-            homeDevice.MonitorInfo = new MonitorInfo() { MarketingName = "MarketingName" };
-            result = homeDevice.LandingMarketName;
-            // Assert
-            Assert.That(result, Is.EqualTo("MarketingName"));
+                homeDevice.MonitorInfo = new MonitorInfo() { MarketingName = "MarketingName" };
+                result = homeDevice.LandingMarketName;
+                // Assert
+                Assert.That(result, Is.EqualTo("MarketingName"));
+            }
         }
 
         

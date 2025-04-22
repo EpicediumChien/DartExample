@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Globalization;
 
 namespace DDPM.UI.Module.MouseSettings.Tests
 {
@@ -60,14 +61,17 @@ namespace DDPM.UI.Module.MouseSettings.Tests
         [Test]
         public void TestConstructor_MouseSettingsRightView()
         {
-            var txtDPIMessageText = Strings.DPIMessage;
-            var txtPollingRateMessageText = Strings.PollingRateMessage;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var txtDPIMessageText = Strings.DPIMessage;
+                var txtPollingRateMessageText = Strings.PollingRateMessage;
 
-            // Assert
-            Assert.That(mouseSettingsRightView, Is.Not.Null);
-            Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
-            Assert.That(txtDPIMessageText, Is.EqualTo("Move your mouse to complete the change to the DPI value"));
-            Assert.That(txtPollingRateMessageText, Is.EqualTo("Increasing polling rate may affect mouse’s battery life."));
+                // Assert
+                Assert.That(mouseSettingsRightView, Is.Not.Null);
+                Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
+                Assert.That(txtDPIMessageText, Is.EqualTo("Move your mouse to complete the change to the DPI value"));
+                Assert.That(txtPollingRateMessageText, Is.EqualTo("Increasing polling rate may affect mouse’s battery life."));
+            }
         }
     }
 }

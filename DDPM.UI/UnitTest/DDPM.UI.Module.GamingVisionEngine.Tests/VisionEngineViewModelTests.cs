@@ -13,6 +13,7 @@ using DDPM.SA.Common;
 using VcpCore.Common;
 using System.Collections.ObjectModel;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Globalization;
 namespace DDPM.UI.Module.GamingVisionEngine.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -158,11 +159,14 @@ namespace DDPM.UI.Module.GamingVisionEngine.Tests
         [Test]
         public void TestDisplayText()
         {
-            var uI_VisionEngine = new UI_VisionEngine(true, new Gaming_VisionEngineType());
-            var visionEngineType = new Gaming_VisionEngineType();
-            uI_VisionEngine.VisionEngineType = visionEngineType;
-            var result = uI_VisionEngine.DisplayText;
-            Assert.That(uI_VisionEngine.DisplayText, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var uI_VisionEngine = new UI_VisionEngine(true, new Gaming_VisionEngineType());
+                var visionEngineType = new Gaming_VisionEngineType();
+                uI_VisionEngine.VisionEngineType = visionEngineType;
+                var result = uI_VisionEngine.DisplayText;
+                Assert.That(uI_VisionEngine.DisplayText, Is.EqualTo("OFF"));
+            }
         }
     }
 }

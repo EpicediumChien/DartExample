@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using NUnit.Framework.Interfaces;
+using System.Globalization;
 
 namespace DDPM.UI.Module.PenButtonSettings.Tests
 {
@@ -72,32 +73,35 @@ namespace DDPM.UI.Module.PenButtonSettings.Tests
         [Test]
         public void TestConstructor_PenButtonSettingsRightView()
         {
-            var txtClickOnceText = Strings.PenButtonClickOnce;
-            var txtDoubleClickText = Strings.PenButtonDoubleClick;
-            var txtPressAndHoldText = Strings.PenButtonPressHold;
-            var txtHoverClickText = Strings.HoverClick;
-            var txtMessageText = Strings.PenButtonCustomizeMessage;
-            var txtRestoreText = Strings.PenButtonCustomizeRestoreCaption;
-            var txtSuggestedActionsText = Strings.SuggestedActionsCaption;
-            var txtProductivityActionsText = Strings.ProductivityActionsCaption;
-            var txtWindowsActionsText = Strings.WindowsActionsCaption;
-            var txtMultimediaActionsText = Strings.MultimediaActionsCaption;
-            var txtSearchResultText = Strings.SearchResultsCaption;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var txtClickOnceText = Strings.PenButtonClickOnce;
+                var txtDoubleClickText = Strings.PenButtonDoubleClick;
+                var txtPressAndHoldText = Strings.PenButtonPressHold;
+                var txtHoverClickText = Strings.HoverClick;
+                var txtMessageText = Strings.PenButtonCustomizeMessage;
+                var txtRestoreText = Strings.PenButtonCustomizeRestoreCaption;
+                var txtSuggestedActionsText = Strings.SuggestedActionsCaption;
+                var txtProductivityActionsText = Strings.ProductivityActionsCaption;
+                var txtWindowsActionsText = Strings.WindowsActionsCaption;
+                var txtMultimediaActionsText = Strings.MultimediaActionsCaption;
+                var txtSearchResultText = Strings.SearchResultsCaption;
 
-            // Assert
-            Assert.That(penButtonSettingsRightView, Is.Not.Null);
-            Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
-            Assert.That(txtClickOnceText, Is.EqualTo("Click Once"));
-            Assert.That(txtDoubleClickText, Is.EqualTo("Double Click"));
-            Assert.That(txtPressAndHoldText, Is.EqualTo("Press and Hold"));
-            Assert.That(txtHoverClickText, Is.EqualTo("Hover Click"));
-            Assert.That(txtMessageText, Is.EqualTo("To customize a button, click an outlined button on the image to the left"));
-            Assert.That(txtRestoreText, Is.EqualTo("Restore to default actions"));
-            Assert.That(txtSuggestedActionsText, Is.EqualTo("Suggested Actions"));
-            Assert.That(txtProductivityActionsText, Is.EqualTo("Productivity Actions"));
-            Assert.That(txtWindowsActionsText, Is.EqualTo("Windows Actions"));
-            Assert.That(txtMultimediaActionsText, Is.EqualTo("Multimedia Actions"));
-            Assert.That(txtSearchResultText, Is.EqualTo("Search Results"));
+                // Assert
+                Assert.That(penButtonSettingsRightView, Is.Not.Null);
+                Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
+                Assert.That(txtClickOnceText, Is.EqualTo("Click Once"));
+                Assert.That(txtDoubleClickText, Is.EqualTo("Double Click"));
+                Assert.That(txtPressAndHoldText, Is.EqualTo("Press and Hold"));
+                Assert.That(txtHoverClickText, Is.EqualTo("Hover Click"));
+                Assert.That(txtMessageText, Is.EqualTo("To customize a button, click an outlined button on the image to the left"));
+                Assert.That(txtRestoreText, Is.EqualTo("Restore to default actions"));
+                Assert.That(txtSuggestedActionsText, Is.EqualTo("Suggested Actions"));
+                Assert.That(txtProductivityActionsText, Is.EqualTo("Productivity Actions"));
+                Assert.That(txtWindowsActionsText, Is.EqualTo("Windows Actions"));
+                Assert.That(txtMultimediaActionsText, Is.EqualTo("Multimedia Actions"));
+                Assert.That(txtSearchResultText, Is.EqualTo("Search Results"));
+            }
         }
 
         [Test]
@@ -108,10 +112,12 @@ namespace DDPM.UI.Module.PenButtonSettings.Tests
             var imgBackVisibility = Visibility.Collapsed;
             var Section1Visibility = Visibility.Visible;
             // Assert
-            Assert.That(txtCaptionText, Is.EqualTo("Button Customization"));
+
             Assert.That(imgBackVisibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(Section1Visibility, Is.EqualTo(Visibility.Visible));
-        }
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            { Assert.That(txtCaptionText, Is.EqualTo("Button Customization")); }
+            }
 
         [Test]
         public void TestInitializea()

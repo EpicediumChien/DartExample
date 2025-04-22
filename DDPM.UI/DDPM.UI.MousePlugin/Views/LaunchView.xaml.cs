@@ -499,7 +499,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm.ConnectionType == "Dongle")
                 {
                     txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                    txtSlot.Text = $"{_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6 - _vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
+                    txtSlot.Text = $"{(_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6) - (_vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2)} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
                 }
                 else if (_vm.ConnectionType == "Bluetooth")
@@ -527,7 +527,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm == null)
                     return;
 
-                string hostName =   HostNameHandler.GetHostName();
+                string hostName = HostNameHandler.GetHostName();
 
                 txt1.Style = ConnectionStyle2;
                 txtBLHost1.Style = ConnectionStyle2;

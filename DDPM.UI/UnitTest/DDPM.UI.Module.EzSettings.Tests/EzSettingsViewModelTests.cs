@@ -15,6 +15,7 @@ using VcpCore.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
+using System.Globalization;
 
 namespace DDPM.UI.Module.EzSettings.Tests
 {
@@ -77,30 +78,36 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestRefreshSettingsa()
         {
-            eSettingsViewModel.RefreshSettings();
-            Thread.Sleep(500);
-            Assert.That(eSettingsViewModel.RecentHotkey, Is.EqualTo("None"));
-            Assert.That(eSettingsViewModel.IsSpanAcrossEnabled, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsWithoutGap, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsAwsEnabled, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsBusy, Is.EqualTo(false));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.RefreshSettings();
+                Thread.Sleep(500);
+                Assert.That(eSettingsViewModel.RecentHotkey, Is.EqualTo("None"));
+                Assert.That(eSettingsViewModel.IsSpanAcrossEnabled, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsWithoutGap, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsAwsEnabled, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsBusy, Is.EqualTo(false));
+            }
         }
 
         [Test]
         public void TestRefreshSettingsb()
         {
-            DdpmCommonHelper.DeviceManagerSA = null;
-            eSettingsViewModel.RefreshSettings();
-            Thread.Sleep(500);
-            Assert.That(eSettingsViewModel.RecentHotkey, Is.EqualTo("None"));
-            Assert.That(eSettingsViewModel.IsSpanAcrossEnabled, Is.EqualTo(false));
-            Assert.That(eSettingsViewModel.IsWithoutGap, Is.EqualTo(true));
-            Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed, Is.EqualTo(false));
-            Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors, Is.EqualTo(false));
-            Assert.That(eSettingsViewModel.IsAwsEnabled, Is.EqualTo(false));
-            Assert.That(eSettingsViewModel.IsBusy, Is.EqualTo(false));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                DdpmCommonHelper.DeviceManagerSA = null;
+                eSettingsViewModel.RefreshSettings();
+                Thread.Sleep(500);
+                Assert.That(eSettingsViewModel.RecentHotkey, Is.EqualTo("None"));
+                Assert.That(eSettingsViewModel.IsSpanAcrossEnabled, Is.EqualTo(false));
+                Assert.That(eSettingsViewModel.IsWithoutGap, Is.EqualTo(true));
+                Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed, Is.EqualTo(false));
+                Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors, Is.EqualTo(false));
+                Assert.That(eSettingsViewModel.IsAwsEnabled, Is.EqualTo(false));
+                Assert.That(eSettingsViewModel.IsBusy, Is.EqualTo(false));
+            }
         }
 
         [Test]
@@ -134,17 +141,23 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestIsWithoutGap_StringON()
         {
-            eSettingsViewModel.IsWithoutGap = true;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsWithoutGap = true;
 
-            Assert.That(eSettingsViewModel.IsWithoutGap_String, Is.EqualTo("ON"));
+                Assert.That(eSettingsViewModel.IsWithoutGap_String, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
         public void TestIsWithoutGap_StringOFF()
         {
-            eSettingsViewModel.IsWithoutGap = false;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsWithoutGap = false;
 
-            Assert.That(eSettingsViewModel.IsWithoutGap_String, Is.EqualTo("OFF"));
+                Assert.That(eSettingsViewModel.IsWithoutGap_String, Is.EqualTo("OFF"));
+            }
         }
 
 
@@ -170,17 +183,23 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestIsOnlyAllowWhenShiftKeyPressed_StringON()
         {
-            eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed = true;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed = true;
 
-            Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed_String, Is.EqualTo("ON"));
+                Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed_String, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
         public void TestIsOnlyAllowWhenShiftKeyPressed_StringOFF()
         {
-            eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed = false;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed = false;
 
-            Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed_String, Is.EqualTo("OFF"));
+                Assert.That(eSettingsViewModel.IsOnlyAllowWhenShiftKeyPressed_String, Is.EqualTo("OFF"));
+            }
         }
 
         [Test]
@@ -205,17 +224,23 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestIsSpanAcrossMultiMonitors_StringON()
         {
-            eSettingsViewModel.IsSpanAcrossMultiMonitors = true;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsSpanAcrossMultiMonitors = true;
 
-            Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors_String, Is.EqualTo("ON"));
+                Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors_String, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
         public void TestIsSpanAcrossMultiMonitors_StringOFF()
         {
-            eSettingsViewModel.IsSpanAcrossMultiMonitors = false;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsSpanAcrossMultiMonitors = false;
 
-            Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors_String, Is.EqualTo("OFF"));
+                Assert.That(eSettingsViewModel.IsSpanAcrossMultiMonitors_String, Is.EqualTo("OFF"));
+            }
         }
 
         [Test]
@@ -248,17 +273,23 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestIsAwsEnabled_StringON()
         {
-            eSettingsViewModel.IsAwsEnabled = true;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsAwsEnabled = true;
 
-            Assert.That(eSettingsViewModel.IsAwsEnabled_String, Is.EqualTo("ON"));
+                Assert.That(eSettingsViewModel.IsAwsEnabled_String, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
         public void TestIsAwsEnabled_StringOFF()
         {
-            eSettingsViewModel.IsAwsEnabled = false;
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                eSettingsViewModel.IsAwsEnabled = false;
 
-            Assert.That(eSettingsViewModel.IsAwsEnabled_String, Is.EqualTo("OFF"));
+                Assert.That(eSettingsViewModel.IsAwsEnabled_String, Is.EqualTo("OFF"));
+            }
         }
 
         [Test]

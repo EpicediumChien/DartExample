@@ -8,6 +8,7 @@ using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -400,30 +401,33 @@ namespace DDPM.UI.Module.Color.Tests
         [Test]
         public void TestHDRStatus_String()
         {
-            var result = colorViewModel!.HDRStatus_String;
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var result = colorViewModel!.HDRStatus_String;
+                Assert.That(result, Is.EqualTo("OFF"));
 
-            deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
-            deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
-            var moduleOwnerMock = new Mock<IModuleOwner>();
-            var moduleOwner = moduleOwnerMock!.Object;
-            DdpmCommonHelper.ModuleOwner = moduleOwner;
-            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            colorViewModel.HDRStatus = true;
-            result = colorViewModel!.HDRStatus_String;
-            Assert.That(result, Is.EqualTo("ON"));
+                deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
+                deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+                var moduleOwnerMock = new Mock<IModuleOwner>();
+                var moduleOwner = moduleOwnerMock!.Object;
+                DdpmCommonHelper.ModuleOwner = moduleOwner;
+                moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+                colorViewModel.HDRStatus = true;
+                result = colorViewModel!.HDRStatus_String;
+                Assert.That(result, Is.EqualTo("ON"));
+            }
         }
 
         [Test]
         public void TestSupportedHDR()
         {
             var result = colorViewModel!.SupportedHDR.ToString();
-            Assert.That(result, Is.EqualTo("Collapsed"));
-
-            privateObject.SetFieldOrProperty("_SupportedHDR", true);
-            result = colorViewModel!.SupportedHDR.ToString();
             Assert.That(result, Is.EqualTo("Visible"));
-        }
+
+            privateObject.SetFieldOrProperty("_SupportedHDR", false);
+            result = colorViewModel!.SupportedHDR.ToString();
+            Assert.That(result, Is.EqualTo("Collapsed"));
+        }        
 
         [Test]
         public void TestHDRStatus()

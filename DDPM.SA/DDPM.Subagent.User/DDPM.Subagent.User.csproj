@@ -9,7 +9,7 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.2.8</Version>
+		<Version>2.0.2.9</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 		<ApplicationIcon>MyDell_Blue.ico</ApplicationIcon>
 	</PropertyGroup>

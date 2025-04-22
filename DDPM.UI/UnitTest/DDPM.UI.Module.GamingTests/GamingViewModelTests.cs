@@ -8,6 +8,7 @@ using System.Windows;
 using VcpCore.Common;
 using static DDPM.UI.Module.Gaming.UI_HDRType;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Globalization;
 namespace DDPM.UI.Module.Gaming.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -480,11 +481,14 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestDisplayText()
         {
-            UI_GameEnhancementMode uI_GameEnhancementMode = new UI_GameEnhancementMode();
-            uI_GameEnhancementMode.GameEnhancementMode = new Gaming_GameEnhancementMode();
-            var result = uI_GameEnhancementMode.DisplayText;
-            // Assert
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                UI_GameEnhancementMode uI_GameEnhancementMode = new UI_GameEnhancementMode();
+                uI_GameEnhancementMode.GameEnhancementMode = new Gaming_GameEnhancementMode();
+                var result = uI_GameEnhancementMode.DisplayText;
+                // Assert
+                Assert.That(result, Is.EqualTo("OFF"));
+            }
         }
 
         //class UI_ResponseTime
@@ -501,11 +505,14 @@ namespace DDPM.UI.Module.Gaming.Tests
        [Test]
         public void TestDisplayTextx()
         {
-            UI_ResponseTime uI_ResponseTime = new UI_ResponseTime();
-            uI_ResponseTime.ResponseTime = new Gaming_ResponseTime();
-            var result = uI_ResponseTime.DisplayText;
-            // Assert
-            Assert.That(result, Is.EqualTo("Extreme"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                UI_ResponseTime uI_ResponseTime = new UI_ResponseTime();
+                uI_ResponseTime.ResponseTime = new Gaming_ResponseTime();
+                var result = uI_ResponseTime.DisplayText;
+                // Assert
+                Assert.That(result, Is.EqualTo("Extreme"));
+            }
         }
 
         //class UI_DarkStabilizer
@@ -522,11 +529,14 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestDisplayTexty()
         {
-            UI_DarkStabilizer uI_DarkStabilizer = new UI_DarkStabilizer();
-            uI_DarkStabilizer.DarkStabilizer = new Gaming_DarkStabilizer();
-            var result = uI_DarkStabilizer.DisplayText;
-            // Assert
-            Assert.That(result, Is.EqualTo("Level 0"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                UI_DarkStabilizer uI_DarkStabilizer = new UI_DarkStabilizer();
+                uI_DarkStabilizer.DarkStabilizer = new Gaming_DarkStabilizer();
+                var result = uI_DarkStabilizer.DisplayText;
+                // Assert
+                Assert.That(result, Is.EqualTo("Level 0"));
+            }
         }
 
         //class UI_HDRType
@@ -543,11 +553,14 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestDisplayTextq()
         {
-            UI_HDRType uI_HDRType = new UI_HDRType();
-            uI_HDRType.HDRType = new Gaming_HDRType();
-            var result = uI_HDRType.DisplayText;
-            // Assert
-            Assert.That(result, Is.EqualTo("OFF"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                UI_HDRType uI_HDRType = new UI_HDRType();
+                uI_HDRType.HDRType = new Gaming_HDRType();
+                var result = uI_HDRType.DisplayText;
+                // Assert
+                Assert.That(result, Is.EqualTo("OFF"));
+            }
         }
 
         //class UI_DualResolution

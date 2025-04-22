@@ -1945,7 +1945,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void HidePleaseWait()
         {
-            IsPleaseWaitVisible = false;
+            if(IsPleaseWaitVisible==true)
+                IsPleaseWaitVisible = false;
         }
 
         // Please Wait logic
@@ -1966,6 +1967,18 @@ namespace DDPM.UI.Plugin.ViewModels
         private void DoWork_PleaseWait(string model, AirAudioViewModel vm)
         {
             _log.Info($"[AirAudioViewModel] DoWork_PleaseWait .......");
+            if (_deviceManager == null) 
+            {
+                HidePleaseWait();
+                _log.Error("[AirAudioViewModel] DoWork_PleaseWait ... _deviceManager is null.");
+                return;
+            }
+            if (CurrentDeviceID == null || string.IsNullOrEmpty(CurrentDeviceID.ToString()))
+            {
+                HidePleaseWait();
+                _log.Error("[AirAudioViewModel] DoWork_PleaseWait ... CurrentDeviceID is null.");
+                return;
+            }
             DeviceID = _deviceManager.GetAirAudioSerialNumberAsync(CurrentDeviceID.ToString()).Result;
             if (string.IsNullOrEmpty(DeviceID))
             {
@@ -2067,11 +2080,13 @@ namespace DDPM.UI.Plugin.ViewModels
             catch (OperationCanceledException)
             {
                 _log!.Error("[AirAudioViewModel] Invoke_PleaseWaitAsync timed out");
+                await Task.Run(() => HidePleaseWait());
                 throw;
             }
             catch (Exception ex)
             {
                 vm._log!.Error($"[AirAudioViewModel] Invoke_PleaseWaitAsync exception: {ex.Message}");
+                await Task.Run(() => HidePleaseWait());
                 throw;
             }
             //finally

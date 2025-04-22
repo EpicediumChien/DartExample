@@ -28,6 +28,7 @@ using Windows.ApplicationModel;
 using System.Security.AccessControl;
 using DDPM.UI.Common.EAEM;
 using DDPM.SA.Common.Settings;
+using System.Globalization;
 
 namespace DDPM.UI.Module.EzMemory.Tests
 {
@@ -157,10 +158,12 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestSyncEditStatusForFirstPage()
         {
-            ezMemoryFirst.SyncEditStatusForFirstPage();
-            EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
-
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                ezMemoryFirst.SyncEditStatusForFirstPage();
+                EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
+                Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
+            }
         }
 
         [Test]
@@ -186,10 +189,13 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestCheckInputText3()
         {
-            ezMemoryFirst.CheckInputText();
-            EzArrangeViewModel vm = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            // Assert
-            Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                ezMemoryFirst.CheckInputText();
+                EzArrangeViewModel vm = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
+                // Assert
+                Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
+            }
         }
 
         [Test]

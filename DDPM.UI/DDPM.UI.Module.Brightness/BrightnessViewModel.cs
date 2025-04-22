@@ -287,7 +287,8 @@ namespace DDPM.UI.Module.Brightness
                 {
                     if ((int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value != value)
                     {
-                        ALSSettingsChangesOnNonPrimary(false, "AUTOBRILEVEL", value);
+                        bool popMessageResult = false;
+                        ALSSettingsChangesOnNonPrimary(ref popMessageResult, "AUTOBRILEVEL", value);
 
                         if ((int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value == value)//already apply, make string change
                         {
@@ -378,9 +379,10 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("IsBusy");
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
+                    bool popMessageResult = value;
                     _autoBrightnessStatus = value;
                     Start_ALSConfig.isAutoBrightness = value;
-                    ALSSettingsChangesOnNonPrimary(value);
+                    ALSSettingsChangesOnNonPrimary(ref popMessageResult);
                     NotifyPropertyChanged("AutoBrightnessStatus");
                     NotifyPropertyChanged("AutoBrightness_String");
                     NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
@@ -448,9 +450,10 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.WriteUILog($"AutoColorTempStatus IsBusy : true ...");
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
+                    bool popMessageResult = value;
                     _autoColorTempStatus = value;
                     Start_ALSConfig.isAutoColorTemp = value;
-                    ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
+                    ALSSettingsChangesOnNonPrimary(ref popMessageResult, "AUTOCOLOR");
                     NotifyPropertyChanged("AutoColorTempStatus");
                     NotifyPropertyChanged("AutoColorTemp_String");
                     //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
@@ -1549,7 +1552,8 @@ namespace DDPM.UI.Module.Brightness
                 //PIMS-328260
                 //_primaryMonitorSyncStatus = value;
                 //Start_ALSConfig.isPrimaryMonitorSync = value;
-                ALSSettingsChangesOnNonPrimary(value, "PRISYNC");
+                bool popMessageResult = value;
+                ALSSettingsChangesOnNonPrimary(ref popMessageResult, "PRISYNC");
                 NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                 NotifyPropertyChanged("PrimaryMonitorSync_String");
             }
@@ -1617,9 +1621,12 @@ namespace DDPM.UI.Module.Brightness
 
         public bool AreAllConfigsNotBusy(List<ALSConfig> configs)
         {
-            if (configs == null || configs.Count == 0)
+            if (configs == null || configs.Count == 0 || !configs.Where(cfg => cfg.isSupportALS > 0).Skip(1).Any()) // isSupportALS At least two. If no, then return. one ALS don't do Busy Animation.
+            {
+                DdpmCommonHelper.WriteUILog($"AreAllConfigsNotBusy : return true ...");
                 return true;
-
+            }
+            DdpmCommonHelper.WriteUILog($"AreAllConfigsNotBusy : config isBusy = {configs.All(config => !config.isBusy).ToString()} ...");
             return configs.All(config => !config.isBusy);
         }
 
@@ -2287,7 +2294,6 @@ namespace DDPM.UI.Module.Brightness
             List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
             if (tmp == null || tmp.Count <= 1)
                 return;
-
             IsBusyALS = true;
             NotifyPropertyChanged("IsBusyALS");
             DdpmCommonHelper.WriteUILog($"SetIsBusy IsBusyALS : true ...");
@@ -2564,7 +2570,7 @@ namespace DDPM.UI.Module.Brightness
         /// Detect the status of the PrimaryMonitorSync and obtain the current number of monitors that support the ALS function.
         /// </summary>
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
-        private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI", int level = 0)
+        private void ALSSettingsChangesOnNonPrimary(ref bool onoff, string property = "AUTOBRI", int level = 0)
         {
             DdpmCommonHelper.WriteUILog($"ALSSettingsChangesOnNonPrimary in ...");
             int level_keep = 0;
@@ -2589,6 +2595,7 @@ namespace DDPM.UI.Module.Brightness
                 //if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
                 if (messageModalDialog != null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
                 {
+                    onoff = true;
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
                     if (property.Equals("AUTOBRILEVEL"))//PIMS-314583
@@ -2611,22 +2618,29 @@ namespace DDPM.UI.Module.Brightness
                 else
                 {
                     //SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
-                    onoff = !onoff;
+                    //onoff = !onoff;
                     //Update_AutoBrightnessStatus(onoff);
                     if (property.Equals("AUTOBRI"))
                     {
+                        onoff = !onoff;
                         _autoBrightnessStatus = onoff;
                         Start_ALSConfig.isAutoBrightness = onoff;
                     }
                     if (property.Equals("AUTOCOLOR"))
                     {
+                        onoff = !onoff;
                         _autoColorTempStatus = onoff;
                         Start_ALSConfig.isAutoColorTemp = onoff;
                     }
                     if (property.Equals("AUTOBRILEVEL"))
                     {
+                        onoff = !onoff;
                         //click no, switch back due to UI action
                         SetBrightnessLevelDataToObject(level_keep);
+                    }
+                    if(property.Equals("BRILEVEL"))
+                    {
+                        onoff = false;
                     }
                 }
             }
@@ -3405,27 +3419,26 @@ namespace DDPM.UI.Module.Brightness
 
                 NotifyPropertyChanged("BrightnessValue");
             }
-
-            if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 && _autoBrightnessStatus)
+            if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
             {
-                if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
+                bool popMessageResult = false;
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                    {
-                        ALSSettingsChangesOnNonPrimary(false, "BRILEVEL");
-                    }));
+                    ALSSettingsChangesOnNonPrimary(ref popMessageResult, "BRILEVEL");
+                }));
 
-                    if (_autoBrightnessStatus) //means select no
-                    {
-                        Get_Brightness_Value();
-                        return;
-                    }
-                    else //means select yes
-                        SET_Brightness();
-
+                if (!popMessageResult) //means select no
+                {
+                    Get_Brightness_Value();
                     return;
                 }
+                else //means select yes
+                    SET_Brightness();
 
+                return;
+            }
+            if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 && _autoBrightnessStatus)
+            {
                 string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -3437,16 +3450,6 @@ namespace DDPM.UI.Module.Brightness
                     AutoBrightnessStatus = _autoBrightnessStatus = false;
                 else
                 {
-                    //if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                    //    Brightness_Value = 40;
-                    //else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                    //    Brightness_Value = 60;
-                    //else
-                    //    Brightness_Value = 100;
-
-                    //NotifyPropertyChanged("BrightnessValue");
-                    //NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
-
                     Get_Brightness_Value();
                     return;
                 }

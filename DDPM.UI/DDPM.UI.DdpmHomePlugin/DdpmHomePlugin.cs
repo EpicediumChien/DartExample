@@ -1493,6 +1493,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_log != null)
                 _log.Info("DdpmHomePlugin Dispose(bool disposing).");
 
+            // Not using now
             if (disposing && _deviceManager != null)
             {
                 //_log.Info("disposing && _deviceManager != null");
@@ -1506,7 +1507,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     {
                         //_log.Info("pluginCondition != null");
 
-                        if (pluginCondition is PluginRunningCondition)
+                        //if (pluginCondition is PluginRunningCondition)
                         {
                             //_log.Info("pluginCondition is PluginRunningCondition");
                             _deviceManager.Reset0x52TimerTick(8000);
