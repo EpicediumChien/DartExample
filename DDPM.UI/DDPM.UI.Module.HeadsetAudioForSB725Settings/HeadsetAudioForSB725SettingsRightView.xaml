@@ -514,7 +514,7 @@
                   <UXControls:UXTextBlock Grid.Column="0"  Text="{Binding [Collab.1], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}"  HorizontalAlignment="Left"  />
                   <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="5,0">
                     <Image.ToolTip>
-                      <ToolTip>
+                      <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                           <Border.Resources>
                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -552,7 +552,7 @@
                           <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
                           <Image Grid.Column="1" Width="16" Height="16" Margin="8,20,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                             <Image.ToolTip>
-                              <ToolTip>
+                              <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                   <Border.Resources>
                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -624,7 +624,7 @@
                         </UXControls:UXTextBlock>
                         <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,0">
                           <Image.ToolTip>
-                            <ToolTip>
+                            <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                 <Border.Resources>
                                   <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -713,7 +713,7 @@
                     <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="{Binding [Multimedia], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20,20,0,20" />
                     <Image Width="16" Height="16" Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,20" HorizontalAlignment="Left">
                       <Image.ToolTip>
-                        <ToolTip>
+                        <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                           <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                             <Border.Resources>
                               <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -732,7 +732,7 @@
                     <UXControls:UXTextBlock  Text="{Binding [Cardi.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20,0,0,10" />
                     <Image Width="16" Height="16" Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,0,0,10" HorizontalAlignment="Left">
                       <Image.ToolTip>
-                        <ToolTip>
+                        <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                           <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                             <Border.Resources>
                               <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
