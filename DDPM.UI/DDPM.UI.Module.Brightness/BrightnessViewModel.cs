@@ -2823,6 +2823,8 @@ namespace DDPM.UI.Module.Brightness
                 UpdateLuminance();
             else
                 UpdateBrightnessContrast();
+
+            UpdateHDRStatus();
         }
 
         private void DoWork_RefreshScheduleValue(object sender, DoWorkEventArgs e)
@@ -3349,7 +3351,6 @@ namespace DDPM.UI.Module.Brightness
 
             Invoke_RefreshHotkeySettings();
             Invoke_RefreshManualValue();
-            UpdateHDRStatus();
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)

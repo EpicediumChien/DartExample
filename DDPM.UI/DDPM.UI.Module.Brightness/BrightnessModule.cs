@@ -101,7 +101,6 @@ namespace DDPM.UI.Module.Brightness
 
             if (vm is not null)
             {
-
                 BackgroundWorker bw = new BackgroundWorker()
                 {
                     WorkerReportsProgress = false,
@@ -112,7 +111,7 @@ namespace DDPM.UI.Module.Brightness
                 bw.RunWorkerCompleted += vm.RunWorkerCompleted_RefreshManualValue;
                 bw.RunWorkerAsync();
 
-                vm?.UpdateHDRStatus();
+                //vm?.UpdateHDRStatus();
             }           
 
             if (_rightView == null)
