@@ -1436,6 +1436,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.Sidetone = false;
                     _log.Info($"[HeadsetViewModel] DTP GetIsSidetoneSupportedAsync ......................... NO");
                 }
+                _wasSidetoneActiveBeforeTransparency = DeviceInfoDTP.Sidetone;
                 //------------------------------------------------------------------------------------
                 bool IsVoiceGuidanceSupported = _deviceManager.GetIsVoiceGuidanceSupportedAsync(CurrentDeviceID.ToString()).Result;
                 if (IsVoiceGuidanceSupported)
