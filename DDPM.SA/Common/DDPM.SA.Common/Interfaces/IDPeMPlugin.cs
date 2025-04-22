@@ -141,7 +141,7 @@ namespace DDPM.SA.Common
         void SetWALTime(int newValue, Guid deviceId);
         void SetSnooze(int newValue, Guid deviceId);
         void SetSnoozeLength(int newValue, Guid deviceId);
-        void SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        //void SetIsProximitySensorEnable(bool newValue, Guid deviceId);
         void SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
         void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
 

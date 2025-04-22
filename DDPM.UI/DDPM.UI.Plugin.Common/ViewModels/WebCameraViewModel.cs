@@ -1049,7 +1049,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             switch (property)
                             {
                                 case "IsHDROnChanged":
-                                    if (bool.TryParse(di.Message, out bool isHDROn) && di.ID == CurrentDeviceID && IsHDROn != isHDROn)
+                                    if (bool.TryParse(di.Message, out bool isHDROn) && IsHDROn != isHDROn)
                                     {
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -1058,13 +1058,20 @@ namespace DDPM.UI.Plugin.ViewModels
                                     }
                                     break;
                                 case "IsAutoFramingOnChanged":
-                                    if (bool.TryParse(di.Message, out bool isAFOn) && di.ID == CurrentDeviceID && _isAutoFramingOn != isAFOn)
+                                    if (bool.TryParse(di.Message, out bool isAFOn) && _isAutoFramingOn != isAFOn)
                                     {
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             IsAutoFramingOn = isAFOn;
                                         });
                                     }
+                                    break;
+                                case "IsProximitySensorEnableChanged":
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        _isChecked_ProximitySensor = di.IsProximitySensorEnable;
+                                        OnPropertyChanged(nameof(IsChecked_ProximitySensor));
+                                    });
                                     break;
                                 default:
                                     break;
