@@ -90,6 +90,18 @@ namespace DDPM.SA.Common.Settings
         //public List<SplitJson> RecentList { get; set; } //= SplitJson.DefaultRecentList;
         public SplitJson[] RecentList { get; set; }
 
+        //Robert_Lin 2025-4-21 added for checking migration
+        /// <summary>
+        /// Check if the specified Instance is migrated from DDM
+        /// It will be "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA" if it's migrated from DDM.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public static bool IsMigratedFromDDM(string instance)
+        {
+            return (instance.Equals("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"));
+        }
+
         //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
         /*
         /// <summary>
