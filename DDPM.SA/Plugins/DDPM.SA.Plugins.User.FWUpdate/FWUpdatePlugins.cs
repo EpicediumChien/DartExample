@@ -1511,7 +1511,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             string dllPathInfo = "";
                             if (DDPMFileSecurity.ValidateFilePath(dllPath, out dllPathInfo))
                             {
-                                if (!DDPMFileSecurity.VerifyExecutableFileSignature(dllPath, out dllPathInfo))
+                                if (DDPMFileSecurity.VerifyExecutableFileSignature(dllPath, out dllPathInfo))
                                 {
                                     bool result = runISP(dllPath, fwUpdateInfo.Model, fwUpdateInfo.ServiceTag,
                                     upgPath, true, callback);
