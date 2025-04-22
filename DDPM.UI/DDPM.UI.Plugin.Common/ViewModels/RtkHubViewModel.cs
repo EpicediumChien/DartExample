@@ -419,26 +419,26 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void ExecuteDebouncedActionForPauseMusic(object param)
         {
-            _isRestoreEnable = false;
+            _isUpdateEnable = false;
             _log.Info($"[HeadsetViewModel] ExecuteDebounced SetIsWearDetectionPauseMusicEnabledAsync ... PauseMusicCheck ... {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()} ...");
             _deviceManager.SetIsWearDetectionPauseMusicEnabledAsync(CurrentDeviceInfo?.ID.ToString(), DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP).Wait();
         }
 
         private void ExecuteDebouncedActionForMuteMicrophone(object param)
         {
-            _isRestoreEnable = false;
+            _isUpdateEnable = false;
             _log.Info($"[HeadsetViewModel] ExecuteDebounced SetIsWearDetectionMuteMicEnabledAsync ... MuteMicrophoneCheck ... {DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP.ToString()}");
             _deviceManager.SetIsWearDetectionMuteMicEnabledAsync(CurrentDeviceInfo?.ID.ToString(), DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP).Wait();
         }
         private void ExecuteDebouncedActionForQuickPause(object param)
         {
-            _isRestoreEnable = false;
+            _isUpdateEnable = false;
             _log.Info($"[HeadsetViewModel] ExecuteDebounced SetWearDetectionQuickPauseAsync ... QuickPauseCheck ... {DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP.ToString()}");
             _deviceManager.SetWearDetectionQuickPauseAsync(CurrentDeviceInfo?.ID.ToString(), DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP).Wait();
         }
         private void ExecuteDebouncedActionForSidetoneCheck(object param)
         {
-            _isRestoreEnable = false;
+            _isUpdateEnable = false;
             _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetSidetoneAsync ... SidetoneCheck .... {DeviceInfoDTP.Sidetone.ToString()}");
             _deviceManager.SetSidetoneAsync(CurrentDeviceInfo?.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
 
@@ -1711,18 +1711,18 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //public bool IsRestoreEnable { get; set; } = false;
 
-        public bool _isRestoreEnable = false;
+        public bool _isUpdateEnable = false;
 
-        public bool IsRestoreEnable
+        public bool IsUpdateEnable
         {
             get
             {
-                return _isRestoreEnable;
+                return _isUpdateEnable;
             }
             set
             {
-                _isRestoreEnable = value;
-                OnPropertyChanged(nameof(IsRestoreEnable));
+                _isUpdateEnable = value;
+                OnPropertyChanged(nameof(IsUpdateEnable));
             }
         }
 
@@ -1761,7 +1761,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                _isRestoreEnable = false;
+                _isUpdateEnable = false;
                 DeviceInfoDTP.MicNoiseCancellation = value;
                 _isOutgoingAudioStatus = value;
                 _supportedOutgoingAudio = false;
@@ -1807,7 +1807,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                _isRestoreEnable = false;
+                _isUpdateEnable = false;
                 DeviceInfoDTP.MicNCIncoming = value;
                 _isIncomingAudioStatus = value;
                 _supportedIncomingAudio = false;
@@ -1869,7 +1869,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                _isRestoreEnable = false;
+                _isUpdateEnable = false;
                 DeviceInfoDTP.MicNoiseCancellation = value;
                 _isMicNoiseCancellationStatus = value;
                 _supportedMicNoiseCancellation = false;

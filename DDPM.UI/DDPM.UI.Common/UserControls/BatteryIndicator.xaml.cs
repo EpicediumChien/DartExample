@@ -163,7 +163,7 @@ namespace DDPM.UI.Common
         private void UpdateConnectionType()
         {
             //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
-            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB") || (GlobalDefinitions.isSupport210 && ConnectionType == "24"))
+            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB") || (GlobalDefinitions.isSupport210 && (ConnectionType == "24" || ConnectionType.Contains("WiredHub"))))
             {
                 if (DdpmCommonHelper.isDarkMode())
                 {
@@ -200,7 +200,7 @@ namespace DDPM.UI.Common
                         txt1.Text = Strings.USB_C_DP_14;
                     }
                 }
-                else if (GlobalDefinitions.isSupport210 && ConnectionType == "24")
+                else if (GlobalDefinitions.isSupport210 && (ConnectionType == "24" || ConnectionType.Contains("WiredHub") || ConnectionType.Contains("Port")))
                 {
                     txt1.Text = Strings.USB_C;
                 }
