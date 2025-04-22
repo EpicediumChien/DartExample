@@ -104,7 +104,7 @@
                         </Border>
                     </Grid>
 
-                    <!--  RightGroupBorder.Manual  -->
+                    <!--#region Brightness\Contrast RightGroupBorder.Manual  -->
                     <Border
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
@@ -404,8 +404,9 @@
                             </Expander.Content>
                         </Expander>
                     </Border>
+                    <!--#endregion-->
 
-                    <!--  RightGroupBorder.Manual.Luminance  -->
+                    <!--#region RightGroupBorder.Manual.Luminance  -->
                     <Border
                         Name="LuminanceRightGroupBorder"
                         IsEnabled="{Binding BrightnessEnable}"
@@ -617,8 +618,9 @@
                             </Expander.Content>
                         </Expander>
                     </Border>
+                    <!--#endregion -->
 
-                    <!--  RightGroupBorder.Auto  -->
+                    <!--#region ALS  RightGroupBorder.Auto  -->
                     <Border
                         Margin="0,16,0,0"
                         IsEnabled="{Binding BrightnessEnable}"
@@ -1143,8 +1145,9 @@
                             </StackPanel>
                         </Expander>
                     </Border>
+                    <!--#endregion-->
 
-                    <!--  RightGroupBorder.Scheduled : Disabled  -->
+                    <!--#region RightGroupBorder.Scheduled : Disabled  -->
                     <Border
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
@@ -2199,8 +2202,9 @@
                             </Expander.Content>
                         </Expander>
                     </Border>
+                    <!--#endregion-->
 
-                    <!--  RightGroupBorder.Scheduled.Luminance : Disabled  -->
+                    <!--#region RightGroupBorder.Scheduled.Luminance : Disabled  -->
                     <Border
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
@@ -2747,7 +2751,13 @@
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration2, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
@@ -2925,6 +2935,7 @@
                             </Expander.Content>
                         </Expander>
                     </Border>
+                    <!--#endregion-->
                 </StackPanel>
 
                 <Border Name="DisableAll" Background="#4C24273C"  d:Visibility="Collapsed">
