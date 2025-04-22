@@ -176,17 +176,17 @@
                         <Path Data="M79.3519 118.57H74.1953V119H79.3519V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                         <Path Data="M102.844 118.57H97.6875V119H102.844V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                     </Grid>
-                    <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="2"/>
+                    <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="2"/>
                     <Grid Grid.Row="2">
                         <!-- Elsa 20250108 For PIMS [PIMS-334923] remove Width="87" and add HorizontalAlignment="Center" -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}}" FontSize="14" LineHeight="18" Height="28.39" Padding="4" HorizontalAlignment="Center"/>
                     </Grid>
-                    <Path Grid.Row="3" HorizontalAlignment="Center"
+                    <Path Grid.Row="3" HorizontalAlignment="Center" Margin="0, 4, 0, 9"
                           Data="M2 0.985352C0.895431 0.985352 0 1.88078 0 2.98535V11.4854V13.9854C0 15.0899 0.895432 15.9854 2 15.9854H50C51.1046 15.9854 52 15.0899 52 13.9854V8.48535V2.98535C52 1.88078 51.1046 0.985352 50 0.985352H2ZM8.5 7.98535C8.22386 7.98535 8 8.20921 8 8.48535C8 8.76149 8.22386 8.98535 8.5 8.98535H43.5C43.7761 8.98535 44 8.76149 44 8.48535C44 8.20921 43.7761 7.98535 43.5 7.98535H8.5Z"/>
                     <!--<Image Grid.Row="4" Margin="0,8" Source="{DynamicResource USBKVM_MK}" />-->
                     <Grid Grid.Row="4" HorizontalAlignment="Center">
-                        <Path Data="M80 1.49952L80 33.4679C80 40.6476 74.1797 46.4679 67 46.4679L14 46.4679C6.8203 46.4679 1 52.2882 1 59.4679L1 97.4995" StrokeThickness="2"/>
-                        <Path Data="M80.7071 0.792397C80.3166 0.401871 79.6834 0.401871 79.2929 0.792397L72.9289 7.15636C72.5384 7.54688 72.5384 8.18005 72.9289 8.57057C73.3195 8.9611 73.9526 8.9611 74.3432 8.57057L80 2.91372L85.6569 8.57057C86.0474 8.9611 86.6805 8.9611 87.0711 8.57057C87.4616 8.18005 87.4616 7.54688 87.0711 7.15636L80.7071 0.792397ZM79 1.4995L79 33.4679L81 33.4679L81 1.4995L79 1.4995ZM93 47.4679L146 47.4679L146 45.4679L93 45.4679L93 47.4679ZM158 59.4679L158 97.4995L160 97.4995L160 59.4679L158 59.4679ZM146 47.4679C152.627 47.4679 158 52.8405 158 59.4679L160 59.4679C160 51.7359 153.732 45.4679 146 45.4679L146 47.4679ZM79 33.4679C79 41.1999 85.268 47.4679 93 47.4679L93 45.4679C86.3726 45.4679 81 40.0953 81 33.4679L79 33.4679Z" Fill="{DynamicResource DefaultTheme_PathColor}" StrokeThickness="0.1"/>
+                        <Path Data="M165.293 77.7071C165.683 78.0976 166.317 78.0976 166.707 77.7071L173.071 71.3431C173.462 70.9526 173.462 70.3195 173.071 69.9289C172.681 69.5384 172.047 69.5384 171.657 69.9289L166 75.5858L160.343 69.9289C159.953 69.5384 159.319 69.5384 158.929 69.9289C158.538 70.3195 158.538 70.9526 158.929 71.3431L165.293 77.7071ZM167 77V53.9316H165V77H167ZM153 39.9316H100V41.9316H153V39.9316ZM88 27.9316V0H86V27.9316H88ZM100 39.9316C93.3726 39.9316 88 34.559 88 27.9316H86C86 35.6636 92.268 41.9316 100 41.9316V39.9316ZM167 53.9316C167 46.1996 160.732 39.9316 153 39.9316V41.9316C159.627 41.9316 165 47.3042 165 53.9316H167Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1"/>
+                        <Path Data="M8.70711 77.7071C8.31658 78.0976 7.68342 78.0976 7.29289 77.7071L0.928932 71.3431C0.538406 70.9526 0.538406 70.3195 0.928932 69.9289C1.31946 69.5384 1.95262 69.5384 2.34315 69.9289L8 75.5858L13.6569 69.9289C14.0474 69.5384 14.6805 69.5384 15.0711 69.9289C15.4616 70.3195 15.4616 70.9526 15.0711 71.3431L8.70711 77.7071ZM7 77V53.9316H9V77H7ZM21 39.9316H74V41.9316H21V39.9316ZM86 27.9316V0H88V27.9316H86ZM74 39.9316C80.6274 39.9316 86 34.559 86 27.9316H88C88 35.6636 81.732 41.9316 74 41.9316V39.9316ZM7 53.9316C7 46.1996 13.268 39.9316 21 39.9316V41.9316C14.3726 41.9316 9 47.3042 9 53.9316H7Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1"/>
                     </Grid>
                     <Grid Grid.Row="5" HorizontalAlignment="Center">
                         <Grid.ColumnDefinitions>
@@ -194,7 +194,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" Margin="0, 0, 4, 0" MinHeight="150" MinWidth="150" 
-                                Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
+                                Background="{DynamicResource USBKVM_MK_Color}" CornerRadius="13" 
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -203,17 +203,22 @@
                                 </Grid.RowDefinitions>
                                 <Grid Grid.Row="0" Margin="20, 15, 20, 8" HorizontalAlignment="Center">
                                     <UXControls:UXTextBlock Text="Mouse" Margin="0, 18, 0, 0"
-                                                        FontSize="16" Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}" 
+                                                        FontSize="16" Foreground="{DynamicResource USBKVM_MK_WordColor}" 
                                                         LineHeight="24" />
                                 </Grid>
                                 <Grid Grid.Row="1" Margin="20, 8, 20, 15" HorizontalAlignment="Center">
-                                    <Path Data="M19.1751 7.19951H21.8251V14.3495H19.1751V7.19951Z"/>
-                                    <Path Data="M22.3251 0.499512H18.6751C16.204 0.50611 13.836 1.49068 12.0886 3.23803C10.3413 4.98538 9.3567 7.3534 9.3501 9.82451V31.1745C9.3567 33.6456 10.3413 36.0136 12.0886 37.761C13.836 39.5083 16.204 40.4929 18.6751 40.4995H22.3251C24.7962 40.4929 27.1642 39.5083 28.9116 37.761C30.6589 36.0136 31.6435 33.6456 31.6501 31.1745V9.82451C31.6435 7.3534 30.6589 4.98538 28.9116 3.23803C27.1642 1.49068 24.7962 0.50611 22.3251 0.499512ZM29.0001 31.1745C28.9935 32.9405 28.2873 34.6319 27.0362 35.8783C25.7851 37.1247 24.0911 37.8245 22.3251 37.8245H18.6751C16.9091 37.8245 15.2151 37.1247 13.964 35.8783C12.7129 34.6319 12.0067 32.9405 12.0001 31.1745V9.82451C12.0067 8.05853 12.7129 6.36713 13.964 5.12073C15.2151 3.87432 16.9091 3.1745 18.6751 3.17451H22.3251C24.0911 3.1745 25.7851 3.87432 27.0362 5.12073C28.2873 6.36713 28.9935 8.05853 29.0001 9.82451V31.1745Z"/>
+                                    <Canvas>
+                                        <Canvas.RenderTransform>
+                                            <TranslateTransform X="-20"/>
+                                        </Canvas.RenderTransform>
+                                        <Path Data="M19.1751 7.19951H21.8251V14.3495H19.1751V7.19951Z"/>
+                                        <Path Data="M22.3251 0.499512H18.6751C16.204 0.50611 13.836 1.49068 12.0886 3.23803C10.3413 4.98538 9.3567 7.3534 9.3501 9.82451V31.1745C9.3567 33.6456 10.3413 36.0136 12.0886 37.761C13.836 39.5083 16.204 40.4929 18.6751 40.4995H22.3251C24.7962 40.4929 27.1642 39.5083 28.9116 37.761C30.6589 36.0136 31.6435 33.6456 31.6501 31.1745V9.82451C31.6435 7.3534 30.6589 4.98538 28.9116 3.23803C27.1642 1.49068 24.7962 0.50611 22.3251 0.499512ZM29.0001 31.1745C28.9935 32.9405 28.2873 34.6319 27.0362 35.8783C25.7851 37.1247 24.0911 37.8245 22.3251 37.8245H18.6751C16.9091 37.8245 15.2151 37.1247 13.964 35.8783C12.7129 34.6319 12.0067 32.9405 12.0001 31.1745V9.82451C12.0067 8.05853 12.7129 6.36713 13.964 5.12073C15.2151 3.87432 16.9091 3.1745 18.6751 3.17451H22.3251C24.0911 3.1745 25.7851 3.87432 27.0362 5.12073C28.2873 6.36713 28.9935 8.05853 29.0001 9.82451V31.1745Z"/>
+                                    </Canvas>
                                 </Grid>
                             </Grid>
                         </Border>
                         <Border Grid.Column="1" Margin="4, 0, 0, 0" MinHeight="150" MinWidth="150" 
-                                Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
+                                Background="{DynamicResource USBKVM_MK_Color}" CornerRadius="13" 
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -222,30 +227,24 @@
                                 </Grid.RowDefinitions>
                                 <Grid Grid.Row="0" Margin="20, 15, 20, 8" HorizontalAlignment="Center">
                                     <UXControls:UXTextBlock Text="Keyboard" Margin="0, 18, 0, 0"
-                                FontSize="16" Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}" 
+                                FontSize="16" Foreground="{DynamicResource USBKVM_MK_WordColor}" 
                                 LineHeight="24" />
                                 </Grid>
                                 <Grid Grid.Row="1" Margin="20, 8, 20, 15" HorizontalAlignment="Center">
-                                    <Grid.Resources>
-                                        <Style TargetType="Path">
-                                            <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                            <Setter Property="Fill" Value="Transparent" />
-                                        </Style>
-                                    </Grid.Resources>
-                                    <Path Data="M21.525 9.22451V6.22451H22.65C23.313 6.22451 23.9489 5.96112 24.4178 5.49228C24.8866 5.02344 25.15 4.38755 25.15 3.72451V-0.000488281H22.425V3.54951H21.3C20.637 3.54951 20.0011 3.8129 19.5322 4.28174C19.0634 4.75059 18.8 5.38647 18.8 6.04951V9.22451H0.5V34.9995H40.5V9.22451H21.525ZM37.825 32.2745H3.175V11.8995H37.825V32.2745Z"/>
-                                    <Path Data="M6.775 13.6245H10.675V16.2995H6.775V13.6245Z"/>
-                                    <Path Data="M6.775 18.3245H10.675V20.9745H6.775V18.3245Z"/>
-                                    <Path Data="M6.775 22.9495H10.675V25.6245H6.775V22.9495Z"/>
-                                    <Path Data="M14.625 13.6245H18.525V16.2995H14.625V13.6245Z"/>
-                                    <Path Data="M14.625 18.3245H18.525V20.9745H14.625V18.3245Z"/>
-                                    <Path Data="M14.625 22.9495H18.525V25.6245H14.625V22.9495Z"/>
-                                    <Path Data="M22.475 13.6245H26.375V16.2995H22.475V13.6245Z"/>
-                                    <Path Data="M22.475 18.3245H26.375V20.9745H22.475V18.3245Z"/>
-                                    <Path Data="M22.475 22.9495H26.375V25.6245H22.475V22.9495Z"/>
-                                    <Path Data="M30.325 13.6245H34.225V16.2995H30.325V13.6245Z"/>
-                                    <Path Data="M30.325 18.3245H34.225V20.9745H30.325V18.3245Z"/>
-                                    <Path Data="M30.325 22.9495H34.225V25.6245H30.325V22.9495Z"/>
-                                    <Path Data="M12.775 27.6245H28.2V30.2995H12.775V27.6245Z"/>
+                                    <Path Data="M21.525 9.22451V6.22451H22.65C23.313 6.22451 23.9489 5.96112 24.4178 5.49228C24.8866 5.02344 25.15 4.38755 25.15 3.72451V-0.000488281H22.425V3.54951H21.3C20.637 3.54951 20.0011 3.8129 19.5322 4.28174C19.0634 4.75059 18.8 5.38647 18.8 6.04951V9.22451H0.5V34.9995H40.5V9.22451H21.525ZM37.825 32.2745H3.175V11.8995H37.825V32.2745Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M6.775 13.6245H10.675V16.2995H6.775V13.6245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M6.775 18.3245H10.675V20.9745H6.775V18.3245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M6.775 22.9495H10.675V25.6245H6.775V22.9495Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M14.625 13.6245H18.525V16.2995H14.625V13.6245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M14.625 18.3245H18.525V20.9745H14.625V18.3245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M14.625 22.9495H18.525V25.6245H14.625V22.9495Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M22.475 13.6245H26.375V16.2995H22.475V13.6245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M22.475 18.3245H26.375V20.9745H22.475V18.3245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M22.475 22.9495H26.375V25.6245H22.475V22.9495Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M30.325 13.6245H34.225V16.2995H30.325V13.6245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M30.325 18.3245H34.225V20.9745H30.325V18.3245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M30.325 22.9495H34.225V25.6245H30.325V22.9495Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                    <Path Data="M12.775 27.6245H28.2V30.2995H12.775V27.6245Z" Fill="{DynamicResource DefaultTheme_PathColor}"/>
                                 </Grid>
                             </Grid>
                         </Border>

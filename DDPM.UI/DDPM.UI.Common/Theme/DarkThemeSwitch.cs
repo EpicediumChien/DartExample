@@ -42,6 +42,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("DefaultTheme_PathColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 UpdateFreezable("DefaultTheme_PbHeaderColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#DAF5FD"));
                 UpdateFreezable("DefaultTheme_USBKVMPCColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
+                UpdateFreezable("DefaultTheme_USBKVMLineColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
                 UpdateFreezable("DefaultTheme_BtFgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF5F6F7"));
                 UpdateFreezable("DefaultTheme_BtBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E1C2F"));
                 UpdateFreezable("DefaultTheme_BtBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
@@ -466,6 +467,8 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Slider_ValueColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
                 #region USBKVM
                 UpdateBitmapImage("USBKVM_MK", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_Dark.png", UriKind.RelativeOrAbsolute));
+                UpdateFreezable("USBKVM_MK_Color", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#19345799"));
+                UpdateFreezable("USBKVM_MK_WordColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
                 #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
