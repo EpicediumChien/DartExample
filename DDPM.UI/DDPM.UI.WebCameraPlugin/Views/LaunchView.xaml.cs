@@ -740,7 +740,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public int check_IsMPS_OK()
         {
-            return 2;
             //作業系統必須是Windows10 20H2 以上
             //或是Windows11 22H2以上
             if (WinVersion.GetVersion(out var info))
