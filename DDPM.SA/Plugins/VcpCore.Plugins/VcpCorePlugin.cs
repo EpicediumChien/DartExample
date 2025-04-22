@@ -463,12 +463,6 @@ namespace VcpCore.Plugins
                     command.Result = r;
                     return command;
                 }
-                else if (command.Action.Equals(MultiCommandAction.GetVCPCacheTable))
-                {
-                    var r = await Task.Run(() => GetVCPCacheTable());
-                    command.Result = r;
-                    return command;
-                }
                 else if (command.Action.Equals(MultiCommandAction.CancelVcpTask))
                 {
                     await Task.Run(() => CancelVcpTask(command.Guid));

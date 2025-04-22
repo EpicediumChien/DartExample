@@ -30,7 +30,6 @@ namespace VcpCore.Common
         GetVCPCapabilities,
         GetVCPCapability,
         SetVCPCapability,
-        GetVCPCacheTable,
         CancelVcpTask,
     }
 }
