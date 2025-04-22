@@ -420,10 +420,12 @@ namespace VcpCore.Plugins
 
             async Task<MultiCommandArch> CommandRun(MultiCommandArch command)
             {
-                if (command.Action.Equals(MultiCommandAction.GetMonitors))
+                if (command.Action.Equals(MultiCommandAction.None))
+                    return command;
+                else if (command.Action.Equals(MultiCommandAction.GetMonitors))
                 {
                     var r = await Task.Run(() => GetMonitors());
-                    command.Result = r;
+                    command.Result = JsonConvert.SerializeObject(r, Formatting.Indented);
                     return command;
                 }
                 else if (command.Action.Equals(MultiCommandAction.GetCapabilitiesString))
