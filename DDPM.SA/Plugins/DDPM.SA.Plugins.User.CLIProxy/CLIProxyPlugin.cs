@@ -21,6 +21,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 
@@ -183,6 +184,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
         }
 
+        //2025/4/24 mark this function as [Obsolete] due to checkmarx report the line sw.WriteLine() cause issue "Information Exposure Through an Error Message"
+        [Obsolete]
         private static void OutputLog(string output, CommandLineInput commandLineInput)
         {
             if (!string.IsNullOrEmpty(commandLineInput.LogPath))
@@ -799,8 +802,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 //write result back
                 if (cliEventResult != null)
                 {
+                    WriteLog($"[commandLineInput]: {JToken.FromObject(commandLineInput).ToString()}");
+                    WriteLog($"[Response]: {cliEventResult.serialize_Json_response}");
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
-                    OutputLog(cliEventResult.serialize_Json_response, commandLineInput);
+                    //OutputLog(cliEventResult.serialize_Json_response, commandLineInput); //This function may cause message with exception content to streambuilder, replace it by ILog
                 }
             });
         }
@@ -872,11 +877,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 WriteLog($"device Type: {deviceType}, device model: {devicemodel} device name: {deviceName} dell device name: {delldevicetype}");
 
                 if (is_model && deviceType.Equals("display"))
-                    header = e.is_defer ? $"Dell Display {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"Dell Display ({devicemodel.ToUpper()}) firmware update" : "Update will be applied";
                 else if (is_model && !deviceType.Equals("display"))
-                    header = e.is_defer ? $"{delldevicetype} {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"{delldevicetype} ({devicemodel.ToUpper()}) firmware update" : "Update will be applied";
                 else
-                    header = e.is_defer ? $"{delldevicetype} {deviceName} firmware update" : "Update will be applied";
+                    header = e.is_defer ? $"{delldevicetype} ({deviceName}) firmware update" : "Update will be applied";
 
                 e.toast_message = e.is_defer ? $"During update, device usage may be intermittent. Do not disconnect the device. This update can be deferred {e.defer_item.count + 1} times." : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.";
             }

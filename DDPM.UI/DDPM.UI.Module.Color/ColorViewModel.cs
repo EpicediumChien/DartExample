@@ -17,6 +17,10 @@ using System.Windows.Input;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.UI.Resources.Helper;
+using System.Runtime.InteropServices;
+using System.Text;
+using DDPM.SA.Common.Method;
+using System.Data.SqlTypes;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
 namespace DDPM.UI.Module.Color
@@ -576,7 +580,7 @@ namespace DDPM.UI.Module.Color
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
 
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
                     DCM_Visibility = Visibility.Visible;
                 }));
             }
@@ -647,7 +651,7 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = true;
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
                     DCM_Visibility = Visibility.Collapsed;
 
                     //Dean20250328 mark below code since never use.
@@ -1203,7 +1207,35 @@ namespace DDPM.UI.Module.Color
             }
 
             // PIMS-288131
-            try
+            if (IsisAdvanced_Settings == Visibility.Visible)
+            {
+                if (CheckDCMExist())
+                {
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                        ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                        DCM_Visibility = Visibility.Visible;
+
+                    }));
+                }
+                else
+                {
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = true;
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = true;
+
+                        ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                        DCM_Visibility = Visibility.Visible;
+
+                    }));
+                }
+            }
+            //disable old code
+            /*try
             {
                 Process[] processes = Process.GetProcessesByName("ColorManagement");
 
@@ -1235,7 +1267,7 @@ namespace DDPM.UI.Module.Color
                             ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
                             ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
 
-                            ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                            ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
                             DCM_Visibility = Visibility.Visible;
 
                         }));
@@ -1246,7 +1278,7 @@ namespace DDPM.UI.Module.Color
             {
                 string log = $"[RunWorkerCompleted_RefreshData] Exception thrown when Process.GetProcessesByName : {ex.Message}\nStack Trace: {ex.StackTrace}";
                 DdpmCommonHelper.WriteUILog(log);
-            }
+            }*/
 
             WatchForProcessStart();
             WatchForProcessEnd();
@@ -1481,5 +1513,74 @@ namespace DDPM.UI.Module.Color
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////
+
+        #region Get Process path region
+        private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, uint processId);
+        private static IntPtr _OpenProcess(uint processAccess, bool bInheritHandle, uint processId)
+        {
+            return OpenProcess(processAccess, bInheritHandle, processId);
+        }
+
+        [DllImport("psapi.dll", CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, uint nSize);
+        private static uint _GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, uint nSize)
+        {
+            return GetModuleFileNameEx(hProcess, hModule, lpFilename, nSize);
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool CloseHandle(IntPtr hObject);
+        private static bool _CloseHandle(IntPtr hObject)
+        {
+            return CloseHandle(hObject);
+        }
+
+        private static bool CheckDCMExist()
+        {
+            try
+            {
+                foreach (Process proc in Process.GetProcessesByName("ColorManagement"))
+                {
+                    IntPtr hProcess = _OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)proc.Id);
+                    if (hProcess == IntPtr.Zero)
+                    {
+                        continue;
+                    }
+
+                    StringBuilder filename = new StringBuilder(1024);
+                    _GetModuleFileNameEx(hProcess, IntPtr.Zero, filename, (uint)filename.Capacity);
+                    string fullPath = filename.ToString();
+                    if (!string.IsNullOrEmpty(fullPath) && fullPath.Length > 0)
+                    {
+                        _CloseHandle(hProcess);
+                        DdpmCommonHelper.WriteUILog($"[CheckDCMExist] Got DCM path: {Algorithm.MaskString(fullPath, 0, fullPath.Length / 2)}");
+                        string Info = "ColorManagement File Signature Is Null Or Empty";
+                        if (DDPMFileSecurity.VerifyExecutableFileSignature(fullPath, out Info))
+                        {
+                            string log = $"[CheckDCMExist] VerifyExecutableFileSignature : {Info}\n";
+                            DdpmCommonHelper.WriteUILog(log);
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog("[CheckDCMExist] Got null or abnormal DCM path");
+                    }
+                    _CloseHandle(hProcess);
+                }
+            }
+            catch(Exception e) {
+                DdpmCommonHelper.WriteUILog($"[CheckDCMExist] exception: {e.Message}");
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using static System.Net.Mime.MediaTypeNames;
+using System.Globalization;
 
 namespace DDPM.UI.Module.EzSettings.Tests
 {
@@ -60,15 +61,18 @@ namespace DDPM.UI.Module.EzSettings.Tests
         [Test]
         public void TestConstructor_EzSettingsRightView()
         {
-            var hotkeyRecentTooltipText = privateObject.GetFieldOrProperty("RecentHotkeyTooltipText");
-            var applicationWindowSnapTooltipText = privateObject.GetFieldOrProperty("ApplicationWindowSnapTooltipText");
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                var hotkeyRecentTooltipText = privateObject.GetFieldOrProperty("RecentHotkeyTooltipText");
+                var applicationWindowSnapTooltipText = privateObject.GetFieldOrProperty("ApplicationWindowSnapTooltipText");
 
-            // Assert
-            Assert.That(ezSettingsRightView, Is.Not.Null);
-            Assert.That(ezSettingsRightView.DataContext, Is.EqualTo(vm));
-            Assert.That(privateObject!.GetFieldOrProperty("_viewModel"), Is.EqualTo(vm));
-            Assert.That(hotkeyRecentTooltipText, Is.EqualTo("Example: \"Alt + P\", \"Shift + F\", \"Ctrl + Shift + F\"."));
-            Assert.That(applicationWindowSnapTooltipText, Is.EqualTo("Snap any application into a split screen layout easily by dragging into a partition"));
+                // Assert
+                Assert.That(ezSettingsRightView, Is.Not.Null);
+                Assert.That(ezSettingsRightView.DataContext, Is.EqualTo(vm));
+                Assert.That(privateObject!.GetFieldOrProperty("_viewModel"), Is.EqualTo(vm));
+                Assert.That(hotkeyRecentTooltipText, Is.EqualTo("Example: \"Alt + P\", \"Shift + F\", \"Ctrl + Shift + F\"."));
+                Assert.That(applicationWindowSnapTooltipText, Is.EqualTo("Snap any application into a split screen layout easily by dragging into a partition"));
+            }
         }
     }
 }

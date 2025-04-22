@@ -91,22 +91,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             Task.Run(() =>
             {
-                ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                try
+                {
+                    ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
 
-                toastContentBuilder.AddArgument(content.Title);
-                toastContentBuilder.AddText(content.Title);
-                toastContentBuilder.AddText(content.Description);
-                toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model + "," + content.ServiceTag/*content.left_btn_action*/);
-                toastContentBuilder.AddButton(content.right_btn, ToastActivationType.Background, content.right_btn_action);
+                    toastContentBuilder.AddArgument(content.Title);
+                    toastContentBuilder.AddText(content.Title);
+                    toastContentBuilder.AddText(content.Description);
+                    toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model + "," + content.ServiceTag/*content.left_btn_action*/);
+                    toastContentBuilder.AddButton(content.right_btn, ToastActivationType.Background, content.right_btn_action);
 
-                toastContentBuilder.Show(); // 顯示Toast通知
-                WriteLog("[DisplayImportToast] toast Show.");
+                    toastContentBuilder.Show(); // 顯示Toast通知
+                    WriteLog("[DisplayImportToast] toast Show.");
+                }
+                catch (Exception ex) 
+                {
+                    WriteLog($"[DisplayImportToast] throws exception {ex.Message}, StackTrace: {ex.StackTrace}.");
+                }
             });
         }
 
         public void CheckAndTriggerToastWhileMonitorPlugged(int msec, List<MonitorInfo> mos, ISettingsManagerDev settingsManager)
         {
-            if (msec == 8000)//means no UI pluged
+            WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] Entrance.");
+            string processName = "DDPM"; //"notepad";
+            Process[] processes = Process.GetProcessesByName(processName);
+            if (processes != null && processes.Length == 0)//means no UI pluged
             {
                 WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] is monitor list null: {mos == null}, is settingsManager null: {settingsManager == null}");
                 if (mos != null && settingsManager != null)

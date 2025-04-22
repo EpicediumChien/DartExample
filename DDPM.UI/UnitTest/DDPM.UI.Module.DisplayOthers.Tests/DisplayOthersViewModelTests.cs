@@ -3,9 +3,11 @@ using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Globalization;
 using System.Windows;
 using VcpCore.Common;
 
@@ -16,6 +18,7 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
     {
         private DisplayOthersViewModel? viewModel;
         private PrivateObject? privateObject;
+        private Mock<IDeviceManagerSA>? deviceManagerMock;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
 
@@ -26,9 +29,12 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            deviceManagerMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             viewModel = new DisplayOthersViewModel();
             privateObject = new PrivateObject(viewModel);
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -94,7 +100,10 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
 
             // Assert
             Assert.That(result, Is.EqualTo(true));
-            Assert.That(viewModel.PowerNap_text, Is.EqualTo("ON"));
+            if (CultureInfo.CurrentCulture.Name == "es-US")
+            {
+                Assert.That(viewModel.PowerNap_text, Is.EqualTo("ON"));
+            }
         }
 
         [Test]

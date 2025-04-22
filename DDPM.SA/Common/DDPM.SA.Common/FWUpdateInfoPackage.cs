@@ -151,6 +151,7 @@ namespace DDPM.SA.Common
         ConnectMultipleSameModels = 15,
         DeviceBatteryTooLow = 16,
         Service_not_running_Try_again = 17,
+        DeviceIsEnterSleepMode = 18,
         Unknow = 99
     }
 

@@ -168,6 +168,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private List<Peripheral_Listen_param> _Peripheral_Listening = new List<Peripheral_Listen_param>();
 
+        //osd queue
+        private OsdQueue _showOsdQueue = new OsdQueue();
         //hotkey settings
         private List<HotkeySettings> _hotkeySettings = null;// = new List<HotkeySettings>();
 
@@ -6716,6 +6718,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string info = popupContentPackage.Info;
             bool isInfo = popupContentPackage.IsInfo;
             bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
+            bool isNeedButton = popupContentPackage.IsNeedButton;
             if (!string.IsNullOrEmpty(json))
             {
                 Task.Run(async () =>
@@ -6744,7 +6747,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddArgument(title);
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
-                        toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "");
+                        if (isNeedButton)
+                        {
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "");
+                        }
                     }
                     ClosePopup();
                     writelog("[CallPopup], popup Show.");
@@ -15063,6 +15069,67 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
+            string strKey = e.KeyCode.ToString().ToUpper();
+            Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
+
+            if (e.KeyCode == Keys.CapsLock || e.KeyCode == Keys.Scroll || e.KeyCode == Keys.NumLock)
+            {
+                GlobalSettingParam result = GetGlobalSettingParam().Result;
+                if (result != null)
+                {
+                    Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
+                    if (result.GlobalSetting_General.Keyboard_Lock_Key)
+                    {
+                        if (e.KeyCode == Keys.CapsLock)
+                        {
+                            bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                            Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
+                            if (isCapsLockOn)
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.CapsLock, Screen.PrimaryScreen.DeviceName, true }, ShowOSD));
+                            }
+                            else
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.CapsLock, Screen.PrimaryScreen.DeviceName, false }, ShowOSD));
+                            }
+                        }
+                        if (e.KeyCode == Keys.Scroll)
+                        {
+                            bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.Scroll) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                            Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
+                            if (isScrollLockOn)
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.ScrollLock, Screen.PrimaryScreen.DeviceName, true }, ShowOSD));
+                            }
+                            else
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.ScrollLock, Screen.PrimaryScreen.DeviceName, false }, ShowOSD));
+                            }
+                        }
+                        if (e.KeyCode == Keys.NumLock)
+                        {
+                            bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.NumLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                            Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
+                            if (isNumLockLockOn)
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.NumLock, Screen.PrimaryScreen.DeviceName, true }, ShowOSD));
+                            }
+                            else
+                            {
+                                //_ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                                _showOsdQueue.Enqueue(new OsdInfo(100, new Object[] { OSDType.NumLock, Screen.PrimaryScreen.DeviceName, false }, ShowOSD));
+                            }
+                        }
+                    }
+
+                }
+            }
+
             KeyboardHook_Debounce(300, null, KeyboardHook_KeyUpProc, e);
         }
 
@@ -15137,155 +15204,77 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //}
 
             //osd
-            GlobalSettingParam result = GetGlobalSettingParam().Result;
-            if (result != null)
-            {
-                Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
-                if (result.GlobalSetting_General.Keyboard_Lock_Key)
-                {
-                    //test
-                    /* if (!isReg)
+            /* GlobalSettingParam result = GetGlobalSettingParam().Result;
+             if (result != null)
+             {
+                 Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
+                 if (result.GlobalSetting_General.Keyboard_Lock_Key)
+                 {
+                     //test
+                     *//* if (!isReg)
+                      {
+                          ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
+                          isReg = true;
+                      }*//*
+                     //showBatteryLowCombineOSD(_latestBatterylowContent);
+                     //test end
+
+                     if (e.KeyCode == Keys.CapsLock)
                      {
-                         ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
-                         isReg = true;
-                     }*/
-                    //showBatteryLowCombineOSD(_latestBatterylowContent);
-                    //test end
+                         bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                         Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
+                         if (isCapsLockOn)
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                         }
+                         else
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                         }
+                         //_OSDKeyLock = true;
+                         //e.Handled = true;
+                     }
+                     if (e.KeyCode == Keys.Scroll)
+                     {
+                         bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.Scroll) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
+                         if (isScrollLockOn)
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                         }
+                         else
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                         }
+                         //_OSDKeyLock = true;
+                         //e.Handled = true;
+                     }
+                     if (e.KeyCode == Keys.NumLock)
+                     {
+                         bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.NumLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
+                         if (isNumLockLockOn)
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                         }
+                         else
+                         {
+                             //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                             _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                         }
+                         //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                         //_OSDKeyLock = true;
+                         //e.Handled = true;
+                     }
+                 }
+             }*/
 
-                    if (e.KeyCode == Keys.CapsLock)
-                    {
-                        bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
-                        Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
-                        if (isCapsLockOn)
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
-                        }
-                        else
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
-                        }
-                        //_OSDKeyLock = true;
-                        //e.Handled = true;
-                    }
-                    if (e.KeyCode == Keys.Scroll)
-                    {
-                        bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.Scroll) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
-                        Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
-                        if (isScrollLockOn)
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
-                        }
-                        else
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
-                        }
-                        //_OSDKeyLock = true;
-                        //e.Handled = true;
-                    }
-                    if (e.KeyCode == Keys.NumLock)
-                    {
-                        bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.NumLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
-                        Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
-                        if (isNumLockLockOn)
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
-                        }
-                        else
-                        {
-                            //showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
-                            _ = ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
-                        }
-                        //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
-                        //_OSDKeyLock = true;
-                        //e.Handled = true;
-                    }
-                }
-                //else
-                //{
-                //    if (_OSDKeyLock)
-                //    {
-                //        if (e.KeyCode == Keys.CapsLock)
-                //        {
-                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
-                //            _OSDKeyLock = false;
-                //        }
-                //        if (e.KeyCode == Keys.Scroll)
-                //        {
-                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
-                //            _OSDKeyLock = false;
-                //        }
-                //        if (e.KeyCode == Keys.NumLock)
-                //        {
-                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
-                //            _OSDKeyLock = false;
-                //        }
-                //    }
-                //}
-            }
-
-            //osd
-            /*            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
-                        {
-                            _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
-                        }
-                        if (_hotkeySettings != null && _hotkeySettings.Count > 0)
-                        {
-                            foreach (var settings in _hotkeySettings)
-                            {
-                                foreach (var hotkeyInfo in settings.HotkeyInfo)
-                                {
-                                    if (!isReg)
-                                    {
-                                        var key = new HotKey(
-                                              hotkeyInfo.ModifiersEnum,
-                                              hotkeyInfo.KeyCode,
-                                              _HotkeyPlugin.GetHookHandle(),
-                                              (hotkey) =>
-                                              {
-                                                  Debug.WriteLine("hotkey was pressed======================================!");
-                                              });
-                                        isReg = true;
-                                    }
-
-                                    var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
-                                    var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
-                                    Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                                    Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
-                                    if (_ctrlPressed || _altPressed || _shiftPressed)
-                                    {
-                                        writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                                        writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
-                                    }
-                                    if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
-                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
-                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
-                                    && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
-                                    {
-                                        Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
-                                        writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                                        HotkeyType job = hotkeyInfo.Job;
-                                        ExecHotkeyJob(settings, job);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (_hotkeySettings != null)
-                            {
-                                Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
-                            }
-                            else
-                            {
-                                Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
-                            }
-                        }*/
         }
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
@@ -18833,6 +18822,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
+        public void ShowOSD(object[] param)
+        {
+            if (param != null && param.Length > 0)
+            {
+                OSDType oSDType = (OSDType)param[0];
+                //string deviceName = (string)param[1];
+                bool state = (bool)param[2];
+                _ = ShowOSD(Screen.PrimaryScreen.DeviceName, oSDType, state);
+            }
+
+        }
         public Task ShowOSD(object monitorInfo, OSDType type, bool State)
         {
             if (monitorInfo != null)

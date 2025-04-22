@@ -1,4 +1,5 @@
-﻿using DDPM.ColorApp;
+﻿using Castle.Core.Logging;
+using DDPM.ColorApp;
 using DDPM.MonitorBorker;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
@@ -9,6 +10,8 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using DPeMPublic.Common.Enums;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
+
 
 //using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
@@ -1677,6 +1680,162 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Execute and Verify
 
             Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+        }
+
+        [Test]
+        public void TestCheckNightLightStatus()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+      
+            // Execute and Verify
+            var CheckNightLightStatus_result1 = deviceMangerPlugin.CheckNightLightStatus().Result;
+            Assert.IsFalse(CheckNightLightStatus_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.CheckNightLightStatus()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var CheckNightLightStatus_result2 = deviceMangerPlugin.CheckNightLightStatus().Result;
+            Assert.IsTrue(CheckNightLightStatus_result2);
+        }
+
+        [Test]
+        public void TestCheckNightLightScheduler()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+
+            // Execute and Verify
+            var CheckNightLightScheduler_result1 = deviceMangerPlugin.CheckNightLightScheduler().Result;
+            Assert.IsFalse(CheckNightLightScheduler_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.CheckNightLightScheduler()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var CheckNightLightScheduler_result2 = deviceMangerPlugin.CheckNightLightScheduler().Result;
+            Assert.IsTrue(CheckNightLightScheduler_result2);
+        }
+
+        [Test]
+        public void TestCheckColorICCStatus()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+
+            // Execute and Verify
+            var CheckColorICCStatus_result1 = deviceMangerPlugin.CheckColorICCStatus().Result;
+            Assert.IsFalse(CheckColorICCStatus_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.CheckColorICCStatus()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var CheckColorICCStatus_result2 = deviceMangerPlugin.CheckColorICCStatus().Result;
+            Assert.IsTrue(CheckColorICCStatus_result2);
+        }
+
+        [Test]
+        public void TestStopRegistryMonitor_NightLight()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+
+            // Execute and Verify
+            var StopRegistryMonitor_NightLight_result1 = deviceMangerPlugin.StopRegistryMonitor_NightLight().Result;
+            Assert.IsFalse(StopRegistryMonitor_NightLight_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.StopRegistryMonitor_NightLight()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var StopRegistryMonitor_NightLight_result2 = deviceMangerPlugin.StopRegistryMonitor_NightLight().Result;
+            Assert.IsTrue(StopRegistryMonitor_NightLight_result2);
+        }
+
+        [Test]
+        public void TestStopRegistryMonitor_ICC()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+
+            // Execute and Verify
+            var StopRegistryMonitor_ICC_result1 = deviceMangerPlugin.StopRegistryMonitor_ICC().Result;
+            Assert.IsFalse(StopRegistryMonitor_ICC_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.StopRegistryMonitor_ICC()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var StopRegistryMonitor_ICC_result2 = deviceMangerPlugin.StopRegistryMonitor_ICC().Result;
+            Assert.IsTrue(StopRegistryMonitor_ICC_result2);
+        }
+
+        [Test]
+        public void TestStopRegistryMonitor_NightLightScheduler()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
+
+            // Execute and Verify
+            var StopRegistryMonitor_NightLightScheduler_result1 = deviceMangerPlugin.StopRegistryMonitor_NightLightScheduler().Result;
+            Assert.IsFalse(StopRegistryMonitor_NightLightScheduler_result1);
+
+            // Setup
+            var _ColorPresetPlugin = new Mock<IColorPresetSA>();
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin.Object);
+            _ColorPresetPlugin.Setup(x => x.StopRegistryMonitor_NightLightScheduler()).Returns(Task.FromResult(true));
+
+            // Execute and Verify
+            var StopRegistryMonitor_NightLightScheduler_result2 = deviceMangerPlugin.StopRegistryMonitor_NightLightScheduler().Result;
+            Assert.IsTrue(StopRegistryMonitor_NightLightScheduler_result2);
+        }
+
+        [Test]
+        public void TestSetUILockStatus()
+        {
+            // Setup
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
+            _SettingsPlugin.Setup(x => x.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(true));
+            // Execute and Verify
+            deviceMangerPlugin.SetUILockStatus(true);
+            Assert.IsNotNull(_SettingsPlugin);
+        }
+
+        [Test]
+        public void TestGetUILockStatus()
+        {
+            // Setup
+            privateObject.SetFieldOrProperty("_SettingsPlugin", null);
+            // Execute and Verify
+            var result1=deviceMangerPlugin.GetUILockStatus().Result;
+            Assert.IsFalse(result1);
+
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            DDPMSettings? config = null;
+            _SettingsPlugin.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(config));
+            // Execute and Verify
+            var result2 = deviceMangerPlugin.GetUILockStatus().Result;
+            Assert.IsFalse(result2);
+            
+            _SettingsPlugin.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
+            // Execute and Verify
+            var result3 = deviceMangerPlugin.GetUILockStatus().Result;
+            Assert.IsNotNull(result3);
         }
     }
 }

@@ -948,7 +948,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     }
                                     else//for CLI
                                     {
-                                        _notificationStr = LangHelper.Instance["Update_successful_body"];
+                                        _notificationStr = LangHelper.Instance["Update_successful_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
                                         NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr);
                                     }
                                 }
@@ -964,7 +964,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     }
                                     else//for CLI
                                     {
-                                        _notificationStr = LangHelper.Instance["Update_failed_body"];
+                                        _notificationStr = LangHelper.Instance["Update_failed_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
                                         NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr);
                                     }
                                 }
@@ -1220,7 +1220,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                            if (deviceInfo.BatteryLevel <= 20)
+
+                            if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
                             {
                                 if (currentFWInfo.DeviceType == DeviceType.LogicalKeyboard || currentFWInfo.DeviceType == DeviceType.LogicalMouse)//Fix PIMS-344498
                                 {
@@ -1231,6 +1232,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 else
                                 {
                                     _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} device battery <= 20% but device is no KB or MS so no need stop");
+                                }
+                            }
+                            else if (deviceInfo.BatteryLevel < 0)
+                            {
+                                if (currentFWInfo.DeviceType == DeviceType.LogicalKeyboard || currentFWInfo.DeviceType == DeviceType.LogicalMouse)//Fix PIMS-344498
+                                {
+                                    fWUErrorCode = FWUErrorCode.DeviceIsEnterSleepMode;
+                                    _notificationStr = $"{LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                    ret = true;
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} device battery < 0% but device is no KB or MS so no need stop");
                                 }
                             }
                         }
@@ -1293,7 +1307,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <summary>
         /// 跳出通知
         /// </summary>
-        private void NotificationFWupdate(string title, string info, bool stayOpen = false)
+        private void NotificationFWupdate(string title, string info, bool stayOpen = false, bool isNeedButton = false)
         {
             try
             {
@@ -1313,6 +1327,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             IsOnlyUpdate = false,
                             StayOpen = stayOpen,
                             Timeout = 5,
+                            IsNeedButton = isNeedButton,
                             Object = _fWUpdateInfoPackage,
                             PopupType = PopupContentPackage_Enum.FWU
                         };
@@ -1436,7 +1451,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 else
                 {
                     string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
-                    NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                    NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s, false, false);
                 }
                 if (fwUpdateInfo.IsDisplay && IsISPInApp(fwUpdateInfo.InstallPaths, out string upgPath))//新版螢幕韌體更新
                 {
@@ -2004,7 +2019,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
                                 s += $"\r\n{LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]}";
-                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s, false, false);
                             }
                             //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
@@ -2035,7 +2050,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
                                 s += $"\r\n{LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]}";
-                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s, false, false);
                             }
                             //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
@@ -2687,7 +2702,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             else
             {
                 _logs.DebugMsg_1($"BuildArgs display go");
-                arguments = $"-q --force --skip-app-retry -f";
+                arguments = $"-q --force -f";
                 if (!string.IsNullOrEmpty(logPath))
                 {
                     _logs.DebugMsg_1($"BuildArgs Log go");
@@ -2828,8 +2843,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"{nameof(Rearrange)} start");
             try
             {
-                 Dictionary<DeviceType, int> priority;
-               //Define sorting priorities
+                Dictionary<DeviceType, int> priority;
+                //Define sorting priorities
                 if (GlobalDefinitions.isSupport210)
                 {
                     priority = new Dictionary<DeviceType, int>
