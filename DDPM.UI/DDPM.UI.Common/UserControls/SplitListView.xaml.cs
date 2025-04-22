@@ -20,6 +20,7 @@ namespace DDPM.UI.Common.UserControls
     {
         private SplitListViewModel vm = new SplitListViewModel();
         private ICommand? _splitItemClickCommand;
+        private SplitItem spItem;
 
         #region ctor
         public SplitListView()
@@ -42,6 +43,7 @@ namespace DDPM.UI.Common.UserControls
             if (disposing)
             {
                 addButton.ClickCommand = null;
+                spItem.Dispose();
 
                 ClearList();
                 BindingOperations.ClearAllBindings(this);
@@ -90,7 +92,7 @@ namespace DDPM.UI.Common.UserControls
         #region Add Item
         public SplitItem AddSplitToList(ISplit split)
         {
-            SplitItem spItem = new SplitItem();
+            spItem = new SplitItem();
             spItem.InnerContent = split;
             spItem.SplitOwner = vm.SplitOwner;
             spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
@@ -100,7 +102,7 @@ namespace DDPM.UI.Common.UserControls
 
         public SplitItem AddItemToList(ContentControl contentControl)
         {
-            SplitItem spItem = new SplitItem();
+            spItem = new SplitItem();
             spItem.InnerContent = contentControl;
             spItem.SplitOwner = vm.SplitOwner;
             spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
@@ -133,7 +135,7 @@ namespace DDPM.UI.Common.UserControls
             else if (index > ItemCount)
                 index = ItemCount; //Insert to the end
 
-            SplitItem spItem = new SplitItem();
+            spItem = new SplitItem();
             spItem.InnerContent = isp.UC;
             spItem.SplitOwner = vm.SplitOwner;
             spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
@@ -416,7 +418,7 @@ namespace DDPM.UI.Common.UserControls
             //Robert_Lin 2025-4-10, The new SplitItem will return to caller
             //SO itcannot be created inside an using
             //NEW:
-            SplitItem spItem = new SplitItem();
+            spItem = new SplitItem();
             //OLD:
             //using (SplitItem spItem = new SplitItem())
             {
