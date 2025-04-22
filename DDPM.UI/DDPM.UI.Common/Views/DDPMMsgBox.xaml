@@ -9,7 +9,8 @@
     xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
     Title="DDPMMsgBox"
     Width="420"
-    Height="240"
+    MinHeight="120"
+    SizeToContent="Height"
     AllowsTransparency="True"
     Background="Transparent"
     MouseDown="Window_MouseDown"
@@ -17,19 +18,28 @@
     WindowStartupLocation="Manual"
     WindowStyle="None"
     mc:Ignorable="d">
+    <!-- Robert_Lin, PIMS-358370 After setting Overlap, the text arrangement in the pop-up message does not match Figma
+            1 Change Window.Height=240 to MinHeight=120
+            2 Add Window.SizeToContent="Height"
+            2 Below Grid 3 rows, change to StackPanel
+    -->
     <Grid>
         <Border
             Background="{DynamicResource DefaultTheme_BdBdColor}"
             BorderBrush="#777777"
             BorderThickness="1"
             CornerRadius="10">
+            <!-- Robert_Lin 2025-4-22 Change Grid to StackPanel 
+            OLD:
             <Grid>
-                <!--Elsa 20250410 change Height="*" to Height="auto" for hotkey warning cliping-->
+                // Elsa 20250410 change Height="*" to Height="auto" for hotkey warning cliping
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+            -->
+            <StackPanel>
 
                 <!--  <controls:UXButton Name="close" ButtonType="Tertiary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Foreground="White" Background="Transparent"
                 Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,15,0" Height="30" Width="30" Click="close_Click" />-->
@@ -92,7 +102,7 @@
                         
                         IconPosition="IconRight" />
                 </StackPanel>
-            </Grid>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>

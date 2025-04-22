@@ -31,6 +31,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private readonly Style ConnectionStyle2;
         //private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         //private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -178,6 +179,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
             }
+
+            moduleGroup?.Dispose();
         }
 
         ~LaunchView()
@@ -216,8 +219,6 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 return;
 
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
-
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.KeyCustomizationCaption,

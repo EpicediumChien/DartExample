@@ -40,6 +40,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private double leftBorderDefaultWidth = 0.0;
         private double capAreaDefaultWidth = 0.0;
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -238,6 +239,8 @@ namespace DDPM.UI.Plugin.MousePlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
             LeftBorder.SizeChanged -= CapAreaSizeChange;
+
+            moduleGroup.Dispose();
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -279,7 +282,6 @@ namespace DDPM.UI.Plugin.MousePlugin
                 return;
 
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
 
             moduleGroup = new ModuleGroup()
             {
@@ -499,7 +501,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm.ConnectionType == "Dongle")
                 {
                     txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                    txtSlot.Text = $"{_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6 - _vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
+                    txtSlot.Text = $"{(_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6) - (_vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2)} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
                 }
                 else if (_vm.ConnectionType == "Bluetooth")
@@ -527,7 +529,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm == null)
                     return;
 
-                string hostName =   HostNameHandler.GetHostName();
+                string hostName = HostNameHandler.GetHostName();
 
                 txt1.Style = ConnectionStyle2;
                 txtBLHost1.Style = ConnectionStyle2;

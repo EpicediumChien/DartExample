@@ -95,7 +95,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private IConsole _console;
 
         private readonly DispatcherTimer AlertTimer;
-
+        private ModuleGroup moduleGroup;
+        
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
         public LaunchView()
@@ -368,6 +369,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
+            moduleGroup?.Dispose();
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -1747,7 +1749,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void BuildModuleGroups()
         {
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
 
             moduleGroup = new ModuleGroup()
             {

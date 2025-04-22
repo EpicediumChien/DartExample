@@ -392,6 +392,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             double gapRatio = 1;
             if (cxView >= 2200)
             {
+                DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow2] Screen resolution >= 2200 trigger gapRatio*2.");
                 gapRatio = 2.0;
             }
             double cxItem = (cxView - minGap * 3.000 * gapRatio) / 2.000;
@@ -412,6 +413,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             double hugeReduce = 0;
             if (cxView >= 2200)
             {
+                DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow3] Screen resolution >= 2200 trigger hugeReduce -300px.");
                 hugeReduce = 100;
             }
             double cxItem = (cxView - minGap * 4.000) / 3.000;

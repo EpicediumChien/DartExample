@@ -10,12 +10,9 @@
              d:DataContext="{d:DesignInstance Type=plugin:RtkHubViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="520" Unloaded="Leave">
+             d:DesignHeight="655" d:DesignWidth="520">
     <UserControl.Resources>
         <ResourceDictionary>
-
-            <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />
-            <ImageBrush x:Key="SelectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png" />
 
             <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
             <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#FF0B1E38" />
@@ -208,32 +205,6 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-
-                    <!-- Download Dell Audio Section -->
-                    <Grid Visibility="{Binding DeviceSettingsDownloadDellAudioPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <!--Elsa 20250409 change Width="488" to Width="auto" -->
-                        <Border x:Name="DownDellAudioBoard" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,20,0,20">
-                            <StackPanel x:Name="AdditionalSectionStackPanel" Orientation="Vertical" Margin="16">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Title -->
-                                    <UXControls:UXTextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding [HeadsetDeviceSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" FontWeight="Bold" Margin="8,20,0,20" />
-                                    <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" 
-                                          Fill="{DynamicResource DefaultTheme_PathColor}"/>
-                                    <!-- Icon and Description -->
-                                    <Image Grid.Row="1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_DownDellAudio.png" Width="72" Height="72" HorizontalAlignment="Left" Margin="8,0,0,0" />
-                                    <UXControls:UXTextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="14" Text="{Binding [HeadsetDeviceSettings.5], Source={x:Static lang:LangHelper.Instance}}" VerticalAlignment="Center" Width="368" HorizontalAlignment="Right" Margin="0,20,0,20" />
-
-                                    <Button x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Tag="4"  Content="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" Click="LearnmoreButton_Click"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
                 </StackPanel>
             </Border>
         </Grid>
