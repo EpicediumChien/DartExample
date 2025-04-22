@@ -43,6 +43,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private string _model = "";
         private string _imageFilePath = "";
         private string _deviceId = "";
+        private string _deviceId2 = "";
         private string _firmwareVersion = "";
         private string _firmwareVersion2 = "";
         private string _rightFrameVisibility = "";
@@ -300,6 +301,8 @@ namespace DDPM.UI.Plugin.ViewModels
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             //--Bruce 0221 The firmware version has been processed in SA, so there is no need to process the string again.
             FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv}";
+
+            DeviceID2 = $"{Strings.DeviceID} {CurrentDeviceID}";
             //FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             //--Bruce 0221
             //ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString() == "PhysicalDongle" ? "Dongle" : "Bluetooth";
@@ -891,6 +894,20 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
+        public string DeviceID2
+        {
+            get => _deviceId2;
+            set
+            {
+                if (_deviceId2 != value)
+                {
+                    _deviceId2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         public string RightFrameVisibility
         {
