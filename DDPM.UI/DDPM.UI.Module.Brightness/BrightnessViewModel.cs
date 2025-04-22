@@ -250,7 +250,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoBrightness_String
         {
-            get => Start_ALSConfig.isAutoBrightness ? Strings.On : Strings.Off;
+            get => Start_ALSConfig.isAutoBrightness ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
         }
 
         public Visibility AutoBrightnessLock
@@ -264,7 +264,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         public List<string> AutoBrightnessRangeLevel { get; set; } =
-            new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };
+            new List<string>() { LangHelper.Instance["AutoBrightnessRangeLevel.0"], LangHelper.Instance["AutoBrightnessRangeLevel.1"], LangHelper.Instance["AutoBrightnessRangeLevel.2"] };
 
         /// <summary>
         /// AutoBrightnessRangeLevel SelectedIndex Binding source
@@ -292,11 +292,11 @@ namespace DDPM.UI.Module.Brightness
                         if ((int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value == value)//already apply, make string change
                         {
                             if (value == 0)
-                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.0"]; //"Low";
                             else if (value == 1)
-                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.1"]; //"Mid";
                             else
-                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.2"]; //"High";
                         }
                     }
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
@@ -429,7 +429,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoColorTemp_String
         {
-            get => Start_ALSConfig.isAutoColorTemp ? Strings.On : Strings.Off;
+            get => Start_ALSConfig.isAutoColorTemp ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
         }
 
         /// <summary>
@@ -1058,7 +1058,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize_Scheduled ? Strings.On : Strings.Off;
+                return IsSynchronize_Scheduled ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
 
@@ -1066,7 +1066,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize ? Strings.On : Strings.Off;
+                return IsSynchronize ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
 
@@ -1522,7 +1522,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string PrimaryMonitorSync_String
         {
-            get => Start_ALSConfig.isPrimaryMonitorSync ? Strings.On : Strings.Off;
+            get => Start_ALSConfig.isPrimaryMonitorSync ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
         }
 
         //Brightness's value inverse the Luminance's value
@@ -2416,11 +2416,11 @@ namespace DDPM.UI.Module.Brightness
                 _autoBrightnessRangeLevel = value;
                 _autoBrightnessRangeLevel.level_value = value.level_value;
                 if (value.level_value == 0)
-                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
+                    _autoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.0"]; //"Low";
                 else if (value.level_value == 1)
-                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
+                    _autoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.1"]; //"Mid";
                 else
-                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
+                    _autoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.2"]; //"High";
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
@@ -2636,7 +2636,7 @@ namespace DDPM.UI.Module.Brightness
                 //string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
                 MessageModalDialog messageModalDialog;
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
-                messageModalDialog = new(Strings.ImpExp_Warning, Strings.BrightnessPageNotice1, Strings.Continue, Strings.Cancel);
+                messageModalDialog = new(Caption: LangHelper.Instance["Warning"], Message: LangHelper.Instance["Brightness.20"], Button1Caption: LangHelper.Instance["PairedInfo.6"], Button2Caption: LangHelper.Instance["Common.2"], btnLogicToggle: true);
                 if (mainWindow != null)
                 {
                     messageModalDialog.Owner = mainWindow;
@@ -2646,7 +2646,7 @@ namespace DDPM.UI.Module.Brightness
 
                 //PIMS-353731 change button text from "Yes"/"No" to "Continue"/"Cancel"
                 //if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
-                if (messageModalDialog != null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
+                if (messageModalDialog != null && messageModalDialog.ShowDialog().Value == true)//true means left button is "continue"
                 {
                     onoff = true;
                     _primaryMonitorSyncStatus = true;
@@ -3493,11 +3493,11 @@ namespace DDPM.UI.Module.Brightness
             }
             if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 && _autoBrightnessStatus)
             {
-                string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
+                string pop_string = LangHelper.Instance["Brightness.19"];// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent);
+                    r = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["Warning"], pop_string, MyModule.GetRightView().Parent);
                 }));
 
                 if (r)
@@ -3578,11 +3578,11 @@ namespace DDPM.UI.Module.Brightness
             {
                 Start_ALSConfig.AutoBrightnessRangeLevel.level_value = level;
                 if (level == 0)
-                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.0"]; //"Low";
                 else if (level == 1)
-                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.1"]; //"Mid";
                 else
-                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = LangHelper.Instance["AutoBrightnessRangeLevel.2"]; //"High";
             }
             DdpmCommonHelper.WriteUILog($"SetBrightnessLevelDataToObject out ...");
         }

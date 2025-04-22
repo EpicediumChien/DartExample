@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace DDPM.UI.Plugin.Common
@@ -8,7 +9,7 @@ namespace DDPM.UI.Plugin.Common
     /// </summary>
     public partial class MessageModalDialog : Window
     {
-        public MessageModalDialog(string Caption, string Message, string Button1Caption, string Button2Caption = "", string checkboxDescription = "", double width = 420.0)
+        public MessageModalDialog(string Caption, string Message, string Button1Caption, string Button2Caption = "", string checkboxDescription = "", double width = 420.0, bool btnLogicToggle = false)
         {
             InitializeComponent();
 
@@ -35,7 +36,16 @@ namespace DDPM.UI.Plugin.Common
             {
                 txtButton2.Content = Button2Caption;
             }
+            if (btnLogicToggle) {
+                txtButton1.Click -= No_MouseLeftButtonDown;
+                txtButton1.Click += Yes_MouseLeftButtonDown;
+
+                txtButton2.Click -= Yes_MouseLeftButtonDown;
+                txtButton2.Click += No_MouseLeftButtonDown;
+            }
         }
+
+        private bool _btnToggle { get; set; } = false;
         /*
         private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
