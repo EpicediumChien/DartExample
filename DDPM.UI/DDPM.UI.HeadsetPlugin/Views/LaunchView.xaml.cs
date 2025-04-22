@@ -375,7 +375,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
                 }
-                btnRestore.Visibility = Visibility.Collapsed;
                 btnUnpair.Visibility = Visibility.Collapsed;
                 _vm.SetLadningMode(false);
                 _vm.SelectVBar();
