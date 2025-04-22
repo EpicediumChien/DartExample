@@ -476,7 +476,14 @@ namespace DDPM.UI.Module.Brightness
             var rc = localVm.CheckIsTimeOverlap();
 
             if (rc)
-                DdpmCommonHelper.DDPMPureMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this));
+            {
+                Thickness headMargin = new Thickness(36, 32, 36, 16);
+                Thickness subMargin = new Thickness(36, 0, 55, 32);
+                DdpmCommonHelper.DDPMEzMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this), 419, 180, headMargin, subMargin);
+            }
+
+            //if (rc)
+            //    DdpmCommonHelper.DDPMPureMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this));
         }
 
         private async void PR1_Preview_UXButton_Click(object sender, RoutedEventArgs e)
