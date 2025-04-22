@@ -204,6 +204,8 @@ namespace DDPM.OSDs
                 case OSDType_Device.WalkAwayLock:
                     time = TimeSpan.FromMilliseconds(5000);
                     break;
+                default:
+                    return;
             }
             //RaiseMyCustomEvent();
             animationTimer = new DispatcherTimer();
