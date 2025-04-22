@@ -3051,7 +3051,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 case 0:
                     _updateErrorCode = FWUErrorCode.NoError;
                     _notificationTitle = LangHelper.Instance["Success"];
-                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                    _notificationStr = LangHelper.Instance["Firmware_updated"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Success");
                     break;
                 case 1:
