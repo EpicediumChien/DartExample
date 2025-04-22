@@ -16,8 +16,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
     public class DisplayPageViewModelTests
     {
         private DisplayPageViewModel? displayPageViewModel;
-        private readonly AddDeviceViewModel? _vm;
-        private ModuleGroup moduleGroup;        
+        private readonly AddDeviceViewModel? _vm;        
 
         [SetUp]
         public void Setup()
@@ -27,7 +26,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
                 new System.Windows.Application();
             }
             displayPageViewModel = new DisplayPageViewModel();
-            moduleGroup = new();
         }
 
         [Test]
@@ -75,6 +73,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.GroupSelIdx = groupSelIdx;
             Assert.That(displayPageViewModel.GroupSelIdx, Is.EqualTo(groupSelIdx));
             Assert.That(displayPageViewModel.RightViewHeaders.Count, Is.EqualTo(1));
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -115,6 +115,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 
             //value < GroupCount
             List<ModuleGroup> groups = [];
+            ModuleGroup moduleGroup = new ModuleGroup();
+
             moduleGroup = new ModuleGroup()
             {
                 GroupName = "Display",
@@ -136,6 +138,9 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.VbarSelectedIndex = vbarSelectedIndex;
             Assert.That(displayPageViewModel.VbarSelectedIndex, Is.EqualTo(vbarSelectedIndex));
             Assert.That(displayPageViewModel.RightViewHeaders.Count, Is.EqualTo(1));
+
+            moduleGroup.Dispose();
+
         }
 
         [Test]
@@ -185,6 +190,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.LeftView = leftView;
             result = displayPageViewModel.LeftView;
             Assert.That(result, Is.EqualTo(null));
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -219,6 +226,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.RightView = rightView;
             result = displayPageViewModel.RightView;
             Assert.That(result, Is.Not.Null);
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -248,6 +257,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.VbarSelectedIndex = 1;
             displayPageViewModel.ModuleGroups = groups;
             Assert.That(displayPageViewModel.RightViewModuleName, Is.EqualTo("AddWebcamModule"));
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -280,6 +291,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.ModuleGroups = groups;
             displayPageViewModel.RightViewHeaderSelectedIndex = rightViewHeaderSelectedIndex;
             Assert.That(displayPageViewModel.RightViewHeaderSelectedIndex, Is.EqualTo(1));
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -310,6 +323,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.ModuleGroups = groups;
             var re = displayPageViewModel.SelRightViewHeader;
             Assert.That(displayPageViewModel.SelRightViewHeader, Is.Not.Null);
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -342,6 +357,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.RightViewHeaders = rightViewHeaders;
             displayPageViewModel.VbarSelectedIndex = 0;
             Assert.That(displayPageViewModel.RightViewHeaders, Is.Not.Null);
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -371,6 +388,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.ModuleGroups = groups;
             displayPageViewModel.VbarSelectedIndex = 0;
             Assert.That(displayPageViewModel.SelectedGroup, Is.Not.Null);
+
+            moduleGroup.Dispose();
         }
 
         [Test]
@@ -421,11 +440,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             Assert.That(displayPageViewModel.SelectedMonitorInfo, Is.EqualTo(selectedMonitorInfo));
         }
 
-        [TearDown]
-        public void TeatDown()
-        {
-            moduleGroup?.Dispose();
-            moduleGroup = null;
-        }
+        //[TearDown]
+        //public void TeatDown()
+        //{
+        //    moduleGroup?.Dispose();
+        //    moduleGroup = null;
+        //}
     }
 }
