@@ -443,27 +443,6 @@
                             <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" 
                                            Focusable="True" KeyboardNavigation.TabIndex="152"/>
                             <TextBlock Text=")" Grid.Column="3" FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
-
-                            <!-- Robert_Lin, change the to Drawing (ContentControl) from a static Image
-                                OLD:
-                                
-                                <Image Grid.Column="4" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
-                                    <Image.ToolTip>
-                                        <ToolTip Placement="Center" VerticalOffset="45">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
-                                                </Border.Resources>
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}" />
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                
-                                -->
                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
                             <Border Grid.Column="4" Margin="10,0,0,0" Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
@@ -633,27 +612,6 @@
                                                                Focusable="True" KeyboardNavigation.TabIndex="165"
                                                                Name="labelColorManagement"
                                                                VerticalAlignment="Center" Grid.Column="0" Margin="0" HorizontalAlignment="Left" />
-
-                                                <!-- Robert_Lin 2025-1-14 Change the Icon from Image to ContentControl, which use Path to draw the LockIcon to meet Light mode requirements.
-                                                    OLD:
-                                                    
-                                                    <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
-                                                        <Image.ToolTip>
-                                                            <ToolTip Placement="Center" VerticalOffset="45" HorizontalOffset="50">
-                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                    <Border.Resources>
-                                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
-                                                                    </Border.Resources>
-                                                                    <StackPanel>
-                                                                        <StackPanel Orientation="Horizontal">
-                                                                            <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}" />
-                                                                        </StackPanel>
-                                                                    </StackPanel>
-                                                                </Border>
-                                                            </ToolTip>
-                                                        </Image.ToolTip>
-                                                    </Image>
-                                                     -->
                                                 <!--Elsa 20250407 for PIMS-348390 remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
                                                 <Border Grid.Column="1" Margin="10,0,0,0" Background="{StaticResource FakeTransparent}">
                                                     <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>

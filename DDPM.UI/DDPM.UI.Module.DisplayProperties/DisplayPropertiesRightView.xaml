@@ -197,7 +197,7 @@
                                                 <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
                                                        />
                                             </Grid>
-                                            <Image Grid.Column="1"
+                                            <!--<Image Grid.Column="1"
                                                    Stretch="None"
                                                    Margin="0,0"
                                                    Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
@@ -215,7 +215,21 @@
                                                         </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
-                                            </Image>
+                                            </Image>-->
+                                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                <!-- The (i) icon 16x16 -->
+                                                <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                <!-- ToolTip -->
+                                                <Button.ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                            </Button>
                                         </StackPanel>
                                         <Grid>
                                             <StackPanel Margin="23,0,0,0">
@@ -232,7 +246,7 @@
                                                             </Style>
                                                         </UXControls:UXRadioButton.Resources>
                                                     </UXControls:UXRadioButton>
-                                                    <Image Stretch="None"
+                                                    <!--<Image Stretch="None"
                                                            Margin="0,0"
                                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
@@ -248,7 +262,21 @@
                                                                 </Border>
                                                             </ToolTip>
                                                         </Image.ToolTip>
-                                                    </Image>
+                                                    </Image>-->
+                                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <!-- The (i) icon 16x16 -->
+                                                        <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                        <!-- ToolTip -->
+                                                        <Button.ToolTip>
+                                                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Button.ToolTip>
+                                                    </Button>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal">
                                                     <UXControls:UXRadioButton Margin="5"
@@ -263,7 +291,7 @@
                                                             </Style>
                                                         </UXControls:UXRadioButton.Resources>
                                                     </UXControls:UXRadioButton>
-                                                    <Image Stretch="None"
+                                                    <!--<Image Stretch="None"
                                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
                                                             <ToolTip>
@@ -278,7 +306,21 @@
                                                                 </Border>
                                                             </ToolTip>
                                                         </Image.ToolTip>
-                                                    </Image>
+                                                    </Image>-->
+                                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <!-- The (i) icon 16x16 -->
+                                                        <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                        <!-- ToolTip -->
+                                                        <Button.ToolTip>
+                                                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <TextBlock Text="{Binding [DisplayProperties.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Button.ToolTip>
+                                                    </Button>
                                                 </StackPanel>
                                             </StackPanel>
                                             <Border Background="#132F54"
