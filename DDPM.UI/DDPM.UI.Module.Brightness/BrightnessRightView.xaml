@@ -846,8 +846,8 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
-                                                                <TextBlock Text="{Binding [Brightness.9], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <!--Elsa 20250422 for PIMS-358177 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                <TextBlock Text="{Binding [Brightness.9], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
