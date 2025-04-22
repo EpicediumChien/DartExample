@@ -5051,6 +5051,7 @@ namespace DDPM.CLI.Plugins.Display
                     {"Rec709", "Rec.709"},//PIMS-356254
                     {"REC709", "Rec.709"},//PIMS-356254
                     {"BT709", "BT.709"},//PIMS-356254
+                    {"BT2020", "BT.2020"},
                     {"MultiscreenMatch", "Multiscreen Match"},
                     {"User1", "User 1"},
                     {"User2", "User 2"},
