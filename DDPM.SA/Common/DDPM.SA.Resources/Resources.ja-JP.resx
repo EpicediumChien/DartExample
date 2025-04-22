@@ -598,16 +598,16 @@
     <value>ファームウェアのアップデートが失敗しました。</value>
   </data>
   <data name="Update_Display_Alert_2" xml:space="preserve">
-    <value>アップデートには最長で［XXXXXX］分かかる場合があります。この間、デバイスの電源を入れて、接続したままにしておきます。</value>
+    <value>アップデートには最長で[XXXXXX]分かかる場合があります。この間、デバイスの電源を入れて、接続したままにしておきます。</value>
   </data>
   <data name="Update_in_progress_body" xml:space="preserve">
-    <value>［XXXXXX］はファームウェア アップデートが進行中です。ファームウェア アップデートの提供は不定期の場合があります。アップデート中はデバイスを取り外さないでください。 </value>
+    <value>[XXXXXX]はファームウェア アップデートが進行中です。ファームウェア アップデートの提供は不定期の場合があります。アップデート中はデバイスを取り外さないでください。 </value>
   </data>
   <data name="Update_successful_body" xml:space="preserve">
-    <value>［XXXXXX］のファームウェアは、正常にアップデートされました</value>
+    <value>[XXXXXX]のファームウェアは、正常にアップデートされました</value>
   </data>
   <data name="Update_failed_body" xml:space="preserve">
-    <value>［XXXXXX］のファームウェアは、アップデートに失敗しました</value>
+    <value>[XXXXXX]のファームウェアは、アップデートに失敗しました</value>
   </data>
   <data name="Update_successful" xml:space="preserve">
     <value>アップデートが正常に行われました</value>
