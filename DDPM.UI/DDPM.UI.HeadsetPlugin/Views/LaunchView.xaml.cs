@@ -33,7 +33,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly string DeviceSettings = LangHelper.Instance["DeviceSettings"];
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-
+        private ModuleGroup moduleGroup;
+        
         public LaunchView()
         {
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView Constructor ... in ");
@@ -165,6 +166,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
                 }
+                moduleGroup?.Dispose();
                 DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_UnLoadedStatus ... out ");
             }
             catch (Exception ex)
@@ -249,7 +251,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 List<ModuleGroup> groups = new List<ModuleGroup>();
-                ModuleGroup moduleGroup;
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = AudioSettings,

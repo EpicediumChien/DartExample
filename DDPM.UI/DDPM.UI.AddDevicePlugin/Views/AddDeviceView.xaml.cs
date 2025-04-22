@@ -489,7 +489,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _vm.RightViewHeaderSelectedIndex = -1;
             WaitingModalDialogIsOpen = false;
             waitingModalDialog?.Close();
-            moduleGroup.Dispose();
+            moduleGroup?.Dispose();
         }
 
         //Robert_Lin, 2025-4-16 unused method.
