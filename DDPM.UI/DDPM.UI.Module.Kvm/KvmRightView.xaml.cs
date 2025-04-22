@@ -129,14 +129,20 @@ namespace DDPM.UI.Module.Kvm
             }
             //NKVM CLI ON
             bool? isNKVMOn = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Enable_Display_NetworkKVM", e);
-            if (isNKVMOn != null)
+            if (isNKVMOn != null && vm != null)
             {
                 if ((bool)isNKVMOn)
                 {
                     vm.isNKVM = true;
                 }
+                else
+                {
+                    if (!vm.LockSendNoKVM)
+                    {
+                        vm.SelectKVM();
+                    }
+                }
             }
-
         }
 
         private void OpenUSBKVM(object sender, RoutedEventArgs e)

@@ -1137,18 +1137,19 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    isUSBKVM = true;
                 //}
-                if (NKVMisON)
-                {
-                    isNKVM = true;
-                }
-                else if (NoKVMisON || isScreenPartition || !USBKVMisON)
-                {
-                    isNoKVM = true;
-                }
-                else
-                {
-                    isUSBKVM = true;
-                }
+                //if (NKVMisON)
+                //{
+                //    isNKVM = true;
+                //}
+                //else if (NoKVMisON || isScreenPartition || !USBKVMisON)
+                //{
+                //    isNoKVM = true;
+                //}
+                //else
+                //{
+                //    isUSBKVM = true;
+                //}
+                SelectKVM();
 
                 if (Cancelled_RefreshData(e, bwk))
                 {
@@ -3281,6 +3282,22 @@ namespace DDPM.UI.Module.Kvm
                     OnPropertyChanged("PC1_Input");
                     original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                 }
+            }
+        }
+
+        public void SelectKVM()
+        {
+            if (NKVMisON)
+            {
+                isNKVM = true;
+            }
+            else if (NoKVMisON || isScreenPartition || !USBKVMisON)
+            {
+                isNoKVM = true;
+            }
+            else
+            {
+                isUSBKVM = true;
             }
         }
 
