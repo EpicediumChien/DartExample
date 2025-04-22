@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Controls;
 
@@ -98,7 +99,21 @@ namespace DDPM.UI.Module.Brightness
                 InitNewViewModel();
             }
 
-            vm.UpdateHDRStatus();
+            if (vm is not null)
+            {
+                BackgroundWorker bw = new BackgroundWorker()
+                {
+                    WorkerReportsProgress = false,
+                    WorkerSupportsCancellation = false
+                };
+
+                bw.DoWork += vm.DoWork_RefreshManualValue;
+                bw.RunWorkerCompleted += vm.RunWorkerCompleted_RefreshManualValue;
+                bw.RunWorkerAsync();
+
+                //vm?.UpdateHDRStatus();
+            }           
+
             if (_rightView == null)
                 return;
         }
