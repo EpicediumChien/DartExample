@@ -342,7 +342,7 @@
                   <Border Margin="8,0,0,6" Border.CornerRadius="4" Width="184" BorderThickness="1" BorderBrush="#324255"
                                     Background="{DynamicResource DdpmCB_BkColor}">
                     <DockPanel Name="SearchPanel" Margin="15,2,2,8" MaxHeight="160">
-                      <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
+                      <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                         <ItemsControl Name="ProfileItems">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -373,7 +373,10 @@
                                   </Border>
                                 </StackPanel>
                                 <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
-                                  <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>
+                                  <!--<Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>-->
+                                  <Border Background="{StaticResource FakeTransparent}" Cursor="Hand" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}">
+                                    <ContentControl Template="{StaticResource icon_Pen}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                                  </Border>
                                   <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                 </StackPanel>
                               </Grid>
