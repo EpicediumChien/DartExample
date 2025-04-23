@@ -301,7 +301,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="{Binding OrderingWidth}"/>
+                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="{Binding OrderingWidth}" MaxWidth="2200"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
 
