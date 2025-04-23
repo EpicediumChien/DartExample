@@ -972,7 +972,7 @@ namespace DDPM.CLI.Plugins.Display
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
-            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
+            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth") || g.PhysicalDeviceType.ToString().Contains("Pen")) ? "Wireless" : "Wired";
 
             switch (g.LogicalDeviceType)
             {
