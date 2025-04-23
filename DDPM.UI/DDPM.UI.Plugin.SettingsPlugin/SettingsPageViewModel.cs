@@ -565,7 +565,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                             Optional_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo))
                         {
                             Log?.Info($"SetUpdateInfoUI item is exist : {uiUpdateInfo.UpdateInfo}");
-                            continue; 
+                            continue;
                         }
                         if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
                         {
@@ -943,8 +943,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public string UXAlertItemMessage { get; set; }
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
+        /// <summary>
+        /// for display
+        /// </summary>
         public Visibility UXAlertItemVisibility_3 { get; set; }
         public string UXAlertItemMessage_3 { get; set; }
+        /// <summary>
+        /// for Dock ARM
+        /// </summary>
+        public Visibility UXAlertItemVisibility_4 { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -971,6 +978,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemMessage_2 = "";
             UXAlertItemVisibility_3 = Visibility.Collapsed;
             UXAlertItemMessage_3 = "";
+            UXAlertItemVisibility_4 = Visibility.Collapsed;
             bool? deviceBatteryLow = false;
             if (!fwUpdateInfo.IsDisplay)
             {
@@ -1034,19 +1042,27 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
                     case DeviceType.LogicalDock:
                     case DeviceType.PhysicalWiredDock:
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert_2"];
-                        using (BatteryInfo batteryInfo = new BatteryInfo())
+                        Method method = new Method();
+                        if (method.GetSystemArchitecture().Equals("ARM"))
                         {
-                            batteryInfo.GetBatteryInfo(out var battery);
-                            if (battery.BatteryLifePercent <= 10)
+                            UXAlertItemVisibility_4 = Visibility.Visible;
+                        }
+                        else
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert_2"];
+                            using (BatteryInfo batteryInfo = new BatteryInfo())
                             {
-                                UXAlertItemVisibility_2 = Visibility.Visible;
-                                UXAlertItemMessage_2 = LangHelper.Instance["Update_PCBatteryLow_Alert"];
+                                batteryInfo.GetBatteryInfo(out var battery);
+                                if (battery.BatteryLifePercent <= 10)
+                                {
+                                    UXAlertItemVisibility_2 = Visibility.Visible;
+                                    UXAlertItemMessage_2 = LangHelper.Instance["Update_PCBatteryLow_Alert"];
+                                }
                             }
                         }
+                        method = null;
                         break;
-
                     case DeviceType.PhysicalPen:
                     case DeviceType.LogicalPen:
                         if (deviceBatteryLow == true)
@@ -1150,6 +1166,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged(nameof(UXAlertItemMessage_2));
             OnPropertyChanged(nameof(UXAlertItemVisibility_3));
             OnPropertyChanged(nameof(UXAlertItemMessage_3));
+            OnPropertyChanged(nameof(UXAlertItemVisibility_4));
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
+using System.Runtime.InteropServices;
 
 namespace DDPM.SA.Common.Method
 {
@@ -23,6 +24,10 @@ namespace DDPM.SA.Common.Method
         public Method(Logs log)
         {
             _Logs = log;
+        }
+        public Method()
+        {
+            
         }
         public void Dispose()
         {
@@ -239,6 +244,30 @@ namespace DDPM.SA.Common.Method
             }
             WriteLog($"{nameof(DeleteFolder)} finish");
             return result;
+        }
+        public string GetSystemArchitecture()
+        {
+            WriteLog($"[DisplayMangerPlugin] {nameof(GetSystemArchitecture)} RuntimeInformation.ProcessArchitecture : {RuntimeInformation.OSArchitecture.ToString()}");
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
+            {
+                return "Intel";//"Intel_x64";
+            }
+            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
+            {
+                return "Intel";//"Intel_x86";
+            }
+            else if (RuntimeInformation.OSArchitecture == Architecture.Arm)
+            {
+                return "ARM";
+            }
+            else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+            {
+                return "ARM";//"ARM_64";
+            }
+            else
+            {
+                return "Unknow";
+            }
         }
         void WriteLog(string mes)
         {

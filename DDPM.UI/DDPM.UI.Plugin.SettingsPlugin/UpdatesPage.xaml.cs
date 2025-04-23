@@ -175,5 +175,23 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 parent.RaiseEvent(eventArg);
             }
         }
+
+        private void ShowDellURL_Click(object sender, MouseButtonEventArgs e)
+        {
+            string url = "https://www.dell.com/support/home";
+            try
+            {
+                DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+            }
+            catch
+            {
+            }
+        }
     }
 }

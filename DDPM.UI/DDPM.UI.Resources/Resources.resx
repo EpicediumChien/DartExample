@@ -3705,4 +3705,13 @@
   <data name="RtkHub.18" xml:space="preserve">
     <value>USB-C 2</value>
   </data>
+  <data name="Dock_ARM_Alert_1" xml:space="preserve">
+    <value>Firmware updates for Dell Pro Dock WD25 on ARM systems cannot be performed using Dell Display &amp; Peripheral Manager (DDPM) 2.0. </value>
+  </data>
+  <data name="Dock_ARM_Alert_2" xml:space="preserve">
+    <value>Download the Dock Firmware Updater (DFU) </value>
+  </data>
+  <data name="Dock_ARM_Alert_3" xml:space="preserve">
+    <value>from the Dell Support Website to update your Dock firmware</value>
+  </data>
 </root>
