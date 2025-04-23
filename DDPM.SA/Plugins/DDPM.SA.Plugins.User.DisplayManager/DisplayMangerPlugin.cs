@@ -3670,7 +3670,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_DisplayPropertiesPlugin.CallWindowsDisplaySetting().Result);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = false)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = true)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus start");
             string capabilityString = monitorInfos.CapabilityString;
