@@ -4036,7 +4036,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string[] stand = new string[] { "25", "23", "24", "26", "27", "3A", "3B", "3C" };
                 for (int i = 0; i < ss.Length; i++)
                 {
+#if DEBUG
                     Debug.WriteLine("ss[i]"+ss[i]);
+#endif
                     for (int j = 0; j < stand.Length; j++)
                     {
                         if (ss[i].Equals(stand[j]))
