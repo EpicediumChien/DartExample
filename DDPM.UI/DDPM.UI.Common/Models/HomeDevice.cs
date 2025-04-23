@@ -17,7 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
-using EDID= VcpCore.Common.EDID;
+using EDID = VcpCore.Common.EDID;
 
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -1749,6 +1749,9 @@ namespace DDPM.UI.Common.Models
                 case DeviceType.PhysicalBluetooth:
                 case DeviceType.PhysicalDongle:
                 case DeviceType.PhysicalPen:
+#if Support_210
+                case DeviceType.PhysicalWiredHub:
+#endif
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
 
                 //0823 Bruce 新增Dock連線方式的濾字串的方式

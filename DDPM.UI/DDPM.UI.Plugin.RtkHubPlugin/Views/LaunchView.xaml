@@ -55,7 +55,7 @@
                     <Viewbox Name="largeImage" Margin="30,60" MaxWidth="620">
                         <Grid>
                             <!--<Grid>-->
-                            <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MouseLeftButtonDown="LargeImage_MouseLeftButtonDown" MaxWidth="620" />
+                            <Image Source="{Binding ImageFilePath}" Stretch="Uniform"  MaxWidth="620" />
                             <Rectangle Name="RecT" Fill="Transparent" Width="500" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
                             <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
                             <Rectangle Name="RecL" Fill="Transparent" Height="620" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
@@ -118,77 +118,22 @@
             <!--Battery-->
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="10,18,0,0">
-                                    <UXControls:UXTextBlock Name="txt3" Style="{StaticResource ConnectionStyle3}" />
-                                    <!--<Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" />-->
-                                    <Grid Width="16" Height="16" Margin="4,0,0,0">
-                                        <Path Fill="{DynamicResource ConnHover_ActiveTextColor}"
-                                  Data="M11.8121 6.56276V3.41263C11.8121 1.53568 10.2765 0 8.39951 0C6.52256 0 5 1.53568 5 3.41263C5 3.43888 5.01313 6.3265 5.02625 6.9434C5.31501 6.57588 5.7219 6.20837 6.19442 5.91961V3.41263C6.19442 2.19196 7.19196 1.20755 8.39951 1.20755C9.60705 1.20755 10.6046 2.20509 10.6046 3.41263V6.56276C10.6046 7.78343 9.60705 8.76784 8.39951 8.76784C8.05824 8.76784 7.71698 8.67596 7.34947 8.46596C7.10008 8.74159 6.9557 9.08286 6.9557 9.43724V9.621C7.45447 9.85726 7.92699 9.97539 8.39951 9.97539C9.06891 9.97539 9.69893 9.75226 10.3421 9.29286C10.4865 9.18786 10.6046 9.09598 10.7096 8.99098C10.7096 8.99098 10.7096 8.99098 10.7227 8.97785C10.8277 8.87285 10.9327 8.76784 11.0246 8.64971C11.5365 7.99344 11.799 7.29779 11.799 6.57588L11.8121 6.56276Z" />
-                                        <Path Fill="{DynamicResource ConnHover_ActiveTextColor}"
-                                  Data="M5 9.43729V12.5874C5 14.4644 6.53569 16 8.41263 16C10.2896 16 11.8253 14.4644 11.8253 12.5874C11.8253 12.5612 11.8121 9.67355 11.799 9.05665C11.5103 9.42417 11.1034 9.79168 10.6308 10.0804V12.5874C10.6308 13.8081 9.63331 14.7925 8.42576 14.7925C7.21821 14.7925 6.22067 13.795 6.22067 12.5874V9.43729C6.22067 8.21662 7.21821 7.23221 8.42576 7.23221C8.76702 7.23221 9.10829 7.32408 9.4758 7.53409C9.72518 7.25846 9.86957 6.91719 9.86957 6.5628V6.37905C9.3708 6.14279 8.89828 6.02466 8.42576 6.02466C7.75636 6.02466 7.12633 6.24779 6.48318 6.72031C6.35193 6.82531 6.22067 6.91719 6.11567 7.0222C6.11567 7.0222 6.10254 7.03532 6.08942 7.04845C5.98441 7.15345 5.87941 7.25846 5.78753 7.37659C5.27564 8.01974 5.01313 8.71539 5.01313 9.45042L5 9.43729Z" />
-                                    </Grid>
-                                    <UXControls:UXTextBlock Name="txtSystemName3" VerticalAlignment="Center"
-                                                            HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Style="{StaticResource ConnectionStyle3}" />
-                                </StackPanel>
-                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
-                                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Collapsed" x:Name="WiredConnection" Height="92" VerticalAlignment="Bottom">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
-                                    <UXControls:UXTextBlock Name="Wiredtxt1" Text="1" />
-                                    <ContentControl x:Name="imgWired1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Port}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <!-- <Image x:Name="imgWired1" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                                    <UXControls:UXTextBlock Name="txtWiredSystemName" Margin="4,0,0,0" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
-                                                           BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
-                                                           ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="auto" Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}"
-                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
+                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,90" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <Grid VerticalAlignment="Bottom">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Border Style="{StaticResource BorderUnpair}" Width="auto" Cursor="Hand" Margin="0,0,0,40" x:Name="btnUpdate" Visibility="{Binding IsUpdateEnable, Converter={StaticResource BoolToVisibilityConverter}}" BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Border Padding="10,0,10,0" BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
-                                    <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
-                                                        HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
-                                </Border>
-                                    <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
-                                       Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                       VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
-                                    <Image.ToolTip>
-                                        <ToolTip>
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </Grid>
-                        </Border>
-            <Border Style="{StaticResource BorderUnpair}" Width="auto" MinWidth="105" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
-                            <Grid>
-                                <Border Padding="10,0,10,0" BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
-                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource Unpair_FgColor}" VerticalAlignment="Center"
-                                                        HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
+                                    <UXControls:UXTextBlock Name="txtUpdate" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [UpdateFirmware], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
                             </Grid>
                         </Border>
@@ -203,14 +148,11 @@
                      BorderThickness="1" CornerRadius="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
-                    <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
-                          Margin="0,64,0,32">
-                        <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
-                                                 FontSize="32" />
+                    <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,64,0,32">
+                        <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="32" />
                     </Grid>
                     <Grid Height="64">
-                        <UXControls:UXBusyIndicator Width="64" Height="64"
-                                                    BusyIndicatorType="Secondary" IsActive="True" />
+                        <UXControls:UXBusyIndicator Width="64" Height="64" BusyIndicatorType="Secondary" IsActive="True" />
                     </Grid>
                 </StackPanel>
             </Border>

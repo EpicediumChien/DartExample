@@ -636,6 +636,7 @@ namespace DDPM.UI.Common
 
         //For DDPM 2.1.x.x
         public static readonly string USB_C = GetString("USBC");
+        public static readonly string UpdateFirmware = GetString("UpdateFirmware");
         public static readonly string RtkHub01 = GetString("RtkHub.01");
         public static readonly string RtkHub02 = GetString("RtkHub.02");
         public static readonly string RtkHub03 = GetString("RtkHub.03");
@@ -653,6 +654,6 @@ namespace DDPM.UI.Common
         public static readonly string RtkHub15 = GetString("RtkHub.15");
         public static readonly string RtkHub16 = GetString("RtkHub.16");
         public static readonly string RtkHub17 = GetString("RtkHub.17");
-        public static readonly string RtkHub18 = GetString("RtkHub.18");
+        public static readonly string RtkHub18 = GetString("RtkHub.18");        
     }
 }

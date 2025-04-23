@@ -210,7 +210,7 @@ namespace DDPM.EABroker
 
                     //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref _workingSplit);
 
-                    Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
+                    Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.WorkingArea.Left},{_workScreen.WorkingArea.Top})-({_workScreen.WorkingArea.Right},{_workScreen.WorkingArea.Bottom}){_workScreen.WorkingArea.Width}x{_workScreen.WorkingArea.Height}");
 
                     double scale = 1.000;
                     //Robert_Lin 2025-3-17, change to use WorkingArea instead of Bounds
@@ -219,10 +219,23 @@ namespace DDPM.EABroker
                     //rcScreen.Width = _workScreen.Bounds.Width / scale;
                     //rcScreen.Height = _workScreen.Bounds.Height / scale;
 
-                    rcScreen.X = _workScreen.WorkingArea.Left / scale;
-                    rcScreen.Y = _workScreen.WorkingArea.Top / scale;
-                    rcScreen.Width = _workScreen.WorkingArea.Width / scale;
-                    rcScreen.Height = _workScreen.WorkingArea.Height / scale;
+                    //Robert_Lin 2025-4-22 The display layout too large if it's mirgrated from DDM
+                    //OLD:
+                    //NEW:
+                    if (splitJson.IsMigratedFromDdm)
+                    {
+                        rcScreen.X = _workScreen.WorkingArea.Left ;
+                        rcScreen.Y = _workScreen.WorkingArea.Top ;
+                        rcScreen.Width = _workScreen.WorkingArea.Width / _vm.ScreenScale;
+                        rcScreen.Height = _workScreen.WorkingArea.Height / _vm.ScreenScale;
+                    }
+                    else
+                    {
+                        rcScreen.X = _workScreen.WorkingArea.Left;
+                        rcScreen.Y = _workScreen.WorkingArea.Top;
+                        rcScreen.Width = _workScreen.WorkingArea.Width / scale;
+                        rcScreen.Height = _workScreen.WorkingArea.Height/scale;
+                    }
 
                     Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
 

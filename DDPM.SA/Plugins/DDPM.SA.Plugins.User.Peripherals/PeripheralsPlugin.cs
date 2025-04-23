@@ -1280,25 +1280,25 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        public void SetIsProximitySensorEnable(bool newValue, Guid deviceId)
-        {
-            foreach (var device in _iDeviceManager.Devices)
-            {
-                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
-                {
-                    // 2024-12-21, Elie R19 change that.
-                    //_iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.IsProximitySensorEnable = newValue;
-                        writelog($"DTH:{nameof(SetIsProximitySensorEnable)} device({device.Name}) IsProximitySensorEnable:{newValue}");
-                        break;
-                    }
-                }
-            }
-        }
+        //public void SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        //{
+        //    foreach (var device in _iDeviceManager.Devices)
+        //    {
+        //        var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+        //        if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+        //        {
+        //            // 2024-12-21, Elie R19 change that.
+        //            //_iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
+        //            DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
+        //            if (_deviceInfo != null)
+        //            {
+        //                _deviceInfo.IsProximitySensorEnable = newValue;
+        //                writelog($"DTH:{nameof(SetIsProximitySensorEnable)} device({device.Name}) IsProximitySensorEnable:{newValue}");
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
         public void SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
         {

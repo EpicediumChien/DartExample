@@ -103,11 +103,17 @@ namespace DDPM.UI.Common
                 //Derek 2025/01/03 to check ALT+Z hotkey conflict for QAM
                 if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z) && hotkeyInfo.Hotkey.Count == 2)
                 {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -66, 24, 8);
+                    //Robert_Lin 2025-4-22 Due to DDPMMsgBox changed, need to fix  below code or the HeaderText and SubHeaderText will be overlapped.
+                    //OLD:
+                    //Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    //Thickness subMargin = new Thickness(24, -66, 24, 8);
 
-                    DdpmCommonHelper.DDPMEzMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], true, null,
-                        420, 240, headMargin, subMargin);
+                    //DdpmCommonHelper.DDPMEzMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], true, null,
+                    //    420, 240, headMargin, subMargin);
+
+                    //NEW:
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    DdpmCommonHelper.DDPMPureMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], true, mainWindow);
 
                     return false;
                 }

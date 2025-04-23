@@ -9,7 +9,7 @@ namespace VcpCore.Common
 
         public MultiCommandAction Action = MultiCommandAction.None;
 
-        public object Function = (byte)0x00;
+        public object Function = Convert.ToByte(0x00);
 
         public object Value = string.Empty;
 
@@ -30,7 +30,6 @@ namespace VcpCore.Common
         GetVCPCapabilities,
         GetVCPCapability,
         SetVCPCapability,
-        GetVCPCacheTable,
         CancelVcpTask,
     }
 }

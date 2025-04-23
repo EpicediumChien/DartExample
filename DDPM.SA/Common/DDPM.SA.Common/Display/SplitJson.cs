@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IndiLogic.DPeM.Broker.WiredAudio;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -9,7 +11,7 @@ namespace DDPM.SA.Common.Display
     /// <summary>
     /// The basic data class to represent a ISplit item, used by EA and EM
     /// </summary>
-    public class SplitJson
+    public class SplitJson : IDisposable
     {
         #region Native Properties
 
@@ -17,6 +19,9 @@ namespace DDPM.SA.Common.Display
         public char SplitKey { get; set; } = 'A';
         public List<double> Settings { get; set; } = new List<double>();
         public string CustomName { get; set; } = "";
+        /// <summary>
+        /// Unused Id to identify a custom layout. Please used EAID instead.
+        /// </summary>
         public long CustomId { get; set; } = 0;
         public int EAID { get; set; } = 0;
         public CellJson[] Cells { get; set; }
@@ -53,11 +58,28 @@ namespace DDPM.SA.Common.Display
             }
             return returnSplit;
         }
+
+        public static SplitJson? CreatePresetLayoutFromEAID(int eaId)
+        {
+            SplitJson? presetJson = SplitJson.PresetList.Find(x => x.EAID == eaId);
+            if (presetJson != null)
+            {
+                return presetJson.Clone();
+            }
+            return null;
+        }
+
         #endregion ctor and create new instance
 
+        #region Helper Fuctions
+        /// <summary>
+        /// Output the SplitJson content to string.
+        /// Format: ({EAID},{CellCount}{SplitKey}[{Settings}]CustomName)
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return $"{CellCount}{SplitKey}[{Double_To_String(Settings)}],{CustomId}[{CustomName}]";
+            return $"({EAID},{CellCount}{SplitKey}[{Double_To_String(Settings)}]{CustomName})";
         }
 
         //double[] to string, format: [1,2,1,0.8,1,4.52]
@@ -106,15 +128,17 @@ namespace DDPM.SA.Common.Display
         /// <returns></returns>
         public static bool AreSettingsEqual(List<double> x, List<double> y)
         {
-            if ((x== null) && (y== null))
+            if ((x == null) && (y == null))
                 return true;
             if (x == null) return false;
             if (y == null) return false;
-            if (x.Count != y.Count) 
+            if (x.Count != y.Count)
                 return false;
 
             return x.SequenceEqual(y);
         }
+        #endregion Helper Fuctions
+
         #region Defaul Recent List
         //Robert_Lin, 2024-12-31 Add EAID
         /// <summary>
@@ -138,7 +162,12 @@ namespace DDPM.SA.Common.Display
         #endregion Defaul Recent List
 
         #region Preset List
-        public static readonly List<SplitJson> PresetList = new List<SplitJson>()
+        /// <summary>
+        /// A list of all preset EA layouts used by DDPM.Saubagent.User/EABroker.
+        /// It's used to create a SplitJson from EAID. used by Migration only. 
+        /// And it can be considered to remove in the future.
+        /// </summary>
+        private static readonly List<SplitJson> PresetList = new List<SplitJson>()
         {
             new  SplitJson() { EAID=0, CellCount = 0, SplitKey='A', Settings=new List<double>() { 1 } },
             new  SplitJson() { EAID=1, CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
@@ -161,35 +190,144 @@ namespace DDPM.SA.Common.Display
             new  SplitJson() { EAID=16, CellCount = 4, SplitKey='C', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
             new  SplitJson() { EAID=17, CellCount = 4, SplitKey='D', Settings=new List<double>() { 1, 1, 1, 1 } },
             new  SplitJson() { EAID=18, CellCount = 4, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
-            new  SplitJson() { EAID=19, CellCount = 4, SplitKey='F', Settings=new List<double>() { 1, 1, 1, 1, 1 } }
+            new  SplitJson() { EAID=19, CellCount = 4, SplitKey='F', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
 
+            new  SplitJson() { EAID=20, CellCount = 5, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=21, CellCount = 5, SplitKey='B', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=22, CellCount = 5, SplitKey='C', Settings=new List<double>() { 3, 7, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=23, CellCount = 5, SplitKey='D', Settings=new List<double>() { 7, 3, 1, 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=24, CellCount = 5, SplitKey='E', Settings=new List<double>() { 3, 7, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=25, CellCount = 5, SplitKey='F', Settings=new List<double>() { 3, 7, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=26, CellCount = 5, SplitKey='G', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=27, CellCount = 5, SplitKey='H', Settings=new List<double>() { 7, 3, 7, 3, 1, 1 } },
+            new  SplitJson() { EAID=28, CellCount = 5, SplitKey='I', Settings=new List<double>() { 3, 7, 7, 3, 1, 1 } },
+
+            new  SplitJson() { EAID=29, CellCount = 6, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=30, CellCount = 6, SplitKey='B', Settings=new List<double>() { 7, 3, 7, 3, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=31, CellCount = 6, SplitKey='C', Settings=new List<double>() { 1, 1, 3, 7, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=32, CellCount = 6, SplitKey='D', Settings=new List<double>() { 7, 3, 3, 7, 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=33, CellCount = 6, SplitKey='E', Settings=new List<double>() { 3, 7, 3, 7, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=34, CellCount = 6, SplitKey='F', Settings=new List<double>() { 3, 7, 7, 3, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=35, CellCount = 6, SplitKey='G', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=36, CellCount = 6, SplitKey='H', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=37, CellCount = 6, SplitKey='I', Settings=new List<double>() { 1, 1, 7, 3, 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=38, CellCount = 6, SplitKey='J', Settings=new List<double>() { 7, 3, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=39, CellCount = 7, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 3, 7, 1, 1 } },
+            new  SplitJson() { EAID=40, CellCount = 7, SplitKey='B', Settings=new List<double>() { 1, 1, 1, 3, 7, 1, 1 } },
+            new  SplitJson() { EAID=41, CellCount = 7, SplitKey='C', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=42, CellCount = 7, SplitKey='D', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=43, CellCount = 7, SplitKey='E', Settings=new List<double>() { 3, 7, 1, 2, 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=44, CellCount = 7, SplitKey='F', Settings=new List<double>() { 7, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=45, CellCount = 7, SplitKey='G', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=46, CellCount = 7, SplitKey='H', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=47, CellCount = 7, SplitKey='I', Settings=new List<double>() { 1, 1, 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=48, CellCount = 7, SplitKey='J', Settings=new List<double>() { 1, 1, 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=49, CellCount = 7, SplitKey='K', Settings=new List<double>() { 3, 7, 1, 2, 1, 1, 1, 1, 1 } }
         };
         #endregion Preset List
-        public static SplitJson? CreatePresetLayoutFromEAID(int eaId)
-        {
-            SplitJson? presetJson = SplitJson.PresetList.Find(x => x.EAID == eaId);
-            if (presetJson != null)
-            {
-                return presetJson.Clone();
-            }
-            return null;
-        }
 
+        #region Layout types
+        /// <summary>
+        /// Return true if this SplitJson is an Overlap custom layout (SplitCrl0B).
+        /// </summary>
         public bool IsOverlapLayout
         {
             get { return ((CellCount == 0) && (SplitKey == 'B')); }
         }
 
+        /// <summary>
+        /// Return true if this SplitJson is Empty layout (SplitCtrl0A).
+        /// </summary>
         public bool IsOff
         {
             get { return ((CellCount == 0) && (SplitKey == 'A')); }
         }
+        /// <summary>
+        /// Return true if this SplitJson is a custom layout 
+        /// (include Preset custom layout and Overlap custom layout)
+        /// which is determined by (EAID >=1000)
+        /// </summary>
         public bool IsCustomLayout
         {
-            get 
+            get
             {
                 return (EAID >= EAEMConstants.EAID_FirstCustom); //>=1000
             }
         }
+
+        /// <summary>
+        /// For Overlap layout only. Return true if it can be comfirm it's migrated from DDM.
+        /// </summary>
+        public bool IsMigratedFromDdm
+        {
+            get
+            {
+                if (IsCustomLayout)
+                {
+                    if ((Settings != null) && (Settings.Count >= 8))
+                    {
+                        if ((Settings[2] == 1.000) && (Settings[3] == 1.0000))
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+        #endregion Layout types
+
+        #region Destructor and Dispose
+        private bool _isDisposed = false;
+        private static readonly object _lockDisposePresetList = new object();
+        ~SplitJson()
+        {
+            Dispose(false);
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    if (Settings != null)
+                    {
+                        Settings.Clear();
+                        Settings = null;
+                    }
+                    if (Cells != null)
+                    {
+                        Array.Clear(Cells, 0, Cells.Length);
+                        Cells = null;
+                    }
+                }
+                _isDisposed = true;
+            }
+        }
+
+        public static void DisposePresetList()
+        {
+            lock (_lockDisposePresetList)
+            {
+                if ((SplitJson.PresetList != null) && (PresetList.Count > 0))
+                {
+                    foreach (var preset in SplitJson.PresetList)
+                    {
+                        preset.Dispose();
+                    }
+                    PresetList.Clear();
+                }
+            }
+        }
+        #endregion
     }
 }

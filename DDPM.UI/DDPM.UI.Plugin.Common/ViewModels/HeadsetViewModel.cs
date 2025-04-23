@@ -1429,13 +1429,19 @@ namespace DDPM.UI.Plugin.ViewModels
 
                     DeviceInfoDTP.SidetoneLevel = _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString()).Result;
                     _log.Info($"[HeadsetViewModel] DTP DeviceInfoDTP.SidetoneLevel ...................= {DeviceInfoDTP.SidetoneLevel.ToString()}");
+
+                    _wasSidetoneActiveBeforeTransparency = DeviceInfoDTP.Sidetone;
+                    _log.Info($"[HeadsetViewModel] DTP _wasSidetoneActiveBeforeTransparency ...................= {_wasSidetoneActiveBeforeTransparency.ToString()}");
                 }
                 else
                 {
                     DeviceInfoDTP.IsSidetoneSupported = false;
                     DeviceInfoDTP.Sidetone = false;
                     _log.Info($"[HeadsetViewModel] DTP GetIsSidetoneSupportedAsync ......................... NO");
-                }
+
+                    _wasSidetoneActiveBeforeTransparency = false;
+                    _log.Info($"[HeadsetViewModel] DTP _wasSidetoneActiveBeforeTransparency ......................... NO");
+                }                
                 //------------------------------------------------------------------------------------
                 bool IsVoiceGuidanceSupported = _deviceManager.GetIsVoiceGuidanceSupportedAsync(CurrentDeviceID.ToString()).Result;
                 if (IsVoiceGuidanceSupported)

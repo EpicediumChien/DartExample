@@ -40,6 +40,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private double leftBorderDefaultWidth = 0.0;
         private double capAreaDefaultWidth = 0.0;
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -238,6 +239,8 @@ namespace DDPM.UI.Plugin.MousePlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
             LeftBorder.SizeChanged -= CapAreaSizeChange;
+
+            moduleGroup.Dispose();
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -279,7 +282,6 @@ namespace DDPM.UI.Plugin.MousePlugin
                 return;
 
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
 
             moduleGroup = new ModuleGroup()
             {

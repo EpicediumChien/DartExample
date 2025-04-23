@@ -355,7 +355,6 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
                                HorizontalAlignment="Left"
-                               VerticalAlignment="Top"
                                FontFamily="Roboto"
                                FontSize="20"
                                TextWrapping="WrapWithOverflow"
@@ -366,11 +365,13 @@
                                 <Setter Property="Visibility" Value="Collapsed" />
                                 <Setter Property="Margin" Value="10,10,31,10" />
                                 <Setter Property="FontWeight" Value="Medium" />
+                                <Setter Property="VerticalAlignment" Value="Top" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
                                         <Setter Property="Visibility" Value="Visible" />
-                                        <Setter Property="Margin" Value="8,10,0,0" />
+                                        <Setter Property="Margin" Value="36,32,0,0" />
                                         <Setter Property="FontWeight" Value="Regular" />
+                                        <Setter Property="VerticalAlignment" Value="Center" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}" Value="FingerPrint">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -558,7 +559,7 @@
                                         <Setter Property="Grid.Row" Value="0" />
                                         <Setter Property="Grid.RowSpan" Value="2" />
                                         <Setter Property="HorizontalAlignment" Value="Left" />
-                                        <Setter Property="VerticalAlignment" Value="Top"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}" Value="StartRecording">
                                         <Setter Property="Grid.Row" Value="0" />
@@ -593,7 +594,6 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBlock 
-                                   VerticalAlignment="Top"
                                    FontFamily="Roboto"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource Default_SA_OSD_PathColor}"
@@ -601,6 +601,7 @@
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextAlignment" Value="Center" />
+                                    <Setter Property="VerticalAlignment" Value="Top" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding OSDType_Device}" Value="WalkAwayLock">
                                             <Setter Property="Margin" Value="0,10,0,0" />
@@ -653,7 +654,8 @@
                                             <Setter Property="FontSize" Value="16" />
                                             <Setter Property="FontWeight" Value="Regular" />
                                             <Setter Property="TextAlignment" Value="Left" />
-                                            <Setter Property="Margin" Value="8,8,0,0" />
+                                            <Setter Property="Margin" Value="36,-8,0,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding OSDType_Device}" Value="Mute">
                                             <Setter Property="FontSize" Value="14" />

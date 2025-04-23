@@ -18,7 +18,6 @@ namespace DDPM.UI.Module.RtkHubPortInfo
         public RtkHubPortInfoModule(RtkHubViewModel vm)
         {
             _rightView = new RtkHubPortInfoRightView(vm);
-            //vm.DetectPageShow(vm.Model);
         }
 
         public string ModuleName { get => "RtkHubPortInfoModule"; }
@@ -45,13 +44,7 @@ namespace DDPM.UI.Module.RtkHubPortInfo
             if (IsModuleActive)
             {
                 isSelectChanged = false;
-                InitNewViewModel();
             }
-        }
-
-        //Handle new device coming
-        private void InitNewViewModel()
-        {
         }
 
         public void OnActivated()
@@ -60,7 +53,6 @@ namespace DDPM.UI.Module.RtkHubPortInfo
             if (isSelectChanged)
             {
                 isSelectChanged = false;
-                InitNewViewModel();
             }
         }
 

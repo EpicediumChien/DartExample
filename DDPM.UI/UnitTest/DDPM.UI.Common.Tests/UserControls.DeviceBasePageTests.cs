@@ -48,8 +48,8 @@ namespace DDPM.UI.Common.Tests
             myConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(log);
             deviceBasePage = new DeviceBasePage();
             privateObject = new PrivateObject(deviceBasePage);
-            moduleGroup_1 = new();
-            moduleGroup_2 = new();
+            moduleGroup_1 = moduleGroup_1 ?? new();
+            moduleGroup_2 = moduleGroup_2 ?? new();
         }
 
         [Test]

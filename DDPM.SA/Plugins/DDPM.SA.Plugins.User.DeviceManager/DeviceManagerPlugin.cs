@@ -51,6 +51,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -2462,16 +2463,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         break;
 
                     case 0xE9:
+                    {
+                        NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                        nKVMVCPValue.monitorInfo = monitorInfo;
+                        nKVMVCPValue.value = (int)val;
+                        if (_NKVMPlugin != null)
                         {
-                            NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                            nKVMVCPValue.monitorInfo = monitorInfo;
-                            nKVMVCPValue.value = (int)val;
-                            if (_NKVMPlugin != null)
-                            {
-                                _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
-                            }
+                            _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
                         }
-                        break;
+                    }
+                    break;
 
                     default:
                         break;
@@ -3288,13 +3289,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsProximitySensorEnable(bool newValue, Guid deviceId)
-        {
-            writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
-            writelog($"Target DeviceID is {deviceId}");
-            _PeripheralsPlugin.SetIsProximitySensorEnable(newValue, deviceId);
-            return Task.FromResult(true);
-        }
+        //public Task SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        //{
+        //    writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
+        //    writelog($"Target DeviceID is {deviceId}");
+        //    _PeripheralsPlugin.SetIsProximitySensorEnable(newValue, deviceId);
+        //    return Task.FromResult(true);
+        //}
 
         public Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
         {
@@ -7298,11 +7299,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     List<ALSConfig> ALSConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
 
-                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = false;
-                    else IsSourceLumiumce = true;
+                    if (SourceMonitor.CapabilityDic.ContainsKey("12"))
+                        IsSourceLumiumce = false;
+                    else
+                        IsSourceLumiumce = true;
 
-                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = false;
-                    else IsTargetLumiumce = true;
+                    if (TargetMonitor.CapabilityDic.ContainsKey("12"))
+                        IsTargetLumiumce = false;
+                    else
+                        IsTargetLumiumce = true;
 
                     var TargetALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(TargetMonitor.edid));
                     var SourceALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(SourceMonitor.edid));
@@ -7312,34 +7317,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     switch (rstring.ToUpper(CultureInfo.InvariantCulture))
                     {
                         case "A":
-                            {
-                                if (IsSourceLumiumce)
-                                    return Task.FromResult(IsTargetLumiumce ? true : false);
-                                else
-                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
-                            }
+                        {
+                            if (IsSourceLumiumce)
+                                return Task.FromResult(IsTargetLumiumce ? true : false);
+                            else
+                                return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
+                        }
                         case "B":
-                            {
-                                if (IsSourceLumiumce)
-                                    return Task.FromResult(IsTargetLumiumce ? true : false);
-                                else
-                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
-                            }
+                        {
+                            if (IsSourceLumiumce)
+                                return Task.FromResult(IsTargetLumiumce ? true : false);
+                            else
+                                return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
+                        }
                         case "C":
-                            {
-                                if (IsSourceLumiumce)
-                                    return Task.FromResult(IsTargetLumiumce ? true : false);
-                                else
-                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
-                            }
+                        {
+                            if (IsSourceLumiumce)
+                                return Task.FromResult(IsTargetLumiumce ? true : false);
+                            else
+                                return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
+                        }
                         case "D":
-                            {
-                                return Task.FromResult(false);
-                            }
+                        {
+                            return Task.FromResult(false);
+                        }
                         case "E":
-                            {
-                                return Task.FromResult(false);
-                            }
+                        {
+                            return Task.FromResult(false);
+                        }
                         default:
                             return Task.FromResult(false);
                     }
@@ -7352,8 +7357,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                if (SourceMonitor is null) writelog("[CheckIsSyncBriCon] SourceMonitor is null.");
-                if (TargetMonitor is null) writelog("[CheckIsSyncBriCon] TargetMonitor is null.");
+                if (SourceMonitor is null)
+                    writelog("[CheckIsSyncBriCon] SourceMonitor is null.");
+                if (TargetMonitor is null)
+                    writelog("[CheckIsSyncBriCon] TargetMonitor is null.");
 
                 return Task.FromResult(false);
             }
@@ -7764,6 +7771,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region EA Custom List - EasyArrange
 
         //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read EA CustomList from DDPM UserSettings.
+        /// The number of elemenets will be <= 5 (EAEMConstants.MaxCustomItems)
+        /// </summary>
+        /// <returns></returns>
         public Task<SplitJson[]> ReadEACustomList()
         {
             if (_SettingsPlugin != null)
@@ -7796,8 +7808,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //Writeback to app settings
                     _SettingsPlugin.SetAppConfigData(appSettings);
                 }
+                else
+                {
+                    writelog("@ WriteEACustomList() return False, fail to read DDPM User Settings.");
+                }
             }
-            //Failed, return an empty array instead of null
+            else
+            {
+                writelog("@ WriteEACustomList() return False, _SettingsPlugin is null.");
+            }
             return Task.FromResult(false);
         }
 
@@ -7817,8 +7836,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string model = monitorInfo.modelName;
             string serviceTag = monitorInfo.edid.ServiceTag;
 
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
-            if (settings == null)
+            //Read per-model settings
+            List<DDPMMonitorSettings> modelSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (modelSettings == null)
             {
                 writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={model}) return null.");
                 return Task.FromResult(false);
@@ -7829,56 +7849,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //monitorSettings.EA = eaSettings;
             //NEW:
             //Find the previous saved device settings
-            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+            DDPMMonitorSettings? serviceTagSettings = modelSettings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
-            if (monitorSettings == null)
+            if (serviceTagSettings == null)
             {
                 writelog($"@ WriteEAMonitorSettings: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
                 return Task.FromResult(false);
             }
 
             //Temp workaround until all MonitorSettings has upgrated to v1.0
-            monitorSettings.Version = 1.0;
+            serviceTagSettings.Version = 1.0;
 
             //If the EA1 is empty, then create a new array and add eaSetting to it
-            if ((monitorSettings.EA1 == null) || (monitorSettings.EA1.Length == 0))
+            if ((serviceTagSettings.EA1 == null) || (serviceTagSettings.EA1.Length == 0))
             {
-                Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={monitorSettings.EA.Instance}");
+                Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={serviceTagSettings.EA.Instance}");
 
-                monitorSettings.EA1 = new EAMonitorSettings[1];
-                monitorSettings.EA1[0] = eaSettings;
+                serviceTagSettings.EA1 = new EAMonitorSettings[1];
+                serviceTagSettings.EA1[0] = eaSettings;
                 return Task.FromResult(false);
             }
             else
             {
-                //Find the existing Instance
-                string instance = monitorInfo.edid.Instance;
-                EAMonitorSettings? existInstance = monitorSettings.EA1.FirstOrDefault(x => x.Instance == instance);
-
-                //If not existing EA1, then add a new one
-                if (existInstance == null)
+                //If EA1 has only one instance, and Instance is empty, then replace on it
+                if (serviceTagSettings.EA1.Length == 1) //&& (string.IsNullOrEmpty(monitorSettings.EA1[0].Instance)))
                 {
-                    Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={monitorSettings.EA.Instance}");
-
                     //Add a new instance
-                    List<EAMonitorSettings> eaList = new List<EAMonitorSettings>(monitorSettings.EA1);
-                    eaList.Add(eaSettings);
-                    monitorSettings.EA1 = eaList.ToArray();
+                    serviceTagSettings.EA1 = new EAMonitorSettings[1];
+                    serviceTagSettings.EA1[0] = eaSettings;
                 }
-                else //Existing instance found, then update data from eaSettings
+                else
                 {
-                    Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, existInstance.Instance={existInstance.Instance}");
+                    //Find the existing Instance
+                    string instance = monitorInfo.edid.Instance;
+                    EAMonitorSettings? existInstance = serviceTagSettings.EA1.FirstOrDefault(x => x.Instance == instance);
 
-                    //Update the existing instance
-                    int index = Array.IndexOf(monitorSettings.EA1, existInstance);
-                    if (index >= 0)
-                        monitorSettings.EA1[index] = eaSettings;
-                    else
-                        writelog($"@ WriteEAMonitorSettings: EA1[{instance}] not found.");
+                    //If not existing EA1, then add a new one
+                    if (existInstance == null)
+                    {
+                        Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={serviceTagSettings.EA.Instance}");
+
+                        //Add a new instance
+                        List<EAMonitorSettings> eaList = new List<EAMonitorSettings>(serviceTagSettings.EA1);
+                        eaList.Add(eaSettings);
+                        serviceTagSettings.EA1 = eaList.ToArray();
+                    }
+                    else //Existing instance found, then update data from eaSettings
+                    {
+                        Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, existInstance.Instance={existInstance.Instance}");
+
+                        //Update the existing instance
+                        int index = Array.IndexOf(serviceTagSettings.EA1, existInstance);
+                        if (index >= 0)
+                            serviceTagSettings.EA1[index] = eaSettings;
+                        else
+                            writelog($"@ WriteEAMonitorSettings: EA1[{instance}] not found.");
+                    }
                 }
             }
 
-            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, modelSettings).Result)
             {
                 writelog($"@ WriteEAMonitorSettings(model={model}, serviceTage={serviceTag}) OK.");
                 return Task.FromResult(true);
@@ -7913,24 +7943,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Read all settings for this model
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
-            if (settings == null) //never, but check for safe
+            List<DDPMMonitorSettings> modelSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (modelSettings == null) //never, but check for safe
             {
                 writelog($"@ ReadEAMonitorSettings: ReloadMonitorSettings(model={model}) is null.");
                 return Task.FromResult(defaultOutput);
             }
 
             //Find the settings for the specified device
-            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            DDPMMonitorSettings serviceTagSettings = modelSettings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
             //There is no settings found for this device
-            if (monitorSetting == null)
+            if (serviceTagSettings == null)
             {
                 writelog($"@ ReadEAMonitorSettings: Settings for (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
                 return Task.FromResult(defaultOutput);
             }
 
             //Get the Version of reading DDPMMonitorSettings
-            double readSettingsVersion = monitorSetting.Version;
+            double readSettingsVersion = serviceTagSettings.Version;
+
+            writelog($"@ ReadEAMonitorSettings: Settings for (model={model}, serviceTag={serviceTag}, Instace={instance}), SettingsFile Version={readSettingsVersion}");
 
             //Robert_Lin, 2024-10-13, If the settings are migrated from DDM, some of SplitJson,
             //1 CustomLayouts:
@@ -7940,62 +7972,88 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SplitJson[] customArray = ReadEACustomList().Result;
             List<SplitJson> customList = new List<SplitJson>();
             if ((customArray != null) && (customArray.Length > 0))
-                customList = new List<SplitJson>(customArray);
+                customList.AddRange(customArray);
 
             //Determine which EAMonitorSettings is mapped to current targer in monitorInfo
-            EAMonitorSettings? eaSettings = null;
-            if (monitorSetting.Version < 1.00) //Older version
+            EAMonitorSettings? instanceSettings = null;
+            if (serviceTagSettings.Version < 1.00) //Older version
             {
-                monitorSetting.ConvertV0ToV1();
-                eaSettings = monitorSetting.EA1[0];
+                serviceTagSettings.ConvertV0ToV1();
+                instanceSettings = serviceTagSettings.EA1[0];
                 //Add Instance
-                eaSettings.Instance = instance;
+                instanceSettings.Instance = instance;
+                writelog($"@ ReadEAMonitorSettings: Settings is Version {serviceTagSettings.Version}, after converted, SelectedLayout=[{instanceSettings.SelectedSplit.ToString()}]");
             }
             else
             {
-                eaSettings = monitorSetting.EA1.FirstOrDefault(x => x.Instance == instance);
+                instanceSettings = serviceTagSettings.EA1.FirstOrDefault(x => x.Instance == instance);
+                if (instanceSettings == null)
+                {
+                    //Check for Instance, empty or "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA" then it may convert from migration
+                    //If the EA1.Count is 1, then return the first instance
+                    if (serviceTagSettings.EA1.Count() == 1)
+                    {
+                        //If Instace is empty => it may converted from v0
+                        //If Instance is "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA" it's migrated from DDM
+                        //
+                        if (string.IsNullOrEmpty(serviceTagSettings.EA1[0].Instance) ||
+                            EAMonitorSettings.IsMigratedFromDDM(serviceTagSettings.EA1[0].Instance))
+                        {
+                            //return the first/only one object
+                            instanceSettings = serviceTagSettings.EA1[0];
+                            //But will update the Instance
+                            instanceSettings.Instance = monitorInfo.edid.Instance;
+                        }
+                        else
+                        {
+                            //No settings found in the settings file
+                        }
+                    }
+                }
+
             }
-            if (eaSettings == null)
+            if (instanceSettings == null)
             {
                 writelog($"@ ReadEAMonitorSettings: Settings for Instance=[{instance}] of (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
                 return Task.FromResult(defaultOutput);
             }
 
+            //Robert_Lin 2025-4-21, it's a very old logic, can be removed
             //Convert SelectedSplit
-            //if (monitorSetting.EA.SelectedSplit.CellCount < 0)
-            if (eaSettings.SelectedSplit.CellCount < 0)
+            if (instanceSettings.SelectedSplit.CellCount < 0)
             {
                 //If it's a custom layout
                 //if (monitorSetting.EA.SelectedSplit.CellCount < 0)
-                if (eaSettings.SelectedSplit.CellCount < 0)
+                if (instanceSettings.SelectedSplit.CellCount < 0)
                 {
                     //monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
                     //if (monitorSetting.EA.SelectedSplit == null)
                     //    monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
 
-                    eaSettings.SelectedSplit = customList.Find(x => x.EAID == eaSettings.SelectedSplit.EAID);
-                    if (eaSettings.SelectedSplit == null)
-                        eaSettings.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+                    instanceSettings.SelectedSplit = customList.Find(x => x.EAID == instanceSettings.SelectedSplit.EAID);
+                    if (instanceSettings.SelectedSplit == null)
+                        instanceSettings.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
                 }
                 else
                 {
                     //It's a preset layout
                     //monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
-                    eaSettings.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(eaSettings.SelectedSplit.EAID);
+                    instanceSettings.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(instanceSettings.SelectedSplit.EAID);
                 }
             }
+            Trace.WriteLine($"SelectedSplit: {instanceSettings.SelectedSplit.ToString()}");
 
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             //if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
             //    monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
-            if ((eaSettings.RecentList == null) || (eaSettings.RecentList.Length == 0))
-                eaSettings.RecentList = SplitJson.DefaultRecentList.ToArray();
+            if ((instanceSettings.RecentList == null) || (instanceSettings.RecentList.Length == 0))
+                instanceSettings.RecentList = SplitJson.DefaultRecentList.ToArray();
             else
             {
                 //Convert RecentList
                 List<SplitJson> migratedRecentList = new List<SplitJson>();
                 //foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
-                foreach (SplitJson recentJson in eaSettings.RecentList)
+                foreach (SplitJson recentJson in instanceSettings.RecentList)
                 {
                     if (recentJson.CellCount < 0)
                     {
@@ -8003,9 +8061,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (recentJson.EAID >= 1000)
                         {
                             //SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
-                            SplitJson? custJson = customList.Find(x => x.EAID == eaSettings.SelectedSplit.EAID);
+                            SplitJson? custJson = customList.Find(x => x.EAID == instanceSettings.SelectedSplit.EAID);
                             if (custJson != null)
                             {
+                                Trace.WriteLine($"Recent: {custJson.ToString()}");
                                 migratedRecentList.Add(custJson);
                             }
                         }
@@ -8013,26 +8072,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             //It's a preset layout
                             //SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
-                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(eaSettings.SelectedSplit.EAID);
+                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(instanceSettings.SelectedSplit.EAID);
                             if (presetJson != null)
                             {
+                                Trace.WriteLine($"Recent: {presetJson.ToString()}");
                                 migratedRecentList.Add(presetJson);
                             }
                         }
                     }
                     else
                     {
+                        Trace.WriteLine($"Recent: {recentJson.ToString()}");
                         migratedRecentList.Add(recentJson);
                     }
                 }
                 //monitorSetting.EA.RecentList = migratedRecentList.ToArray();
-                eaSettings.RecentList = migratedRecentList.ToArray();
+                instanceSettings.RecentList = migratedRecentList.ToArray();
             }
+
+            DumpEAMonitorSettingsToLog(instanceSettings);
+            defaultOutput = null;
 
             //_dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             //return Task.FromResult(monitorSetting.EA);
-            return Task.FromResult(eaSettings);
+            return Task.FromResult(instanceSettings);
+        }
+
+        /// <summary>
+        /// Dump EAMonitorSettings to log file, using writelog()
+        /// </summary>
+        /// <param name="eaSettings"></param>
+        private void DumpEAMonitorSettingsToLog(EAMonitorSettings eaSettings)
+        {
+            if (eaSettings == null)
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: (EAMonitorSettings is null)");
+                return;
+            }
+            if (eaSettings.SelectedSplit == null)
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: SelectedLayout: (null)");
+            }
+            else
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: SelectedLayout: {eaSettings.SelectedSplit.ToString}");
+            }
+
+            if (eaSettings.RecentList == null)
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: RecentList: (null)");
+            }
+            else if (eaSettings.RecentList.Length <= 0)
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: RecentList: (empty)");
+            }
+            else
+            {
+                writelog($"@ DumpEAMonitorSettingsToLog: RecentList, count={eaSettings.RecentList.Length}");
+
+                int idxRecent = 0;
+                foreach (SplitJson spj in eaSettings.RecentList)
+                {
+                    writelog($"@ DumpEAMonitorSettingsToLog: RecentList[{idxRecent}]: {spj.ToString()}");
+                    idxRecent++;
+                }
+            }
         }
 
         #endregion EAMonitorSettings - EasyArrange
@@ -10635,6 +10740,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsProximitySensorEnable(Guid, newValue);
+
+            writelog("[DeviceMangerPlugin] invoke DeviceChanged in SetIsProximitySensorEnable...");
+            DeviceInfo di = new()
+            {
+                LogicalDeviceType = "Webcam",
+                ID = new(Guid),
+                IsProximitySensorEnable = newValue,
+                //Message = newValue.ToString()
+            };
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "IsProximitySensorEnableChanged"
+            };
+            _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+
             return Task.CompletedTask;//Task.FromResult(true);
         }
 
@@ -12385,7 +12507,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 for (int i = 0; i < NewMonitors.Count; i++)
                                 {
-                                    if (token.IsCancellationRequested) break;
+                                    if (token.IsCancellationRequested)
+                                        break;
 
                                     writelog("[DeviceMangerPlugin]  GetDisplaySupportedProperties ...");
                                     _DisplayManagerPlugin.GetDisplaySupportedProperties(NewMonitors[i]).Wait(token);
@@ -17480,7 +17603,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     foreach (MonitorInfo m in AllInfoMonitors.ToList())
                     {
-                        if (cancellationToken.IsCancellationRequested) break;
+                        if (cancellationToken.IsCancellationRequested)
+                            break;
 
                         monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
 
@@ -17590,7 +17714,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (MonitorInfo m in _AllInfoMonitors.ToList())
                 {
-                    if (cancellationToken.IsCancellationRequested) break;
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
 
                     monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(m.modelName).Result;
                     if (monitorSettingsList != null && monitorSettingsList.Count > 1)
@@ -17599,7 +17724,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
                         {
-                            if (cancellationToken.IsCancellationRequested) break;
+                            if (cancellationToken.IsCancellationRequested)
+                                break;
 
                             if (monitorSettings != null &&
                                 monitorSettings.hotkeyData.Count > 0)
@@ -17607,7 +17733,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                 foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
                                 {
-                                    if (cancellationToken.IsCancellationRequested) break;
+                                    if (cancellationToken.IsCancellationRequested)
+                                        break;
 
                                     writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
                                     if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource &&
@@ -17623,14 +17750,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
                         {
-                            if (cancellationToken.IsCancellationRequested) break;
+                            if (cancellationToken.IsCancellationRequested)
+                                break;
 
                             if (monitorSettings != null)
                             {
                                 writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                 foreach (HotkeyData hotkey in hotkeyDatas)
                                 {
-                                    if (cancellationToken.IsCancellationRequested) break;
+                                    if (cancellationToken.IsCancellationRequested)
+                                        break;
 
                                     if (!monitorSettings.hotkeyData.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                     {
@@ -18279,148 +18408,357 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //Robert_Lin, 2024-10-11, added
+        //Robert_Lin, 2025-4-20 Rewrite this method
+        //Robert_Lin, 2024-10-11, added. Called for each {Model}_{ServiceTag}
         private void DDMtoDDPM_EzArrange(DDMMonitorSettings ddmMonitorSettings, DDMUserSettings ddmUserSettings)
         {
             if (_SettingsPlugin == null)
+            {
+                writelog($"@ DDMtoDDPM_EzArrange() do nothing:  _SettingsPlugin is null.");
                 return;
+            }
+
+            //This cutsom list will be used to query settings when migrating monitor settings
+            List<SplitJson> ddpmCustomList = new List<SplitJson>();
 
             //Migration UserSettings
             //
-            //1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
-            //
-            List<SplitJson> ddpmCustomList = new List<SplitJson>();
-            if (ddmUserSettings.CustLayouts != null)
+            if (ddmUserSettings != null)
             {
-                foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
+                //Phase 1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+                if (ddmUserSettings.CustLayouts != null)
                 {
-                    SplitJson spJson = new SplitJson();
-                    spJson.CellCount = 0;
-                    spJson.SplitKey = 'B';
+                    writelog($"@ DDMtoDDPM_EzArrange() - Phase I - migrate DDM User Settings.CustLayouts. Count={ddmUserSettings.CustLayouts.Count}");
 
-                    List<double> settings = new List<double>();
-                    //Format: settings[0] : BorderCount
-                    settings.Add((double)custLayout.Rects.Count);
-                    //settings[1] : screenScale
-                    settings.Add((double)1.000);
-                    //settings[2] : screenWidth
-                    settings.Add((double)1.000);
-                    //settings[3] : screenHeight
-                    settings.Add((double)1.000);
-
-                    //Settings[4 ~] : Rects
-                    int idxRect = 0;
-                    foreach (EARect eARect in custLayout.Rects)
+                    int idxCustLayout = 0;
+                    foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
                     {
-                        //settings[4 + idxRect + 0] : left
-                        settings.Add(eARect.x);
-                        //settings[4 + idxRect + 1] : top
-                        settings.Add(eARect.y);
-                        //settings[4 + idxRect + 2] : width
-                        settings.Add(eARect.w);
-                        //settings[4 + idxRect + 3] : height
-                        settings.Add(eARect.h);
-                        idxRect++;
-                    }
-                    spJson.Settings = settings;
-                    spJson.CustomName = custLayout.Name;
-                    spJson.CustomId = custLayout.ID;
-                    spJson.EAID = custLayout.ID;
+                        SplitJson spJson = new SplitJson();
+                        spJson.CellCount = 0;
+                        spJson.SplitKey = 'B';
 
-                    ddpmCustomList.Add(spJson);
-                }
+                        List<double> settings = new List<double>();
+                        //Format: settings[0] : BorderCount
+                        settings.Add((double)custLayout.Rects.Count);
+                        //settings[1] : screenScale
+                        settings.Add((double)1.000);
+                        //settings[2] : screenWidth
+                        settings.Add((double)1.000);
+                        //settings[3] : screenHeight
+                        settings.Add((double)1.000);
+
+                        //Settings[4 ~] : Rects
+                        int idxRect = 0;
+                        StringBuilder sbRects = new StringBuilder();
+                        sbRects.Append("Rects: { ");
+                        foreach (EARect eARect in custLayout.Rects)
+                        {
+                            if (idxRect > 0)
+                                sbRects.Append(", ");
+
+                            string rectText = $"({eARect.x}, {eARect.y}, {eARect.w}, {eARect.h})";
+                            sbRects.Append(rectText);
+
+                            //settings[4 + idxRect + 0] : left
+                            settings.Add(eARect.x);
+                            //settings[4 + idxRect + 1] : top
+                            settings.Add(eARect.y);
+                            //settings[4 + idxRect + 2] : width
+                            settings.Add(eARect.w);
+                            //settings[4 + idxRect + 3] : height
+                            settings.Add(eARect.h);
+                            idxRect++;
+                        }
+
+                        sbRects.Append(" }");
+
+                        spJson.Settings = settings;
+                        spJson.CustomName = custLayout.Name;
+                        spJson.CustomId = custLayout.ID;
+                        spJson.EAID = custLayout.ID;
+
+                        ddpmCustomList.Add(spJson);
+
+                        writelog($"  * CustLayout[{idxCustLayout}]: ID=[{custLayout.ID}], Name=[{custLayout.Name}], Overlap=[{custLayout.Overlap}], Rects={sbRects.ToString()} => {spJson.ToString()}");
+                        idxCustLayout++;
+                    } //foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
+                    bool saveCustomListOK = WriteEACustomList(ddpmCustomList.ToArray()).Result;
+                    writelog($"  * WriteEACustomList() return {saveCustomListOK}");
+                }// if (ddmUserSettings.CustLayouts != null)
+
+                //Phase 2 Convert EasyArrange Per-user settings (EzSettings)
+                //
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase II - migrate DDM User Settings.EasyArrange");
+
+                bool saveOK = WriteEzSettings_IsWidthoutGap(ddmUserSettings.EAWithoutGap).Result;
+                writelog($"  * EAWithoutGap -> IsWidthoutGap = {ddmUserSettings.EAWithoutGap} ... Result={saveOK}");
+
+                saveOK = WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(ddmUserSettings.EAWithShiftKey).Result;
+                writelog($"  * EAWithShiftKey -> IsOnlyAllowWhenShiftKeyPressed = {ddmUserSettings.EAWithShiftKey} ... Result={saveOK}");
+
+                saveOK = WriteEzSettings_IsSpanAcrossMultiMonitors(ddmUserSettings.EASpan).Result;
+                writelog($"  * EASpan -> IsSpanAcrossMultiMonitors = {ddmUserSettings.EASpan} ... Result={saveOK}");
+
+                saveOK = WriteEzSettings_IsAwsEnabled(ddmUserSettings.SnapEnable).Result;
+                writelog($"  * SnapEnable -> IsAwsEnabled = {ddmUserSettings.SnapEnable} ... Result={saveOK}");
+            } //if (ddmUserSettings != null)
+            else
+            {
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase I~II - ddmUserSettings is null.");
             }
 
-            //2 Convert EasyArrange Per-user settings (EzSettings)
-            //
-            EzSettings ezSettings = new EzSettings();
-
-            ezSettings.IsWidthoutGap = ddmUserSettings.EAWithoutGap;
-            ezSettings.IsOnlyAllowWhenShiftKeyPressed = ddmUserSettings.EAWithShiftKey;
-            ezSettings.IsSpanAcrossMultiMonitors = ddmUserSettings.EASpan;
-            ezSettings.IsAwsEnabled = ddmUserSettings.SnapEnable;
-
-            //3 Save to DDPMUserSettings
-            //
-            DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (appSettings != null)
+            if (ddmMonitorSettings == null)
             {
-                appSettings.UserSettings.EACustomList = ddpmCustomList.ToArray();
-                appSettings.UserSettings.EzSettings = ezSettings;
-
-                _SettingsPlugin.SetAppConfigData(appSettings);
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings is null.");
+                return;
+            }
+            if (ddmMonitorSettings.EasyArrangement == null)
+            {
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings.EasyArrangement is null.");
+                return;
             }
 
-            //Migration MonitorSettings
+            //Phase 3 Migration MonitorSettings
             //
-            if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
-            {
-                MonitorInfo moinfo = new MonitorInfo();
-                moinfo.modelName = ddmMonitorSettings.Model;
-                moinfo.edid.ModelName = ddmMonitorSettings.Model;
-                moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
+            writelog($"@ DDMtoDDPM_EzArrange() - Phase III - Migrate monitor settings.");
 
-                //Will migrate Desktop[0] only
-                if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
+            string model = ddmMonitorSettings.Model;
+            string serviceTag = ddmMonitorSettings.ServiceTag;
+            int desktopCount = ddmMonitorSettings.EasyArrangement.Desktops.Count;
+            writelog($"  * MonitorModel=[{model}], ServiceTag=[{serviceTag}], DesktopCount=[{desktopCount}]");
+
+            //We need the custom list for this phase, if it's empty, then load from DDPM UserSettinge
+            if (ddpmCustomList.Count <= 0)
+            {
+                ddpmCustomList.AddRange(ReadEACustomList().Result);
+            }
+
+            //Create a EA1 list, to collect the convert results
+            List<EAMonitorSettings> ea1List = new List<EAMonitorSettings>();
+
+            int idxDesktop = 0;
+            //Enumerate for each Instace and convert Desktop to EAMonitorSettings, add to eaPerServiceTagSettings
+            foreach (Desktop ddmDesktop in ddmMonitorSettings.EasyArrangement.Desktops)
+            {
+                //
+                //Desktop {                                                     EAMonitorSettings {
+                //  string ID;                                                      string Instace;
+                //  int Index; //unused, always 0
+                //  int ActiveLayout;                                               SplitJson SelectedSplit;
+                //  List<int> LayoutMRU;                                            SplitJson[] RecentList;
+                //  List<int> ProfileMRU; //unused, always empty
+                //  List<Profile> Profiles; //unused, always empty
+                //  List<ProfileSetting> ProfileSettings; //used by Easy Memory
+
+                //Create a object to collecting the settings from ddmMonitorSetting.EasyArrangement.Desktops[i]
+                EAMonitorSettings eaPerInstanceSetting = new EAMonitorSettings();
+
+                //ID -> Instace, fill ID only when Desktops.Count >1
+                eaPerInstanceSetting.Instance = ddmDesktop.ID;
+                writelog($"  * Desktop[{idxDesktop}].ID=[{ddmDesktop.ID}] => EA1[{idxDesktop}].Instance=[{eaPerInstanceSetting.Instance}]");
+
+                //ActiveLayout -> SelectedSplit
+                //If the layout is custom layout (EAID >= 1000)
+                if (ddmDesktop.ActiveLayout >= EAEMConstants.EAID_FirstCustom)
                 {
-                    //Convert ActiveLayout to SelectedSplit
-                    //
-                    int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
-                    SplitJson? selJson = null;
-                    //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
-                    if (activeLayout >= 1000) //or EAEMConstants.EAID_FirstCustom
+                    //Find the CustomLayout by EAID
+                    SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == ddmDesktop.ActiveLayout);
+                    if (cusJson != null)
+                    {
+                        SplitJson spjSel = cusJson.Clone();
+                        eaPerInstanceSetting.SelectedSplit = spjSel;
+                        writelog($"  * Desktop[{idxDesktop}].ActiveLayout=[{ddmDesktop.ActiveLayout}] => EA1[{idxDesktop}].SelectedSplit:{eaPerInstanceSetting.SelectedSplit.ToString()}");
+                    }
+                    else
+                    {
+                        //Not found in ddmUserSettings.CustLayouts, will set SelectedLayout to "Empty" (Off)
+                        eaPerInstanceSetting.SelectedSplit = new SplitJson()
+                        {
+                            CellCount = 0,
+                            SplitKey = 'A',
+                            CustomId = 0,
+                            EAID = 0
+                        };
+                        writelog($"  * Desktop[{idxDesktop}].ActiveLayout=[{ddmDesktop.ActiveLayout}] => ERROR: not found in ddmUserSettings.CustLayouts");
+                    }
+                }
+                else //Preset layout
+                {
+                    SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(ddmDesktop.ActiveLayout);
+                    if (presetJson != null)
+                    {
+                        eaPerInstanceSetting.SelectedSplit = presetJson;
+                        writelog($"  * Desktop[{idxDesktop}].ActiveLayou=[{ddmDesktop.ActiveLayout}] => EA1[{idxDesktop}].SelectedSplit:{presetJson.ToString()}");
+                    }
+                    else
+                    {
+                        writelog($"  * Desktop[{idxDesktop}].ActiveLayout=[{ddmDesktop.ActiveLayout}] => ERROR: Invalid EAID");
+                    }
+                }
+
+                //LayoutMRU -> RecentList
+                List<SplitJson> recentList = new List<SplitJson>();
+                int idxMRU = 0;
+                foreach (int eaidRecent in ddmDesktop.LayoutMRU)
+                {
+                    //If the layout is a custom layout (EAID >= 1000)
+                    if (eaidRecent >= EAEMConstants.EAID_FirstCustom)
                     {
                         //Find the CustomLayout by EAID
-                        selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
-                        if (selJson != null)
+                        SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
+                        if (cusJson != null)
                         {
+                            SplitJson spjRecent = cusJson.Clone();
+                            recentList.Add(spjRecent);
+                            writelog($"  * Desktop[{idxDesktop}].LayoutMRU[{idxMRU}]=[{eaidRecent}] => EA1[{idxDesktop}].RecentList[{idxMRU}]:{spjRecent.ToString()}");
+                        }
+                        else
+                        {
+                            writelog($"  * Desktop[{idxDesktop}].LayoutMRU[{idxMRU}]=[{eaidRecent}] => ERROR: not found in ddmUserSettings.CustLayouts");
+                        }
+                    }
+                    else //Preset layouts
+                    {
+                        //Preset layout
+                        SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(eaidRecent);
+                        if (presetJson != null)
+                        {
+                            recentList.Add(presetJson);
+                            writelog($"  * Desktop[{idxDesktop}].LayoutMRU[{idxMRU}]=[{eaidRecent}] => EA1[{idxDesktop}].RecentList[{idxMRU}]:{presetJson.ToString()}");
+                        }
+                        else
+                        {
+                            writelog($"  * Desktop[{idxDesktop}].LayoutMRU[{idxMRU}]=[{eaidRecent}] => ERROR: Invalid EAID");
+                        }
+                    }
+
+                    idxMRU++;
+                } //foreach (int eaidRecent in ddmDesktop.LayoutMRU)
+
+                eaPerInstanceSetting.RecentList = recentList.ToArray();
+                ea1List.Add(eaPerInstanceSetting);
+                idxDesktop++;
+
+            } //foreach (Desktop ddmDesktop in ddmMonitorSettings.EasyArrangement.Desktops)
+
+
+            //Save this model-ServiceTage settings to DDPM Per-Monitor model settings file
+            //
+            writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - Save migrated Monitor settings.");
+
+            //Read the DDPM per-model settings file
+            List<DDPMMonitorSettings> modelSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (modelSettings == null)
+            {
+                writelog($"  * DDPM do not have the setting file of Model=[{model}]");
+                modelSettings = new List<DDPMMonitorSettings>();
+            }
+            //Find the matched per-ServiceTag setting
+            int idxThisServiceTag = modelSettings.FindIndex(x => x.ServiceTag.Equals(serviceTag));
+
+            //If DDPM do not have this model+serviceTag monitor settings
+            if (idxThisServiceTag < 0)
+            {
+                writelog($"  * DDPM Settings do not have the setting of Model=[{model}], ServiceTag=[{serviceTag}] => Add new.");
+                DDPMMonitorSettings ddpmMonitorSettings = new DDPMMonitorSettings(); //Per-mode-serviceTag
+                ddpmMonitorSettings.Model = model;
+                ddpmMonitorSettings.ServiceTag = serviceTag;
+                ddpmMonitorSettings.EA1 = ea1List.ToArray();
+                modelSettings.Add(ddpmMonitorSettings);
+                bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
+
+                writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
+            }
+            else
+            {
+                writelog($"  * DDPM Settings found the existing settings of Model=[{model}], ServiceTag=[{serviceTag}] => replace it.");
+
+                modelSettings[idxThisServiceTag].EA1 = ea1List.ToArray();
+                bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
+
+                writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
+            }
+
+            //OLD Code:
+            //
+            //if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
+            //{
+
+            /*
+            MonitorInfo moinfo = new MonitorInfo();
+            moinfo.modelName = ddmMonitorSettings.Model;
+            moinfo.edid.ModelName = ddmMonitorSettings.Model;
+            moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
+
+
+            //Will migrate Desktop[0] only
+            if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
+            {
+                //Convert ActiveLayout to SelectedSplit
+                //
+                int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+                SplitJson? selJson = null;
+                //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
+                if (activeLayout >= 1000) //or EAEMConstants.EAID_FirstCustom
+                {
+                    //Find the CustomLayout by EAID
+                    selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
+                    if (selJson != null)
+                    {
+
+                    }
+                }
+                else
+                {
+                    //Preset layout
+                    selJson = new SplitJson()
+                    {
+                        CellCount = -1,
+                        CustomId = 0,
+                        EAID = activeLayout
+                    };
+                }
+
+                //Convert RecentList
+                List<SplitJson> recentList = new List<SplitJson>();
+                foreach (int eaidRecent in ddmMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU)
+                {
+                    if (activeLayout >= 1000) //Custom Layout
+                    {
+                        //Find the CustomLayout by EAID
+                        SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
+                        if (cusJson != null)
+                        {
+                            recentList.Add(cusJson.Clone());
                         }
                     }
                     else
                     {
                         //Preset layout
-                        selJson = new SplitJson()
+                        SplitJson presetJson = new SplitJson()
                         {
                             CellCount = -1,
                             CustomId = 0,
-                            EAID = activeLayout
+                            EAID = eaidRecent
                         };
+                        recentList.Add(presetJson);
                     }
-
-                    //Convert RecentList
-                    List<SplitJson> recentList = new List<SplitJson>();
-                    foreach (int eaidRecent in ddmMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU)
-                    {
-                        if (activeLayout >= 1000) //Custom Layout
-                        {
-                            //Find the CustomLayout by EAID
-                            SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
-                            if (cusJson != null)
-                            {
-                                recentList.Add(cusJson.Clone());
-                            }
-                        }
-                        else
-                        {
-                            //Preset layout
-                            SplitJson presetJson = new SplitJson()
-                            {
-                                CellCount = -1,
-                                CustomId = 0,
-                                EAID = eaidRecent
-                            };
-                            recentList.Add(presetJson);
-                        }
-                    }
-
-                    //Save to EAMonitorSettings
-                    EAMonitorSettings eaSettings = ReadEAMonitorSettings(moinfo).Result;
-                    eaSettings.SelectedSplit = selJson;
-                    eaSettings.RecentList = recentList.ToArray();
-                    WriteEAMonitorSettings(moinfo, eaSettings);
                 }
+
+                //Save to EAMonitorSettings
+                EAMonitorSettings eaSettings = ReadEAMonitorSettings(moinfo).Result;
+                eaSettings.SelectedSplit = selJson;
+                eaSettings.RecentList = recentList.ToArray();
+                WriteEAMonitorSettings(moinfo, eaSettings);
             }
+            */
+            //} //if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
+            //else
+            //{
+            //    writelog($"@ Migrate EA monitor settings: ERROR, No Monitor (model+ServiceTag) settings, or no EasyArrangement settings.");
+            //}
         }
+
 
         private void DDMtoDDPM_PowerNap(DDMMonitorSettings ddmMonitorSettings)
         {
@@ -18724,74 +19062,74 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
+                    {
+                        writelog($"[ShowOSD] OSDType.BatteryLow.");
+                        if (Device is OSDType_Device.Headset)
                         {
-                            writelog($"[ShowOSD] OSDType.BatteryLow.");
-                            if (Device is OSDType_Device.Headset)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content, false, "", false, guid);
-                                else
-                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
+                            if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content, false, "", false, guid);
+                            else
+                                writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
 
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Keyboard)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content, false, "", false, guid);
-                                else
-                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Mouse)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content, false, "", false, guid);
-                                else
-                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Pen)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Pen, Content, false, "", false, guid);
-                                else
-                                    writelog("[_showosd*******] Pen Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else
-                                return Task.CompletedTask;
+                            return Task.CompletedTask;
                         }
-                    case OSDType.CollaborationNotAvailable:
+                        else if (Device is OSDType_Device.Keyboard)
                         {
-                            writelog($"[ShowOSD] OSDType.CollaborationNotAvailable.");
-                            if (Device is OSDType_Device.Headset)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
-                                else
-                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Keyboard)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
-                                else
-                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Mouse)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
-                                else
-                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
+                            if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content, false, "", false, guid);
                             else
-                                return Task.CompletedTask;
+                                writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
                         }
+                        else if (Device is OSDType_Device.Mouse)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content, false, "", false, guid);
+                            else
+                                writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Pen)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Pen, Content, false, "", false, guid);
+                            else
+                                writelog("[_showosd*******] Pen Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else
+                            return Task.CompletedTask;
+                    }
+                    case OSDType.CollaborationNotAvailable:
+                    {
+                        writelog($"[ShowOSD] OSDType.CollaborationNotAvailable.");
+                        if (Device is OSDType_Device.Headset)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
+                            else
+                                writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Keyboard)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
+                            else
+                                writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Mouse)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
+                            else
+                                writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else
+                            return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -18807,13 +19145,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        if (!string.IsNullOrWhiteSpace(Content))
+                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                        else
+                            writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -18840,20 +19178,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                        {
-                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.NumLock:
-                        {
-                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.CapsLock:
-                        {
-                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -18869,35 +19207,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.EasyMemory:
-                        {
-                            _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.Fingerprint:
-                        {
-                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.DisplayChanged:
-                        {
-                            _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.WalkAwayLock:
-                        {
-                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.StartRecording:
-                        {
-                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.QAM:
-                        {
-                            _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -18913,10 +19251,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Error:
-                        {
-                            _showosd(Screen.PrimaryScreen.DeviceName, OSDType.Error, OSDType_Device.Unknown, args.Item2, State, args.Item1, args.Item3);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(Screen.PrimaryScreen.DeviceName, OSDType.Error, OSDType_Device.Unknown, args.Item2, State, args.Item1, args.Item3);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -19035,521 +19373,521 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         switch (_types)
                         {
                             case OSDType.Mute:
+                            {
+                                if (State)
+                                {
+                                    try
+                                    {
+                                        string tmpMuteGuid = Guid.NewGuid().ToString();
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*await Task.Run(async () =>
+                                        {
+                                            await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Op.None);
+                                        });*/
+                                        /*_OSD_Controler.Mute_CloseWindow(null, null);
+                                        _OSD_Controler.Mute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                    }
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        string tmpUnMuteGuid = Guid.NewGuid().ToString();
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*await Task.Run(async () =>
+                                        {
+                                            await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Op.None);
+                                        });*/
+
+                                        /*_OSD_Controler.UnMute_CloseWindow(null, null);
+                                        _OSD_Controler.UnMute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                    }
+                                }
+                            }
+                            break;
+
+                            case OSDType.BatteryLow:
+                            {
+                                if (_DeviceType is OSDType_Device.Headset)
+                                {
+                                    try
+                                    {
+                                        //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
+                                          {
+                                              _latestBatterylowContent = Content;
+                                              _lastestBatterylowDevice = OSDType_Device.Headset;
+                                              _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
+                                              _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                          }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
+                                    }
+                                }
+                                else if (_DeviceType is OSDType_Device.Keyboard)
+                                {
+                                    try
+                                    {
+                                        //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
+                                        {
+                                            //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
+                                            _latestBatterylowContent = Content;
+                                            _lastestBatterylowDevice = OSDType_Device.Keyboard;
+                                            _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
+                                            _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                    }
+                                }
+                                else if (_DeviceType is OSDType_Device.Mouse)
+                                {
+                                    try
+                                    {
+                                        //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
+                                        {
+                                            _latestBatterylowContent = Content;
+                                            _lastestBatterylowDevice = OSDType_Device.Mouse;
+                                            _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
+                                            _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                    }
+                                }
+                                else if (_DeviceType is OSDType_Device.Pen)
+                                {
+                                    try
+                                    {
+                                        //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+
+                                        /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
+                                          {
+                                              _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
+                                              _OSD_Controler.StylusBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                          }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                    }
+                                }
+                            }
+                            break;
+
+                            case OSDType.StartRecording:
+                            {
+                                try
+                                {
+                                    //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
+                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "7471D427-F152-4E19-918E-F84FF12FBBEE" : guid.ToString(), OSDType_Device.StartRecording, oSDType_Op, string.Empty, "3", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    /*await Task.Run(async () =>
+                                    {
+                                        for (int i = 2; i >= 0; i--)
+                                        {
+                                            await Task.Delay(1000);
+                                            _OSD_Controler.UpdateOsdContentByGuid("7471D427-F152-4E19-918E-F84FF12FBBEE", i.ToString());
+                                        }
+                                        await Task.Delay(1000);
+                                        _OSD_Controler.CloseMultipleOSDByGuidAndOp("7471D427-F152-4E19-918E-F84FF12FBBEE", OSDType_Op.None);
+                                    });*/
+                                    /*if (_OSD_Controler.ExistMultipleOSD())
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _OSD_Controler.StartRecording_CloseWindow(null, null);
+                                        _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    }*/
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
+                                }
+                            }
+                            break;
+
+                            case OSDType.DisplayChanged:
+                            {
+                                try
+                                {
+                                    _OSD_Controler.DisplayChanged_CloseWindow(null, null);
+                                    _OSD_Controler.DisplayChanged_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
+                                }
+                            }
+                            break;
+
+                            case OSDType.WalkAwayLock:
+                            {
+                                try
+                                {
+                                    //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
+                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09" : guid.ToString(), OSDType_Device.WalkAwayLock, oSDType_Op, LangHelper.Instance["Walk_Away_Lock"], "5", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    /*await Task.Run(async () =>
+                                    {
+                                        for (int i = 4; i >= 0; i--)
+                                        {
+                                            await Task.Delay(1000);
+                                            _OSD_Controler.UpdateOsdContentByGuid("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", i.ToString());
+                                        }
+                                        await Task.Delay(1000);
+                                        _OSD_Controler.CloseMultipleOSDByGuidAndOp("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", OSDType_Op.None);
+                                    });*/
+                                    /*if (_OSD_Controler.ExistMultipleOSD())
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
+                                        _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    }*/
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
+                                }
+                            }
+                            break;
+
+                            case OSDType.ScrollLock:
+                            {
+                                try
                                 {
                                     if (State)
                                     {
-                                        try
+                                        string tmpScrollLockOnGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*await Task.Run(async () =>
+                                            //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
                                             {
-                                                await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Op.None);
-                                            });*/
-                                            /*_OSD_Controler.Mute_CloseWindow(null, null);
-                                            _OSD_Controler.Mute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
                                         }
-                                        catch (Exception ex)
+                                        else
                                         {
-                                            writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpScrollLockOnGuid, OSDType_Op.None);*/
+                                            //_OSD_Controler.ScrollLockOn_CloseWindow();
+                                            //_OSD_Controler.ScrollLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         }
                                     }
                                     else
                                     {
-                                        try
+                                        string tmpScrollLockOffGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*await Task.Run(async () =>
-                                            {
-                                                await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Op.None);
-                                            });*/
-
-                                            /*_OSD_Controler.UnMute_CloseWindow(null, null);
-                                            _OSD_Controler.UnMute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                        }
-                                    }
-                                }
-                                break;
-
-                            case OSDType.BatteryLow:
-                                {
-                                    if (_DeviceType is OSDType_Device.Headset)
-                                    {
-                                        try
-                                        {
-                                            //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
-                                              {
-                                                  _latestBatterylowContent = Content;
-                                                  _lastestBatterylowDevice = OSDType_Device.Headset;
-                                                  _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
-                                                  _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                              }*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
-                                        }
-                                    }
-                                    else if (_DeviceType is OSDType_Device.Keyboard)
-                                    {
-                                        try
-                                        {
-                                            //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
-                                            {
-                                                //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
-                                                _latestBatterylowContent = Content;
-                                                _lastestBatterylowDevice = OSDType_Device.Keyboard;
-                                                _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
-                                                _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                            }*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                        }
-                                    }
-                                    else if (_DeviceType is OSDType_Device.Mouse)
-                                    {
-                                        try
-                                        {
-                                            //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
-                                            {
-                                                _latestBatterylowContent = Content;
-                                                _lastestBatterylowDevice = OSDType_Device.Mouse;
-                                                _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
-                                                _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                            }*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                        }
-                                    }
-                                    else if (_DeviceType is OSDType_Device.Pen)
-                                    {
-                                        try
-                                        {
-                                            //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-
-                                            /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
-                                              {
-                                                  _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
-                                                  _OSD_Controler.StylusBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                              }*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                        }
-                                    }
-                                }
-                                break;
-
-                            case OSDType.StartRecording:
-                                {
-                                    try
-                                    {
-                                        //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "7471D427-F152-4E19-918E-F84FF12FBBEE" : guid.ToString(), OSDType_Device.StartRecording, oSDType_Op, string.Empty, "3", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        /*await Task.Run(async () =>
-                                        {
-                                            for (int i = 2; i >= 0; i--)
+                                            //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
-                                                _OSD_Controler.UpdateOsdContentByGuid("7471D427-F152-4E19-918E-F84FF12FBBEE", i.ToString());
-                                            }
-                                            await Task.Delay(1000);
-                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("7471D427-F152-4E19-918E-F84FF12FBBEE", OSDType_Op.None);
-                                        });*/
-                                        /*if (_OSD_Controler.ExistMultipleOSD())
-                                        {
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
                                         }
                                         else
                                         {
-                                            _OSD_Controler.StartRecording_CloseWindow(null, null);
-                                            _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        }*/
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpScrollLockOffGuid, OSDType_Op.None);*/
+                                            //_OSD_Controler.ScrollLockOff_CloseWindow();
+                                            //_OSD_Controler.ScrollLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
-                                    }
-                                }
-                                break;
 
-                            case OSDType.DisplayChanged:
+                                    /* if (_OSD_Controler.ExistMultipleOSD())
+                                    {
+                                        _OSD_Controler.CloseMultipleOSD(null, null);
+                                    }
+                                    else
+                                    {
+                                    }*/
+                                }
+                                catch (Exception ex)
                                 {
-                                    try
-                                    {
-                                        _OSD_Controler.DisplayChanged_CloseWindow(null, null);
-                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
-                                    }
+                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                 }
-                                break;
-
-                            case OSDType.WalkAwayLock:
-                                {
-                                    try
-                                    {
-                                        //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09" : guid.ToString(), OSDType_Device.WalkAwayLock, oSDType_Op, LangHelper.Instance["Walk_Away_Lock"], "5", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        /*await Task.Run(async () =>
-                                        {
-                                            for (int i = 4; i >= 0; i--)
-                                            {
-                                                await Task.Delay(1000);
-                                                _OSD_Controler.UpdateOsdContentByGuid("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", i.ToString());
-                                            }
-                                            await Task.Delay(1000);
-                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", OSDType_Op.None);
-                                        });*/
-                                        /*if (_OSD_Controler.ExistMultipleOSD())
-                                        {
-                                        }
-                                        else
-                                        {
-                                            _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
-                                            _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        }*/
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
-                                    }
-                                }
-                                break;
-
-                            case OSDType.ScrollLock:
-                                {
-                                    try
-                                    {
-                                        if (State)
-                                        {
-                                            string tmpScrollLockOnGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
-                                            {
-                                                //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpScrollLockOnGuid, OSDType_Op.None);*/
-                                                //_OSD_Controler.ScrollLockOn_CloseWindow();
-                                                //_OSD_Controler.ScrollLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            string tmpScrollLockOffGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
-                                            {
-                                                //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpScrollLockOffGuid, OSDType_Op.None);*/
-                                                //_OSD_Controler.ScrollLockOff_CloseWindow();
-                                                //_OSD_Controler.ScrollLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
-                                        }
-
-                                        /* if (_OSD_Controler.ExistMultipleOSD())
-                                        {
-                                            _OSD_Controler.CloseMultipleOSD(null, null);
-                                        }
-                                        else
-                                        {
-                                        }*/
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                    }
-                                }
-                                break;
+                            }
+                            break;
 
                             case OSDType.NumLock:
+                            {
+                                try
                                 {
-                                    try
+                                    if (State)
                                     {
-                                        if (State)
+                                        string tmpNumLockOnGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            string tmpNumLockOnGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
                                             {
-                                                //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpNumLockOnGuid, OSDType_Op.None);*/
-                                                //_OSD_Controler.NumLockOn_CloseWindow();
-                                                //_OSD_Controler.NumLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
                                         }
                                         else
                                         {
-                                            string tmpNumLockOffGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
-                                            {
-                                                //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpNumLockOffGuid, OSDType_Op.None);*/
-                                                //_OSD_Controler.NumLockOff_CloseWindow();
-                                                //_OSD_Controler.NumLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpNumLockOnGuid, OSDType_Op.None);*/
+                                            //_OSD_Controler.NumLockOn_CloseWindow();
+                                            //_OSD_Controler.NumLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                        string tmpNumLockOffGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpNumLockOffGuid, OSDType_Op.None);*/
+                                            //_OSD_Controler.NumLockOff_CloseWindow();
+                                            //_OSD_Controler.NumLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                 }
-                                break;
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                }
+                            }
+                            break;
 
                             case OSDType.CapsLock:
+                            {
+                                try
                                 {
-                                    try
+                                    if (State)
                                     {
-                                        if (State)
+                                        string tmpCapsLockOnGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            string tmpCapsLockOnGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
                                             {
-                                                //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                //_OSD_Controler.CapsLockOn_CloseWindow();
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpCapsLockOnGuid, OSDType_Op.None);*/
-                                                //_OSD_Controler.CapsLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
                                         }
                                         else
                                         {
-                                            string tmpCapsLockOffGuid = Guid.NewGuid().ToString();
-                                            if (_OSD_Controler.ExistMultipleOSD())
-                                            {
-                                                //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                await Task.Run(async () =>
-                                                {
-                                                    await Task.Delay(1000);
-                                                    _OSD_Controler.CloseMultipleOSD(null, null);
-                                                });
-                                            }
-                                            else
-                                            {
-                                                //_OSD_Controler.CapsLockOff_CloseWindow();
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                                /*await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpCapsLockOffGuid, OSDType_Op.None);*/
-
-                                                //_OSD_Controler.CapsLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            }
+                                            //_OSD_Controler.CapsLockOn_CloseWindow();
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpCapsLockOnGuid, OSDType_Op.None);*/
+                                            //_OSD_Controler.CapsLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                        string tmpCapsLockOffGuid = Guid.NewGuid().ToString();
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSD(null, null);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            //_OSD_Controler.CapsLockOff_CloseWindow();
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Delay(3000);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpCapsLockOffGuid, OSDType_Op.None);*/
+
+                                            //_OSD_Controler.CapsLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                 }
-                                break;
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                }
+                            }
+                            break;
 
                             case OSDType.Fingerprint:
+                            {
+                                try
+                                {
+                                    //default guid {E746E618-1419-4F56-99D4-72D705AF9DA7}
+                                    string tmpFingerPrintGuid = Guid.Empty.Equals(guid) ? "E746E618-1419-4F56-99D4-72D705AF9DA7" : guid.ToString();
+                                    _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    /*await Task.Run(async () =>
+                                    {
+                                        await Task.Delay(5000);
+                                        _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpFingerPrintGuid, OSDType_Op.None);
+                                    });*/
+
+                                    /*_OSD_Controler.Fingerprint_CloseWindow(null, null);
+                                    _OSD_Controler.Fingerprint_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                }
+                            }
+                            break;
+
+                            case OSDType.EasyMemory:
+                            {
+                                try
+                                {
+                                    //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}
+                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "2DB1454E-A3D4-4380-A1A3-2483FE38E3D8" : guid.ToString(), OSDType_Device.EasyMemory, oSDType_Op, string.Empty, LangHelper.Instance["Easy_Memory"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    /*await Task.Run(async () =>
+                                    {
+                                        await Task.Delay(3000);
+                                        _OSD_Controler.CloseMultipleOSDByGuidAndOp("2DB1454E-A3D4-4380-A1A3-2483FE38E3D8", OSDType_Op.None);
+                                    });*/
+                                    /*if (_OSD_Controler.ExistMultipleOSD())
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _OSD_Controler.EasyMemory_CloseWindow(null, null);
+                                        _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    }*/
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                }
+                            }
+                            break;
+
+                            case OSDType.Error:
+                            {
+                                //if (State)
+                                //{
+                                //    try
+                                //    {
+                                //        _OSD_Controler.Error_CloseWindow();
+                                //        _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
+                                //    }
+                                //}
+                                //else
+                                //{
+                                try
+                                {
+                                    Debug.WriteLine($"title={title},Content={Content}");
+                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    /* _OSD_Controler.Error_CloseWindow(null, null);
+                                     _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
+                                }
+                                //}
+                            }
+                            break;
+
+                            case OSDType.QAM:
+                            {
+                                //if (State)
                                 {
                                     try
                                     {
-                                        //default guid {E746E618-1419-4F56-99D4-72D705AF9DA7}
-                                        string tmpFingerPrintGuid = Guid.Empty.Equals(guid) ? "E746E618-1419-4F56-99D4-72D705AF9DA7" : guid.ToString();
-                                        _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
+                                        _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                         /*await Task.Run(async () =>
                                         {
                                             await Task.Delay(5000);
-                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpFingerPrintGuid, OSDType_Op.None);
+                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
                                         });*/
-
-                                        /*_OSD_Controler.Fingerprint_CloseWindow(null, null);
-                                        _OSD_Controler.Fingerprint_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                     }
                                     catch (Exception ex)
                                     {
-                                        writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
                                     }
                                 }
-                                break;
-
-                            case OSDType.EasyMemory:
-                                {
-                                    try
-                                    {
-                                        //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "2DB1454E-A3D4-4380-A1A3-2483FE38E3D8" : guid.ToString(), OSDType_Device.EasyMemory, oSDType_Op, string.Empty, LangHelper.Instance["Easy_Memory"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        /*await Task.Run(async () =>
-                                        {
-                                            await Task.Delay(3000);
-                                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("2DB1454E-A3D4-4380-A1A3-2483FE38E3D8", OSDType_Op.None);
-                                        });*/
-                                        /*if (_OSD_Controler.ExistMultipleOSD())
-                                        {
-                                        }
-                                        else
-                                        {
-                                            _OSD_Controler.EasyMemory_CloseWindow(null, null);
-                                            _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        }*/
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
-                                    }
-                                }
-                                break;
-
-                            case OSDType.Error:
-                                {
-                                    //if (State)
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        _OSD_Controler.Error_CloseWindow();
-                                    //        _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                    //    }
-                                    //    catch (Exception ex)
-                                    //    {
-                                    //        writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                    //    }
-                                    //}
-                                    //else
-                                    //{
-                                    try
-                                    {
-                                        Debug.WriteLine($"title={title},Content={Content}");
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                        /* _OSD_Controler.Error_CloseWindow(null, null);
-                                         _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                    }
-                                    //}
-                                }
-                                break;
-
-                            case OSDType.QAM:
-                                {
-                                    //if (State)
-                                    {
-                                        try
-                                        {
-                                            //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
-                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
-                                            _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
-                                            /*await Task.Run(async () =>
-                                            {
-                                                await Task.Delay(5000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
-                                            });*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
-                                        }
-                                    }
-                                    //else
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        _OSD_Controler.QAMHotKeyWin_CloseWindow();
-                                    //        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                    //    }
-                                    //    catch (Exception ex)
-                                    //    {
-                                    //        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
-                                    //    }
-                                    //}
-                                }
-                                break;
+                                //else
+                                //{
+                                //    try
+                                //    {
+                                //        _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                //        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                //    }
+                                //}
+                            }
+                            break;
 
                             case OSDType.CollaborationNotAvailable:
+                            {
+                                if (_DeviceType is OSDType_Device.Keyboard)
                                 {
-                                    if (_DeviceType is OSDType_Device.Keyboard)
+                                    try
                                     {
-                                        try
-                                        {
-                                            //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
-                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
+                                        _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
 
-                                            /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
-                                            _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                        }
+                                        /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
+                                        _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
                                     }
                                 }
-                                break;
+                            }
+                            break;
 
                             default:
                                 break;

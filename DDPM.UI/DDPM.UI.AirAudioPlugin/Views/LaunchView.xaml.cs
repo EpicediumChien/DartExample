@@ -42,6 +42,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -123,6 +124,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
                 Unloaded -= LaunchView_UnLoadedStatus;
                 DdpmCommonHelper.WriteUILog($"[Headset] ~LaunchView");
             }
+
+            moduleGroup?.Dispose();
         }
 
         private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
@@ -180,7 +183,6 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         private void BuildModuleGroups(bool secondVbar = true)
         {
             List<ModuleGroup> groups = new List<ModuleGroup>();
-            ModuleGroup moduleGroup;
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioSettings,
