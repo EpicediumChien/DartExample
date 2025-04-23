@@ -38,6 +38,7 @@ namespace DDPM.UI.Module.Color
         private DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
         private BackgroundWorker? bw = null;
         private bool IsColorEnable = false;
+        //private string CurrentColor = string.Empty;
         #endregion private data object
 
         public Guid? guid { get; set; } = Guid.NewGuid();
@@ -246,6 +247,10 @@ namespace DDPM.UI.Module.Color
         public ColorViewModel()
         {
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            //OSD control back event
+            DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+            DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
+            DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
         }
 
         private void OnHDRChangedEvent(object? sender, EventManagerArgs e)
@@ -268,6 +273,7 @@ namespace DDPM.UI.Module.Color
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
         {
+            DdpmCommonHelper.WriteUILog("[ColorViewModel][UpdateColorPresetSelectedIndex] UpdateColorPresetSelectedIndex...");
             _colorPresetSelectedIndex = selIndex;
 
             if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
@@ -739,37 +745,16 @@ namespace DDPM.UI.Module.Color
                 DdpmCommonHelper.WriteUILog($"[DoWork_RefreshData] Has Gaming Capability={Is_Game_DeviceName}, HDR Status = {SmartHDR_ON}");
 
                 //OSD control back event
-                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
-                DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
-                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
-
-                // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] CheckNightLightStatus() call");
-                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();
-                // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] CheckNightLightScheduler() call");
-                DdpmCommonHelper.DeviceManagerSA.CheckNightLightScheduler();
-
-                // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadColorPreset() call Begin");
-                SupportColorPresets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(MyModule.SelectedHomeDevice.MonitorInfo).Result;//cache in user SA           
-                if (Cancelled_RefreshData(e, bwk))
-                {
-                    return;
-                }
-
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() call");
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.High).Result;               
-
-                if (Cancelled_RefreshData(e, bwk))
-                {
-                    return;
-                }
+                //DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+                //DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
+                //DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
 
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] GetDisplayPropertiesInfo() call");
                 DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] _SupportedHDR is " + _SupportedHDR.ToString());
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] _HDRStatus is " + _HDRStatus.ToString());
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 _HDREnable = true;
@@ -797,11 +782,39 @@ namespace DDPM.UI.Module.Color
                 {
                     return;
                 }
+
+                // Jim 20250120 add more log
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] CheckNightLightStatus() call");
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();
+                // Jim 20250120 add more log
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] CheckNightLightScheduler() call");
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightScheduler();
+
+                // Jim 20250120 add more log
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadColorPreset() call Begin");
+                SupportColorPresets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(MyModule.SelectedHomeDevice.MonitorInfo).Result;//cache in user SA           
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
+
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() call");
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.High).Result;
+                DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] curPreset : " + curPreset);
+                //if (!string.IsNullOrEmpty(curPreset))
+                //{
+                //    CurrentColor = curPreset;
+                //}
+
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
+
                 // Jim 20250120 add more log
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() call");
                 string strSync_CurrentColorPreset = string.Empty;
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-
                 ColorPresets_ItemsCollection = new List<string>();
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
@@ -811,11 +824,36 @@ namespace DDPM.UI.Module.Color
                     }
                     if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
                     {
+                        DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] strSync_CurrentColorPreset : " + strSync_CurrentColorPreset);
                         int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
                         if (idx >= 0)
                         {
                             UpdateColorPresetSelectedIndex(idx);
                         }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] Not Find ColorPreset");
+                            string curPreset_2 = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
+                            DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] curPreset_2 : " + curPreset_2);
+                            strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset_2).Result;
+                            if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
+                            {
+                                DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] strSync_CurrentColorPreset : " + strSync_CurrentColorPreset);
+                                int idx2 = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
+                                if (idx2 >= 0)
+                                {
+                                    UpdateColorPresetSelectedIndex(idx2);
+                                }
+                                else
+                                {
+                                    DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] Not Find ColorPreset(1)");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] strSync_CurrentColorPreset is empty or null");
                     }
                 }));
                 if (Cancelled_RefreshData(e, bwk))
@@ -1058,15 +1096,18 @@ namespace DDPM.UI.Module.Color
 
             if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4")) // Color changes by OSD menu
             {
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
+                DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset : " + curPreset);
                 string strSync_CurrentColorPreset = string.Empty;
                 if(string.IsNullOrEmpty(curPreset))
                 {
                     DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset is empty, drop vcp event check");
                     return;
                 }
+                //if (curPreset != CurrentColor)
+                //{
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-
+                DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] strSync_CurrentColorPreset : " + strSync_CurrentColorPreset);
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
@@ -1075,9 +1116,11 @@ namespace DDPM.UI.Module.Color
                         if (idx >= 0)
                         {
                             UpdateColorPresetSelectedIndex(idx);
+                            //CurrentColor = curPreset;
                         }
                     }
                 }));
+                //}
             }
         }
 
