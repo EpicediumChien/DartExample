@@ -1687,7 +1687,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         {
             // Setup
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", null);
-      
+
             // Execute and Verify
             var CheckNightLightStatus_result1 = deviceMangerPlugin.CheckNightLightStatus().Result;
             Assert.IsFalse(CheckNightLightStatus_result1);
@@ -1821,7 +1821,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             privateObject.SetFieldOrProperty("_SettingsPlugin", null);
             // Execute and Verify
-            var result1=deviceMangerPlugin.GetUILockStatus().Result;
+            var result1 = deviceMangerPlugin.GetUILockStatus().Result;
             Assert.IsFalse(result1);
 
             var _SettingsPlugin = new Mock<ISettingsManagerDev>();
@@ -1831,11 +1831,149 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Execute and Verify
             var result2 = deviceMangerPlugin.GetUILockStatus().Result;
             Assert.IsFalse(result2);
-            
+
             _SettingsPlugin.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
             // Execute and Verify
             var result3 = deviceMangerPlugin.GetUILockStatus().Result;
             Assert.IsNotNull(result3);
+        }
+
+        [Test]
+        public void TestSetSkipCA()
+        {
+            // Setup
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(false));
+
+            // Execute and Verify
+            var SetSkipCA_result1 = deviceMangerPlugin.SetSkipCA(true).Result;
+            Assert.IsNotNull(SetSkipCA_result1);
+
+            // Setup
+            _SettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(true));
+
+            var _FWUpdatePlugin = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePlugin.Object);
+            _FWUpdatePlugin.Setup(x => x.SetSkipCA(It.IsAny<bool>()));
+
+            var _SWUpdatePlugin = new Mock<ISWUpdateService>();
+            privateObject.SetFieldOrProperty("_SWUpdatePlugin", _SWUpdatePlugin.Object);
+            _SWUpdatePlugin.Setup(x => x.SetSkipCA(It.IsAny<bool>()));
+            // Execute and Verify
+            var SetSkipCA_result2 = deviceMangerPlugin.SetSkipCA(true).Result;
+            Assert.IsTrue(SetSkipCA_result2);
+        }
+
+        [Test]
+        public void TestGetSkipCA()
+        {
+            // Setup
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            object settings = null;
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(settings));
+
+            // Execute and Verify
+            var GetSkipCA_result1 = deviceMangerPlugin.GetSkipCA().Result;
+            Assert.IsNotNull(GetSkipCA_result1);
+
+            // Setup
+            settings = "1";
+            _SettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(settings));
+
+            var _FWUpdatePlugin = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePlugin.Object);
+            _FWUpdatePlugin.Setup(x => x.SetSkipCA(It.IsAny<bool>()));
+
+            var _SWUpdatePlugin = new Mock<ISWUpdateService>();
+            privateObject.SetFieldOrProperty("_SWUpdatePlugin", _SWUpdatePlugin.Object);
+            _SWUpdatePlugin.Setup(x => x.SetSkipCA(It.IsAny<bool>()));
+            // Execute and Verify
+            var GetSkipCA_result2 = deviceMangerPlugin.GetSkipCA().Result;
+            Assert.IsTrue(GetSkipCA_result2);
+        }
+
+        [Test]
+        public void TestSetServerURL()
+        {
+            // Setup           
+            string url = null;
+
+            // Execute and Verify  url=null
+            var SetServerURL_result0 = deviceMangerPlugin.SetServerURL(url).Result;
+            Assert.IsFalse(SetServerURL_result0);
+
+            // Setup  
+            url = "Test_URL";
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(false));
+
+            var _FWUpdatePlugin = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePlugin.Object);
+            _FWUpdatePlugin.Setup(x => x.RestartService()).Returns(Task.FromResult(true));
+
+            // Execute and Verify  url=null
+            var SetServerURL_result1 = deviceMangerPlugin.SetServerURL(url).Result;
+            Assert.IsFalse(SetServerURL_result1);
+
+
+            // Setup
+            url = "ON";
+            _SettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(true));
+
+            // Execute and Verify  url=on
+            var SetServerURL_result2 = deviceMangerPlugin.SetServerURL(url);
+            Assert.IsNotNull(SetServerURL_result2);
+
+            // Setup
+            url = "OFF";
+
+            // Execute and Verify  url=on
+            var SetServerURL_result3 = deviceMangerPlugin.SetServerURL(url);
+            Assert.IsNotNull(SetServerURL_result3);
+        }
+
+        [Test]
+        public void TestGetServerURL()
+        {
+            // Setup
+            object settings = "1";
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(settings));
+
+            // Execute and Verify
+            var GetServerURL_result = deviceMangerPlugin.GetServerURL().Result;
+            Assert.IsNotNull(GetServerURL_result);
+        }
+
+        [Test]
+        public void TestCallDDPMUI()
+        {
+            // Setup
+            string DDPMPath = "Test_DDPMPath";
+           
+            // Execute and Verify
+            var CallDDPMUI_result = deviceMangerPlugin.CallDDPMUI(DDPMPath).Result;
+            Assert.IsNotNull(CallDDPMUI_result);
+        }
+
+        [Test]
+        public void TestMiniMizeDDPMUI()
+        {
+            // Execute and Verify
+            var MiniMizeDDPMUI_result = deviceMangerPlugin.MiniMizeDDPMUI().Result;
+            Assert.IsNotNull(MiniMizeDDPMUI_result);
+        }
+
+        [Test]
+        public void TestRestoreDDPMUI()
+        {
+            // Execute and Verify
+            var RestoreDDPMUI_result = deviceMangerPlugin.RestoreDDPMUI().Result;
+            Assert.IsNotNull(RestoreDDPMUI_result);
         }
     }
 }
