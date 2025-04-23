@@ -143,6 +143,15 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
                     btnRestore.Visibility = Visibility.Collapsed;
                 }
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus IsRestoreEnable Check Done");
+                if ("SB725".Equals(_vm.Model2))
+                {
+                    DisableClickArea.Margin = new Thickness(DisableClickArea.Margin.Left, DisableClickArea.Margin.Top * 2, DisableClickArea.Margin.Right, DisableClickArea.Margin.Bottom * 2);
+                }
+                else
+                {
+                    DisableClickArea.Margin = new Thickness(DisableClickArea.Margin.Left*2, DisableClickArea.Margin.Top , DisableClickArea.Margin.Right*2, DisableClickArea.Margin.Bottom);
+
+                }
             }
             catch (Exception ex)
             {

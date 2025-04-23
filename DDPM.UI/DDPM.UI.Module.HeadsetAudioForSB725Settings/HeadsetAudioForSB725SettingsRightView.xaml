@@ -156,7 +156,7 @@
   </UserControl.Resources>
   <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <Grid x:Name="MainGrid" >
-      <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="auto"  Margin="0,10,10,0">
+      <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="auto"  Margin="0,10,10,10">
         <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
 
           <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
@@ -584,7 +584,7 @@
                                                         </ToolTip>
                                                     </Image.ToolTip>
                                                 </Image>-->
-                          <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                          <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                           <!-- Kidd20250124 Add -->
                           <!--<UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>-->
                         </Grid>
@@ -622,7 +622,7 @@
                                                         </MultiBinding>
                                                     </UXControls:UXTextBlock.Foreground>-->
                         </UXControls:UXTextBlock>
-                        <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,0">
+                        <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,26,0,0">
                           <Image.ToolTip>
                             <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -639,7 +639,7 @@
                           </Image.ToolTip>
                         </Image>
                         <!--<UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="-26,31,20,0" />-->
-                        <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}"  IsTabStop="{Binding isMicTabStopped}" Margin="0,0,20,0"/>
+                        <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}"  IsTabStop="{Binding isMicTabStopped}" Margin="0,26,20,0"/>
                         <!-- Kidd20250124 Add -->
                         <!--<UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="False" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}"  IsTabStop="{Binding isMicTabStopped}" Margin="0,0,20,0"/>-->
                       </Grid>

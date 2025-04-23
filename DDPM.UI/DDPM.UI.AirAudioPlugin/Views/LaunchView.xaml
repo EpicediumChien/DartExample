@@ -73,11 +73,9 @@
                         </Grid>-->
                         <!--</Grid>-->
                     </Viewbox>
-
-
-
                 </Grid>
                 <Border Background="Transparent" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
+                <Border Name="DisableClickArea" Background="Transparent" Margin="128" />
 
                 <Grid  HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Background="Transparent">
@@ -186,7 +184,7 @@
                                         <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                     </Border.Resources>
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding DeviceID2}" />
+                                        <TextBlock Text="{Binding DeviceID}" />
                                         <TextBlock Text="{Binding FirmwareVersion2}" />
                                     </StackPanel>
                                 </Border>
@@ -315,7 +313,7 @@
         <!-- Please Wait -->
         <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent">
             <Border  x:Name="PleaseWaitBorder" Width="{Binding ActualWidth, ElementName=largeImage}" Height="{Binding ActualHeight, ElementName=largeImage}"
-                     BorderThickness="1" CornerRadius="4" Margin="64,60,60,60"
+                     BorderThickness="1" CornerRadius="4" Margin="128"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
                     <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
