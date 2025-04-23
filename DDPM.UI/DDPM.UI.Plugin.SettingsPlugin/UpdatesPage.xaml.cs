@@ -178,7 +178,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void ShowDellURL_Click(object sender, MouseButtonEventArgs e)
         {
-            string url = "https://www.dell.com/support/home";
+            string url = "https://dl.dell.com/FOLDER12858135M/1/DellDockFirmwarePackage_WD25_SD25_Series_Aarch_A04_01.00.06.exe";
             try
             {
                 DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(

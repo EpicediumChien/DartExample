@@ -540,12 +540,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                             Log?.Info($"SetUpdateInfoUI item is exist : {uiUpdateInfo.UpdateInfo}");
                             continue; // 跳過此項目
                         }
-                        if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
+                        if (uiUpdateInfo.IsCritical)//如果不能選擇是否更新為強制更新
                         {
                             Log?.Info($"SetUpdateInfoUI Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Critical_UpdateList_UI.Add(uiUpdateInfo);
                         }
-                        else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
+                        else if (uiUpdateInfo.IsRecommended)//如果為true為建議更新
                         {
                             Log?.Info($"SetUpdateInfoUI Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Recommended_UpdateList_UI.Add(uiUpdateInfo);
@@ -934,6 +934,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     }
     public class UIUpdateInfo : INotifyPropertyChanged
     {
+        public bool IsCritical { get; set; } = false;
+        public bool IsRecommended { get; set; } = false;
         public bool IsCheckUpdate { get; set; }
         public bool IsEnableCheckBox { get; set; }
         public string UpdateInfo { get; set; }
@@ -980,6 +982,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemMessage_3 = "";
             UXAlertItemVisibility_4 = Visibility.Collapsed;
             bool? deviceBatteryLow = false;
+            bool isNoSupport = false;
             if (!fwUpdateInfo.IsDisplay)
             {
                 if (deviceInfos != null)
@@ -1045,6 +1048,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Method method = new Method();
                         if (method.GetSystemArchitecture().Equals("ARM"))
                         {
+                            isNoSupport = true;
                             UXAlertItemVisibility_4 = Visibility.Visible;
                         }
                         else
@@ -1100,6 +1104,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 if (fwUpdateInfo.DeviceType.Equals(s))
                 {
+                    this.IsCritical = true;
                     b = true;
                     break;
                 }
@@ -1110,6 +1115,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     if (fwUpdateInfo.DeviceType.Equals(s))
                     {
+                        this.IsRecommended = true;
                         b = false;
                         break;
                     }
@@ -1122,6 +1128,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             else if (b == null)
             {
                 this.IsCheckUpdate = false;
+            }
+            if (isNoSupport)
+            {
+                this.IsCheckUpdate = false;
+                this.IsEnableCheckBox = false;
             }
             //PIMS-316061 display add service tag to recognize.
             //12/25 add Model
@@ -1153,6 +1164,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemMessage_2 = "";
             UXAlertItemVisibility_3 = Visibility.Collapsed;
             UXAlertItemMessage_3 = "";
+            UXAlertItemVisibility_4 = Visibility.Collapsed;
             UpdateInfo = $"{LangHelper.Instance["Software_update"]} {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
         public void Refresh()
