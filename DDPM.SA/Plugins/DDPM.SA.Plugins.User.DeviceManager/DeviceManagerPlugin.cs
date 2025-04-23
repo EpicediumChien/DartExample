@@ -17829,12 +17829,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Migration
 
+        //Robert_Lin 2025-4-23 Rewrite EzMemory.UserSettings Migration
+        private bool Migrate_EzMemory_UserSettings(DDMUserSettings dDMUserSettings)
+        {
+            //Validation
+            if (dDMUserSettings == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  dDMUserSettings is null");
+                return false;
+            }
+            if (dDMUserSettings.Profiles == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  dDMUserSettings.Profiles is null");
+                return false;
+            }
+            if (dDMUserSettings.Profiles.Count() <= 0)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: OK, but dDMUserSettings.Profiles is empty");
+                return true;
+            }
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  _SettingsPlugin is null");
+                return false;
+            }
+
+            writelog($"@ Migrate_EzMemory_UserSettings: Profiles.Count={dDMUserSettings.Profiles}");
+            //Phase I, Convert DDM Profiles to DDPM Profiles
+            List<EAProfileDDPM> ddpmProfiles = new List<EAProfileDDPM>();
+            int idxProfile = 0;
+            foreach (var dDMuserProfile in dDMUserSettings.Profiles)
+            {
+                EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
+                                      (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
+                ddpmProfiles.Add(eaProfileDDPM);
+                writelog($"  * Migrate Profile[{idxProfile}]: ID={dDMuserProfile.ID}, Name=[{dDMuserProfile.Name}], Layout={dDMuserProfile.Layout}");
+            }
+            //Phase II. Write (Replace) to DDPM UserSettings
+            //Read DDPM UserSettings
+            DDPMSettings ddpmUserSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmUserSettings == null)
+            {
+                //It should not be null, it should be the default settings
+                ddpmProfiles.Clear();
+                writelog($"@ Migrate_EzMemory_UserSettings: ERROR,  ReloadAppConfigData() return null");
+                return false;
+            }
+            if (ddpmUserSettings.UserSettings == null)
+            {
+                //It should not be null, it should be the default settings
+                ddpmProfiles.Clear();
+                writelog($"@ Migrate_EzMemory_UserSettings: ERROR,  DDPM UserSettings in file is null");
+                return false;
+            }
+            //Replace with DDM Profiles
+            ddpmUserSettings.UserSettings.EAProfile = ddpmProfiles;
+
+            //Write to DDPM UserSettings
+            bool writeOK = _SettingsPlugin.SetAppConfigData(ddpmUserSettings).Result;
+            writelog($"  * Write to DDPM UserSettings.Profile, result={writeOK}");
+            return writeOK;
+
+        }
+
         public Task<bool> DDMtoDDPM_EzMemory(DDMMonitorSettings dDMMonitorSettings, DDMUserSettings dDMUserSettings)
         {
+            return Task.FromResult(true);
             bool result = false;
             try
             {
+                result = Migrate_EzMemory_UserSettings(dDMUserSettings);
                 //DDMUserSettings
+                /*
                 if (dDMUserSettings.Profiles.Count != 0)
                 {
                     List<EAProfileDDPM> userEAProfileDDPMList = ReadUserEAProfileDDPM().Result;
@@ -17855,6 +17921,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else
                         writelog($"@ DDMtoDDPM_EzMemory: UserSettings Fail");
                 }
+                */
 
                 //DDMMonitorSettings
                 if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
@@ -18086,7 +18153,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //EA
             DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
-            DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+    //        DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
@@ -18471,6 +18538,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 saveOK = WriteEzSettings_IsAwsEnabled(ddmUserSettings.SnapEnable).Result;
                 writelog($"  * SnapEnable -> IsAwsEnabled = {ddmUserSettings.SnapEnable} ... Result={saveOK}");
+
+                //Migrate EasyMemory UserSettings
+                Migrate_EzMemory_UserSettings(ddmUserSettings);
             } //if (ddmUserSettings != null)
             else
             {
@@ -18503,8 +18573,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmCustomList.AddRange(ReadEACustomList().Result);
             }
 
-            //Create a EA1 list, to collect the convert results
+            //The Data to be writen to DDPM Per-Monitor-Model-ServiceTag record
             List<EAMonitorSettings> ea1List = new List<EAMonitorSettings>();
+            List<DesktopDDPM> ddpmDesktops = new List<DesktopDDPM>();
 
             int idxDesktop = 0;
             //Enumerate for each Instace and convert Desktop to EAMonitorSettings, add to eaPerServiceTagSettings
@@ -18517,7 +18588,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //  int ActiveLayout;                                               SplitJson SelectedSplit;
                 //  List<int> LayoutMRU;                                            SplitJson[] RecentList;
                 //  List<int> ProfileMRU; //unused, always empty
-                //  List<Profile> Profiles; //unused, always empty
+                //  List<Profile> Profiles; //unused, always empty                 
                 //  List<ProfileSetting> ProfileSettings; //used by Easy Memory
 
                 //Create a object to collecting the settings from ddmMonitorSetting.EasyArrangement.Desktops[i]
@@ -18607,6 +18678,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 eaPerInstanceSetting.RecentList = recentList.ToArray();
                 ea1List.Add(eaPerInstanceSetting);
+
+                //Migrate EasyMemory portion
+                //   Desktop {
+                //      List<Desktop> Desktops
+                //
+                DesktopDDPM ddpmDesktop = new DesktopDDPM(ddmDesktop.ID, ddmDesktop.ActiveLayout);
+                ddpmDesktop.LayoutMRU = new List<int>(ddmDesktop.LayoutMRU);
+
+                // Profiles
+                ddpmDesktop.Profiles = new List<EzProfileDDPM>();
+                foreach (var profile in ddmDesktop.Profiles)
+                {
+                    var newProfile = new EzProfileDDPM(
+                        profile.ID,
+                        profile.Name,
+                        profile.Layout,
+                        profile.Auto,
+                        profile.AutoStartTime ?? 0,
+                        profile.StartUpLaunch,
+                        new List<EAAppInfoDDPM>()
+                    );
+
+                    // AppInfos
+                    foreach (var app in profile.AppInfos)
+                    {
+                        var newAppInfo = new EAAppInfoDDPM(
+                            app.Name,
+                            app.Path,
+                            app.IsUWP,
+                            app.AppUserModelID,
+                            app.Param
+                        );
+                        newProfile.AppInfos.Add(newAppInfo);
+                    }
+
+                    ddpmDesktop.Profiles.Add(newProfile);
+                } //foreach (var profile in ddmDesktop.Profiles)
+
+                // ProfileSettings
+                ddpmDesktop.ProfileSettings = new List<EzProfileSettingDDPM>();
+                foreach (var setting in ddmDesktop.ProfileSettings)
+                {
+                    var newSetting = new EzProfileSettingDDPM(
+                        setting.ID,
+                        setting.Auto,
+                        setting.AutoStartTime ?? 0,
+                        setting.StartUpLaunch
+                    );
+
+                    //Robert_Lin, fix the AutoStartTime value > 1000000 case when migrate from DDM
+                    if (newSetting.AutoStartTime != null)
+                    {
+                        if (newSetting.AutoStartTime > 1000000)
+                            newSetting.AutoStartTime /= 10000000;
+                    }
+
+                    ddpmDesktop.ProfileSettings.Add(newSetting);
+                }
+                ddpmDesktops.Add(ddpmDesktop);
+
                 idxDesktop++;
 
             } //foreach (Desktop ddmDesktop in ddmMonitorSettings.EasyArrangement.Desktops)
@@ -18634,7 +18765,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmMonitorSettings.Model = model;
                 ddpmMonitorSettings.ServiceTag = serviceTag;
                 ddpmMonitorSettings.EA1 = ea1List.ToArray();
+
+                ddpmMonitorSettings.easyArrangementDDPM = new EasyArrangementDDPM()
+                {
+                    Desktops = ddpmDesktops
+                };
+
                 modelSettings.Add(ddpmMonitorSettings);
+
                 bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
 
                 writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
