@@ -534,6 +534,7 @@ namespace DDPM.UI.Module.EzMemory
 
             //B Load CustomList from settings file
             //
+            
             //Robert_Lin, 2024-10-12 modify due to CustomList has move into UserSettings from MonitorSettings, 
             SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
             if (customList != null)
@@ -542,12 +543,13 @@ namespace DDPM.UI.Module.EzMemory
                 foreach (SplitJson spj in customList)
                 {
                     //Validate settings
+                    //Robert_Lin 2025-4-23, CustomId is not used anymore
                     //1 CustomId must > 0
-                    if (spj.CustomId == 0)
-                    {
-                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                        continue;
-                    }
+                    //if (spj.CustomId == 0)
+                    //{
+                    //    //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                    //    continue;
+                    //}
                     //2 CustomName cannot be empty
                     if (String.IsNullOrWhiteSpace(spj.CustomName))
                     {

@@ -184,7 +184,21 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     //Use the Time from currentEditprofileSetting
                     long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
-                    TimeSpan timeSpan = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+
+                    //Robert_Lin 2025-4023 fix by referencing EzArrangeViewModel.ConvertAutoLaunchtimeToTime()
+                    //OLD:
+                    //TimeSpan timeSpan = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+                    //
+                    //NEW:
+                    double totalSeconds = 0;
+                    if (autoStartTimeInSeconds > 1000000)
+                        totalSeconds = (double)autoStartTimeInSeconds / 10000000; // Corrected conversion for DDM
+                    else
+                        totalSeconds = (double)autoStartTimeInSeconds;
+                    TimeSpan timeSpan = TimeSpan.FromSeconds(totalSeconds);
+                    //
+                    ///////////////
+                    
 
                     int hourValue = timeSpan.Hours;
                     if (hourValue == 0)
@@ -659,7 +673,14 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ClearTextBlockAppName();
-            _vm.RightViewDataClear();
+            //Robert_Lin 2025-4-23 Issue steps:
+            //1 Edit an exiting profile and goes to LaunchOption page; 2 Click "Cancel"
+            //Problem: When return to EzMemoryRightView, the profile data is not shown.
+            //Root cause: Below instruction, has clear the displaying data
+            //OLD:
+            //_vm.RightViewDataClear();
+            //NEW: Remove _vm.RightViewDataClear(); or add below to refresh data:
+            //_vm.RefreshProfileSettingsToRightView();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 

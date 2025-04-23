@@ -717,6 +717,11 @@ namespace DDPM.UI.Module.EzMemory
                             SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
                             foreach (SplitJson spj in customList)
                             {
+                                //Robert_Lin, 2025-4-23 Do not load the Overlap layout
+                                if (spj.IsOverlapLayout)
+                                {
+                                    continue;
+                                }
 
                                 if (profile.Layout == spj.EAID)
                                 {
@@ -735,6 +740,7 @@ namespace DDPM.UI.Module.EzMemory
                                     ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
                                     if (spCtrl == null)
                                         continue;
+
 
 
                                     spCtrl.Settings = new List<double>(spj.Settings);
