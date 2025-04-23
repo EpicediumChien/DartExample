@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>معلومات تحديث البرنامج الثابت لوحدة الإرساء من دون اتصال</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>لم ينجح تحديث البرنامج الثابت.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>تم اكتشاف وحدات إرساء متعددة. أبقِ وحدة إرساء واحدة فقط متصلة لمنع تلف وحدات الإرساء.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>فشل التحديث مع وجود خطأ غير معروف</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>ألغى المستخدم تحديث البرنامج الثابت</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>تثبيت</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>تم اكتشاف الشاشة نفسها، هل تريد استيراد الإعدادات لـ %1؟</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>تم إلغاء تحديث البرنامج الثابت. تأكد من توصيل جهاز واحد فقط من الطراز نفسه بالنظام.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>يتعذر على البرنامج الثابت لجهاز الاستقبال USB اللاسلكي دعم ترقية البرنامج الثابت للجهاز</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>تحديث البرنامج الثابت قيد التنفيذ. فشل الإلغاء.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>تجنب إيقاف تشغيل النظام حتى تكتمل التحديثات</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>فشل التحديث بسبب خطأ في الشبكة. حاول مرة أخرى.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>حرك مؤشر الماوس أو انقر على زره الأيسر المستهدف مرتين</value>

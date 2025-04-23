@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>ドッキング ステーションUOD FWアップデート情報</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>ファームウェア アップデートに失敗しました。</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>複数のドッキング ステーションが検出されました。ドッキング ステーションの損傷を防ぐため、ドッキング ステーションは1台のみ接続してください。</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>不明なエラーのため、アップデートに失敗しました</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>ユーザーがファームウェア アップデートを中止しました</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>インストール中</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>同じモニターが検出されました。%1の設定をインポートしますか？</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>ファームウェア アップデートが中止されました。同じモデルのデバイスが1台だけシステムに接続されていることを確認してください。</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>USBワイヤレス レシーバーのファームウェアが、デバイス ファームウェアのアップグレードをサポートできません</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>ファームウェア アップデートが進行中です。中止に失敗しました。</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>アップデートが完了するまでシステムの電源を切らない</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>ネットワーク エラーのため、アップデートに失敗しました。もう一度やり直してください。</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>ターゲット マウスの左ボタンを2回動かすか、クリックします</value>
