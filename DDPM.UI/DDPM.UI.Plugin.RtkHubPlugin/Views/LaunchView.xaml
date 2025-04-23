@@ -123,22 +123,10 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-            <Grid VerticalAlignment="Bottom">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Border Style="{StaticResource BorderUnpair}" Width="auto" Cursor="Hand" Margin="0,0,0,40" x:Name="btnUpdate" Visibility="{Binding IsUpdateEnable, Converter={StaticResource BoolToVisibilityConverter}}" BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Padding="10,0,10,0" BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
-                                    <UXControls:UXTextBlock Name="txtUpdate" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [UpdateFirmware], Source={x:Static lang:LangHelper.Instance}}"/>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </StackPanel>
+            <Grid VerticalAlignment="Bottom" Background="Transparent">
+                <Border  Width="auto" Cursor="Hand" Margin="0,0,0,0" x:Name="btnUpdate" Background="Transparent" >
+                    <Button Name="txtUpdate" Margin="0,0,0,40" Width="176" Height="40" Click="txtUpdate_Click" Cursor="Hand" FontSize="14" FontFamily="{StaticResource RobotoFontMedium}" Grid.Column="0" HorizontalAlignment="Center" Content="{Binding [UpdateFirmware], Source={x:Static lang:LangHelper.Instance}}" Style="{DynamicResource Button_WhiteFrame}" Background="Transparent"/>
+                </Border>
             </Grid>
         </Grid>
 

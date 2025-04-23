@@ -7837,7 +7837,106 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   查詢類似 Located next to HDMI port 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_19 {
+            get {
+                return ResourceManager.GetString("RtkHub.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Located next to USB-A port 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_20 {
+            get {
+                return ResourceManager.GetString("RtkHub.20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_21 {
+            get {
+                return ResourceManager.GetString("RtkHub.21", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Unavailable 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_22 {
+            get {
+                return ResourceManager.GetString("RtkHub.22", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_23 {
+            get {
+                return ResourceManager.GetString("RtkHub.23", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_24 {
+            get {
+                return ResourceManager.GetString("RtkHub.24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_25 {
+            get {
+                return ResourceManager.GetString("RtkHub.25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_26 {
+            get {
+                return ResourceManager.GetString("RtkHub.26", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Dell Pro 4-in-1 USB-C Travel Hub: Alert 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_27 {
+            get {
+                return ResourceManager.GetString("RtkHub.27", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB port is NOT functioning. Unplug the device and retry. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_28 {
+            get {
+                return ResourceManager.GetString("RtkHub.28", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_29 {
+            get {
+                return ResourceManager.GetString("RtkHub.29", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Save 的當地語系化字串。
         /// </summary>
         internal static string Save {
             get {

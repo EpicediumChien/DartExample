@@ -661,8 +661,9 @@ namespace DDPM.UI.Plugin.ViewModels
             //_waitHeadsetReady_DTP = false; // Before enter, make sure to reset the flag
             //_waitHeadsetReady_DTH = false; // Before enter, make sure to reset the flag
             DeviceInfoDTP = new DeviceInfoDTP();
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            FirmwareVersion = Strings.FirmwareVersion + $" {FirmwareVersion}";
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             _log.Info($"[RtkHubViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             return true;
         }
