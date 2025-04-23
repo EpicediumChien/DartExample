@@ -5042,23 +5042,22 @@ namespace DDPM.CLI.Plugins.Display
                     {"DISPLAYHDR", "DISPLAY HDR"},
                     {"DISPLAYP3", "DISPLAY P3"},
                     {"SPORTSGAME", "SPORTS Game"},
-                    {"Game1", "Game1"},
-                    {"Game2", "Game2"},
-                    {"Game3", "Game3"},
+                    {"GAME1", "Game1"},
+                    {"GAME2", "Game2"},
+                    {"GAME3", "Game3"},
                     {"SRGB", "sRGB"},
-                    {"CustomColorHDR", "Custom Color HDR"},
-                    {"HDRPeak1000", "HDR Peak 1000"},
-                    {"Rec709", "Rec.709"},//PIMS-356254
+                    {"CUSTOMCOLORHDR", "Custom Color HDR"},
+                    {"HDRPEAK1000", "HDR Peak 1000"},
                     {"REC709", "Rec.709"},//PIMS-356254
                     {"BT709", "BT.709"},//PIMS-356254
                     {"BT2020", "BT.2020"},
-                    {"MultiscreenMatch", "Multiscreen Match"},
-                    {"User1", "User 1"},
-                    {"User2", "User 2"},
-                    {"User3", "User 3"},
-                    {"Custom1", "Custom 1"},
-                    {"Custom2", "Custom 2"},
-                    {"Custom3", "Custom 3"},
+                    {"MULTISCREENMATCH", "MULTISCREEN MATCH"},
+                    {"USER1", "User 1"},
+                    {"USER2", "User 2"},
+                    {"USER3", "User 3"},
+                    {"CUSTOM1", "Custom 1"},
+                    {"CUSTOM2", "Custom 2"},
+                    {"CUSTOM3", "Custom 3"},
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
