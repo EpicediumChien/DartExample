@@ -20,6 +20,7 @@ namespace DDPM.EABroker
         private readonly ILog? _log;
         private int _autoCloseTimerMsec = 3000;
         private ISplitCtrl? _splitCtrl = null;
+        private SplitCtrl0B spCtrl0B;        
         #endregion
 
         #region Events
@@ -382,7 +383,7 @@ namespace DDPM.EABroker
             //inputSplitCtrl.CellList.Clear();
 
 
-            SplitCtrl0B spCtrl0B = new SplitCtrl0B();
+            spCtrl0B = new SplitCtrl0B();
             _splitCtrl = spCtrl0B;
             _splitCtrl.Settings = settings;
             Rect rcView = new Rect(screen.WorkingArea.Left, screen.WorkingArea.Top, screen.WorkingArea.Width, screen.WorkingArea.Height);
@@ -572,7 +573,7 @@ namespace DDPM.EABroker
             //inputSplitCtrl.CellList.Clear();
 
 
-            SplitCtrl0B spCtrl0B = new SplitCtrl0B();
+            spCtrl0B = new SplitCtrl0B();
             _splitCtrl = spCtrl0B;
             _splitCtrl.Settings = settings;
             Rect rcView = new Rect(workingArea.Left, workingArea.Top, workingArea.Width, workingArea.Height);
@@ -654,12 +655,15 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        //{
-        //    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-        //    {
-        // //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-        //    }
-        //}
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            //{
+            //     System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            //}
+
+            spCtrl0B?.InitCellList();
+            content.Content = null;
+        }
     }
 }
