@@ -645,6 +645,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
                     };
                     _displayPropertiesInfo = (displayPropertiesInfo);
+                    Debug.WriteLine("displayPropertiesInfo.SupportedHDR:" + displayPropertiesInfo.SupportedHDR);
                 }
                 _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " done");
                 return true;

@@ -3489,6 +3489,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
             }
+            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:"+ret_DisplayPropertiesInfo.SupportedHDR);
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
 
@@ -4033,15 +4034,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string[] stand = new string[] { "25", "23", "24", "26", "27", "3A", "3B", "3C" };
                 for (int i = 0; i < ss.Length; i++)
                 {
+                    Debug.WriteLine("ss[i]"+ss[i]);
                     for (int j = 0; j < stand.Length; j++)
                     {
                         if (ss[i].Equals(stand[j]))
                         {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR ss : {ss[i]}");
                             //Console.WriteLine("OK");
                             return (true);
                         }
                     }
                 }
+                _logs.DebugMsg("[DisplayMangerPlugin] IsSupportHDR is false.");
                 return (false);
             }
             catch
