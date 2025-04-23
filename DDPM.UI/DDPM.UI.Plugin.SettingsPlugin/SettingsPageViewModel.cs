@@ -1065,6 +1065,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                                 }
                             }
                         }
+                        method.Dispose();
                         method = null;
                         break;
                     case DeviceType.PhysicalPen:
