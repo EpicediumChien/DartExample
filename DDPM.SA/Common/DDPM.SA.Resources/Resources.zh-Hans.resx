@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>坞站 UOD 固件更新信息</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>固件更新失败。</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>检测到多个坞站。请只连接一个坞站，以防止坞站损坏。</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>更新失败，发生未知错误</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>用户已中止固件更新</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>正在安装</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>检测到同一显示器，是否要导入 %1 的设置？</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>固件更新已中止。请确保只有一台同型号的设备连接到系统。</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>USB 无线接收器固件无法支持设备固件升级</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>正在进行固件更新。无法中止。</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>在更新完成之前，请勿关闭系统电源</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>由于网络错误，更新失败。请重试。</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>移动目标鼠标或单击目标鼠标的左键两次</value>
