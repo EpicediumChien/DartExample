@@ -49,10 +49,11 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public RtkHubPlugin(IPluginManager pluginManager, IConsole console)
+        public RtkHubPlugin(IPluginManager pluginManager, IConsole console, IShowPluginManager showPluginManager)
         {
             _pluginManager = pluginManager;
             _console = console;
+            _showPluginManager = showPluginManager;
             _log = console.CreateLog("RtkHub");
             _log?.Info($"{nameof(LaunchView)} - Constructed");
 
@@ -207,15 +208,19 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
             {
                 if (_isConfigured)
                     return;
-
                 // Marked all the instances as singleton
                 // Pass the existing _console and _log instance so that Ioc doesn't new'up them
-                PluginIoc.ConfigureServices(new ServiceCollection()
-                    .AddSingleton(_console)
-                    .AddSingleton(_log)
-                    .AddSingleton(_deviceManagerPlugin)
-                    .AddSingleton<IPeripheralViewModel, RtkHubViewModel>()
-                    .BuildServiceProvider());
+                ServiceCollection services = new ServiceCollection();
+                if (_console != null)
+                    services.AddSingleton(_console);
+                if (_log != null)
+                    services.AddSingleton(_log);
+                if (_deviceManagerPlugin != null)
+                    services.AddSingleton(_deviceManagerPlugin);
+                if (_showPluginManager != null)
+                    services.AddSingleton(_showPluginManager);
+                services.AddSingleton<IPeripheralViewModel, RtkHubViewModel>();
+                PluginIoc.ConfigureServices(services.BuildServiceProvider());
 
                 _viewModel = (RtkHubViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
                 _isConfigured = true;

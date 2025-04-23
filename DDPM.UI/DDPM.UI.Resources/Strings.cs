@@ -654,6 +654,17 @@ namespace DDPM.UI.Common
         public static readonly string RtkHub15 = GetString("RtkHub.15");
         public static readonly string RtkHub16 = GetString("RtkHub.16");
         public static readonly string RtkHub17 = GetString("RtkHub.17");
-        public static readonly string RtkHub18 = GetString("RtkHub.18");        
+        public static readonly string RtkHub18 = GetString("RtkHub.18");
+        public static readonly string RtkHub19 = GetString("RtkHub.19");
+        public static readonly string RtkHub20 = GetString("RtkHub.20");
+        public static readonly string RtkHub21 = GetString("RtkHub.21");
+        public static readonly string RtkHub22 = GetString("RtkHub.22");
+        public static readonly string RtkHub23 = GetString("RtkHub.23");
+        public static readonly string RtkHub24 = GetString("RtkHub.24");
+        public static readonly string RtkHub25 = GetString("RtkHub.25");
+        public static readonly string RtkHub26 = GetString("RtkHub.26");
+        public static readonly string RtkHub27 = GetString("RtkHub.27");
+        public static readonly string RtkHub28 = GetString("RtkHub.28");
+        public static readonly string RtkHub29 = GetString("RtkHub.29");
     }
 }
