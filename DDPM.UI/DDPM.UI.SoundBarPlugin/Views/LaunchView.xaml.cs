@@ -36,6 +36,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -105,6 +106,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
                 }
+                moduleGroup?.Dispose();
                 DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_UnLoadedStatus ... out ");
             }
             catch (Exception ex)
@@ -167,7 +169,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             try
             {
                 List<ModuleGroup> groups = new List<ModuleGroup>();
-                ModuleGroup moduleGroup;
 
                 moduleGroup = new ModuleGroup()
                 {

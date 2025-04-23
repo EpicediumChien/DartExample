@@ -23,6 +23,7 @@ namespace DDPM.UI.Plugin.PenPlugin
         private readonly PenViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = { 0, 530, 330 };
+        private ModuleGroup moduleGroup;
 
         public LaunchView()
         {
@@ -107,6 +108,8 @@ namespace DDPM.UI.Plugin.PenPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+
+            moduleGroup?.Dispose();
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -216,7 +219,6 @@ namespace DDPM.UI.Plugin.PenPlugin
                 return;
 
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
 
             moduleGroup = new ModuleGroup()
             {

@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Informazioni sull'aggiornamento del firmware UOD del dock</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Aggiornamento del firmware non riuscito.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Sono stati rilevati più dock. Tenere collegato un solo dock per evitare di danneggiarli.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>aggiornamento non riuscito con errore sconosciuto</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Aggiornamento del firmware interrotto dall'utente</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Installazione</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Viene rilevato lo stesso monitor, importare le impostazioni per %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Aggiornamento firmware interrotto. Assicurarsi che al sistema sia collegato un solo dispositivo dello stesso modello.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Aggiornamento firmware in corso. Impossibile interrompere il processo.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Non spegnere il sistema fino al completamento degli aggiornamenti</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Aggiornamento non riuscito a causa di un errore di rete. Riprovare.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Spostare o cliccare due volte con il pulsante sinistro del mouse di destinazione</value>

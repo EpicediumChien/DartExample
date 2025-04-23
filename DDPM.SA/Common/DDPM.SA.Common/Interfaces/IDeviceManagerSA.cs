@@ -699,7 +699,7 @@ namespace DDPM.SA.Common
 
         Task SetSnoozeLength(int newValue, Guid deviceId);
 
-        Task SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        //Task SetIsProximitySensorEnable(bool newValue, Guid deviceId);
 
         Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
 

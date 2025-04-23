@@ -58,6 +58,7 @@
     <SolidColorBrush x:Key="DefaultTheme_PbHeaderColor" Color="#DAF5FD" />
     <SolidColorBrush x:Key="DefaultTheme_USBKVMPCColor" Color="#A4B8CD" />
     <SolidColorBrush x:Key="DefaultTheme_USBKVMPCGridBkColor" Color="#19345799" />
+    <SolidColorBrush x:Key="DefaultTheme_USBKVMLineColor" Color="#40586D" />
     <SolidColorBrush x:Key="DefaultTheme_GridBkColor" Color="#132F5499" />
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBkColor" Color="#193457" />
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
@@ -66,6 +67,8 @@
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
+    <SolidColorBrush x:Key="USBKVM_MK_Color" Color="#99FFFFFF" />
+    <SolidColorBrush x:Key="USBKVM_MK_WordColor" Color="#000000" />
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />

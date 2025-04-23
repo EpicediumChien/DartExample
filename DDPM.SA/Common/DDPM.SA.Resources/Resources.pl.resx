@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Informacje o aktualizacji oprogramowania wewnętrznego UOD stacji dokującej</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Aktualizacja oprogramowania wewnętrznego nie powiodła się.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Wykryto wiele stacji dokujących. Należy podłączyć tylko jedną stację dokującą, aby zapobiec uszkodzeniu stacji dokującej.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>aktualizacja nie powiodła się z powodu nieznanego błędu</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Aktualizacja oprogramowania wewnętrznego przerwana przez użytkownika</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Instalowanie</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Wykryto ten sam monitor. Czy chcesz zaimportować ustawienia dla %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Przerwano aktualizację oprogramowania wewnętrznego. Upewnij się, że do systemu podłączone jest tylko jedno urządzenie tego samego modelu.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>Oprogramowanie wewnętrzne bezprzewodowego odbiornika USB nie obsługuje aktualizacji oprogramowania wewnętrznego urządzenia</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Trwa aktualizacja oprogramowania wewnętrznego. Nie udało się przerwać.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Menu Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Nie wyłączaj systemu do czasu zakończenia aktualizacji</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Aktualizacja nie powiodła się z powodu błędu sieci. Spróbuj ponownie.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Przesuń lub kliknij dwukrotnie lewy przycisk docelowej myszy</value>

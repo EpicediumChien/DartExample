@@ -1153,11 +1153,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }*/
 
-                        if (rule.devicetype.Equals(string.Empty) && (!subAge.Contains(",")))
+                        // modified @ 20250423 stephen : fix device not display but add to fw job
+                        /*if (rule.devicetype.Equals(string.Empty) && (!subAge.Contains(",")))
                         {
                             rule.devicetype = subAge;
                             continue;
-                        }
+                        }*/
 
                         // modified end @ 20250202 stephen
 

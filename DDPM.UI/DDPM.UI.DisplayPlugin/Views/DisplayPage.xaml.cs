@@ -50,6 +50,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private bool _isDisposed = false;
+
+        private ModuleGroup moduleGroup;        
         #endregion
 
         #region Init
@@ -189,7 +191,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             _log?.Info("Enter DisplayPage.BuildModuleGroups()");
 
             List<ModuleGroup> groups = new List<ModuleGroup>();
-            ModuleGroup moduleGroup = new();
+            moduleGroup = new();
 
             // --------- Robert_Lin 2024-8-28 -----
             // The support capability check in BuildModuleGroup() is removed.
@@ -1060,7 +1062,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //    // 釋放資源
                 //    unmanagedResource = IntPtr.Zero;
                 //}
-
+                moduleGroup.Dispose();
                 _isDisposed = true;
             }
         }

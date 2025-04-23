@@ -517,12 +517,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                          x.ServiceTag == monitorInfo.edid.ServiceTag);
                     if (mi != -1)
                     {
+                        WriteLog("[GetColor]modelName : " + monitorInfo.modelName);
+                        WriteLog("[GetColor]ServiceTag : " + monitorInfo.edid.ServiceTag);
                         if (isHDR)
                         {
+                            WriteLog("[GetColor]isHDR");
                             color = _displayData[mi].Color.color_EnHDR;
                         }
                         else
                         {
+                            WriteLog("[GetColor]Not HDR");
                             color = _displayData[mi].Color.color_DisHDR;
                         }
                         WriteLog("[GetColor]color : " + color);
@@ -552,30 +556,35 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public bool SetColor(MonitorInfo monitorInfo, bool isHDR, string setColor)
         {
-            if (monitorInfo != null)
+            if (monitorInfo != null && !string.IsNullOrEmpty(setColor))
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
                 if (mi != -1)
                 {
+                    WriteLog("[SetColor]modelName : " + monitorInfo.modelName);
+                    WriteLog("[SetColor]ServiceTag : " + monitorInfo.edid.ServiceTag);
                     if (isHDR)
                     {
+                        WriteLog("[SetColor]isHDR");
                         _displayData[mi].Color.color_EnHDR = setColor;
                     }
                     else
                     {
+                        WriteLog("[SetColor]Not HDR");
                         _displayData[mi].Color.color_DisHDR = setColor;
                     }
+                    WriteLog("[SetColor]setColor : " + setColor);
                     return true;
                 }
                 else
                 {
-                    WriteLog("[GetColor]_displayData is not find monitor");
+                    WriteLog("[SetColor]_displayData is not find monitor");
                 }
             }
             else
             {
-                WriteLog("[GetColor]monitorInfo is null.");
+                WriteLog("[SetColor]monitorInfo is null.");
             }
             return false;
         }

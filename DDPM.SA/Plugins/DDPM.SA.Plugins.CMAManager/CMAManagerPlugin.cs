@@ -941,7 +941,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 result.output_result = "FAIL";
                 return Task.FromResult(result);
             }
-            WriteLog($"[CMA] initCommandTask request.cma_request = {request.remote_request}]");
+            WriteLog($"[CMA] initCommandTask request.cma_request = {request.remote_request}");
 
             string remoteRequest = checkRemoteRequest(request.remote_request.ToLower());
 
@@ -1191,6 +1191,10 @@ namespace DDPM.SA.Plugins.CMAManager
                 WriteLog("[CMA] UpdateFwStatus() Response");
                 string sid = string.Empty;
 
+                // add @ 20250422 stephen
+                string marketingname = string.Empty;
+                string serialnumber = string.Empty;
+
                 CmdResponse cmdResponse = new CmdResponse(data.Guid, true, null);
 
                 // add @ 20250326 stephen
@@ -1206,7 +1210,46 @@ namespace DDPM.SA.Plugins.CMAManager
                     // add @ 20250326 stephen
                     WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = " + cmdResponse.getErrorMsg());
 
+                    // add @ 20250422 stephen
+                    foreach (var s in infoResponse.response)
+                    {
+
+                        WriteLog("[CMA] UpdateFwStatus() Response infoResponse.response s.ToString() = " + s.ToString());
+
+                        InfoTask infoTask = new InfoTask(s.ToString(), false);
+
+                        WriteLog("[CMA] UpdateFwStatus() Response infoTask.data = " + infoTask.data);
+
+                        foreach (var d in infoTask.data)
+                        {
+
+                            WriteLog("[CMA] UpdateFwStatus() Response infoResponse.response InfoData(d.ToString(), false) = " + d.ToString());
+                            //WriteLog("[CMA] UpdateFwStatus() Response infoResponse.response InfoData(d.ToString(), false) = " + d.ToString().Replace("\\u0000", string.Empty));
+
+                            //InfoData infodata = new InfoData(d.ToString().Replace("\\u0000", string.Empty), true);
+                            InfoData infodata = new InfoData(d.ToString(), true);
+
+
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.seqnum = " + infodata.seqnum);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.index = " + infodata.index);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.model = " + infodata.model);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.servicetag = " + infodata.servicetag);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.marketingname = " + infodata.marketingname);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.serialnumber = " + infodata.serialnumber);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.fwversion = " + infodata.fwversion);
+                            WriteLog("[CMA] UpdateFwStatus() Response infodata.fwupdateresponse = " + infodata.fwupdateresponse);
+
+                            marketingname = infodata.marketingname;
+                            serialnumber = infodata.serialnumber;
+                        }
+
+
+
+                    }
+
                 }
+
+            
 
 
                 string response = string.Empty;
@@ -1218,8 +1261,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
                 response = response + "\"model\":\"" + data.Model + "\",";
                 response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
-                response = response + "\"marketingname\":\"" + "N/A" + "\",";
-                response = response + "\"serialnumber\":\"" + deviceControlPannel.getSerialNumber(data.Model) + "\",";
+                response = response + "\"marketingname\":\"" + marketingname + "\",";
+                response = response + "\"serialnumber\":\"" + serialnumber + "\",";
                 response = response + "\"fwversion\":\"[" + data.TheLatestVersion + "]\",";
                 response = response + "\"fwupdateresponse\":[\"" + string.Empty + "\"]";
                 response = response + "}]";
@@ -1309,7 +1352,8 @@ namespace DDPM.SA.Plugins.CMAManager
             if (!args.notification.Equals(string.Empty))
             {
 
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
+                //WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
+                WriteLog($"[ICMAManagerSA] Update_DeviceChanged() executed args.notification = {args.notification}, Condition = {PluginCondition}");
 
                 args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": 0,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
 
