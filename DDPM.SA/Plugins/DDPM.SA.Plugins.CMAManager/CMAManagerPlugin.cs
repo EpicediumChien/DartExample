@@ -1352,7 +1352,8 @@ namespace DDPM.SA.Plugins.CMAManager
             if (!args.notification.Equals(string.Empty))
             {
 
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
+                //WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
+                WriteLog($"[ICMAManagerSA] Update_DeviceChanged() executed args.notification = {args.notification}, Condition = {PluginCondition}");
 
                 args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": 0,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
 
