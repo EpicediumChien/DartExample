@@ -186,6 +186,50 @@
                                                                                     Message="{Binding UXAlertItemMessage_3}"
                                                                                     Opacity="0.6" />
                                                         </UXControls:UXAlert>
+                                                        <Border Visibility="{Binding UXAlertItemVisibility_4}"
+                                                                Margin="0,17,0,17"
+                                                                Background="#364861"
+                                                                CornerRadius="4"
+                                                                BorderThickness="7,0,0,0"
+                                                                BorderBrush="#E67F01">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image x:Name="InfoIcon2"
+                                                                       Margin="8,0,0,0"
+                                                                       Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png"
+                                                                       Stretch="Fill"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Left"
+                                                                       Width="18"
+                                                                       Height="18"></Image>
+                                                                <UXControls:UXTextBlock Name="txtMessage1"
+                                                                                        Background="#364861"
+                                                                                        Foreground="#F5F6F7"
+                                                                                        TextWrapping="WrapWithOverflow"
+                                                                                        MaxWidth="{Binding ActualWidth, ElementName=UpdatesPageUI}"
+                                                                                        Focusable="True"
+                                                                                        VerticalAlignment="Center"
+                                                                                        HorizontalAlignment="Left"
+                                                                                        Margin="5,16,0,13"
+                                                                                        LineHeight="21"
+                                                                                        Padding="2,3,10,2">
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_1], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_2], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         Foreground="#31A2E3"
+                                                                         FontSize="13"
+                                                                         Cursor="Hand"
+                                                                         TextDecorations="Underline"
+                                                                         MouseLeftButtonDown="ShowDellURL_Click" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_3], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                </UXControls:UXTextBlock>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
                                                 </Border>
                                             </DataTemplate>
@@ -230,6 +274,50 @@
                                                                                     Message="{Binding UXAlertItemMessage_3}"
                                                                                     Opacity="0.6" />
                                                         </UXControls:UXAlert>
+                                                        <Border Visibility="{Binding UXAlertItemVisibility_4}"
+                                                                Margin="0,17,0,17"
+                                                                Background="#364861"
+                                                                CornerRadius="4"
+                                                                BorderThickness="7,0,0,0"
+                                                                BorderBrush="#E67F01">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image x:Name="InfoIcon2"
+                                                                       Margin="8,0,0,0"
+                                                                       Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png"
+                                                                       Stretch="Fill"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Left"
+                                                                       Width="18"
+                                                                       Height="18"></Image>
+                                                                <UXControls:UXTextBlock Name="txtMessage1"
+                                                                                        Background="#364861"
+                                                                                        Foreground="#F5F6F7"
+                                                                                        TextWrapping="WrapWithOverflow"
+                                                                                        MaxWidth="{Binding ActualWidth, ElementName=UpdatesPageUI}"
+                                                                                        Focusable="True"
+                                                                                        VerticalAlignment="Center"
+                                                                                        HorizontalAlignment="Left"
+                                                                                        Margin="5,16,0,13"
+                                                                                        LineHeight="21"
+                                                                                        Padding="2,3,10,2">
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_1], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_2], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         Foreground="#31A2E3"
+                                                                         FontSize="13"
+                                                                         Cursor="Hand"
+                                                                         TextDecorations="Underline"
+                                                                         MouseLeftButtonDown="ShowDellURL_Click" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_3], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                </UXControls:UXTextBlock>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
                                                 </Border>
                                             </DataTemplate>
@@ -274,6 +362,50 @@
                                                                                     Message="{Binding UXAlertItemMessage_3}"
                                                                                     Opacity="0.6"/>
                                                         </UXControls:UXAlert>
+                                                        <Border Visibility="{Binding UXAlertItemVisibility_4}"
+                                                                Margin="0,17,0,17"
+                                                                Background="#364861"
+                                                                CornerRadius="4"
+                                                                BorderThickness="7,0,0,0"
+                                                                BorderBrush="#E67F01">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image x:Name="InfoIcon2"
+                                                                       Margin="8,0,0,0"
+                                                                       Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png"
+                                                                       Stretch="Fill"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Left"
+                                                                       Width="18"
+                                                                       Height="18"></Image>
+                                                                <UXControls:UXTextBlock Name="txtMessage1"
+                                                                                        Background="#364861"
+                                                                                        Foreground="#F5F6F7"
+                                                                                        TextWrapping="WrapWithOverflow"
+                                                                                        MaxWidth="{Binding ActualWidth, ElementName=UpdatesPageUI}"
+                                                                                        Focusable="True"
+                                                                                        VerticalAlignment="Center"
+                                                                                        HorizontalAlignment="Left"
+                                                                                        Margin="5,16,0,13"
+                                                                                        LineHeight="21"
+                                                                                        Padding="2,3,10,2">
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_1], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_2], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         Foreground="#31A2E3"
+                                                                         FontSize="13"
+                                                                         Cursor="Hand"
+                                                                         TextDecorations="Underline"
+                                                                         MouseLeftButtonDown="ShowDellURL_Click" />
+                                                                    <Run Text="{Binding [Dock_ARM_Alert_3], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                                         FontFamily="Roboto"
+                                                                         FontWeight="Normal"
+                                                                         FontSize="13" />
+                                                                </UXControls:UXTextBlock>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
                                                 </Border>
                                             </DataTemplate>

@@ -6007,6 +6007,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (!string.IsNullOrEmpty(jsonString))
                     {
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
+                        Method method = new Method(_logs);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
                             string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
@@ -6044,7 +6045,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     if (firmwares_item.SupportedPlatform != null)
                                     {
                                         _logs.DebugMsg($"[DisplayMangerPlugin] firmwares_item.SupportedPlatform : {firmwares_item.SupportedPlatform}");
-                                        string currentPlatform = GetSystemArchitecture();
+                                        string currentPlatform = method.GetSystemArchitecture();
                                         string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
                                         _logs.DebugMsg($"[DisplayMangerPlugin] currentPlatform : {currentPlatform}");
                                         if (!supportedPlatform.ToList().Contains(currentPlatform))
@@ -6100,6 +6101,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 }
                             }
                         }
+                        method = null;
                     }
                     else
                     {
@@ -6114,32 +6116,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} done");
             return ret;
         }
-
-        public string GetSystemArchitecture()
-        {
-            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetSystemArchitecture)} RuntimeInformation.ProcessArchitecture : {RuntimeInformation.OSArchitecture.ToString()}");
-            if (RuntimeInformation.OSArchitecture == Architecture.X64)
-            {
-                return "Intel";//"Intel_x64";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
-            {
-                return "Intel";//"Intel_x86";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.Arm)
-            {
-                return "ARM";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
-            {
-                return "ARM";//"ARM_64";
-            }
-            else
-            {
-                return "Unknow";
-            }
-        }
-
         #endregion
 
         #region DisplayData
