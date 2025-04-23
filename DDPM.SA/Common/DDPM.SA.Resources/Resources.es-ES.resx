@@ -547,7 +547,7 @@
     <value>Mueva o haga clic doble con el botón izquierdo del ratón en el destino</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Pulse la tecla &quot;U&quot; dos veces para activar la actualización del firmware del teclado de destino</value>
+    <value>Pulse la tecla "U" dos veces para activar la actualización del firmware del teclado de destino</value>
   </data>
   <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
     <value>El perfil ICC predeterminado es para HDR inteligente. No podemos cambiar los valores de color predefinidos en el</value>
@@ -601,7 +601,7 @@
     <value>La actualización puede tardar hasta [XXXXXX] minutos en realizarse. Mantenga el dispositivo encendido y conectado durante este tiempo.</value>
   </data>
   <data name="Update_in_progress_body" xml:space="preserve">
-    <value>Hay una actualización de firmware en curso para [XXXXX]. La disponibilidad puede ser intermitente. No desconecte el dispositivo durante la actualización. </value>
+    <value>Hay una actualización de firmware en curso para [XXXXXX]. La disponibilidad puede ser intermitente. No desconecte el dispositivo durante la actualización. </value>
   </data>
   <data name="Update_successful_body" xml:space="preserve">
     <value>El firmware de [XXXXXX] se ha actualizado correctamente</value>
