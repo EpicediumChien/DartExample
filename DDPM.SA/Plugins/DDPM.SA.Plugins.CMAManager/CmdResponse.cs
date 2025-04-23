@@ -126,7 +126,8 @@ namespace DDPM.SA.Plugins.CMAManager
         // modified @ 20250326 stephen
         public string writeToFile(string guid, string json)
         {
-            if (json == null) {
+            if (json == null)
+            {
                 return "parameter error: json string is null";
             }
 
@@ -148,9 +149,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 return ("CreateDirectory Exception: " + e.Message);
             }
 
-/*            // add @ 20250220 stephen : fix string to an object
-            listResponse = new List<string>();
-            listResponse.Add(json);*/
+            /*            // add @ 20250220 stephen : fix string to an object
+                        listResponse = new List<string>();
+                        listResponse.Add(json);*/
 
             try
             {
@@ -159,11 +160,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(jsonString, System.IO.Path.Combine(FILE_PATH, guid + ".txt"), out errorMsg);
                 return "DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg;
 
-/*                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+                /*                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
 
-                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);*/
+                                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);*/
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return ("Serialization or File Write Exception: " + e.ToString());
             }
         }
@@ -263,7 +265,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             public string gid { get; set; }
             public string sid { get; set; }
-            public Array response { get; set; } 
+            public Array response { get; set; }
 
 
         }
@@ -280,27 +282,60 @@ namespace DDPM.SA.Plugins.CMAManager
                 try
                 {
                     JObject jObject = JObject.Parse(_data);
+                    try
+                    {
+                        tid = (int)jObject["tid"];
+                    }
+                    catch
+                    {
+                        tid = 1;
+                    }
 
-                    tid = (int)jObject["tid"];
-                    result = (int)jObject["result"];
-                    msg = (string)jObject["msg"];
+                    try
+                    {
+                        result = (int)jObject["result"];
+                    }
+                    catch
+                    {
+                        result = 9999;
+                    }
+
+                    try
+                    {
+                        msg = (string)jObject["msg"];
+                    }
+                    catch
+                    {
+                        msg = "Error";
+                    }
+
                     data = jObject["data"].ToArray();
 
                     foreach (var s in data)
                     {
                         InfoData item = new InfoData(s.ToString(), isFileLoad);
 
-                        result = checkResult(item.result) ? Params.Response.STATUS_FW_UPDATE_STARTED : Params.Response.STATUS_FW_UPDATE_ERROR;
-
-                        if (item.message.Contains("No device connected"))
+                        try
                         {
-                            result = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                            result = checkResult(item.result) ? Params.Response.STATUS_FW_UPDATE_STARTED : Params.Response.STATUS_FW_UPDATE_ERROR;
+
+                            if (item.message.Contains("No device connected"))
+                            {
+                                result = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                            }
+
+                            if (item.message.Contains("No updates available"))
+                            {
+                                result = Params.Response.STATUS_FW_UPDATE_AT_LATEST;
+                            }
+
+                        }
+                        catch
+                        {
+                            result = Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS;
                         }
 
-                        if (item.message.Contains("No updates available"))
-                        {
-                            result = Params.Response.STATUS_FW_UPDATE_AT_LATEST;
-                        }
+
 
                     }
 
@@ -491,7 +526,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 try
                 {
-                    JObject jObject = JObject.Parse(src);
+                    JObject jObject = JObject.Parse(src.ToLower());
 
                     try
                     {
@@ -509,56 +544,56 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     try
                     {
-                        index = (string)jObject["Index"];
+                        index = (string)jObject["index"];
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        index = "N/A";
-                    }
-
-                    try
-                    {
-                        model = (string)jObject["Model"];
-                    }
-                    catch
-                    {
-                        model = "N/A";
+                        index = e.ToString();
                     }
 
                     try
                     {
-                        servicetag = (string)jObject["ServiceTag"];
+                        model = (string)jObject["model"];
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        servicetag = "N/A";
-                    }
-
-                    try
-                    {
-                        marketingname = (string)jObject["MarketingName"];
-                    }
-                    catch
-                    {
-                        marketingname = "N/A";
+                        model = e.ToString();
                     }
 
                     try
                     {
-                        serialnumber = (string)jObject["SerialNumber"];
+                        servicetag = (string)jObject["servicetag"];
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        serialnumber = "N/A";
+                        servicetag = e.ToString();
                     }
 
                     try
                     {
-                        fwversion = (string)jObject["FWVersion"];
+                        marketingname = (string)jObject["marketingname"];
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        fwversion = "N/A";
+                        marketingname = e.ToString();
+                    }
+
+                    try
+                    {
+                        serialnumber = (string)jObject["serialnumber"];
+                    }
+                    catch (Exception e)
+                    {
+                        serialnumber = e.ToString();
+                    }
+
+                    try
+                    {
+                        fwversion = (string)jObject["fwversion"];
+                    }
+                    catch (Exception e)
+                    {
+                        fwversion = e.ToString();
                     }
 
 
@@ -607,7 +642,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     {
                         fwupdateresponse = string.Empty;
                     }
-                    
+
                 }
                 catch (Exception e)
                 {
