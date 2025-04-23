@@ -3489,7 +3489,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
             }
+#if DEBUG
             Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:"+ret_DisplayPropertiesInfo.SupportedHDR);
+#endif
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
 
