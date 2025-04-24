@@ -3509,7 +3509,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
             }
 #if DEBUG
-            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:"+ret_DisplayPropertiesInfo.SupportedHDR);
+            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:" + ret_DisplayPropertiesInfo.SupportedHDR);
 #endif
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
@@ -4056,7 +4056,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 for (int i = 0; i < ss.Length; i++)
                 {
 #if DEBUG
-                    Debug.WriteLine("ss[i]"+ss[i]);
+                    Debug.WriteLine("ss[i]" + ss[i]);
 #endif
                     for (int j = 0; j < stand.Length; j++)
                     {
@@ -5581,7 +5581,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo tempGamingDisplayPropertiesInfo))
                 {
-                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
+                    tempGamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
                 }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} done Result :  {IsEnable_VisionEngineType.Length}");
@@ -5765,10 +5765,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             command += "0";
                         }
                     }
+                    
                     //1.將字串反向，因韌體是右到左，修改回韌體順序
-                    //2.反向後先往右邊補0，補齊b8-b15共7位
-                    //3.再往左邊補0，共補16位b0-17
+                    //2.反向後先往右邊補0，補齊b8-b15共8位
+                    //3.再往左邊補0，共補16位b4-17
                     command = Algorithm.ReverseString(command).PadLeft(8, '0').PadRight(16, '0');
+                    Gaming_VisionEngineType temp_Gaming_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo).Result;
                     //轉成16進制
                     command = Algorithm.BinaryToHex(command);
                     var hexStyle = System.Globalization.NumberStyles.HexNumber;
@@ -5779,6 +5781,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
                         if (ret)
                         {
+                            SwitchGaming_VisionEngineType(monitorInfo, temp_Gaming_VisionEngineType).Wait();
                             if (_displayDataManger != null)
                             {
                                 if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
@@ -5839,6 +5842,28 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo, true).Result;
                 gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo, true).Result;
                 gamingDisplayPropertiesInfo.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo, true).Result;
+                if (monitorInfo.modelName.Contains("G") && !string.IsNullOrEmpty(monitorInfo.CapabilityString))
+                {
+                    string[] ss = monitorInfo.CapabilityString.Split("EC(");
+                    if (ss.Length == 2)
+                    {
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        foreach (string temps in ss)
+                        {
+                            if (!string.IsNullOrEmpty(temps))
+                            {
+                                uint u = Convert.ToUInt32(temps, 16);
+                                if (Enum.IsDefined(typeof(Gaming_VisionEngineType), u))
+                                {
+                                    gamingDisplayPropertiesInfo.IsSupported_VisionEngineType = true;
+                                    gamingDisplayPropertiesInfo.Supported_VisionEngineType.Add((Gaming_VisionEngineType)u);
+                                }
+                            }
+                        }
+                        gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.Supported_VisionEngineType.Count];
+                    }
+                }
                 gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo, true).Result;
                 ret = true;
             }
