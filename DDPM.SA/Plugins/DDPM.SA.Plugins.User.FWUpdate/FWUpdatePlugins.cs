@@ -948,12 +948,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     if (_IsUITrigger)
                                     {
-                                        NotificationFWupdate(LangHelper.Instance["Success"], _notificationStr);
+                                        NotificationFWupdate(LangHelper.Instance["Success"], _notificationStr, false, true);
                                     }
                                     else//for CLI
                                     {
                                         _notificationStr = LangHelper.Instance["Update_successful_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
-                                        NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr);
+                                        NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr, false, true);
                                     }
                                 }
                                 else
@@ -964,12 +964,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         {
                                             _notificationTitle = LangHelper.Instance["Error"];
                                         }
-                                        NotificationFWupdate(_notificationTitle, _notificationStr);
+                                        NotificationFWupdate(_notificationTitle, _notificationStr, true, true);
                                     }
                                     else//for CLI
                                     {
                                         _notificationStr = LangHelper.Instance["Update_failed_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
-                                        NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr);
+                                        NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr, true, true);
                                     }
                                 }
                             }
@@ -1311,7 +1311,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <summary>
         /// 跳出通知
         /// </summary>
-        private void NotificationFWupdate(string title, string info, bool stayOpen = false, bool isNeedButton = false)
+        private void NotificationFWupdate(string title, string info, bool stayOpen = true, bool isNeedButton = false)
         {
             try
             {
