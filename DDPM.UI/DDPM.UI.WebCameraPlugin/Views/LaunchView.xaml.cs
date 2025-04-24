@@ -55,6 +55,7 @@ using Dell.Client.Framework.UX.WPF;
 using System.Linq.Expressions;
 using DDPM.SA.Common.Alert;
 using DDPM.UI.Common.UserControls;
+using System.Text.RegularExpressions;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -96,7 +97,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private readonly DispatcherTimer AlertTimer;
         private ModuleGroup moduleGroup;
-        
+
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
         public LaunchView()
@@ -193,7 +194,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 RecordingTimer = new DispatcherTimer
                 {
-                    Interval = TimeSpan.FromSeconds(0.5)
+                    Interval = TimeSpan.FromSeconds(1)
                 };
                 RecordingTimer.Tick += RecordingTimer_Tick;
 
@@ -1398,6 +1399,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             SharingMode = MediaCaptureSharingMode.ExclusiveControl,
                             //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                             MemoryPreference = MediaCaptureMemoryPreference.Cpu,
+                            MediaCategory = MediaCategory.Communications,
                             StreamingCaptureMode = captureMode
                         });
                     }
@@ -1409,6 +1411,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             SharingMode = MediaCaptureSharingMode.ExclusiveControl,
                             //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                             MemoryPreference = MediaCaptureMemoryPreference.Cpu,
+                            MediaCategory = MediaCategory.Communications,
                             StreamingCaptureMode = captureMode
                         });
                     }
@@ -2193,15 +2196,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return false;
             return freeBytesAvailable >= requiredBytes;
         }
+
+        private LowLagMediaRecording _lowLag;
         /// <summary>
         /// Records an MP4 video to a StorageFile and adds rotation metadata to it
         /// </summary>
         /// <returns></returns>
         private async Task StartRecordingAsync()
         {
-
-            stopwatch.Start();
-            RecordingTimer.Start();
             try
             {
                 _vm.IsRecording = true;
@@ -2258,11 +2260,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             encodingProfile.Video.Height = 2160;
                             break;
                         default:
-                            VideoEncoding = VideoEncodingQuality.Auto;
                             break;
                     }
-                    encodingProfile.Video.Bitrate = 1500000; // 降低影片位元率為 1.5 Mbps
-                    encodingProfile.Audio.Bitrate = 96000;  // 設定音訊位元率為 96 kbps
+                    //encodingProfile.Video.Bitrate = 1500000; // 降低影片位元率為 1.5 Mbps
+                    //encodingProfile.Audio.Bitrate = 96000;  // 設定音訊位元率為 96 kbps
                     DdpmCommonHelper.WriteUILog($"_vm.WebcamSettings.SelectedcurrentFPS:{_vm.WebcamSettings.SelectedcurrentFPS}");
                     encodingProfile.Video.FrameRate.Numerator = uint.TryParse(_vm.WebcamSettings.SelectedcurrentFPS, out var Fps) ? Fps : 30; // 設置新的 FPS 分子，例如 60
                     encodingProfile.Video.FrameRate.Denominator = 1; // 分母，通常設為 1
@@ -2276,7 +2277,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 if (_vm.MediaCapture != null)
                 {
-                    await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
+                    //await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
+                    _lowLag = await _vm.MediaCapture.PrepareLowLagRecordToStorageFileAsync(encodingProfile, videoFile);
+                    await _lowLag.StartAsync();
+                    stopwatch.Start();
+                    RecordingTimer.Start();
                 }
                 DdpmCommonHelper.WriteUILog("Started recording!");
             }
@@ -2304,7 +2309,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 try
                 {
-                    await _vm.MediaCapture.StopRecordAsync();
+                    //await _vm.MediaCapture.StopRecordAsync();
+                    await _lowLag?.StopAsync();
+                    await _lowLag?.FinishAsync();
                 }
                 catch (Exception ex)
                 {
