@@ -909,7 +909,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             MonitorPresetCache mpc = _ColorProfileHelper?.GetPresetListFromCache(m, SmartHDR_ON);
             if (mpc != null)
             {
-                return Task.FromResult(mpc.preset_list);
+                if (_ColorPresetPlugin.CompareColorPresetSupportList(mpc.preset_list).Result)
+                {
+                    return Task.FromResult(mpc.preset_list);
+                }
             }
 
             List<string> multiColorPreset = new List<string>();
@@ -939,6 +942,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                         foreach (string info in _SupportedColorPreset)
                         {
+                            Debug.WriteLine("info color : " + info);
                             multiColorPreset.Add(ColorprofileMulti(info));
                         }
                     }
