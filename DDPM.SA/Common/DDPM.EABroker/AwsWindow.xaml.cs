@@ -1074,6 +1074,9 @@ namespace DDPM.EABroker
         {
             bool isCellRectsRefreshed = true;
 
+            //Robert_Lin 2025-4-24 Overlap layouts has added code the RefreshCells by themself.
+            //It's no need to get here.
+            /*
             if (awsIcon.IsOverlapCustomLayout)
             {
                 SplitCtrl0B splitCtrl0B = (SplitCtrl0B)awsIcon;
@@ -1094,6 +1097,10 @@ namespace DDPM.EABroker
                 //    }
                 //}
             }
+            */
+            //Robert_Lin 2025-4-24, for Preset layouts, thay can RefreshCells by themselft,
+            //It's no need to get Rects here
+            /*
             else
             {
                 if ((awsIcon.CellCount == 2) || (awsIcon.CellCount == 3))
@@ -1125,7 +1132,7 @@ namespace DDPM.EABroker
                         isCellRectsRefreshed = false;
                     }
                 }
-            }
+            } */
             //else
             //{
             //    foreach (CellObj objCell in awsIcon.CellList)
