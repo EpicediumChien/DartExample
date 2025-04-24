@@ -576,6 +576,15 @@ namespace DDPM.UI.Module.Color
         // add jim 20240604
         void startWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
+            if (IsisAdvanced_Settings != Visibility.Visible)
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
+                return;
+            }
             ManagementBaseObject targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
             string processName = targetInstance.Properties["Name"].Value.ToString();
 
@@ -649,6 +658,15 @@ namespace DDPM.UI.Module.Color
         //  jim  add - modify  20240604
         private void ProcessEnded(object sender, EventArrivedEventArgs e)
         {
+            if (IsisAdvanced_Settings != Visibility.Visible)
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
+                return;
+            }
             ManagementBaseObject targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
             string processName = targetInstance.Properties["Name"].Value.ToString();
 
@@ -718,7 +736,7 @@ namespace DDPM.UI.Module.Color
             {
                 //Jason 20250314 add
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                
+                                
                 //check if watcher still alive then stop them
                 WatchForProcessStart_Stop();
                 WatchForProcessEnd_Stop();
@@ -729,6 +747,15 @@ namespace DDPM.UI.Module.Color
                     PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
                 else
                     DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] checked that DDPM or lock setting object is null");
+
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    IsisAdvanced_Settings = Visibility.Collapsed;
+                    OnPropertyChanged("IsisAdvanced_Settings");
+
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
 
                 //check if need to cancel the refresh
                 if (Cancelled_RefreshData(e, bwk))
