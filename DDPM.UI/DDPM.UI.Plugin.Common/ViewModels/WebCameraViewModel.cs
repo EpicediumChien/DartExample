@@ -699,7 +699,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         IsBgBlurOn = DdpmCommonHelper.DeviceManagerSA.GetIsBgBlurEnable(CurrentDeviceInfo?.ID.ToString()).Result;
                         int DtpBgBlur = DdpmCommonHelper.DeviceManagerSA.GetBgBlur(CurrentDeviceInfo?.ID.ToString()).Result;
-                        BgBlur = IsBgBlurOn == false ? 1 : DtpBgBlur == 0 ? 1 : DtpBgBlur;
+                        BgBlur = IsBgBlurOn == false ? 7 : DtpBgBlur == 0 ? 7 : DtpBgBlur;
                     }
                 }
 
