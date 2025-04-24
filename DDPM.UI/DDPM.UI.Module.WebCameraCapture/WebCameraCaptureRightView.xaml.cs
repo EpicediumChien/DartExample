@@ -170,6 +170,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     });
 
                     _vm.SetResolution_Selected(idx);
+                    await Task.Delay(1000);
                     InitializeFPS();
 
                     //for default 30 fps
@@ -250,6 +251,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     });
 
                     _vm.SetFPS_Selected(idx);
+                    await Task.Delay(1000);
                     foreach (var property in _vm.allProperties)
                     {
                         string properties_temp = property.GetFriendlyName();
