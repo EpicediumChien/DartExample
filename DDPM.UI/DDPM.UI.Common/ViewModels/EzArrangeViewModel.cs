@@ -363,6 +363,9 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (easyArrangementDDPM.Desktops != null && easyArrangementDDPM.Desktops.Count > 0)
             {
+                //Robert_Lin 2025-4-23, The Desktop.ID, typically will be like "DEL429E".
+                //But if the Desktop.ID is "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", then this Profile is migrated from DDM.
+                //And should be Desktops.Count==1.
                 //Robert_Lin, to support multiple "Partitions" (multiple Desktops)
                 //Need to determine the index to Desktops
                 int idxDesktop = -1;
@@ -381,7 +384,17 @@ namespace DDPM.UI.Common.ViewModels
                 }
                 if (idxDesktop < 0)
                 {
-                    return null;
+                    //Check for Desktop.ID is "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                    if (easyArrangementDDPM.Desktops.Count == 1)
+                    {
+                        if (easyArrangementDDPM.Desktops[0].ID.Equals("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"))
+                        {
+                            //It's migrated from DDM, and it's the only one, we will use this Desktop[0]
+                            idxDesktop = 0;
+                        }
+                    }
+                    if (idxDesktop < 0)
+                        return null;
                 }
                 // 從 Desktops[0].ProfileSettings 中找 ID
                 EzProfileSettingDDPM matchingProfileSetting = easyArrangementDDPM.Desktops[idxDesktop].ProfileSettings.FirstOrDefault(ps => ps.ID == profileID);

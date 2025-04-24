@@ -102,11 +102,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
             _log = Log;
             //_vmArrange.Log = Log;
+
+            AppDomain.CurrentDomain.ProcessExit += SAUser_ProcessExit;
             _log?.Info($"[{pluginName}] is constructed.");
         }
 
+        private void SAUser_ProcessExit(object? sender, EventArgs e)
+        {
+            SplitJson.DisposePresetList();
+            AppDomain.CurrentDomain.ProcessExit -= SAUser_ProcessExit;
+        }
+
         #endregion Constructor
- 
+
         #region IDisposableObservable Support
 
         /// <summary>
