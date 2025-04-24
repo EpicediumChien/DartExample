@@ -55,8 +55,8 @@
         <StackPanel VerticalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding PeripheralVisibility}">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="454"/>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" MinWidth="670" />
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0" Margin="76, 60, 0, 0">
@@ -179,7 +179,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Image x:Name="MainImage" Grid.Row="0" Source="{Binding DeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="670"  Height="535" />
+                    <Image x:Name="MainImage" Grid.Row="0" Source="{Binding DeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" MaxWidth="670" Height="535" />
                 </Grid>
             </Grid>
         </StackPanel>
