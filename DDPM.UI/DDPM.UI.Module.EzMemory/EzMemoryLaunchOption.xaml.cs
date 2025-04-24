@@ -5,38 +5,14 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Windows.Management.Deployment;
-using Microsoft.VisualBasic.Logging;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Windows.ApplicationModel;
 using VcpCore.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.Easy.Common;
 using DDPM.UI.Common.ViewModels;
-using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
-using Window = System.Windows.Window;
-using Dell.Client.Framework.Security;
 using System.Data;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Policy;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 //using System.Windows.Forms;
 
 namespace DDPM.UI.Module.EzMemory
@@ -421,11 +397,8 @@ namespace DDPM.UI.Module.EzMemory
                         EzProfileSettingDDPM? profileSettings = easyArrangement.Desktops[idxDesktop].ProfileSettings.Find(x => x.ID == profileID);
                         if (profileSettings == null)
                         {
-                            if (_vm.IsAutoLaunch)
-                            {
-                                profileSettings = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
-                                easyArrangement.Desktops[idxDesktop].ProfileSettings.Add(profileSettings);
-                            }
+                            profileSettings = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
+                            easyArrangement.Desktops[idxDesktop].ProfileSettings.Add(profileSettings);
                         }
                         else
                         {
