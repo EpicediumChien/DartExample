@@ -18183,7 +18183,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //EA
             DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
-    //        DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+            //Robert_Lin 2025-4-23, move the migration code of EasyMemory into DDMtoDDPM_EzArrange()
+            //        DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
@@ -18492,9 +18493,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //
             if (ddmUserSettings != null)
             {
-                //Phase 1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+                //Phase I Convert DDMUserSettings.CustLayouts to ddpmCustomList
                 if (ddmUserSettings.CustLayouts != null)
                 {
+                    #region Migration_EAM Phase I - Custom List
                     writelog($"@ DDMtoDDPM_EzArrange() - Phase I - migrate DDM User Settings.CustLayouts. Count={ddmUserSettings.CustLayouts.Count}");
 
                     int idxCustLayout = 0;
@@ -18549,13 +18551,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"  * CustLayout[{idxCustLayout}]: ID=[{custLayout.ID}], Name=[{custLayout.Name}], Overlap=[{custLayout.Overlap}], Rects={sbRects.ToString()} => {spJson.ToString()}");
                         idxCustLayout++;
                     } //foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
+
                     bool saveCustomListOK = WriteEACustomList(ddpmCustomList.ToArray()).Result;
                     writelog($"  * WriteEACustomList() return {saveCustomListOK}");
+                    #endregion Migration_EAM Phase I - Custom List
                 }// if (ddmUserSettings.CustLayouts != null)
 
-                //Phase 2 Convert EasyArrange Per-user settings (EzSettings)
+                //Phase II Convert EasyArrange Per-user settings (EzSettings)
                 //
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase II - migrate DDM User Settings.EasyArrange");
+                #region Migration_EAM Phase II - EzSettings
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase II - migrate DDM User Settings: EzSettings");
 
                 bool saveOK = WriteEzSettings_IsWidthoutGap(ddmUserSettings.EAWithoutGap).Result;
                 writelog($"  * EAWithoutGap -> IsWidthoutGap = {ddmUserSettings.EAWithoutGap} ... Result={saveOK}");
@@ -18568,29 +18573,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 saveOK = WriteEzSettings_IsAwsEnabled(ddmUserSettings.SnapEnable).Result;
                 writelog($"  * SnapEnable -> IsAwsEnabled = {ddmUserSettings.SnapEnable} ... Result={saveOK}");
+                #endregion Migration_EAM Phase II - EzSettings
 
-                //Migrate EasyMemory UserSettings
+                //Phase III - Migrate EasyMemory UserSettings
+                #region Migration_EAM Phase III - EasyMemory UserSettings
                 Migrate_EzMemory_UserSettings(ddmUserSettings);
+                #endregion Migration_EAM Phase III - EasyMemory UserSettings
             } //if (ddmUserSettings != null)
             else
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase I~II - ddmUserSettings is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase I~III - ddmUserSettings is null.");
             }
 
             if (ddmMonitorSettings == null)
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - ddmMonitorSettings is null.");
                 return;
             }
             if (ddmMonitorSettings.EasyArrangement == null)
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings.EasyArrangement is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - ddmMonitorSettings.EasyArrangement is null.");
                 return;
             }
 
             //Phase 3 Migration MonitorSettings
             //
-            writelog($"@ DDMtoDDPM_EzArrange() - Phase III - Migrate monitor settings.");
+            writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - Migrate monitor settings.");
 
             string model = ddmMonitorSettings.Model;
             string serviceTag = ddmMonitorSettings.ServiceTag;
@@ -18720,6 +18728,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmDesktop.Profiles = new List<EzProfileDDPM>();
                 foreach (var profile in ddmDesktop.Profiles)
                 {
+                    //Robert_Lin 2025-4-24, for those profiles that using custom layouts will not be migrated.
+                    //It's because of the limitation in Custom layouts in DDM.
+                    //There is not provide enough information in DDM settings to tell DDPM that the custom layout
+                    //is edited from which preset layout.
+                    //So all the custom layout of DDM will be converted to Overlap layouts.
+                    //In EasyMemory, the profiles are support overlap layouts.
+                    //So when migrate a profile using custom layout will not be migrated.
+
+                    //If the layout (EAID) is a custom layout (EAID >= 1000)
+                    if (profile.Layout >= EAEMConstants.EAID_FirstCustom)
+                        continue;
+
                     var newProfile = new EzProfileDDPM(
                         profile.ID,
                         profile.Name,
