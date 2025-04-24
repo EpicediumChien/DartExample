@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Информация об обновлении микропрограммы UOD стыковочной станции</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Не удалось обновить микропрограмму.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Обнаружено несколько стыковочных станций. Во избежание повреждения стыковочных станций не подключайте несколько стыковочных станций.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>сбой обновления из-за неизвестной ошибки</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Пользователь прервал обновление микропрограммы</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Установить</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Обнаружен тот же монитор. Импортировать настройки для %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Обновление микропрограммы прервано. Убедитесь, что к системе подключено только одно устройство этой модели.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>Микропрограмма беспроводного USB-приемника не поддерживает модернизацию микропрограммы устройства</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Выполняется обновление микропрограммы. Не удалось прервать операцию.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Не выключайте питание системы до завершения обновлений</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Не удалось выполнить обновление из-за ошибки сети. Повторите попытку.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Переместите или дважды нажмите левую кнопку мыши</value>

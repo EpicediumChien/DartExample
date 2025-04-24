@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>擴充基座 UOD 韌體更新資訊</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>韌體更新失敗。</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>偵測到多個擴充基座。請只連接一個擴充基座，以免擴充基座損壞。</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>更新失敗，出現未知錯誤</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>使用者已中止韌體更新</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>安裝</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>偵測到相同的顯示器，是否要匯入 %1 的設定？</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>韌體更新中止。請確保只有一個相同型號的裝置連接至系統。</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>USB 無線接收器韌體無法支援裝置韌體升級</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>韌體正在更新，無法中止。</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>在更新完成前，請勿關閉系統電源</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>更新失敗，因為發生網路錯誤。請再試一次。</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>移動或按兩下目標滑鼠的左鍵</value>

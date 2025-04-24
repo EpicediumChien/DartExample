@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Información de actualización del firmware de Actualizar al desconectar de la estación de acoplamiento</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>La actualización de firmware no se ha realizado correctamente.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Se han detectado varias estaciones de acoplamiento. Mantenga una sola estación de acoplamiento conectada para evitar daños en las estaciones de acoplamiento.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>la actualización ha fallado con un error desconocido</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>El usuario ha anulado la actualización del firmware</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Instalando</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Se ha detectado el mismo monitor. ¿Desea importar la configuración de %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Se ha anulado la actualización del firmware. Asegúrese de que solo un dispositivo del mismo modelo esté conectado al sistema.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>El firmware del receptor inalámbrico USB no puede admitir la actualización del firmware del dispositivo</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Actualización del firmware en curso. No se puede anular.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -540,14 +528,11 @@
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Se han detectado varias estaciones de acoplamiento. Mantenga una sola estación de acoplamiento conectada para evitar daños en las estaciones de acoplamiento.</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>La actualización ha fallado debido a un error de red. Inténtelo de nuevo.</value>
-  </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Mueva o haga clic doble con el botón izquierdo del ratón en el destino</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Pulse la tecla &quot;U&quot; dos veces para activar la actualización del firmware del teclado de destino</value>
+    <value>Pulse la tecla "U" dos veces para activar la actualización del firmware del teclado de destino</value>
   </data>
   <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
     <value>El perfil ICC predeterminado es para HDR inteligente. No podemos cambiar los valores de color predefinidos en el</value>
@@ -601,7 +586,7 @@
     <value>La actualización puede tardar hasta [XXXXXX] minutos en realizarse. Mantenga el dispositivo encendido y conectado durante este tiempo.</value>
   </data>
   <data name="Update_in_progress_body" xml:space="preserve">
-    <value>Hay una actualización de firmware en curso para [XXXXX]. La disponibilidad puede ser intermitente. No desconecte el dispositivo durante la actualización. </value>
+    <value>Hay una actualización de firmware en curso para [XXXXXX]. La disponibilidad puede ser intermitente. No desconecte el dispositivo durante la actualización. </value>
   </data>
   <data name="Update_successful_body" xml:space="preserve">
     <value>El firmware de [XXXXXX] se ha actualizado correctamente</value>

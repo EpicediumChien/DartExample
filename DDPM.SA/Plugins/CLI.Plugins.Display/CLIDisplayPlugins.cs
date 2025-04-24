@@ -972,7 +972,7 @@ namespace DDPM.CLI.Plugins.Display
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
-            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
+            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth") || g.PhysicalDeviceType.ToString().Contains("Pen")) ? "Wireless" : "Wired";
 
             switch (g.LogicalDeviceType)
             {
@@ -5062,15 +5062,22 @@ namespace DDPM.CLI.Plugins.Display
                     {"DISPLAYHDR", "DISPLAY HDR"},
                     {"DISPLAYP3", "DISPLAY P3"},
                     {"SPORTSGAME", "SPORTS Game"},
-                    {"Game1", "Game1"},
-                    {"Game2", "Game2"},
-                    {"Game3", "Game3"},
+                    {"GAME1", "Game1"},
+                    {"GAME2", "Game2"},
+                    {"GAME3", "Game3"},
                     {"SRGB", "sRGB"},
-                    {"CustomColorHDR", "Custom Color HDR"},
-                    {"HDRPeak1000", "HDR Peak 1000"},
-                    {"Rec709", "Rec.709"},//PIMS-356254
+                    {"CUSTOMCOLORHDR", "Custom Color HDR"},
+                    {"HDRPEAK1000", "HDR Peak 1000"},
                     {"REC709", "Rec.709"},//PIMS-356254
                     {"BT709", "BT.709"},//PIMS-356254
+                    {"BT2020", "BT.2020"},
+                    {"MULTISCREENMATCH", "MULTISCREEN MATCH"},
+                    {"USER1", "User 1"},
+                    {"USER2", "User 2"},
+                    {"USER3", "User 3"},
+                    {"CUSTOM1", "Custom 1"},
+                    {"CUSTOM2", "Custom 2"},
+                    {"CUSTOM3", "Custom 3"},
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)

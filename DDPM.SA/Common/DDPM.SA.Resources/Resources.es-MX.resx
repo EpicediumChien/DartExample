@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Información de actualización del firmware de UOD de la estación de acoplamiento</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>La actualización del firmware no se realizó correctamente.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Se detectan varias estaciones de acoplamiento. Mantenga una sola conectada para evitar daños en las estaciones de acoplamiento.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>no se pudo realizar la actualización por un error desconocido</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>El usuario anuló la actualización del firmware</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Instalando</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Se detectó el mismo monitor. ¿Desea importar los ajustes para %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Se anuló la actualización del firmware. Asegúrese de que solo un dispositivo del mismo modelo esté conectado al sistema.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>El firmware del receptor inalámbrico USB no puede admitir la actualización de firmware del dispositivo</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Actualización de firmware en curso. No se puede anular.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Se detectan varias docking stations. Mantenga una sola conectada para evitar daños en ellas.</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>La actualización falló debido a un error de red. Vuelva a intentarlo.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Mueva el mouse de destino o haga clic dos veces en su botón izquierdo</value>

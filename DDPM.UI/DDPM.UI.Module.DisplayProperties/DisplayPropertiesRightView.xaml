@@ -158,12 +158,7 @@
                                                        HorizontalAlignment="Stretch"
                                                        Margin="8,8,8,8"
                                                        IsExpanded="True"
-                                                       Background="Transparent">
-                                    <UXControls:UXExpander.Style>
-                                        <Style TargetType="Grid">
-                                            <Setter Property="Background" Value="Transparent" />
-                                        </Style>
-                                    </UXControls:UXExpander.Style>
+                                                       Background="{DynamicResource PartBorderColor}">
                                     <UXControls:UXExpander.Header>
                                         <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
                                                                  FontSize="16" Focusable="True" KeyboardNavigation.TabIndex="115"

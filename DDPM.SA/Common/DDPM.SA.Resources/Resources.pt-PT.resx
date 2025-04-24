@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Informações de atualização do firmware do UOD da estação de ancoragem</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Atualização do firmware sem êxito.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Foram detetadas várias estações de ancoragem. Mantenha apenas uma estação de ancoragem ligada para evitar danos nas estações de ancoragem.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>falha ao atualizar com erro desconhecido</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>O utilizador abortou a atualização do firmware</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Instalar</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Foi detetado o mesmo monitor. Pretende importar definições para %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Atualização de firmware cancelada. Certifique-se de que está ligado apenas um dispositivo do mesmo modelo ao sistema.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>O firmware do recetor sem fios USB não suporta a atualização do firmware do dispositivo</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Atualização de firmware em curso. Falha ao cancelar.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Não desligue o sistema até que as atualizações estejam concluídas</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Falha ao atualizar devido a um erro de rede. Tente novamente.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Mova ou clique duas vezes no botão esquerdo do rato de destino</value>

@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Informations de mise à jour du firmware UOD de la station d’accueil</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Échec de la mise à jour du firmware.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Plusieurs stations d’accueil sont détectées. N’en connectez qu’une seule pour éviter de les endommager.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>la mise à jour a échoué pour une raison inconnue</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Mise à jour du firmware abandonnée par l’utilisateur</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Installation</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Le même écran est détecté. Voulez-vous importer les paramètres pour %1 ?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Mise à jour du firmware abandonnée. Assurez-vous qu’un seul appareil du même modèle est connecté au système.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>Le firmware du récepteur sans fil USB ne peut pas prendre en charge la mise à niveau du firmware du périphérique</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Mise à jour du firmware en cours. Échec de l’abandon.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Ne mettez pas le système hors tension tant que les mises à jour ne sont pas terminées</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>La mise à jour a échoué en raison d’une erreur réseau. Veuillez réessayer.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Déplacez ou cliquez deux fois sur le bouton gauche de la souris cible</value>

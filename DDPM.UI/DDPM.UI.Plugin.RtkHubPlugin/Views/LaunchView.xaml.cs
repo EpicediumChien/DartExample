@@ -4,6 +4,7 @@ using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.RtkHubPortInfo;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -273,6 +274,12 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
             {
                 DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView PushBack Exception = {ex.Message}");
             }
+        }
+
+        private void txtUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            IShowPluginManager? _showPluginManager = RtkHubPlugin.PluginIoc.GetService<IShowPluginManager>();
+            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
         }
     }
 }

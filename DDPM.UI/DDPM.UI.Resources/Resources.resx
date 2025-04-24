@@ -3705,4 +3705,46 @@
   <data name="RtkHub.18" xml:space="preserve">
     <value>USB-C 2</value>
   </data>
+  <data name="RtkHub.19" xml:space="preserve">
+    <value>Located next to HDMI port</value>
+  </data>
+  <data name="RtkHub.20" xml:space="preserve">
+    <value>Located next to USB-A port</value>
+  </data>
+  <data name="RtkHub.21" xml:space="preserve">
+    <value>Port is unavailable because power capacity was exceeded or to allow other connected devices to function</value>
+  </data>
+  <data name="RtkHub.22" xml:space="preserve">
+    <value>Unavailable</value>
+  </data>
+  <data name="RtkHub.23" xml:space="preserve">
+    <value>Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices.</value>
+  </data>
+  <data name="RtkHub.24" xml:space="preserve">
+    <value>Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry.</value>
+  </data>
+  <data name="RtkHub.25" xml:space="preserve">
+    <value>Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry.</value>
+  </data>
+  <data name="RtkHub.26" xml:space="preserve">
+    <value>Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected.</value>
+  </data>
+  <data name="RtkHub.27" xml:space="preserve">
+    <value>Dell Pro 4-in-1 USB-C Travel Hub: Alert</value>
+  </data>
+  <data name="RtkHub.28" xml:space="preserve">
+    <value>USB port is NOT functioning. Unplug the device and retry.</value>
+  </data>
+  <data name="RtkHub.29" xml:space="preserve">
+    <value>Port is unavailable because power capacity was exceeded or to allow other connected devices to function</value>
+  </data>
+  <data name="Dock_ARM_Alert_1" xml:space="preserve">
+    <value>Firmware updates for Dell Pro Dock WD25 on ARM systems cannot be performed using Dell Display &amp; Peripheral Manager (DDPM) 2.0. </value>
+  </data>
+  <data name="Dock_ARM_Alert_2" xml:space="preserve">
+    <value>Download the Dock Firmware Updater (DFU) </value>
+  </data>
+  <data name="Dock_ARM_Alert_3" xml:space="preserve">
+    <value>from the Dell Support Website to update your Dock firmware</value>
+  </data>
 </root>

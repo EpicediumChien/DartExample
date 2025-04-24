@@ -17,7 +17,7 @@
             <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
             <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#FF0B1E38" />
             <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
-
+            <SolidColorBrush x:Key="SplitItem_SelectedColor2" Color="#31A2E3" />
             <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Offset="0" Color="#FF0672CB" />
                 <GradientStop Offset="0.5" Color="#FF0078D4" />
@@ -79,6 +79,17 @@
                 <GradientStop Color="#55B4FD" Offset="0.0045" />
                 <GradientStop Color="#6E69CF" Offset="1.0" />
             </LinearGradientBrush>
+            
+            <!-- 狀態邊框用 -->
+            <SolidColorBrush x:Key="StatusBorderBlueBrush"  Color="#0672CB"/>
+            <SolidColorBrush x:Key="StatusBorderGreenBrush" Color="#7AA809"/>
+
+            <!-- DeviceName 的超連結樣式 -->
+            <Style x:Key="HyperlinkTextStyle" TargetType="UXControls:UXTextBlock">
+                <Setter Property="Foreground" Value="{StaticResource SplitItem_SelectedColor2}" />
+                <Setter Property="TextDecorations" Value="Underline" />
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" UseFadingScrolling="False">
@@ -92,116 +103,134 @@
                                                 FontFamily="{StaticResource RobotoFont}" FontSize="20" Height="28" Width="550" 
                                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                                 HorizontalAlignment="Left" 
-                                                Margin="0,6,20,22" />
+                                                Margin="0,6,20,8" />
                     </Grid>
-
-                    <!-- Busy Light -->
-                    <!--Elsa 20250409 change Width="448" to Width="auto"  -->
-                    <Border x:Name="BusyLightOuterBorder" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
-                        <StackPanel x:Name="BusyLightStackPanel" Orientation="Vertical" Margin="0,20,0,10">
+                    <Border x:Name="USBPortStatusOuterBorder" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                        <StackPanel x:Name="BusyLightStackPanel" Margin="0,0,0,0">
                             <Grid x:Name="BusyLightGrid">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="8" />
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock x:Name="BusyLightText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
-                                <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                                <Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
-                                    <Image.ToolTip>
-                                        <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
-                                        <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <!--Elsa 20250401 for PIMS-348390 add TextWrapping="WrapWithOverflow" MaxWidth="230" -->
-                                                    <TextBlock Text="{Binding BusyLightToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230" />
-                                                </StackPanel>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                                <UXControls:UXToggleSwitch x:Name="BusyLightToggleSwitch" FontSize="16" Content="{Binding Path=BusyLight_String, FallbackValue='OFF'}" IsChecked="{Binding Path=BusyLightStatus}" IsEnabled="{Binding Path=SupportedBusyLight}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,8" />
-                            </Grid>
-                            <Grid>
-                                <!-- Voice Guidance -->
-                                <Grid Visibility="{Binding VoiceGuidancePageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="VoiceGuidanceGrid">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <UXControls:UXTextBlock x:Name="VoiceGuidanceText" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,10" />
-                                    <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                                    <Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
-                                        <Image.ToolTip>
-                                            <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
-                                            <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
-                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                    <Border.Resources>
-                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                    </Border.Resources>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
-                                                        <TextBlock Text="{Binding VoiceGuidanceToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" /><!-- header -->
+                                    <RowDefinition Height="Auto" /><!-- labels -->
+                                    <RowDefinition Height="Auto" /><!-- USB-A -->
+                                    <RowDefinition Height="Auto" /><!-- USB-C1 -->
+                                    <RowDefinition Height="Auto" /><!-- USB-C2 -->
+                                    <RowDefinition Height="*" />   <!-- filler -->
+                                    <RowDefinition Height="*" />   <!-- filler -->
+                                    <RowDefinition Height="*" />   <!-- filler -->
+                                </Grid.RowDefinitions>
+                                <UXControls:UXTextBlock x:Name="UsbPortStatusTextBlock" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [RtkHub.02], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
+                                <!-- Row 1 -->
+                                <UXControls:UXTextBlock x:Name="InputTextBlock"         Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left"   VerticalAlignment="Center" FontSize="16" Text="{Binding [RtkHub.03], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,20" />
+                                <UXControls:UXTextBlock x:Name="DeviceNameTextBlock"    Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [RtkHub.04], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,20" />
+                                <UXControls:UXTextBlock x:Name="StatusTextBlock"        Grid.Column="3" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [RtkHub.05], Source={x:Static lang:LangHelper.Instance}}" Margin="0,0,0,20" />
 
-                                    <!-- Voice Guidance Buttons -->
-                                    <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
-                                                                   Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
-                                            <UXControls:UXToggleSwitch.Template>
-                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                        <Grid>
-                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock x:Name="EssentialButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="EssentialButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                            <Setter TargetName="EssentialButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </UXControls:UXToggleSwitch.Template>
-                                        </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
-                                                                   Width="224" Height="52" Margin="8,8,0,20" Padding="16" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
-                                            <UXControls:UXToggleSwitch.Template>
-                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="AllButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                        <Grid>
-                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="AllButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                            <Setter TargetName="AllButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </UXControls:UXToggleSwitch.Template>
-                                        </UXControls:UXToggleSwitch>
+                                <!-- ******************** Row2: USB-A ******************** -->
+                                <Border Grid.Row="2" Grid.Column="0" Margin="20,8,0,20" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Path Data="M2 19C0.895431 19 0 19.8954 0 21V29.5V32C0 33.1046 0.895432 34 2 34H50C51.1046 34 52 33.1046 52 32V26.5V21C52 19.8954 51.1046 19 50 19H2ZM8.5 26C8.22386 26 8 26.2239 8 26.5C8 26.7761 8.22386 27 8.5 27H43.5C43.7761 27 44 26.7761 44 26.5C44 26.2239 43.7761 26 43.5 26H8.5Z" Fill="White" VerticalAlignment="Center"/>
+                                        <UXControls:UXTextBlock x:Name="USBATextBlock" Text="{Binding [RtkHub.16], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" VerticalAlignment="Center" Margin="8,16,0,0"/>
                                     </StackPanel>
-                                </Grid>
+                                </Border>
+                                <!-- USB-A DeviceNameTextBlock -->
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" >
+                                    <UXControls:UXTextBlock x:Name="USBADeviceNameTextBlock" MaxWidth="150" MaxHeight="70" TextTrimming="CharacterEllipsis" Style="{StaticResource HyperlinkTextStyle}" Text="Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit11111111111111111111111111111111111111111111111111111" TextWrapping="Wrap" FontSize="16" Margin="24,0,0,8" />
+                                </StackPanel>
+                                <!-- USB-A StatusTextBlock -->
+                                <Border Grid.Row="2" Grid.Column="3" BorderBrush="{StaticResource StatusBorderBlueBrush}" BorderThickness="1" CornerRadius="4" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                                        <UXControls:UXTextBlock x:Name="USBAStatusTextBlock" Text="{Binding [RtkHub.06], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- ******************** Row3: USB-C1 ******************** -->
+                                <Border Grid.Row="3" Grid.Column="0" Margin="20,8,0,20" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Path Data="M16.5 21C13.4624 21 11 23.4624 11 26.5C11 29.5376 13.4624 32 16.5 32H35.5C38.5376 32 41 29.5376 41 26.5C41 23.4624 38.5376 21 35.5 21H16.5ZM17.5 26C17.2239 26 17 26.2239 17 26.5C17 26.7761 17.2239 27 17.5 27H34.5C34.7761 27 35 26.7761 35 26.5C35 26.2239 34.7761 26 34.5 26H17.5Z" Fill="White" VerticalAlignment="Center"/>
+                                        <UXControls:UXTextBlock x:Name="USBC1TextBlock" Text="{Binding [RtkHub.17], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" VerticalAlignment="Center" Margin="18,16,0,0"/>
+                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,16,0,0">
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+                                            <Button.ToolTip>
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [RtkHub.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                                 <!--USB-C1 DeviceNameTextBlock--> 
+                                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock x:Name="USBC1DeviceNameTextBlock" MaxWidth="150" MaxHeight="70" TextTrimming="CharacterEllipsis" Style="{StaticResource HyperlinkTextStyle}" Text="Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit11111111111111111111111111111111111111111111111111111" TextWrapping="Wrap" FontSize="16" Margin="24,0,0,8" />
+                                </StackPanel>
+                                 <!--USB-C1 StatusTextBlock--> 
+                                <Border Grid.Row="3" Grid.Column="3" BorderBrush="{StaticResource StatusBorderGreenBrush}" BorderThickness="1" CornerRadius="4" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                                        <UXControls:UXTextBlock x:Name="USBC1StatusTextBlock" Text="{Binding [RtkHub.07], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"/>
+                                    </StackPanel>
+                                </Border>
+
+
+
+                                <!-- ******************** Row4: USB-C2 ******************** -->
+                                <Border Grid.Row="4" Grid.Column="0" Margin="20,8,0,20" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Path Data="M16.5 21C13.4624 21 11 23.4624 11 26.5C11 29.5376 13.4624 32 16.5 32H35.5C38.5376 32 41 29.5376 41 26.5C41 23.4624 38.5376 21 35.5 21H16.5ZM17.5 26C17.2239 26 17 26.2239 17 26.5C17 26.7761 17.2239 27 17.5 27H34.5C34.7761 27 35 26.7761 35 26.5C35 26.2239 34.7761 26 34.5 26H17.5Z" Fill="White" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                                        <UXControls:UXTextBlock x:Name="USBC2TextBlock" Text="{Binding [RtkHub.18], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" VerticalAlignment="Center" Margin="18,16,0,0"/>
+
+                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,16,0,0">
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+                                            <Button.ToolTip>
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [RtkHub.20], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                                <!-- USB-C2 DeviceNameTextBlock -->
+                                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock x:Name="USBC2DeviceNameTextBlock" MaxWidth="150" MaxHeight="70" TextTrimming="CharacterEllipsis" Style="{StaticResource HyperlinkTextStyle}" Text="Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit11111111111111111111111111111111111111111111111111111" TextWrapping="Wrap" FontSize="16" Margin="24,0,0,0" />
+                                </StackPanel>
+                                <!-- USB-C2 StatusTextBlock -->
+                                <Border Grid.Row="4" Grid.Column="3" BorderThickness="1" CornerRadius="4" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <UXControls:UXTextBlock x:Name="USBC2StatusTextBlock" Text="{Binding [RtkHub.22], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"/>
+                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0">
+                                            <ContentControl Template="{StaticResource icon_Info}"/>
+                                            <Button.ToolTip>
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <TextBlock Text="{Binding [RtkHub.21], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- ******************** Row5: Alert ******************** -->
+                                <UXControls:UXAlert Grid.Row="5" Grid.ColumnSpan="5" Margin="20,16,16,8" Focusable="True" KeyboardNavigation.TabIndex="118" AutomationProperties.Name="{Binding [RtkHub.08], Source={x:Static lang:LangHelper.Instance}}">
+                                    <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label="" Message="{Binding [RtkHub.08], Source={x:Static lang:LangHelper.Instance}}" />
+                                </UXControls:UXAlert>
+
+
+                                <UXControls:UXAlert Grid.Row="6" Grid.ColumnSpan="5" Margin="20,16,16,8" Focusable="True" KeyboardNavigation.TabIndex="118" AutomationProperties.Name="{Binding [RtkHub.12], Source={x:Static lang:LangHelper.Instance}}">
+                                    <UXControls:UXAlertItem AlertItemType="Warning" Margin="8,8,8,8" Label="" Message="{Binding [RtkHub.12], Source={x:Static lang:LangHelper.Instance}}" />
+                                </UXControls:UXAlert>
+
+                                <UXControls:UXAlert Grid.Row="7" Grid.ColumnSpan="5" Margin="20,16,16,8" Focusable="True" KeyboardNavigation.TabIndex="118" AutomationProperties.Name="{Binding [RtkHub.13], Source={x:Static lang:LangHelper.Instance}}">
+                                    <UXControls:UXAlertItem AlertItemType="Critical" Margin="8,8,8,8" Label="" Message="{Binding [RtkHub.13], Source={x:Static lang:LangHelper.Instance}}" />
+                                </UXControls:UXAlert>
                             </Grid>
                         </StackPanel>
                     </Border>

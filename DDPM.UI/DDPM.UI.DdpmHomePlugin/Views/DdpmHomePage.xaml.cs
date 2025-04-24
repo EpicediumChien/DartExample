@@ -327,14 +327,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //}
                 }
 
-                if (newWidth > maxWidth)
-                {
-                    newWidth = maxWidth;
-                }
-                else if (newWidth < minWidth)
-                {
-                    newWidth = minWidth;
-                }
+                newWidth = justifyMinMaxWidth(newWidth);
                 // realWidth for HomeDevice.ItemWidth will scale 1.16
                 double realWidth = newWidth / 1.16;
 
@@ -364,21 +357,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
             //
             double gapRatio = 1;
-            if (cxView >= 2200)
-            {
-                gapRatio = 2.0;
-            }
+            //if (cxView >= 2200)
+            //{
+            //    gapRatio = 2.0;
+            //}
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             double hugeReduce = 0;
-            if (cxView >= 2200)
-            {
-                //hugeReduce = 100;
-            }
+            //if (cxView >= 2200)
+            //{
+            //    //hugeReduce = 100;
+            //}
             //sizeView = min (cxView, cyView)
-            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2 * gapRatio - hugeReduce);
+            // Max ListView Width = 2k
+            double sizeView = Math.Min(cxView, cyView - minGap - hugeReduce);
 
             //Calculate the sizeItem
-            double sizeItem = sizeView - (minGap * 2 * gapRatio); //sizeView * ratioItemView;
+            double sizeItem = sizeView - (minGap * gapRatio); //sizeView * ratioItemView;
 
             return justifyMinMaxWidth(sizeItem);
         }
@@ -390,16 +384,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
             //
             double gapRatio = 1;
-            if (cxView >= 2200)
-            {
-                DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow2] Screen resolution >= 2200 trigger gapRatio*2.");
-                gapRatio = 2.0;
-            }
-            double cxItem = (cxView - minGap * 3.000 * gapRatio) / 2.000;
-            double cyItem = (cyView - minGap * gapRatio) / rowCount;
+            //if (cxView >= 2200)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow2] Screen resolution >= 2200 trigger gapRatio*2.");
+            //    gapRatio = 2.0;
+            //}
+            // Max ListView Width = 2k
+            double cxItem = (cxView - minGap * 2.000 * gapRatio) / 2.000;
+            double cyItem = cyView / rowCount - minGap;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 * gapRatio);
             if(_ddpmHomePageViewModel != null)
-                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 2 + minGap * 3;
+                _ddpmHomePageViewModel.OrderingWidth = (justifyMinMaxWidth(sizeItem) + minGap) * 2;
+            // (justifyMinMaxWidth(sizeItem) + minGap) == ViewItem final size
             // 1.16 for view item size
             return sizeItem;
         }
@@ -411,17 +407,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             double hugeReduce = 0;
-            if (cxView >= 2200)
-            {
-                DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow3] Screen resolution >= 2200 trigger hugeReduce -300px.");
-                hugeReduce = 100;
-            }
-            double cxItem = (cxView - minGap * 4.000) / 3.000;
-            double cyItem = (cyView - minGap) / rowCount;
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce * 3);
+            //if (cxView >= 2200)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[CalculateItemWidthV3_ItemsPerRow3] Screen resolution >= 2200 trigger hugeReduce -300px.");
+            //    hugeReduce = 100;
+            //}
+            // Max ListView Width = 2k
+            double cxItem = (cxView - minGap * 3.000) / 3.000;
+            double cyItem = cyView / rowCount - minGap;
+            double sizeItem = Math.Min(cxItem, cyItem - hugeReduce * 3);
 
             if (_ddpmHomePageViewModel != null)
-                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 3 + minGap * 4;
+                _ddpmHomePageViewModel.OrderingWidth = (justifyMinMaxWidth(sizeItem) + minGap) * 3;
+            // (justifyMinMaxWidth(sizeItem) + minGap) == ViewItem final size
             return sizeItem;
         }
 
@@ -431,11 +429,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             rowCount += devCount % 4 == 0 ? 0 : 1;
 
             //Add margin in cxItem to avoid internal margin
-            double cxItem = (cxView - (minGap * 5.000)) / 4.000;
-            double cyItem = (cyView - minGap) / rowCount;
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            double cxItem = (cxView - (minGap * 4.000)) / 4.000;
+            double cyItem = cyView / rowCount - minGap;
+            double sizeItem = Math.Min(cxItem, cyItem);
             if (_ddpmHomePageViewModel != null)
-                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 4 + minGap * 5;
+                _ddpmHomePageViewModel.OrderingWidth = (justifyMinMaxWidth(sizeItem) + minGap) * 4;
+            // (justifyMinMaxWidth(sizeItem) + minGap) == ViewItem final size
             return sizeItem;
         }
 
@@ -446,10 +445,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private double justifyMinMaxWidth(double originalWidth)
         {
-            if (originalWidth < 250)
-                return 250;
-            if (originalWidth > 500)
-                return 500;
+            if (originalWidth < minWidth)
+                return minWidth;
+            if (originalWidth > maxWidth)
+                return maxWidth;
             return originalWidth;
         }
 

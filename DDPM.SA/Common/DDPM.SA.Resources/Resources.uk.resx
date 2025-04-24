@@ -138,9 +138,6 @@
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Інформація про оновлення мікропрограми UOD докстанції</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Не вдалося оновити мікропрограму.</value>
-  </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Виявлено кілька докстанцій. Щоб запобігти пошкодженню докстанцій, не підключайте більше однієї.</value>
   </data>
@@ -248,9 +245,6 @@
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>збій оновлення через невідому помилку</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Оновлення мікропрограми було перервано користувачем</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Установлення</value>
@@ -477,14 +471,8 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>Виявлено той самий монітор, імпортувати налаштування для %1?</value>
   </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Оновлення прошивки перервано. Переконайтеся, що до системи під’єднано лише один пристрій тієї самої моделі.</value>
-  </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>Мікропрограма бездротового приймача USB не підтримує оновлення мікропрограми пристрою</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Триває оновлення прошивки. Перервати процес не вдалося.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -539,9 +527,6 @@
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Не вимикайте живлення системи до завершення оновлення</value>
-  </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Не вдалося оновити систему через помилку мережі. Спробуй ще раз.</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
     <value>Перемістіть або двічі клацніть ліву кнопку цільової миші</value>

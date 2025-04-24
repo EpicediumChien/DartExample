@@ -3489,6 +3489,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
             }
+#if DEBUG
+            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:"+ret_DisplayPropertiesInfo.SupportedHDR);
+#endif
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
 
@@ -3667,7 +3670,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_DisplayPropertiesPlugin.CallWindowsDisplaySetting().Result);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = false)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = true)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus start");
             string capabilityString = monitorInfos.CapabilityString;
@@ -4033,15 +4036,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string[] stand = new string[] { "25", "23", "24", "26", "27", "3A", "3B", "3C" };
                 for (int i = 0; i < ss.Length; i++)
                 {
+#if DEBUG
+                    Debug.WriteLine("ss[i]"+ss[i]);
+#endif
                     for (int j = 0; j < stand.Length; j++)
                     {
                         if (ss[i].Equals(stand[j]))
                         {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR ss : {ss[i]}");
                             //Console.WriteLine("OK");
                             return (true);
                         }
                     }
                 }
+                _logs.DebugMsg("[DisplayMangerPlugin] IsSupportHDR is false.");
                 return (false);
             }
             catch
@@ -5999,6 +6007,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (!string.IsNullOrEmpty(jsonString))
                     {
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
+                        Method method = new Method(_logs);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
                             string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
@@ -6036,7 +6045,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     if (firmwares_item.SupportedPlatform != null)
                                     {
                                         _logs.DebugMsg($"[DisplayMangerPlugin] firmwares_item.SupportedPlatform : {firmwares_item.SupportedPlatform}");
-                                        string currentPlatform = GetSystemArchitecture();
+                                        string currentPlatform = method.GetSystemArchitecture();
                                         string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
                                         _logs.DebugMsg($"[DisplayMangerPlugin] currentPlatform : {currentPlatform}");
                                         if (!supportedPlatform.ToList().Contains(currentPlatform))
@@ -6092,6 +6101,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 }
                             }
                         }
+                        method = null;
                     }
                     else
                     {
@@ -6106,32 +6116,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} done");
             return ret;
         }
-
-        public string GetSystemArchitecture()
-        {
-            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetSystemArchitecture)} RuntimeInformation.ProcessArchitecture : {RuntimeInformation.OSArchitecture.ToString()}");
-            if (RuntimeInformation.OSArchitecture == Architecture.X64)
-            {
-                return "Intel";//"Intel_x64";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
-            {
-                return "Intel";//"Intel_x86";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.Arm)
-            {
-                return "ARM";
-            }
-            else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
-            {
-                return "ARM";//"ARM_64";
-            }
-            else
-            {
-                return "Unknow";
-            }
-        }
-
         #endregion
 
         #region DisplayData
