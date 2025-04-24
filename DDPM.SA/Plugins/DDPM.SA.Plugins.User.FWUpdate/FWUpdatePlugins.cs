@@ -2750,7 +2750,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 fwUpdateInfo.Model.Contains("7022"))
             {
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");
-                if (!string.IsNullOrEmpty(fwUpdateInfo.DeviceVersion))
+                if (!string.IsNullOrEmpty(fwUpdateInfo.DeviceVersion))//Fix PIMS-358850
                 {
                     _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam DeviceVersion is : {fwUpdateInfo.DeviceVersion}");
                     if (fwUpdateInfo.DeviceVersion.Contains("93") || fwUpdateInfo.DeviceVersion.Contains("95") ||
