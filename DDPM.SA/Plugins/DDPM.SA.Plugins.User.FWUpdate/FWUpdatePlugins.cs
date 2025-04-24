@@ -2750,8 +2750,30 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 fwUpdateInfo.Model.Contains("7022"))
             {
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");
-                ret = false;
-                //作業系統必須是Windows10 20H2 以上
+                if (!string.IsNullOrEmpty(fwUpdateInfo.DeviceVersion))//Fix PIMS-358850
+                {
+                    _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam DeviceVersion is : {fwUpdateInfo.DeviceVersion}");
+                    if (fwUpdateInfo.DeviceVersion.Contains("93") || fwUpdateInfo.DeviceVersion.Contains("95") ||
+                        fwUpdateInfo.DeviceVersion.Contains("9.3") || fwUpdateInfo.DeviceVersion.Contains("9.5"))
+                    {
+                        ret = false;
+                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam DeviceVersion is MPS");
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(fwUpdateInfo.TheLatestVersion))
+                        {
+                            _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam TheLatestVersion is : {fwUpdateInfo.TheLatestVersion}");
+                            if (fwUpdateInfo.TheLatestVersion.Contains("93") || fwUpdateInfo.TheLatestVersion.Contains("95") ||
+                                fwUpdateInfo.TheLatestVersion.Contains("9.3") || fwUpdateInfo.TheLatestVersion.Contains("9.5"))
+                            {
+                                ret = false;
+                                _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam TheLatestVersion is MPS");
+                            }
+                        }
+                    }
+                }
+                /*//作業系統必須是Windows10 20H2 以上
                 //或是Windows11 22H2以上
                 if (WinVersion.GetVersion(out var info))
                 {
@@ -2768,20 +2790,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ret = true;
                     }
                 }
-                bool isUPD = true;
-                if (!string.IsNullOrEmpty(fwUpdateInfo.TheLatestVersion))
-                {
-                    _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam TheLatestVersion is : {fwUpdateInfo.TheLatestVersion}");
-                    if (fwUpdateInfo.TheLatestVersion.Contains("93") || fwUpdateInfo.TheLatestVersion.Contains("95") ||
-                        fwUpdateInfo.TheLatestVersion.Contains("9.3") || fwUpdateInfo.TheLatestVersion.Contains("9.5"))
-                    {
-                        isUPD = false;
-                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam TheLatestVersion is MPS");
-                    }
-                }
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam FW is support HPD : {fwUpdateInfo.IsESISupported}");
                 //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
-                ret = fwUpdateInfo.IsESISupported && ret && isUPD;
+                ret = fwUpdateInfo.IsESISupported && ret && isUPD;*/
             }
             if (!GlobalDefinitions.isSupport210)
             {
