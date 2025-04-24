@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -52,6 +53,34 @@ namespace DDPM.OSDs
             if (null != target)
             {
                 OSDWins.Remove(target);
+                if (target.OSDType_Op.Equals(OSDType_Op.CloseAll))
+                {
+                    _ = Task.Run(async () =>
+                     {
+                         await Task.Delay(1000);
+                         foreach (OSDWinInfo info in OSDWins)
+                         {
+                             switch (info.OSDType_Device)
+                             {
+                                 case OSDType_Device.CapsLockOn:
+                                     break;
+                                 case OSDType_Device.CapsLockOff:
+                                     break;
+                                 case OSDType_Device.ScrollLockOn:
+                                     break;
+                                 case OSDType_Device.ScrollLockOff:
+                                     break;
+                                 case OSDType_Device.NumLockOn:
+                                     break;
+                                 case OSDType_Device.NumLockOff:
+                                     break;
+                                 default:
+                                     info.IsFadeOut = true;
+                                     break;
+                             }
+                         }
+                     });
+                }
             }
             if (OSDWins.Count == 0)
             {
@@ -136,21 +165,6 @@ namespace DDPM.OSDs
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-            }
-        }
-
-        private void OSDUserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            OSDUserControl oSDUserControl = (OSDUserControl)sender;
-
-            if (oSDUserControl != null)
-            {
-                switch (oSDUserControl.OSDType_Device)
-                {
-                    case OSDType_Device.QAM:
-
-                        break;
-                }
             }
         }
     }
