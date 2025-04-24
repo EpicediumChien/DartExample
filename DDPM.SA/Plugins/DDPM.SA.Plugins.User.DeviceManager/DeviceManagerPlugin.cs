@@ -18832,6 +18832,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"  * DDPM Settings found the existing settings of Model=[{model}], ServiceTag=[{serviceTag}] => replace it.");
 
                 modelSettings[idxThisServiceTag].EA1 = ea1List.ToArray();
+                modelSettings[idxThisServiceTag].easyArrangementDDPM = new EasyArrangementDDPM()
+                {
+                    Desktops = ddpmDesktops
+                };
+
                 bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
 
                 writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
