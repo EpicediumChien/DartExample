@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.2.10</Version>
+		<Version>2.0.2.11</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
