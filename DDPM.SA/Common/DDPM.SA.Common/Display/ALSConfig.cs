@@ -18,11 +18,10 @@ namespace DDPM.SA.Common
         no_SerialNumber = 7,
         BrightnessValue = 8,
         ContrastValue = 9,
-        ColorTempValue = 10,//PIMS-353730
-        ColorPresetString = 11,
-        no_PrimaryMonitorSyncCheck = 12,
-        ALSValueSyncCheck = 13,
-        InAppAutoBriTemp= 14,
+        ColorPresetString = 10,
+        no_PrimaryMonitorSyncCheck = 11,
+        ALSValueSyncCheck = 12,
+        InAppAutoBriTemp= 13,
     }
 
     public class AutoBrightnessRangeLevel
