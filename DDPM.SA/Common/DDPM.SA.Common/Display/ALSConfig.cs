@@ -18,10 +18,11 @@ namespace DDPM.SA.Common
         no_SerialNumber = 7,
         BrightnessValue = 8,
         ContrastValue = 9,
-        ColorPresetString = 10,
-        no_PrimaryMonitorSyncCheck = 11,
-        ALSValueSyncCheck = 12,
-        InAppAutoBriTemp= 13,
+        ColorTempValue = 10,//PIMS-353730
+        ColorPresetString = 11,
+        no_PrimaryMonitorSyncCheck = 12,
+        ALSValueSyncCheck = 13,
+        InAppAutoBriTemp= 14,
     }
 
     public class AutoBrightnessRangeLevel
@@ -49,6 +50,7 @@ namespace DDPM.SA.Common
         public int LiftTone { get; set; } = 0;
         public int BrightnessValue { get; set; } = 0;
         public int ContrastValue { get; set; } = 0;
+        //public int ColorTempValue { get; set; } = 0;
         public string ColorPresetString { get; set; } = string.Empty;
         public bool isSupportLum { get; set; } = false;
         public AutoBrightnessRangeLevel AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel { level_value = 0, level_name = "Low" };
@@ -140,6 +142,10 @@ namespace DDPM.SA.Common
                     if (source.ContrastValue == target.ContrastValue)
                         checkValueResult = true;
                     break;
+               //case ALSFeatureQueryType.ColorTempValue://vcp 68
+               //     if (source.ColorTempValue == target.ColorTempValue)
+               //         checkValueResult = true;
+               //     break;
                 case ALSFeatureQueryType.ColorPresetString:
                     if (source.ColorPresetString == target.ColorPresetString)
                         checkValueResult = true;
