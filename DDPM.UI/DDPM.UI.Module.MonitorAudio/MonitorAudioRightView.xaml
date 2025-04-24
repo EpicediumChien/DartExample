@@ -1,0 +1,366 @@
+﻿<UserControl x:Class="DDPM.UI.Module.MonitorAudio.MonitorAudioRightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             xmlns:local="clr-namespace:DDPM.UI.Module.MonitorAudio"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <!-- Robert_Lin 2025-2-19 Add Narrator Support
+    1 All TextBlock: add Focusable=True
+    -->
+    <Grid>
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
+            <!-- Container -->
+            <!--
+            <Border CornerRadius="13" Background="{StaticResource RightViewContainerBkColor}">
+            -->
+            <!-- RightGroupBorder -->
+            <Grid>
+                <StackPanel>
+                    <Border Style="{StaticResource RightGroupBorderStyle}">
+                        <StackPanel>
+                            <Grid Height="50"
+                                  Margin="0,8">
+                                <StackPanel VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Horizontal">
+                                    <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" -->
+                                    <UXControls:UXTextBlock Text="{Binding [DisplayProperties.2], Source={x:Static lang:LangHelper.Instance}}"
+                                                            FontSize="16" MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                            TextBlockSemanticColorType="Light" 
+                                                            Focusable="True" KeyboardNavigation.TabIndex="101" x:Name="labelResolution"
+                                                            TextBlockType="Caption"
+                                                            VerticalAlignment="Center" />
+                                    <Grid VerticalAlignment="Center" 
+                                          Margin="15,0,0,0"
+                                          Visibility="{Binding RefreshRateUI_LockTooltip}">
+                                        <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
+                                               />
+                                    </Grid>
+                                </StackPanel>
+                                <!--
+                                <UXControls:UXComboBox HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="{StaticResource UXComboBox_Background}"
+                                BorderBrush="{StaticResource UXComboBox_BorderBrush}"
+                                BorderThickness="{StaticResource Tooltip_BdThick}"
+                                Foreground="{StaticResource UXComboBox_Foreground}"
+                                ItemsSource="{Binding Resolution_ItemsCollection}"
+                                SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
+                                TabIndex="1" DisplayMemberPath="DisplayText" Width="200"
+                                ShowSelectedCheck="False" SelectionChanged="UXComboBox_SelectionChanged" />
+
+                                -->
+                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding Resolution_ItemsCollection}"
+                                          SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
+                                          DisplayMemberPath="DisplayText"
+                                          Width="200"
+                                          IsEnabled="{Binding RefreshRateUI_IsEnable}"
+                                          KeyboardNavigation.TabIndex="104"
+                                          AutomationProperties.LabeledBy="{Binding ElementName=labelResolution}"
+                                          Opacity="{Binding RefreshRateUI_Opacity}" >
+                                    <!-- Robert_Lin 2025-2-19 for Narrator. read the DisplayText instead of ItemsSource's class name -->
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayText}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+                            </Grid>
+                            <Grid Height="50"
+                                  Margin="0,8"
+                                  Visibility="{Binding Orientation_IsVisibility}"
+                                  IsEnabled="{Binding Orientation_IsEnabled}">
+                                <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" TextWrapping="WrapWithOverflow" -->
+                                <UXControls:UXTextBlock Text="{Binding [Orientation], Source={x:Static lang:LangHelper.Instance}}"
+                                                        FontSize="16" MaxWidth="345" TextWrapping="WrapWithOverflow"
+                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                        TextBlockSemanticColorType="Light"
+                                                        TextBlockType="Caption"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="105" x:Name="labelOrientation"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left" />
+                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding Orientation_ItemsCollection}"
+                                          SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}"
+                                          DisplayMemberPath="DisplayText"
+                                          KeyboardNavigation.TabIndex="106"
+                                          AutomationProperties.LabeledBy="{Binding ElementName=labelOrientation}"
+                                          Width="200" >
+                                    <!-- Robert_Lin 2025-2-19 for Narrator. read the displayText instead of ItemsSource's class name -->
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayText}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
+                            </Grid>
+                            
+                            <Grid Height="60"
+                                  Margin="0,8">
+                                <!-- Robert_Lin 2025-2-19 PIMS-347082 The link to "Windows settings" in this option is not aligned with the
+                                    "Change the size of text..." option
+                                Problem: "the Change the size..." not vertical center
+                                Fix: 1 Add VerticalAlignment="Center" to the UXTextBlock. 2 Remove Margin="0,25,0,0" from UXLink
+                                -->
+                                <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" HorizontalAlignment="Left" -->
+                                <UXControls:UXTextBlock Text="{Binding [DisplayProperties.3], Source={x:Static lang:LangHelper.Instance}}"
+                                                        FontSize="16" MaxWidth="345" HorizontalAlignment="Left"
+                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                        TextBlockSemanticColorType="Light"
+                                                        TextBlockType="Caption"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="109" x:Name="labelTextSize"
+                                                        VerticalAlignment="Center"
+                                                        TextWrapping="WrapWithOverflow" />
+
+                                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"
+                                                   Click="CallWindowsSettings_Click"
+                                                   IconPosition="IconRight"
+                                                   LinkSize="Medium"
+                                                   LinkColorScheme="Primary"
+                                                   LinkType="InLine"
+                                                   Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center" 
+                                                   Focusable="True" KeyboardNavigation.TabIndex="110"
+                                                   Height="40">
+                                    <UXControls:UXLink.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </Style>
+                                    </UXControls:UXLink.Resources>
+                                </UXControls:UXLink>
+                            </Grid>
+                            <!-- RightPartBorder -->
+                            <Border Style="{StaticResource RightPartBorderStyle}"
+                                    Margin="0,24,0,0"
+                                    Visibility="{Binding Path=SupportedUSBCPrioeitization}">
+                                <UXControls:UXExpander ExpanderType="Secondary"
+                                                       HorizontalAlignment="Stretch"
+                                                       Margin="8,8,8,8"
+                                                       IsExpanded="True"
+                                                       Background="Transparent">
+                                    <UXControls:UXExpander.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </Style>
+                                    </UXControls:UXExpander.Style>
+                                    <UXControls:UXExpander.Header>
+                                        <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
+                                                                 FontSize="16" Focusable="True" KeyboardNavigation.TabIndex="115"
+                                                                 Foreground="{DynamicResource TextBlock_ForegroundColor}" />
+                                    </UXControls:UXExpander.Header>
+                                    <StackPanel>
+                                        <UXControls:UXAlert Margin="0,20"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="118"
+                                                            AutomationProperties.Name="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Visibility="{Binding USBCrioritizationUI_NoLock}">
+                                            <UXControls:UXAlertItem AlertItemType="Info" 
+                                                                    Margin="8,8,8,8"
+                                                                    Label=""
+                                                                    Message="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}" />
+                                        </UXControls:UXAlert>
+                                        <StackPanel Orientation="Horizontal">
+                                            <!--Bruce 0607 fix typo-->
+                                            <UXControls:UXTextBlock Grid.Column="0"
+                                                                    Margin="20,8,8,8"
+                                                                    Text="{Binding [DisplayProperties.4], Source={x:Static lang:LangHelper.Instance}}"
+                                                                    FontSize="16"
+                                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                                    TextBlockSemanticColorType="Light"
+                                                                    TextBlockType="Caption"
+                                                                    Focusable="True" KeyboardNavigation.TabIndex="121"
+                                                                    VerticalAlignment="Center"
+                                                                    HorizontalAlignment="Left" />
+                                            <Grid VerticalAlignment="Center"
+                                                  Margin="15,0,0,0"
+                                                  Visibility="{Binding USBCrioritizationUI_LockTooltip}">
+                                                <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
+                                                       />
+                                            </Grid>
+                                            <!--<Image Grid.Column="1"
+                                                   Stretch="None"
+                                                   Margin="0,0"
+                                                   Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                                   Visibility="{Binding USBCrioritizationUI_NoLock}">
+                                                <Image.ToolTip>
+                                                    <ToolTip>
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style TargetType="TextBlock"
+                                                                       BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                            </Border.Resources>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Image.ToolTip>
+                                            </Image>-->
+                                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                <!-- The (i) icon 16x16 -->
+                                                <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                <!-- ToolTip -->
+                                                <Button.ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                            </Button>
+                                        </StackPanel>
+                                        <Grid>
+                                            <StackPanel Margin="23,0,0,0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <UXControls:UXRadioButton Margin="5"
+                                                                              IsChecked="{Binding Path=IsHighDataSpeed}"
+                                                                              Content="{Binding [DisplayProperties.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                                              GroupName="USBCPrioritization"
+                                                                              KeyboardNavigation.TabIndex="125"
+                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
+                                                    <!--<Image Stretch="None"
+                                                           Margin="0,0"
+                                                           Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
+                                                        <Image.ToolTip>
+                                                            <ToolTip>
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <Border.Resources>
+                                                                        <Style TargetType="TextBlock"
+                                                                               BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                                    </Border.Resources>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Image.ToolTip>
+                                                    </Image>-->
+                                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <!-- The (i) icon 16x16 -->
+                                                        <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                        <!-- ToolTip -->
+                                                        <Button.ToolTip>
+                                                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <TextBlock Text="{Binding [DisplayProperties.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Button.ToolTip>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <UXControls:UXRadioButton Margin="5"
+                                                                              IsChecked="{Binding Path=IsHighResolution}"
+                                                                              Content="{Binding [DisplayProperties.1], Source={x:Static lang:LangHelper.Instance}}"
+                                                                              GroupName="USBCPrioritization"
+                                                                              KeyboardNavigation.TabIndex="128"
+                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
+                                                    <!--<Image Stretch="None"
+                                                           Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
+                                                        <Image.ToolTip>
+                                                            <ToolTip>
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <Border.Resources>
+                                                                        <Style TargetType="TextBlock"
+                                                                               BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                                    </Border.Resources>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding [DisplayProperties.6], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Image.ToolTip>
+                                                    </Image>-->
+                                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <!-- The (i) icon 16x16 -->
+                                                        <ContentControl Template="{StaticResource icon_Info}"/>
+
+                                                        <!-- ToolTip -->
+                                                        <Button.ToolTip>
+                                                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <TextBlock Text="{Binding [DisplayProperties.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Button.ToolTip>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <Border Background="#132F54"
+                                                    Opacity="0.6"
+                                                    CornerRadius="13"
+                                                    Visibility="{Binding USBCrioritizationUI_LockTooltip}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </UXControls:UXExpander>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <Border Name="DisableAll"
+                        Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}"
+                                             Value="True">
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!-- Add a UXBusyIndicator from Robert -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <UXControls:UXBusyIndicator BusyIndicatorType="Secondary"
+                                                Width="64"
+                                                Height="64"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsActive="{Binding IsBusy}" />
+                        <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>

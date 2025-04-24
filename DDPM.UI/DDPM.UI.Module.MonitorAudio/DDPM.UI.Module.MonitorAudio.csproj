@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<OutputPath>..\bin</OutputPath>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DCF.UX.WPF" Version="2.3.14.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="VcpCore.Common">
+			<HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+</Project>
