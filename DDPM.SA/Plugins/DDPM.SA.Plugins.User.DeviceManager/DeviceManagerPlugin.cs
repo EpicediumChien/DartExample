@@ -171,6 +171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //osd queue
         private OsdQueue _showOsdQueue = new OsdQueue();
+
         //hotkey settings
         private List<HotkeySettings> _hotkeySettings = null;// = new List<HotkeySettings>();
 
@@ -8010,7 +8011,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
-
             }
             if (instanceSettings == null)
             {
@@ -15249,7 +15249,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                     }
-
                 }
             }
 
@@ -15398,7 +15397,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                      }
                  }
              }*/
-
         }
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
@@ -18790,9 +18788,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmDesktops.Add(ddpmDesktop);
 
                 idxDesktop++;
-
             } //foreach (Desktop ddmDesktop in ddmMonitorSettings.EasyArrangement.Desktops)
-
 
             //Save this model-ServiceTage settings to DDPM Per-Monitor model settings file
             //
@@ -18847,13 +18843,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //
             //if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
             //{
-
             /*
             MonitorInfo moinfo = new MonitorInfo();
             moinfo.modelName = ddmMonitorSettings.Model;
             moinfo.edid.ModelName = ddmMonitorSettings.Model;
             moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
-
 
             //Will migrate Desktop[0] only
             if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
@@ -18869,7 +18863,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
                     if (selJson != null)
                     {
-
                     }
                 }
                 else
@@ -18922,7 +18915,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    writelog($"@ Migrate EA monitor settings: ERROR, No Monitor (model+ServiceTag) settings, or no EasyArrangement settings.");
             //}
         }
-
 
         private void DDMtoDDPM_PowerNap(DDMMonitorSettings ddmMonitorSettings)
         {
@@ -19333,8 +19325,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 bool state = (bool)param[2];
                 _ = ShowOSD(Screen.PrimaryScreen.DeviceName, oSDType, state);
             }
-
         }
+
         public Task ShowOSD(object monitorInfo, OSDType type, bool State)
         {
             if (monitorInfo != null)
