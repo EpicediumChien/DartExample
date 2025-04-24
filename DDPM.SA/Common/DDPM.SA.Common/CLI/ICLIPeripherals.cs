@@ -624,7 +624,8 @@ namespace DDPM.SA.Common
             { "AUDIO", Audio },
             { "DOCK", Dock },
             { "LOGICALWIREDAUDIO", Audio },
-            { "AIRAUDIO", AirAudio }
+            { "AIRAUDIO", AirAudio },
+            { "LOGICALAIRAUDIO", AirAudio }
         };
     }
 }
