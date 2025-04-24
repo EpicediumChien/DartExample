@@ -2758,18 +2758,22 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        if (IsDTPReady)
-                        {
-                            deviceInfoDTP.SelectedPreset = 1;
-                        }
-                        else
-                        {
-                            _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 1).Wait();//不穩定
-                        }
+                        deviceInfoDTP.SelectedPreset = 1;
+
+                        SetAudioSelectedPresetInBackgroundAsync("DefaultCheck", 1);
+
+                        //if (IsDTPReady)
+                        //{
+                        //    _debouncerAirAudio.Debounce("DefaultCheck");
+
+                        //}
+                        //else
+                        //{
+                        //    _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 1).Wait();//不穩定
+                        //}
                         IsRestoreEnable = false;
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsRestoreEnable));
-                        _debouncerAirAudio.Debounce("DefaultCheck");
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
@@ -2800,15 +2804,19 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         deviceInfoDTP.SelectedPreset = 3;
-                        if (IsDTPReady)
-                        {
-                            _debouncerAirAudio.Debounce("BassBoostCheck");
-                        }
-                        else
-                        {
-                            _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 3).Wait();//不穩定
-                        }
+                        SetAudioSelectedPresetInBackgroundAsync("BassBoostCheck", 3);
+
+                        //if (IsDTPReady)
+                        //{
+                        //    _debouncerAirAudio.Debounce("BassBoostCheck");
+                        //}
+                        //else
+                        //{
+                        //    _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 3).Wait();//不穩定
+                        //}
                         IsRestoreEnable = true;
+                        OnPropertyChanged(nameof(IsBassBoostChecked));
+
                         OnPropertyChanged(nameof(IsRestoreEnable));
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -2816,6 +2824,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsCustomChecked));
                     }
                 }
+
             }
         }
 
@@ -2840,16 +2849,20 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         deviceInfoDTP.SelectedPreset = 2;
-                        if (IsDTPReady)
-                        {
-                            _debouncerAirAudio.Debounce("SpeechBoostCheck");
-                        }
-                        else
-                        {
-                            _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 2).Wait();//不穩定
-                        }
+                        SetAudioSelectedPresetInBackgroundAsync("SpeechBoostCheck", 2);
+
+                        //if (IsDTPReady)
+                        //{
+                        //    _debouncerAirAudio.Debounce("SpeechBoostCheck");
+                        //}
+                        //else
+                        //{
+                        //    _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 2).Wait();//不穩定
+                        //}
 
                         IsRestoreEnable = true;
+                        OnPropertyChanged(nameof(IsSpeechBoostChecked));
+
                         OnPropertyChanged(nameof(IsRestoreEnable));
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
@@ -2857,6 +2870,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsCustomChecked));
                     }
                 }
+
             }
         }
 
@@ -2881,15 +2895,19 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isCustomChecked = false;
                         deviceInfoDTP.SelectedPreset = 4;
-                        if (IsDTPReady)
-                        {
-                            _debouncerAirAudio.Debounce("TrebleBoostCheck");
-                        }
-                        else
-                        {
-                            _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 4).Wait();//不穩定
-                        }
+                        SetAudioSelectedPresetInBackgroundAsync("TrebleBoostCheck", 4);
+
+                        //if (IsDTPReady)
+                        //{
+                        //    _debouncerAirAudio.Debounce("TrebleBoostCheck");
+                        //}
+                        //else
+                        //{
+                        //    _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 4).Wait();//不穩定
+                        //}
                         IsRestoreEnable = true;
+                        OnPropertyChanged(nameof(IsTrebleBoostChecked));
+
                         OnPropertyChanged(nameof(IsRestoreEnable));
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
@@ -2897,6 +2915,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsCustomChecked));
                     }
                 }
+
             }
         }
 
@@ -2922,14 +2941,16 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _audioEqualizerGridPageShow = true;
                         deviceInfoDTP.SelectedPreset = 101;
-                        if (IsDTPReady)
-                        {
-                            _debouncerAirAudio.Debounce("CustomCheck");
-                        }
-                        else
-                        {
-                            _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 101).Wait();//不穩定
-                        }
+
+                        SetAudioSelectedPresetInBackgroundAsync("CustomCheck", 101);
+                        //if (IsDTPReady)
+                        //{
+                        //    _debouncerAirAudio.Debounce("CustomCheck");
+                        //}
+                        //else
+                        //{
+                        //    _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), 101).Wait();//不穩定
+                        //}
                         IsRestoreEnable = true;
                         OnPropertyChanged(nameof(IsRestoreEnable));
                         OnPropertyChanged(nameof(IsDefaultChecked));
@@ -2939,6 +2960,26 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 OnPropertyChanged(nameof(IsCustomChecked));
+            }
+        }
+
+        private async void SetAudioSelectedPresetInBackgroundAsync(string Debounce,int Preset)
+        {
+            try
+            {
+
+                if (IsDTPReady)
+                {
+                    _debouncerAirAudio.Debounce(Debounce);
+                }
+                else
+                {
+                    await _deviceManager.SetAirAudioSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), Preset);//不穩定
+                }
+
+            }
+            catch (Exception ex)
+            {
             }
         }
 
