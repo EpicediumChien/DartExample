@@ -3747,4 +3747,58 @@
   <data name="Dock_ARM_Alert_3" xml:space="preserve">
     <value>from the Dell Support Website to update your Dock firmware</value>
   </data>
+  <data name="Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Display_Speaker" xml:space="preserve">
+    <value>Display Speaker</value>
+  </data>
+  <data name="Spatial_Audio" xml:space="preserve">
+    <value>Spatial Audio</value>
+  </data>
+  <data name="Audio_Source" xml:space="preserve">
+    <value>Audio Source</value>
+  </data>
+  <data name="Audio_Profiles" xml:space="preserve">
+    <value>Audio Profiles</value>
+  </data>
+  <data name="PBP_Audio" xml:space="preserve">
+    <value>PBP Audio</value>
+  </data>
+  <data name="Display_Speaker_Tooltips" xml:space="preserve">
+    <value>Switch monitor audio path based on system audio source selection</value>
+  </data>
+  <data name="Spatial_Audio_Tooltips" xml:space="preserve">
+    <value>Creates an immersive sound experience</value>
+  </data>
+  <data name="PBP_Audio_Tooltips" xml:space="preserve">
+    <value>Prioritizes the audio of this input source when utilizing PBP mode</value>
+  </data>
+  <data name="Standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Movie" xml:space="preserve">
+    <value>Movie</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Voice" xml:space="preserve">
+    <value>Voice</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="Sub" xml:space="preserve">
+    <value>Sub</value>
+  </data>
+  <data name="USB_only" xml:space="preserve">
+    <value>USB only</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
 </root>

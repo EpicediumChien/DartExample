@@ -40,6 +40,7 @@
     <ProjectReference Include="..\DDPM.UI.Module.Gaming\DDPM.UI.Module.Gaming.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.InputSource\DDPM.UI.Module.InputSource.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.Kvm\DDPM.UI.Module.Kvm.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.MonitorAudio\DDPM.UI.Module.MonitorAudio.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.PipPbp\DDPM.UI.Module.PipPbp.csproj" />
     <!-- 20240617 jim add -->
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />

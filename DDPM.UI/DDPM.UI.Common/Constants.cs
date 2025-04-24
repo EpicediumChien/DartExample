@@ -149,6 +149,8 @@ public class Constants
     public const string ModuleName_KVM = "KvmModule";
     //GroupName_DisplayOthers = "Others"
     public const string ModuleName_DisplayOthers = "DisplayOthersModule";
+    //MonitorAudio = "MonitorAudio"
+    public const string ModuleName_MonitorAudio = "MonitorAudioModule";
 
     #endregion  ModuleNames - DisplayPlugin
 
