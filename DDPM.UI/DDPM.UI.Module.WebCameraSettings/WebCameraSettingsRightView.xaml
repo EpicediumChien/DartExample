@@ -119,7 +119,38 @@
                                         <UXControls:UXToggleSwitch Click="BgBlurSwitch_Click" IsChecked="{Binding Path= IsBgBlurOn}" Content="{Binding Path=IsBgBlurText}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
                                     </Grid>
                                     <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                        <Border x:Name="btnBgBlur0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="SetBgBlur_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsBgBlurOn}">
+                                        <Border x:Name="btnBgBlur0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="SetBgBlur_Click" Height="30" Width="192" Tag="7" IsEnabled="{Binding IsBgBlurOn}">
+                                            <Border.Style>
+                                                <Style TargetType="Border" >
+                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding BgBlur}"  Value="7">
+                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding BgBlur}"  Value="1">
+                                                            <Setter Property="Cursor" Value="Hand" />
+                                                        </DataTrigger>
+                                                        <Trigger Property="IsEnabled"  Value="false">
+                                                            <Setter Property="Opacity"  Value="0.5" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.30], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <UXControls:UXTextBlock.Style>
+                                                    <Style TargetType="UXControls:UXTextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding BgBlur}"  Value="7">
+                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </UXControls:UXTextBlock.Style>
+                                            </UXControls:UXTextBlock>
+                                        </Border>
+                                        <Border x:Name="btnBgBlur1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="SetBgBlur_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsBgBlurOn}">
                                             <Border.Style>
                                                 <Style TargetType="Border" >
                                                     <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
@@ -137,43 +168,12 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.30], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                <UXControls:UXTextBlock.Style>
-                                                    <Style TargetType="UXControls:UXTextBlock">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding BgBlur}"  Value="1">
-                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </UXControls:UXTextBlock.Style>
-                                            </UXControls:UXTextBlock>
-                                        </Border>
-                                        <Border x:Name="btnBgBlur1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="SetBgBlur_Click" Height="30" Width="192" Tag="7" IsEnabled="{Binding IsBgBlurOn}">
-                                            <Border.Style>
-                                                <Style TargetType="Border" >
-                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding BgBlur}"  Value="7">
-                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
-                                                            <Setter Property="Cursor" Value="Hand" />
-                                                        </DataTrigger>
-                                                        <Trigger Property="IsEnabled"  Value="false">
-                                                            <Setter Property="Opacity"  Value="0.5" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.31], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
                                                 <UXControls:UXTextBlock.Style>
                                                     <Style TargetType="UXControls:UXTextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding BgBlur}"  Value="7">
+                                                            <DataTrigger Binding="{Binding BgBlur}"  Value="1">
                                                                 <Setter Property="Foreground"  Value="#FFFFFF" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
