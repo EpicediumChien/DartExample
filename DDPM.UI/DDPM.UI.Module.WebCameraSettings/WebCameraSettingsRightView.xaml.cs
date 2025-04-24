@@ -75,7 +75,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 }
                 _vm.bdrPrioritize_show = Visibility.Visible;
                 _vm.brdHello_show_control = _vm.brdHello_show = brdHello.Visibility = Visibility.Visible;
-                if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
+                if (_vm.Model == "WB5023" || _vm.Model == "WB3023" || !_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
                 {
                     DdpmCommonHelper.WriteUILog($"!_vm.CurrentDeviceInfo.IsWindowsHelloSupported:{!_vm.CurrentDeviceInfo.IsWindowsHelloSupported}");
                     //bdrPrioritize.Visibility = Visibility.Collapsed;
@@ -83,7 +83,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     _vm.brdHello_show_control = _vm.brdHello_show = brdHello.Visibility = Visibility.Collapsed;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs  WebCameraSettingsRightView() ex:" + ex.Message);
             }
@@ -122,7 +122,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                         break;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs  InitializeFOV() ex:" + ex.Message);
             }
@@ -138,7 +138,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 ZoomSlider.Minimum = _vm.CurrentDeviceInfo.ZoomMin;
                 ZoomSlider.TickFrequency = _vm.CurrentDeviceInfo.ZoomSteppingDelta;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs InitializeZoom() ex:" + ex.Message);
             }
@@ -153,7 +153,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 AutofocusSlider.Minimum = _vm.CurrentDeviceInfo.FocusMin;
                 AutofocusSlider.TickFrequency = _vm.CurrentDeviceInfo.FocusSteppingDelta;
             }
-            catch ( Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs InitializeAutofocus() ex:" + ex.Message);
             }
@@ -211,7 +211,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 }));
                 */
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
@@ -223,40 +223,40 @@ namespace DDPM.UI.Module.WebCameraSettings
             //if (_vm != null && _vm.MediaCapture != null && 
             //    _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
             //{
-                // 20240702 jim add
-                // Unhook the event handler, so that changing properties on the slider won't trigger an API call
-                //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
+            // 20240702 jim add
+            // Unhook the event handler, so that changing properties on the slider won't trigger an API call
+            //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
 
-                //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                //var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
+            //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
+            //var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
-                //AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
-                //AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
-                //AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
-                ////ZoomSlider.Value = value;
+            //AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
+            //AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
+            //AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
+            ////ZoomSlider.Value = value;
 
-                //dbvalue = 0.0f;
-                //if (autofocusControl.TryGetValue(out dbvalue))
-                //    AutofocusSlider.Value = dbvalue;
+            //dbvalue = 0.0f;
+            //if (autofocusControl.TryGetValue(out dbvalue))
+            //    AutofocusSlider.Value = dbvalue;
 
-                //AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
+            //AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
 
-                //if (autofocusControl.Capabilities.AutoModeSupported)
-                //{
-                //    bool isAuto;
-                //    autofocusControl.TryGetAuto(out isAuto);
-                //    Autofocus_ToggleSwitch.IsChecked = isAuto;
-                //    if (isAuto)
-                //    {
-                //        _vm.IsChecked_Autofocus = true;
-                //        _vm.AutofocusStatus_String = "ON";
-                //    }
-                //    else
-                //    {
-                //        _vm.IsChecked_Autofocus = false;
-                //        _vm.AutofocusStatus_String = "OFF";
-                //    }
-                //}
+            //if (autofocusControl.Capabilities.AutoModeSupported)
+            //{
+            //    bool isAuto;
+            //    autofocusControl.TryGetAuto(out isAuto);
+            //    Autofocus_ToggleSwitch.IsChecked = isAuto;
+            //    if (isAuto)
+            //    {
+            //        _vm.IsChecked_Autofocus = true;
+            //        _vm.AutofocusStatus_String = "ON";
+            //    }
+            //    else
+            //    {
+            //        _vm.IsChecked_Autofocus = false;
+            //        _vm.AutofocusStatus_String = "OFF";
+            //    }
+            //}
             //}
             //NarratorModeSupport.RecurseUitems(start  );
 
@@ -328,7 +328,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     InfoQAMSetProfileToNone();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs FOV_Click() ex:" + ex.Message);
             }
@@ -360,7 +360,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     _vm.Priority = val;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs Priority_Click() ex:" + ex.Message);
             }
@@ -377,7 +377,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
                 System.Diagnostics.Process.Start(psi);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs CallWindowsHello_Click() ex:" + ex.Message);
             }
@@ -400,7 +400,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     _vm.AutoFramingSensitivity = val;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutoFramingSensitivity_Click() ex:" + ex.Message);
             }
@@ -431,7 +431,7 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 _vm.IsSliderDragging = true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs ZoomSlider_DragStarted() ex:" + ex.Message);
             }
@@ -444,7 +444,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.IsSliderDragging = false;
                 _vm.SetZoom();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs ZoomSlider_DragCompleted() ex:" + ex.Message);
             }
@@ -469,7 +469,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.IsSliderDragging = false;
                 _vm.SetFocus();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutofocusSlider_DragCompleted() ex:" + ex.Message);
             }
@@ -481,7 +481,7 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 ShowHDR();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs howHDR_Click() ex:" + ex.Message);
             }
@@ -493,7 +493,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.VbarSelectedIndex = 1;
                 _vm.SelectVBar();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs ShowHDR() ex:" + ex.Message);
             }
@@ -512,7 +512,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                         _vm.Redo();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }
@@ -525,7 +525,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.MessageBoxVisibility = Visibility.Collapsed;
                 _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibility));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs CloseMessageBox() ex:" + ex.Message);
             }
@@ -537,7 +537,7 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 _vm.IsSliderDragging = true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs Slider_PreviewKeyDown() ex:" + ex.Message);
             }
@@ -550,7 +550,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.IsSliderDragging = false;
                 _vm.SetZoom();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs ZoomSlider_KeyUp() ex:" + ex.Message);
             }
@@ -563,7 +563,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.IsSliderDragging = false;
                 _vm.SetFocus();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutofocusSlider_KeyUp() ex:" + ex.Message);
             }
