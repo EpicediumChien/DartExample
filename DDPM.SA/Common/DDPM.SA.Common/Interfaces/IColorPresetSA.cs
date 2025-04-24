@@ -79,6 +79,8 @@ namespace DDPM.SA.Common
 
         Task<bool> StopRegistryMonitor_ICC();
 
+        Task<bool> CompareColorPresetSupportList(List<string> NewList);
+
         #endregion public for  Color Preset Plugin
     }
 }

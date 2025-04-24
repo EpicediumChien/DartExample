@@ -1607,7 +1607,17 @@ namespace ColorPreset.Plugins
                         strSync_ColorPreset_Name = "Custom 3";
                 }
             }
+#if DEBUG
+            foreach (string color in ColorPresetSupportList_)
+            {
+                Debug.WriteLine("color_ : " + color);
+            }
 
+            foreach (string color in ColorPresetSupportList)
+            {
+                Debug.WriteLine("color : " + color);
+            }
+#endif
             // check Color Preset Strings Game or Game1
             if (ColorPresetSupportList_.Count > 0)
                 index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
@@ -1760,7 +1770,7 @@ namespace ColorPreset.Plugins
             }
         }
 
-        #endregion
+#endregion
 
         #region IDisposableObservable Support
 
@@ -2865,6 +2875,36 @@ namespace ColorPreset.Plugins
             }
 
             return System.Threading.Tasks.Task.FromResult(false);
+        }
+
+        public Task<bool> CompareColorPresetSupportList(List<string> NewList)
+        {
+            if (NewList != null && NewList.Count > 0)
+            {
+#if DEBUG
+                foreach (string color_N in NewList)
+                {
+                    Debug.WriteLine("NewList : " + color_N);
+                }
+
+                foreach (string color in ColorPresetSupportList)
+                {
+                    Debug.WriteLine("color : " + color);
+                }
+#endif
+                if (ColorPresetSupportList.Count == NewList.Count)
+                {
+                    for (int i = 0; i < NewList.Count; i++)
+                    {
+                        if (NewList[i] != ColorPresetSupportList[i])
+                        {
+                            return Task.FromResult(false);
+                        }
+                    }
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
         }
 
         #endregion
