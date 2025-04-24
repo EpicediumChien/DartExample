@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -104,7 +103,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     toastContentBuilder.Show(); // 顯示Toast通知
                     WriteLog("[DisplayImportToast] toast Show.");
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     WriteLog($"[DisplayImportToast] throws exception {ex.Message}, StackTrace: {ex.StackTrace}.");
                 }
@@ -448,9 +447,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 2 ... ");
                         //25 Test Scenario : 2 same monitors with ALS Function
-                        if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
-                            alsSynchronizeList[0].isSupportALS == 2 &&
-                            alsSynchronizeList[1].isSupportALS == 2)
+                        if ((alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName) &&
+                            (alsSynchronizeList[0].isSupportALS == 2) &&
+                            (alsSynchronizeList[1].isSupportALS == 2)
+                           )
                         {
                             if (CheckALSOnOff(alsSynchronizeList) == false)
                             {
@@ -619,6 +619,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //SynchronizeBtnExpectedResult("B");
                                 return Task.FromResult("B");
                             }
+                        }
+                        if ((CheckALSMonitorCount(alsSynchronizeList) == 0) && (CheckNoneLuminanceMonitorCount(moLists) == 3))
+                        {
+                            return Task.FromResult("B");
                         }
                     }
                     else//Test case for 4 monitors
