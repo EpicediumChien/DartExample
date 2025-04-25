@@ -181,7 +181,7 @@ namespace DDPM.UI.Module.Color
             set
             {
                 int temp = _colorPresetSelectedIndex;
-                if (ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
+                if (ColorPresets_ItemsCollection != null && temp > 0 && temp < ColorPresets_ItemsCollection.Count)//before
                     last_selected_value = ColorPresets_ItemsCollection[temp];
                 //if (CheckIfDisableALSFeature()) //Do not need to check ALS feature PIMS-345895
                 //{
@@ -273,7 +273,7 @@ namespace DDPM.UI.Module.Color
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
         {
-            DdpmCommonHelper.WriteUILog("[ColorViewModel][UpdateColorPresetSelectedIndex] UpdateColorPresetSelectedIndex...");
+            DdpmCommonHelper.WriteUILog($"[ColorViewModel][UpdateColorPresetSelectedIndex] UpdateColorPresetSelectedIndex selIndex : {selIndex.ToString()}");
             _colorPresetSelectedIndex = selIndex;
 
             if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
@@ -576,6 +576,15 @@ namespace DDPM.UI.Module.Color
         // add jim 20240604
         void startWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
+            if (IsisAdvanced_Settings != Visibility.Visible)
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
+                return;
+            }
             ManagementBaseObject targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
             string processName = targetInstance.Properties["Name"].Value.ToString();
 
@@ -649,6 +658,15 @@ namespace DDPM.UI.Module.Color
         //  jim  add - modify  20240604
         private void ProcessEnded(object sender, EventArrivedEventArgs e)
         {
+            if (IsisAdvanced_Settings != Visibility.Visible)
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
+                return;
+            }
             ManagementBaseObject targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
             string processName = targetInstance.Properties["Name"].Value.ToString();
 
@@ -718,7 +736,7 @@ namespace DDPM.UI.Module.Color
             {
                 //Jason 20250314 add
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                
+                                
                 //check if watcher still alive then stop them
                 WatchForProcessStart_Stop();
                 WatchForProcessEnd_Stop();
@@ -729,6 +747,15 @@ namespace DDPM.UI.Module.Color
                     PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
                 else
                     DdpmCommonHelper.WriteUILog("[ColorViewModel][DoWork_RefreshData] checked that DDPM or lock setting object is null");
+
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    IsisAdvanced_Settings = Visibility.Collapsed;
+                    OnPropertyChanged("IsisAdvanced_Settings");
+
+                    ((Grid)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
+                }));
 
                 //check if need to cancel the refresh
                 if (Cancelled_RefreshData(e, bwk))
@@ -1032,8 +1059,8 @@ namespace DDPM.UI.Module.Color
                     if (System.String.IsNullOrEmpty(NightlightStatus))
                         NightlightStatus = Strings.Off;
                     //update_ui_over_runtype(config);
-                    RefreshUI();
                 }));
+                RefreshUI();
             }
             catch (System.Exception ex)
             {
@@ -1096,31 +1123,38 @@ namespace DDPM.UI.Module.Color
 
             if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4")) // Color changes by OSD menu
             {
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
-                DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset : " + curPreset);
-                string strSync_CurrentColorPreset = string.Empty;
-                if(string.IsNullOrEmpty(curPreset))
+                try
                 {
-                    DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset is empty, drop vcp event check");
-                    return;
-                }
-                //if (curPreset != CurrentColor)
-                //{
-                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-                DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] strSync_CurrentColorPreset : " + strSync_CurrentColorPreset);
-                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                {
-                    if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
+                    string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
+                    DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset : " + curPreset);
+                    string strSync_CurrentColorPreset = string.Empty;
+                    if (string.IsNullOrEmpty(curPreset))
                     {
-                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
-                        if (idx >= 0)
-                        {
-                            UpdateColorPresetSelectedIndex(idx);
-                            //CurrentColor = curPreset;
-                        }
+                        DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] curPreset is empty, drop vcp event check");
+                        return;
                     }
-                }));
-                //}
+                    //if (curPreset != CurrentColor)
+                    //{
+                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+                    DdpmCommonHelper.WriteUILog("[ColorViewModel][OnVCPChangedEvent] strSync_CurrentColorPreset : " + strSync_CurrentColorPreset);
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
+                        {
+                            int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
+                            if (idx >= 0)
+                            {
+                                UpdateColorPresetSelectedIndex(idx);
+                                //CurrentColor = curPreset;
+                            }
+                        }
+                    }));
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"[ColorViewModel][OnVCPChangedEvent] strSync_CurrentColorPreset : {ex.Message}");
+                }
             }
         }
 
@@ -1205,11 +1239,11 @@ namespace DDPM.UI.Module.Color
                 NightlightStatus = Strings.On;
             else
                 NightlightStatus = Strings.Off;
-
-            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-            {
-                RefreshUI();
-            }));
+            RefreshUI();
+            //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            //{
+            //    RefreshUI();
+            //}));
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)

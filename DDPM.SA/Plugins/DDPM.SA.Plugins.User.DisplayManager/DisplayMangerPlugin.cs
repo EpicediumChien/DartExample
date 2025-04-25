@@ -2034,41 +2034,45 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return false;
 
             if (uint.TryParse(eValue, out uint temp))
-                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability {temp.ToString()} ");
+                WriteLog($"[SyncPrimaryMonitorBrightnessAndColorTemp] 68 SetVCPCapability {temp.ToString()} ");
             else
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 TryParse eValue fail ... ");
+                WriteLog($"[SyncPrimaryMonitorBrightnessAndColorTemp] 68 TryParse eValue fail ... ");
                 return false;
             }
 
             if (vcpcode == "68")
             {
-                //uint contrastValue = temp & 0xFF;
-                if (aconfig.ContrastValue == temp) // same as last time
-                    return true;
+                //if (aconfig.ColorTempValue == temp) // same as last time
+                //{
+                //    WriteLog($"[SyncPrimaryMonitorBrightnessAndColorTemp] same as last color temp value ({temp})");
+                //    return true;
+                //}
 
                 // Jim 20250120 modify for PIMS-314608 - U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
                 //ALS_CT control values
                 //LL: 0~255.Nx100K
                 //HH: Reserved
-                uint contrastValue = temp & 0xFF;
-                uint ColorTempValue = contrastValue * (uint)100;  // Jim 20250120 add for PIMS-314608
+                //uint contrastValue = temp & 0xFF;
+                //uint ColorTempValue = contrastValue * (uint)100;  // Jim 20250120 add for PIMS-314608
 
-                aconfig.ContrastValue = (int)contrastValue;
-                Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, contrastValue = {contrastValue.ToString()}");
-                Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()}"); // Jim 20250120 add for PIMS-314608
-                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, {temp.ToString()} ");
-                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()} ");  // Jim 20250120 add for PIMS-314608
+                //aconfig.ContrastValue = (int)contrastValue;
+                uint ColorTempValue = temp;
+                //Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, contrastValue = {contrastValue.ToString()}");
+                //Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()}"); // Jim 20250120 add for PIMS-314608
+                //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, {temp.ToString()} ");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()} ");  // Jim 20250120 add for PIMS-314608
+                WriteLog($"[SyncPrimaryMonitorBrightnessAndColorTemp] 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, ColorTempValue = {ColorTempValue}");
                 //if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, contrastValue))
                 if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, ColorTempValue)) // Jim 20250120 modify for PIMS-314608
                 {
                     //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
+                    WriteLog($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
                 }
                 else
                 {
                     //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
+                    WriteLog($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
                 }
             }
             else if (vcpcode == "67")
@@ -3071,7 +3075,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
-            //0611 Dean
             if (e.vcpcode.Equals("66") &&
                 uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
             {
@@ -3112,16 +3115,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (AllALSConfig == null || AllALSConfig.Count == 0) // No AllALSConfig
                 {
-                    Trace.WriteLine($"[DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, AllALSConfig empty");
-                    _logs.DebugMsg($" [DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, AllALSConfig empty");
+                    Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, AllALSConfig empty");
+                    _logs.DebugMsg(" [DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, AllALSConfig empty");
                     return;
                 }
 
                 if (!AllALSConfig.All(config => !config.isBusy)) // ALS Busy
                 {
-                    Trace.WriteLine($"[DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
-                    _logs.DebugMsg($" [DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
+                    Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
+                    _logs.DebugMsg(" [DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
                     return;
+                }
+
+                uint inValue = 0;
+                if (e.vcpcode.Equals("68"))//PIMS-353730
+                {
+                    if(!uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out inValue))
+                    {
+                        WriteLog("[DisplayMangerPlugin] show_VCPchangedEventArgs 68, parsing inValue to integer failed");
+                        return;
+                    }
+                    WriteLog($"[DisplayMangerPlugin] show_VCPchangedEventArgs 68, inValue={inValue}");
                 }
 
                 ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(e.monitor.edid));
@@ -3265,24 +3279,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
         {
-            Trace.WriteLine($"[DisplayMangerPlugin] PeocessALSTriggerEvent, e.ModelName : {e.monitor.edid.ModelName}, ServiceTag : {e.monitor.edid.ServiceTag},  e.value = {e.value.ToString()} ...... in");
-            _logs.DebugMsg($"[DisplayMangerPlugin] PeocessALSTriggerEvent, e.ModelName : {e.monitor.edid.ModelName}, ServiceTag : {e.monitor.edid.ServiceTag} ...... in");
+            //Trace.WriteLine($"[DisplayMangerPlugin] PeocessALSTriggerEvent, e.ModelName : {e.monitor.edid.ModelName}, ServiceTag : {e.monitor.edid.ServiceTag},  e.value = {e.value.ToString()} ...... in");
+            WriteLog($"[PeocessALSTriggerEvent] e.ModelName : {e.monitor.edid.ModelName}, ServiceTag : {e.monitor.edid.ServiceTag} ...... in");
             if (_AllInfoMonitors.Count == 0)
             {
                 Trace.WriteLine($"[DisplayMangerPlugin] PeocessALSTriggerEvent _AllInfoMonitors.Count == 0 ...");
                 _logs.DebugMsg($"[DisplayMangerPlugin] PeocessALSTriggerEvent _AllInfoMonitors.Count == 0 ...");
                 return;
             }
+            WriteLog($"[PeocessALSTriggerEvent] source monitor is {e.monitor.modelName} | {e.monitor.edid.ServiceTag}");
             var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
             foreach (var targetMonitor in allInfoMonitorsSnapshot)
             {
                 if (!e.monitor.edid.Equals(targetMonitor.edid)) // Get other monitor
                 {
-                    Trace.WriteLine($"[DisplayMangerPlugin] Foreach monitor is {e.monitor.modelName} | {e.monitor.edid.ServiceTag}");
-                    Trace.WriteLine($"[DisplayMangerPlugin] Foreach monitor is {targetMonitor.modelName} | {targetMonitor.edid.ServiceTag}");
+                    //Trace.WriteLine($"[DisplayMangerPlugin] Foreach monitor is {e.monitor.modelName} | {e.monitor.edid.ServiceTag}");
+                    //Trace.WriteLine($"[DisplayMangerPlugin] Foreach monitor is {targetMonitor.modelName} | {targetMonitor.edid.ServiceTag}");
 
-                    _logs.DebugMsg($"[DisplayMangerPlugin] Foreach monitor is {e.monitor.modelName} | {e.monitor.edid.ServiceTag}");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] Foreach monitor is {targetMonitor.modelName} | {targetMonitor.edid.ServiceTag}");
+                    if(!targetMonitor.CapabilityDic.ContainsKey(e.vcpcode))
+                    {
+                        WriteLog($"[PeocessALSTriggerEvent] vcp [{e.vcpcode}] event come with primary sync on of [{e.monitor.modelName}], but model [{targetMonitor.modelName}] didn't own this capability, continue loop");
+                        continue;
+                    }                    
+                    WriteLog($"[PeocessALSTriggerEvent] Target monitor is {targetMonitor.modelName} | {targetMonitor.edid.ServiceTag}");
 
                     Task.Run(async () =>
                             {
@@ -3291,19 +3310,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     //待定義，先KEEP
                                     if (!SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, e.value).Result)
                                     {
-                                        Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp false ...");
-                                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp false ...");
+                                        //Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp false ...");
+                                        WriteLog($"[PeocessALSTriggerEvent] SyncPrimaryMonitorBrightnessAndColorTemp false ...");
                                         return;
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Sync Task Exception: {ex.Message}");
+                                    WriteLog($"[PeocessALSTriggerEvent] show_VCPchangedEventArgs Sync Task Exception: {ex.Message}");
                                 }
                             });
                 }
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... out");
+            WriteLog("[PeocessALSTriggerEvent] show_VCPchangedEventArgs vcpcode = 67 68 ... out");
         }
 
         private void show_DDCCIchangedEventArgs(object sender, DDCCIchangedEventArgs e)
@@ -3490,7 +3509,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
             }
 #if DEBUG
-            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:"+ret_DisplayPropertiesInfo.SupportedHDR);
+            Debug.WriteLine("ret_DisplayPropertiesInfo.SupportedHDR:" + ret_DisplayPropertiesInfo.SupportedHDR);
 #endif
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
@@ -4037,7 +4056,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 for (int i = 0; i < ss.Length; i++)
                 {
 #if DEBUG
-                    Debug.WriteLine("ss[i]"+ss[i]);
+                    Debug.WriteLine("ss[i]" + ss[i]);
 #endif
                     for (int j = 0; j < stand.Length; j++)
                     {
@@ -5562,7 +5581,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo tempGamingDisplayPropertiesInfo))
                 {
-                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
+                    tempGamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
                 }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} done Result :  {IsEnable_VisionEngineType.Length}");
@@ -5746,10 +5765,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             command += "0";
                         }
                     }
+                    
                     //1.將字串反向，因韌體是右到左，修改回韌體順序
-                    //2.反向後先往右邊補0，補齊b8-b15共7位
-                    //3.再往左邊補0，共補16位b0-17
+                    //2.反向後先往右邊補0，補齊b8-b15共8位
+                    //3.再往左邊補0，共補16位b4-17
                     command = Algorithm.ReverseString(command).PadLeft(8, '0').PadRight(16, '0');
+                    Gaming_VisionEngineType temp_Gaming_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo).Result;
                     //轉成16進制
                     command = Algorithm.BinaryToHex(command);
                     var hexStyle = System.Globalization.NumberStyles.HexNumber;
@@ -5760,6 +5781,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
                         if (ret)
                         {
+                            SwitchGaming_VisionEngineType(monitorInfo, temp_Gaming_VisionEngineType).Wait();
                             if (_displayDataManger != null)
                             {
                                 if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
@@ -5820,6 +5842,28 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo, true).Result;
                 gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo, true).Result;
                 gamingDisplayPropertiesInfo.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo, true).Result;
+                if (monitorInfo.modelName.Contains("G") && !string.IsNullOrEmpty(monitorInfo.CapabilityString))
+                {
+                    string[] ss = monitorInfo.CapabilityString.Split("EC(");
+                    if (ss.Length == 2)
+                    {
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        foreach (string temps in ss)
+                        {
+                            if (!string.IsNullOrEmpty(temps))
+                            {
+                                uint u = Convert.ToUInt32(temps, 16);
+                                if (Enum.IsDefined(typeof(Gaming_VisionEngineType), u))
+                                {
+                                    gamingDisplayPropertiesInfo.IsSupported_VisionEngineType = true;
+                                    gamingDisplayPropertiesInfo.Supported_VisionEngineType.Add((Gaming_VisionEngineType)u);
+                                }
+                            }
+                        }
+                        gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.Supported_VisionEngineType.Count];
+                    }
+                }
                 gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo, true).Result;
                 ret = true;
             }

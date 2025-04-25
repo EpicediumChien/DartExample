@@ -1,5 +1,4 @@
 ﻿using DDPM.UI.Common;
-using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.Common;
 using System.Windows;
@@ -7,18 +6,14 @@ using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.SA.Common;
 using DDPM.UI.Common.Models;
 using DDPM.SA.Common.Settings;
-using System.Windows.Media.Media3D;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.UI.Common.UserControls;
 using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
 using UserControl = System.Windows.Controls.UserControl;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft;
-using String = System.String;
 using static DDPM.UI.Common.User32;
-using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Common.Method;
 
 namespace DDPM.UI.Module.EzMemory

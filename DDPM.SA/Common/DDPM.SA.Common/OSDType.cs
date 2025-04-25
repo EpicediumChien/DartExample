@@ -37,13 +37,16 @@
         FingerPrint,
         WalkAwayLock,
         StartRecording,
-        EasyMemory
+        EasyMemory,
+        FWAutoClose
     }
 
     public enum OSDType_Op
     {
         None,
         Plugin,
-        Unplug
+        Unplug,
+        AutoClose,
+        CloseAll
     }
 }

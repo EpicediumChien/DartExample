@@ -13,6 +13,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Text;
 using DDPM.UI.Resources.Helper;
+using System.Diagnostics;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -26,7 +28,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private bool _tabManualFocused = false;
         private bool _isSliderVisible = false;
         private int _backLightingLevel = 0;
-        private string _backLightingLevelText = "0%";
+        //private string _backLightingLevelText = "0%";
         private bool _isCollaborationKeyEnable = false;
         private bool _isCollaborationCameraEnable = false;
         private bool _isCollaborationScreenShareEnable = false;
@@ -283,8 +285,13 @@ namespace DDPM.UI.Plugin.ViewModels
                                 break;
 
                             case "BackLightingLevelChanged":
+                                //if (di.BackLightingLevel == BackLightingLevel)
+                                //    return;
+                                Debug.WriteLine($"BackLightingLevelChanged: value:{di.BackLightingLevel}.....................{DateTime.Now:HH:mm:ss.ff}");
                                 _backLightingLevel = di.BackLightingLevel;
+                                CurrentDeviceInfo.BackLightingLevel = di.BackLightingLevel;
                                 OnPropertyChanged(nameof(BackLightingLevel));
+                                OnPropertyChanged(nameof(BackLightingLevelText));
                                 break;
                             case "CollaborationScreenShareEnable":
                                 _isCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
@@ -407,29 +414,30 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _backLightingLevel;
             set
             {
+                //BackLightingLevelText = _backLightingLevel == 0 ? "0%" : (_backLightingLevel == 1 ? "25%" : (_backLightingLevel == 2 ? "50%" : (_backLightingLevel == 3 ? "75%" : "100%")));
                 if (_backLightingLevel != value)
                 {
                     _backLightingLevel = value;
-                    OnPropertyChanged();
                     if (!IsSliderDragging)
                         SetDBackLightingLevel();
 
-                    BackLightingLevelText = _backLightingLevel == 0 ? "0%" : (_backLightingLevel == 1 ? "25%" : (_backLightingLevel == 2 ? "50%" : (_backLightingLevel == 3 ? "75%" : "100%")));
+                    OnPropertyChanged();
                 }
+                OnPropertyChanged(nameof(BackLightingLevelText));
             }
         }
 
         public string BackLightingLevelText
         {
-            get => _backLightingLevelText;
-            set
-            {
-                if (_backLightingLevelText != value)
-                {
-                    _backLightingLevelText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _backLightingLevel == 0 ? "0%" : (_backLightingLevel == 1 ? "25%" : (_backLightingLevel == 2 ? "50%" : (_backLightingLevel == 3 ? "75%" : "100%")));
+            //set
+            //{
+            //    if (_backLightingLevelText != value)
+            //    {
+            //        _backLightingLevelText = value;
+            //        OnPropertyChanged();
+            //    }
+            //}
         }
 
         public void SetDBackLightingLevel()
@@ -438,7 +446,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 return;
 
             if (_backLightingLevel != CurrentDeviceInfo.BackLightingLevel)
+            {
                 DdpmCommonHelper.DeviceManagerSA?.SetBackLightingLevel(_backLightingLevel, CurrentDeviceInfo.ID);
+                Debug.WriteLine($"Set BackLightingLevel: value:{_backLightingLevel}.....................{DateTime.Now:HH:mm:ss.ff}");
+            }
+
+            OnPropertyChanged(nameof(BackLightingLevel));
+            OnPropertyChanged(nameof(BackLightingLevelText));
         }
 
         public bool IsCollaborationKeyEnable

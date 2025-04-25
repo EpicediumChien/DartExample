@@ -28,7 +28,7 @@
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Grid Height="60" VerticalAlignment="top" Grid.Row="0">
-                <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" 
+        <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" 
                                         FontFamily="{StaticResource RobotoFont}" FontSize="20" Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                         TextBlockSemanticColorType="Light" Margin="18,24,0,0"
                                         TextBlockType="Caption"
@@ -65,7 +65,8 @@
           </Grid>
           <Grid VerticalAlignment="top" Grid.Row="2" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,18">
-              <UXControls:UXSlider Value="{Binding BackLightingLevel}" Maximum="4" Width="400" Thumb.DragCompleted="BackLightingSlider_DragCompleted" Thumb.DragStarted="BackLightingSlider_DragStarted" />
+              <UXControls:UXSlider Value="{Binding BackLightingLevel}" Maximum="4" Width="400" Thumb.DragCompleted="BackLightingSlider_DragCompleted" Thumb.DragStarted="BackLightingSlider_DragStarted" KeyUp="UXSlider_KeyUp" PreviewKeyDown="UXSlider_PreviewKeyDown"
+                                   IsSnapToTickEnabled="True"/>
               <UXControls:UXTextBlock Text="{Binding BackLightingLevelText}" FontWeight="Light" FontSize="14" Foreground="{DynamicResource DefaultTheme_ProcessBarTxtColor}" Margin="10,0,0,0" />
             </StackPanel>
           </Grid>

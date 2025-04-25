@@ -2056,6 +2056,16 @@ namespace DDPM.UI.Module.Brightness
             DdpmCommonHelper.DeviceManagerSA?.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
+        public void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
+        {
+            if (isLuminanceSupport == Visibility.Visible)
+                UpdateLuminance();
+            else
+                UpdateBrightnessContrast();
+
+            UpdateHDRStatus();
+        }
+
         public void GetScheduleInfo()
         {
             if (SelectedHomeDevice == null)
@@ -2250,6 +2260,29 @@ namespace DDPM.UI.Module.Brightness
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
             DdpmCommonHelper.WriteUILog($"ResetClick IsBusy : true ...");
+        }
+
+        public void RunWorkerCompleted_RefreshManualValue(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            {
+                if (isLuminanceSupport == Visibility.Visible)
+                {
+                    NotifyPropertyChanged("LuminanceValue");
+                    NotifyPropertyChanged("LuminanceMaxValue");
+                }
+                else
+                {
+                    NotifyPropertyChanged("BrightnessValue");
+                    NotifyPropertyChanged("ContrastValue");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+                }
+                IsBusy = false;
+                NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"RunWorkerCompleted_RefreshManualValue IsBusy : false ...");
+            }));
+
+            Invoke_RefreshScheduleValue();
         }
 
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
@@ -2534,7 +2567,7 @@ namespace DDPM.UI.Module.Brightness
 
                                 Brightness_Value = Convert.ToDouble((uint)(long)objValue);
                                 Luminance_Value = Brightness_Value;
-                                
+
                                 NotifyPropertyChanged("BrightnessValue");
                                 NotifyPropertyChanged("LuminanceValue");
                                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
@@ -2691,7 +2724,7 @@ namespace DDPM.UI.Module.Brightness
                         //click no, switch back due to UI action
                         SetBrightnessLevelDataToObject(level_keep);
                     }
-                    if(property.Equals("BRILEVEL"))
+                    if (property.Equals("BRILEVEL"))
                     {
                         onoff = false;
                     }
@@ -2829,16 +2862,6 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-        }
-
-        public void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
-        {
-            if (isLuminanceSupport == Visibility.Visible)
-                UpdateLuminance();
-            else
-                UpdateBrightnessContrast();
-
-            UpdateHDRStatus();
         }
 
         private void DoWork_RefreshScheduleValue(object sender, DoWorkEventArgs e)
@@ -3381,29 +3404,6 @@ namespace DDPM.UI.Module.Brightness
             Debug.WriteLine("RefreshHotkeySettings done");
         }
 
-        public void RunWorkerCompleted_RefreshManualValue(object sender, RunWorkerCompletedEventArgs e)
-        {
-            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-            {
-                if (isLuminanceSupport == Visibility.Visible)
-                {
-                    NotifyPropertyChanged("LuminanceValue");
-                    NotifyPropertyChanged("LuminanceMaxValue");
-                }
-                else
-                {
-                    NotifyPropertyChanged("BrightnessValue");
-                    NotifyPropertyChanged("ContrastValue");
-                    NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
-                }
-                IsBusy = false;
-                NotifyPropertyChanged("IsBusy");
-                DdpmCommonHelper.WriteUILog($"RunWorkerCompleted_RefreshManualValue IsBusy : false ...");
-            }));
-
-            Invoke_RefreshScheduleValue();
-        }
-
         private void RunWorkerCompleted_RefreshScheduleValue(object sender, RunWorkerCompletedEventArgs e)
         {
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -3450,32 +3450,36 @@ namespace DDPM.UI.Module.Brightness
                 var value = Convert.ToDouble(value_);
                 uint nNewValue = Convert.ToUInt32(value);
 
+                DdpmCommonHelper.WriteUILog($"Set Target {ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName} Brightness ...");
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+
                 if (IsSynchronize)
                 {
-                    //Brightness_Value = value;
+                    DdpmCommonHelper.WriteUILog("[IsSynchronize] : true ...");
 
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
-                        if (hd.MonitorInfo.IsDellMonitor && hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                        if (!(hd.MonitorInfo.edid.Equals(ModuleOwner.SelectedHomeDevice.MonitorInfo?.edid)))
                         {
                             var r = DdpmCommonHelper.DeviceManagerSA.CheckIsSyncBriCon(ModuleOwner.SelectedHomeDevice.MonitorInfo, hd.MonitorInfo).Result;
 
                             if (r)
+                            {
+                                DdpmCommonHelper.WriteUILog($"Set Target {hd.MonitorInfo.modelName} Brightness ...");
                                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    //Brightness_Value = value;
-                    _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
                 }
 
                 NotifyPropertyChanged("BrightnessValue");
             }
+
             if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
             {
-                bool popMessageResult = false;
+                DdpmCommonHelper.WriteUILog("[CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync] : true ...");
+
+                bool popMessageResult = true;
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     ALSSettingsChangesOnNonPrimary(ref popMessageResult, "BRILEVEL");
@@ -3483,16 +3487,22 @@ namespace DDPM.UI.Module.Brightness
 
                 if (!popMessageResult) //means select no
                 {
+                    DdpmCommonHelper.WriteUILog("[popMessageResult] : false ...");
                     Get_Brightness_Value();
                     return;
                 }
                 else //means select yes
+                {
+                    DdpmCommonHelper.WriteUILog("[popMessageResult] : true ...");
                     SET_Brightness();
+                }
 
                 return;
             }
             if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 && _autoBrightnessStatus)
             {
+                DdpmCommonHelper.WriteUILog("[Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 && _autoBrightnessStatus] : true ...");
+
                 string pop_string = LangHelper.Instance["Brightness.19"];// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -3501,9 +3511,13 @@ namespace DDPM.UI.Module.Brightness
                 }));
 
                 if (r)
+                {
+                    DdpmCommonHelper.WriteUILog("[DdpmCommonHelper.DDPMMesssageBox result] : true ...");
                     AutoBrightnessStatus = _autoBrightnessStatus = false;
+                }
                 else
                 {
+                    DdpmCommonHelper.WriteUILog("[DdpmCommonHelper.DDPMMesssageBox result] : false ...");
                     Get_Brightness_Value();
                     return;
                 }
