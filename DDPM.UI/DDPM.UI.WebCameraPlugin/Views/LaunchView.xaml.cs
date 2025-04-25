@@ -2216,7 +2216,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             return freeBytesAvailable >= requiredBytes;
         }
 
-        private LowLagMediaRecording _lowLag;
+        //private LowLagMediaRecording _lowLag;
         /// <summary>
         /// Records an MP4 video to a StorageFile and adds rotation metadata to it
         /// </summary>
@@ -2297,8 +2297,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (_vm.MediaCapture != null)
                 {
                     //await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
-                    _lowLag = await _vm.MediaCapture.PrepareLowLagRecordToStorageFileAsync(encodingProfile, videoFile);
-                    await _lowLag.StartAsync();
+                    _vm.LowLag = await _vm.MediaCapture.PrepareLowLagRecordToStorageFileAsync(encodingProfile, videoFile);
+                    await _vm.LowLag.StartAsync();
                     stopwatch.Start();
                     RecordingTimer.Start();
                 }
@@ -2329,8 +2329,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 try
                 {
                     //await _vm.MediaCapture.StopRecordAsync();
-                    await _lowLag?.StopAsync();
-                    await _lowLag?.FinishAsync();
+                    await _vm.LowLag?.StopAsync();
+                    await _vm.LowLag?.FinishAsync();
                 }
                 catch (Exception ex)
                 {
