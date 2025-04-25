@@ -48,14 +48,14 @@ namespace DDPM.QAM
 
                     if (processes.Length > 0)
                     {
+                        //info DDPM navigate to webcam preview directly
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                         IntPtr mainWindowHandle = processes[0].MainWindowHandle;
                         // 將窗口最大化
                         _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
                         // 顯示到前景
                         _SetForegroundWindow(mainWindowHandle);
 
-                        //info DDPM navigate to webcam preview directly
-                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                         //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
 
                         result = true;
@@ -526,7 +526,7 @@ namespace DDPM.QAM
 
                 return -2;
             }
-            
+
         }
 
         [DllImport("user32.dll", SetLastError = true)]
