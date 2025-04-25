@@ -1455,8 +1455,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
-                    NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s, false, false);
+                    if (!_IsUITrigger)//only CLI show, Fix PIMS-359127
+                    {
+                        string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
+                        NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s, false, false);
+                    }
                 }
                 if (fwUpdateInfo.IsDisplay && IsISPInApp(fwUpdateInfo.InstallPaths, out string upgPath))//新版螢幕韌體更新
                 {
