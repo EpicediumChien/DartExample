@@ -505,7 +505,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.MonitorAudio.png"),
                 GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplayMonitorAudio)
             };
-            //If the monitor has Monitor Audio
             {
                 sw.Restart();
                 moduleGroup.AddHeader(Strings.VbarText_MonitorAudio, typeof(MonitorAudioModule), Constants.ModuleName_MonitorAudio);
