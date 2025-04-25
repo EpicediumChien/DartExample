@@ -1092,6 +1092,12 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
 
+        // 20250425 Chewlin for PIMS-358978 add PrioritizeExternalWebcamStatus_Text property
+        public string PrioritizeExternalWebcamStatus_Text
+        {
+            get => IsPrioritizeExternalWebcam ? Strings.On : Strings.Off;
+        }
+
         private bool _isPrioritizeExternalWebcam = false;
         public bool IsPrioritizeExternalWebcam
         {
@@ -1101,6 +1107,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isPrioritizeExternalWebcam = value;
                 DdpmCommonHelper.DeviceManagerSA?.SetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString(), value);
                 OnPropertyChanged();
+                // 20250425 Chewlin for PIMS-358978 add OnPropertyChanged(nameof(PrioritizeExternalWebcamStatus_Text));
+                OnPropertyChanged(nameof(PrioritizeExternalWebcamStatus_Text));
             }
         }
         public string CurrentProfileName
