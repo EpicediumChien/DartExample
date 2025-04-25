@@ -97,7 +97,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
-            timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
+            //timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -176,12 +176,13 @@ namespace DDPM.QAM
             }
         }
 
-        private void CameraSetting_Click(object sender, MouseButtonEventArgs e)
+        private void CameraSetting_Click(object sender, MouseButtonEventArgs? e)
         {
             if (CameraSetting != null)
             {
                 CameraSetting.Close();
                 CameraSetting = null;
+                DdpmCommonHelper.QAMCameraMenuIsOpen = false;
             }
             else
             {
@@ -206,6 +207,7 @@ namespace DDPM.QAM
 
                 //Derek 2025/02/13 auto open present page
                 CameraSetting.OpenPresetsFullView();
+                DdpmCommonHelper.QAMCameraMenuIsOpen = true;
             }
 
 
@@ -607,5 +609,11 @@ namespace DDPM.QAM
         #endregion Win32API
 
         #endregion Get Full Screen State of Zoom and move to bottom of layer
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.QAMCameraMenuIsOpen)
+                CameraSetting_Click(this, null);
+        }
     }
 }
