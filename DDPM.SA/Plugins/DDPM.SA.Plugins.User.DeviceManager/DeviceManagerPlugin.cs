@@ -12138,9 +12138,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
-
+                            Debug.WriteLine($"QAM position: {QAM_Position}");
                             //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0 && IsPointOnScreen(QAM_Position))
                             {
                                 //_QAM.Top = QAM_Position.Y;
                                 //_QAM.Left = QAM_Position.X;
@@ -12214,6 +12214,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        private bool IsPointOnScreen(Point point)
+        {
+            // Convert WPF Point to WinForms Point
+            var winFormsPoint = new System.Drawing.Point((int)point.X, (int)point.Y);
+
+            // Check if the point is inside any screen's bounds
+            foreach (var screen in Screen.AllScreens)
+            {
+                if (screen.WorkingArea.Contains(winFormsPoint))
+                {
+                    return true; // Point is on a visible part of a screen
+                }
+            }
+
+            return false; // Off screen
+        }
         private Task CloseDDPM()
         {
             UpdateUINotify e = new()
