@@ -385,6 +385,7 @@ namespace DDPM.EABroker
             SplitCtrl0B spCtrl0B = new SplitCtrl0B();
             _splitCtrl = spCtrl0B;
             _splitCtrl.Settings = settings;
+            _splitCtrl.SplitMode = eSplitModes.Edit;
             Rect rcView = new Rect(screen.WorkingArea.Left, screen.WorkingArea.Top, screen.WorkingArea.Width, screen.WorkingArea.Height);
             spCtrl0B.ApplySettingsToCellList(rcView);
 
