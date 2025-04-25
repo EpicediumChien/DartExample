@@ -63,7 +63,10 @@ namespace DDPM.QAM
                     else
                     {
                         string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                        //string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+
+#if DEBUG
+                        ddpmExePath = $"{AppContext.BaseDirectory}..\\..\\..\\..\\..\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+#endif
 
                         result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
