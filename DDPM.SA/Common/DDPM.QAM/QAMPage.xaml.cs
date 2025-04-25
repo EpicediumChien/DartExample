@@ -97,7 +97,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
-            timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
+            //timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)

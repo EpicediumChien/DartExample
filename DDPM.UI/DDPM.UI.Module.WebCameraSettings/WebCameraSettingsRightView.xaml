@@ -566,7 +566,7 @@
                                         <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotAutoFramingOn}" />
                                     </Grid>
                                     <StackPanel Orientation="Vertical" Margin="16,16,16,16">
-                                        <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
+                                        <UXControls:UXSlider Name="AutofocusSlider" Height="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
                                          Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AutofocusSlider_KeyUp"/>
                                     </StackPanel>
                                 </StackPanel>

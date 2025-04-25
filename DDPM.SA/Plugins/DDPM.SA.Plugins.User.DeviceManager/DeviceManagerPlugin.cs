@@ -277,6 +277,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
+#if DEBUG
+            Debug.WriteLine($"[_DTPProxyPlugin_DTPEventHandler] {e.UI_Field_Name}.");
+#endif
             if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen") || e.UI_Field_Name.StartsWith("Camera"))
             {
                 var paras = e.UI_Field_Name.Split('|');
@@ -659,7 +662,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        #endregion
+#endregion
 
         #region Overriding methods
 
@@ -12067,6 +12070,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //}
         private Task QAMClose(bool openQAMOSD)
         {
+            if (threadQAM != null)
+                Debug.WriteLine($"Thread found! {threadQAM}");
             if (null == _QAM)
                 return Task.CompletedTask;
 
