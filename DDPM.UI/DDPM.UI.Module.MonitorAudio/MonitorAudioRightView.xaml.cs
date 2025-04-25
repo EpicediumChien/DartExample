@@ -17,10 +17,10 @@ namespace DDPM.UI.Module.MonitorAudio
         {
             InitializeComponent();
             //DisplayPropertiesViewModel vm = (DisplayPropertiesViewModel)DataContext;
-            
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                
             }
             // Set the input method to English for the entire UserControl
             InputMethod.SetPreferredImeState(this, InputMethodState.Off);
@@ -30,36 +30,7 @@ namespace DDPM.UI.Module.MonitorAudio
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
-        }
-        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ResolutionRefreshRate", e);
-            if (isLocked != null)
-            {
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    MonitorAudioViewModel vm = (MonitorAudioViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        vm.Lock_RefreshRate = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {isLocked}");
-                    }
-                }));
-            }
-            isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_USBCPrioritization", e);
-            if (isLocked != null)
-            {
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    MonitorAudioViewModel vm = (MonitorAudioViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        vm.Lock_USBCrioritization = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {isLocked}");
-                    }
-                }));
+                
             }
         }
 
@@ -100,6 +71,24 @@ namespace DDPM.UI.Module.MonitorAudio
             else
             {
                 target.HorizontalOffset = -1 * target.ActualWidth + 14;
+            }
+        }
+
+        private void NotMute_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MonitorAudioViewModel vm = (MonitorAudioViewModel)this.DataContext;
+            if (vm != null)
+            {
+                vm.SetMute(false);
+            }
+        }
+
+        private void Mute_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MonitorAudioViewModel vm = (MonitorAudioViewModel)this.DataContext;
+            if (vm != null)
+            {
+                vm.SetMute(true);
             }
         }
     }

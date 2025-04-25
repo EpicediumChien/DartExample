@@ -25,7 +25,7 @@ namespace DDPM.UI.Module.MonitorAudio
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => Constants.ModuleName_DisplayProperties; } //"DisplayPropertiesModule"
+        public string ModuleName { get => Constants.ModuleName_MonitorAudio; } //"MonitorAudioModule"
 
         public UserControl? GetLeftView()
         {
