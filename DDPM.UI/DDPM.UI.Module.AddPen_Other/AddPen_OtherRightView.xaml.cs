@@ -5,6 +5,7 @@ using DDPM.UI.Plugin.ViewModels;
 using DDPM.UI.Resources.Helper;
 using System.Net;
 using System.Reflection.Metadata;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,6 +47,11 @@ namespace DDPM.UI.Module.AddPen_Other
         bool IsSupported = true;
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
+            if (e?.device_peripherals != null)
+            {
+                var device_peripherals_json = JsonSerializer.Serialize(e.device_peripherals);
+                DdpmCommonHelper.WriteUILog($"[DeviceManagerSA_DeviceChanged] Add Pen event, device_peripherals : \"{device_peripherals_json}\"");
+            }
             if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
             {
                 var di = e.device_peripherals;
