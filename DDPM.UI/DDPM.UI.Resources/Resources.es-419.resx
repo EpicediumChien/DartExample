@@ -3599,12 +3599,42 @@
     <value>Use solo caracteres alfanuméricos y los siguientes caracteres especiales {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>La ruta del archivo superó el máximo de 260 caracteres, usa un nombre de archivo reservado o tiene caracteres no válidos &amp;lt; &amp;gt; : &quot; / \ | ?</value>
+    <value>La ruta del archivo superó el máximo de 260 caracteres, usa un nombre de archivo reservado o tiene caracteres no válidos &amp;lt; &amp;gt; : " / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>Ingrese solo una ruta URL completa, no una ruta relativa</value>
   </data>
   <data name="ErrorMsg.0" xml:space="preserve">
     <value>No se puede cargar la aplicación Dell Display and Peripheral Manager en este momento. Cierre la aplicación y vuelva a intentarlo.</value>
+  </data>
+  <data name="WalkThroughAirAudio_Main.0" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Main.1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Main.2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.0" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Sub.5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WalkThroughAirAudio_Main.3" xml:space="preserve">
+    <value />
   </data>
 </root>

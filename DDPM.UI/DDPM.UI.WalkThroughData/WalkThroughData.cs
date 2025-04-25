@@ -341,6 +341,31 @@ namespace DDPM.UI.WalkThroughData
                         new WalkThroughPageData { MainText = Strings.WalkThroughHeadsetWL7024_Main2, SubText = Strings.WalkThroughHeadsetWL7024_Sub2, MainImageSource = "WalkThrough/Headset/WL7024/WL7024_3.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughHeadsetWL7024_Main3, SubText = Strings.WalkThroughHeadsetWL7024_Sub3, MainImageSource = "WalkThrough/Headset/WL7024/WL7024_4.png" }
                     }
+                },
+
+                // Air Audio (SB725)
+                { "SB725", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main0, SubText = Strings.WalkThroughAirAudio_Sub0, MainImageSource = "WalkThrough/AirAudio/SB725/SB725_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main1, SubText = Strings.WalkThroughAirAudio_Sub1, MainImageSource = "WalkThrough/AirAudio/SB725/SB725_2.png" }
+                    }
+                },
+
+                // Air Audio (SL525)
+                { "SL525", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main0, SubText = Strings.WalkThroughAirAudio_Sub0, MainImageSource = "WalkThrough/AirAudio/SL525/SL525_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main1, SubText = Strings.WalkThroughAirAudio_Sub1, MainImageSource = "WalkThrough/AirAudio/SL525/SL525_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main2, SubText = Strings.WalkThroughAirAudio_Sub2, MainImageSource = "WalkThrough/AirAudio/SL525/SL525_3.png" }
+                    }
+                },
+
+                 // Air Audio (SP325)
+                { "SP325", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main0, SubText = Strings.WalkThroughAirAudio_Sub0, MainImageSource = "WalkThrough/AirAudio/SP325/SP325_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughAirAudio_Main1, SubText = Strings.WalkThroughAirAudio_Sub1, MainImageSource = "WalkThrough/AirAudio/SP325/SP325_2.png" }
+                    }
                 }
             };
             if (themeVar != 1)
