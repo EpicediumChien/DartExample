@@ -12070,8 +12070,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //}
         private Task QAMClose(bool openQAMOSD)
         {
+#if DEBUG
             if (threadQAM != null)
                 Debug.WriteLine($"Thread found! {threadQAM}");
+#endif
             if (null == _QAM)
                 return Task.CompletedTask;
 
