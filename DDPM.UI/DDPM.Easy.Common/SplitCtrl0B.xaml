@@ -16,7 +16,7 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Work"
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Icon"
                                IsEditable="False"/>
             
             <SolidColorBrush x:Key="BkFillBrush" Color="#FF132F54"/>

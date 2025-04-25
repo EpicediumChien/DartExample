@@ -2413,8 +2413,11 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
-    <!-- #region Easy Arrange -->
+    <!-- #region Easy Arrange 
+    OLD:
     <DropShadowEffect x:Key="EzArrange_ShadowEffect" Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
+    -->
+    <DropShadowEffect x:Key="EzArrange_ShadowEffect" Color="#FF000000" ShadowDepth="0" BlurRadius="8" Opacity="0.5"  />
     <!-- #endregion -->
 
     <!-- #region Easy Memory-->
