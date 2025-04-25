@@ -48,14 +48,14 @@ namespace DDPM.QAM
 
                     if (processes.Length > 0)
                     {
+                        //info DDPM navigate to webcam preview directly
+                        DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(true);
                         IntPtr mainWindowHandle = processes[0].MainWindowHandle;
                         // 將窗口最大化
                         _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
                         // 顯示到前景
                         _SetForegroundWindow(mainWindowHandle);
 
-                        //info DDPM navigate to webcam preview directly
-                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                         //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
 
                         result = true;
@@ -176,12 +176,13 @@ namespace DDPM.QAM
             }
         }
 
-        private void CameraSetting_Click(object sender, MouseButtonEventArgs e)
+        private void CameraSetting_Click(object sender, MouseButtonEventArgs? e)
         {
             if (CameraSetting != null)
             {
                 CameraSetting.Close();
                 CameraSetting = null;
+                DdpmCommonHelper.QAMCameraMenuIsOpen = false;
             }
             else
             {
@@ -206,6 +207,7 @@ namespace DDPM.QAM
 
                 //Derek 2025/02/13 auto open present page
                 CameraSetting.OpenPresetsFullView();
+                DdpmCommonHelper.QAMCameraMenuIsOpen = true;
             }
 
 
@@ -526,7 +528,7 @@ namespace DDPM.QAM
 
                 return -2;
             }
-            
+
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -607,5 +609,11 @@ namespace DDPM.QAM
         #endregion Win32API
 
         #endregion Get Full Screen State of Zoom and move to bottom of layer
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.QAMCameraMenuIsOpen)
+                CameraSetting_Click(this, null);
+        }
     }
 }

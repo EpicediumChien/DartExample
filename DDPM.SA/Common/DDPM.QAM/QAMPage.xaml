@@ -13,123 +13,124 @@
         ShowInTaskbar="False"
         AllowsTransparency="True" IsVisibleChanged="Window_IsVisibleChanged"
         Background="Transparent" Closing="Window_Closing"
-        Topmost="True">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />-->
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Border BorderThickness="2"
+        Topmost="True"
+        Loaded="Window_Loaded">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />-->
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Border BorderThickness="2"
             BorderBrush="{StaticResource VbarItem_HiBdColor}" 
             CornerRadius="10">
-        <!-- 
+    <!-- 
         <Border Background="{DynamicResource Default_SA_QAM_BackGround}"
                 CornerRadius="10"> -->
-        <Border CornerRadius="10">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDragging}" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
-                        </DataTrigger>
+    <Border CornerRadius="10">
+      <Border.Style>
+        <Style TargetType="Border">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding IsDragging}" Value="True">
+              <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+            </DataTrigger>
 
-                        <DataTrigger Binding="{Binding IsDragging}" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="32" />
-                    <RowDefinition Height="72" />
-                    <RowDefinition Height="34" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" x:Name="HeaderBd"
+            <DataTrigger Binding="{Binding IsDragging}" Value="False">
+              <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="32" />
+          <RowDefinition Height="72" />
+          <RowDefinition Height="34" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Grid Grid.Column="0" x:Name="HeaderBd"
                           MouseDown="Grid_MouseDown">
-                        <Border CornerRadius="10,0,0,0" Height="32">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/HandCursor.cur"/>
-                                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround_1}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding IsDragging}" Value="True">
-                                            <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/FistCursor.cur"/>
-                                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <Path Data="M0.589844 0H2.07984V1.28H0.589844V0Z M3.91984 0H5.40984V1.28H3.91984V0Z 
+            <Border CornerRadius="10,0,0,0" Height="32">
+              <Border.Style>
+                <Style TargetType="Border">
+                  <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/HandCursor.cur"/>
+                      <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround_1}"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="False">
+                      <Setter Property="Background" Value="Transparent"/>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                      <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/FistCursor.cur"/>
+                      <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Border.Style>
+              <Path Data="M0.589844 0H2.07984V1.28H0.589844V0Z M3.91984 0H5.40984V1.28H3.91984V0Z 
                               M0.589844 7.15H2.07984V8.43H0.589844V7.15Z M3.91984 7.15H5.40984V8.43H3.91984V7.15Z
                               M0.589844 3.57H2.07984V4.85H0.589844V3.57Z M3.91984 3.57H5.40984V4.85H3.91984V3.57Z 
                               M0.589844 10.72H2.07984V12H0.589844V10.72Z M3.91984 10.72H5.40984V12H3.91984V10.72Z"
                               Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center">
-                                <Path.Style>
-                                    <Style TargetType="Path">                                        
-                                        <Style.Triggers>                                            
-                                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="True">                                               
-                                                <Setter Property="Visibility" Value="Visible"/>                                                
-                                            </DataTrigger>
-                                            
-                                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="False">                                                
-                                                <Setter Property="Visibility" Value="Collapsed"/>                                                
-                                            </DataTrigger>                                            
-                                        </Style.Triggers>                                        
-                                    </Style>                                    
-                                </Path.Style>
-                            </Path>
-                        </Border>
-                    </Grid>
+                <Path.Style>
+                  <Style TargetType="Path">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                      </DataTrigger>
 
-                    <Grid Grid.Column="1"
+                      <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Path.Style>
+              </Path>
+            </Border>
+          </Grid>
+
+          <Grid Grid.Column="1"
                           Background="Transparent"
                           MouseDown="Close_Click">
-                        <Border CornerRadius="0,10,0,0" Height="32">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Close_Hover}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-							<Path Data="M16 0.82L15.18 0L8 7.2L0.82 0.05L0 0.87L7.15 8L0.05 15.13L0.87 16L8 8.85L15.13 16L15.95 15.18L8.8 8L16 0.82Z"
+            <Border CornerRadius="0,10,0,0" Height="32">
+              <Border.Style>
+                <Style TargetType="Border">
+                  <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Close_Hover}"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="False">
+                      <Setter Property="Background" Value="Transparent"/>
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </Border.Style>
+              <Path Data="M16 0.82L15.18 0L8 7.2L0.82 0.05L0 0.87L7.15 8L0.05 15.13L0.87 16L8 8.85L15.13 16L15.95 15.18L8.8 8L16 0.82Z"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-								<Path.Style>
-									<Style TargetType="Path">
-										<Setter Property="Fill" Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
-										<Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
-												<Setter Property="Fill" Value="White" />
-											</DataTrigger>
-										</Style.Triggers>
-									</Style>
-								</Path.Style>
-							</Path>
-                        </Border>
-                    </Grid>
-                </Grid>
-                <!--
+                <Path.Style>
+                  <Style TargetType="Path">
+                    <Setter Property="Fill" Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                        <Setter Property="Fill" Value="White" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Path.Style>
+              </Path>
+            </Border>
+          </Grid>
+        </Grid>
+        <!--
                 <Grid Grid.Row="1"
                       Background="{DynamicResource Default_SA_QAM_BackGround_1}"
                       MouseDown="CameraSetting_Click">
@@ -139,73 +140,73 @@
                           VerticalAlignment="Center" />
                 </Grid> -->
 
-                <Grid Grid.Row="1"
+        <Grid Grid.Row="1"
                     MouseDown="CameraSetting_Click" Height="72">
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround_1}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsCameraSettingSelected}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource VbarItem_HiBkColor}" />
-                                </DataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver}" Value="True"/>
-                                        <Condition Binding="{Binding IsCameraSettingSelected}" Value="False"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <!--<Setter Property="Background" Value="{DynamicResource Default_SA_QAM_CameraSetting_Hover}"/>-->
-                                    <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_CameraSetting_Hover}"/>
-                                </MultiDataTrigger>
-                                <DataTrigger Binding="{Binding IsDragging}" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
+          <Grid.Style>
+            <Style TargetType="Grid">
+              <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround_1}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCameraSettingSelected}" Value="True">
+                  <Setter Property="Background" Value="{DynamicResource VbarItem_HiBkColor}" />
+                </DataTrigger>
+                <MultiDataTrigger>
+                  <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver}" Value="True"/>
+                    <Condition Binding="{Binding IsCameraSettingSelected}" Value="False"/>
+                  </MultiDataTrigger.Conditions>
+                  <!--<Setter Property="Background" Value="{DynamicResource Default_SA_QAM_CameraSetting_Hover}"/>-->
+                  <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_CameraSetting_Hover}"/>
+                </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                  <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
 
-                    <Path x:Name="icon_CameraSetting" Data="M12.6523 11.5214L13.3484 10.1927L18.2504 12.7604L18.2504 3.23948L13.3484 5.80716L12.6524 4.47841L19.7504 0.760463L19.7504 15.2395L12.6523 11.5214Z M1.5 2.5H12.5V13.5H9V15H12.5H14V13.5V2.5V1H12.5H1.5H0V2.5V7H1.5V2.5Z M7.7628 11.7016C7.82859 11.3726 7.7628 11.0437 7.69702 10.7148L8.81539 10.0569L8.22331 8.87275L7.03915 9.20169C6.84179 8.93854 6.57865 8.74118 6.3155 8.54382L6.64443 7.29388L5.39449 6.83337L4.80241 8.01753C4.47348 7.95174 4.14455 8.01753 3.81562 8.08332L3.15775 6.96495L1.97359 7.55702L2.36831 8.80697C2.10517 9.00433 1.90781 9.26747 1.71045 9.53062L0.460505 9.20169L0 10.4516L1.18416 11.0437C1.11837 11.3726 1.18416 11.7016 1.24994 12.0305L0.131573 12.6884L0.723651 13.8725L1.97359 13.4778C2.17095 13.741 2.4341 13.9383 2.69725 14.1357L2.36831 15.3856L3.61826 15.8461L4.21033 14.662C4.53927 14.7277 4.8682 14.662 5.19713 14.5962L5.855 15.7145L7.03915 15.1225L6.51286 14.0041C6.77601 13.8067 6.97337 13.5436 7.17073 13.2804L8.42067 13.6094L8.88117 12.3594L7.7628 11.7016ZM5.06556 12.6884C4.34191 13.0173 3.4209 12.6884 3.09196 11.9647C2.76303 11.2411 3.09196 10.3201 3.81562 9.99112C4.53927 9.66219 5.46028 9.99112 5.78921 10.7148C6.11814 11.4384 5.78921 12.3594 5.06556 12.6884Z"
+          <Path x:Name="icon_CameraSetting" Data="M12.6523 11.5214L13.3484 10.1927L18.2504 12.7604L18.2504 3.23948L13.3484 5.80716L12.6524 4.47841L19.7504 0.760463L19.7504 15.2395L12.6523 11.5214Z M1.5 2.5H12.5V13.5H9V15H12.5H14V13.5V2.5V1H12.5H1.5H0V2.5V7H1.5V2.5Z M7.7628 11.7016C7.82859 11.3726 7.7628 11.0437 7.69702 10.7148L8.81539 10.0569L8.22331 8.87275L7.03915 9.20169C6.84179 8.93854 6.57865 8.74118 6.3155 8.54382L6.64443 7.29388L5.39449 6.83337L4.80241 8.01753C4.47348 7.95174 4.14455 8.01753 3.81562 8.08332L3.15775 6.96495L1.97359 7.55702L2.36831 8.80697C2.10517 9.00433 1.90781 9.26747 1.71045 9.53062L0.460505 9.20169L0 10.4516L1.18416 11.0437C1.11837 11.3726 1.18416 11.7016 1.24994 12.0305L0.131573 12.6884L0.723651 13.8725L1.97359 13.4778C2.17095 13.741 2.4341 13.9383 2.69725 14.1357L2.36831 15.3856L3.61826 15.8461L4.21033 14.662C4.53927 14.7277 4.8682 14.662 5.19713 14.5962L5.855 15.7145L7.03915 15.1225L6.51286 14.0041C6.77601 13.8067 6.97337 13.5436 7.17073 13.2804L8.42067 13.6094L8.88117 12.3594L7.7628 11.7016ZM5.06556 12.6884C4.34191 13.0173 3.4209 12.6884 3.09196 11.9647C2.76303 11.2411 3.09196 10.3201 3.81562 9.99112C4.53927 9.66219 5.46028 9.99112 5.78921 10.7148C6.11814 11.4384 5.78921 12.3594 5.06556 12.6884Z"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center">
-                        <Path.Style>
-                            <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsCameraSettingSelected}" Value="True">
-                                        <Setter Property="Fill" Value="White" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Path.Style>
-                    </Path>
-                </Grid>
-                <Grid Grid.Row="2"
+            <Path.Style>
+              <Style TargetType="Path">
+                <Setter Property="Fill" Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding IsCameraSettingSelected}" Value="True">
+                    <Setter Property="Fill" Value="White" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Path.Style>
+          </Path>
+        </Grid>
+        <Grid Grid.Row="2"
                       Background="Transparent"
                       MouseDown="CallDDPM_Click">
-                    <Border CornerRadius="0,0,10,10" 
+          <Border CornerRadius="0,0,10,10" 
                             VerticalAlignment="Top"
                             Height="30">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Menu_Hover}"/>
-                                    </Trigger>
-                                    <DataTrigger Binding="{Binding IsDragging}" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <!-- 
+            <Border.Style>
+              <Style TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
+                <Style.Triggers>
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Menu_Hover}"/>
+                  </Trigger>
+                  <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <!-- 
                             <Path Data="M16.8947 9.07931C16.8947 13.737 13.5791 17.2895 9.07929 17.2895C6.47415 17.2895 3.79006 16.1053 2.29013 14.2896L2.13224 14.0528H4.50055V13.2633H0.869141V16.8947H1.65858V14.6843L1.73752 14.7633C3.39534 16.7369 6.23732 18 9.07929 18C13.9738 18 17.6842 14.1317 17.6842 9.00037H16.8947V9.07931Z M8.92128 0.711681C11.5264 0.711681 14.2105 1.89584 15.7104 3.71154L15.8683 3.86943H13.5V4.65887H17.1314V1.02746H16.342V3.23788C14.6842 1.26429 11.8422 0.00118685 9.00022 0.00118685C4.02676 -0.0777569 0.316406 3.79049 0.316406 8.92183H1.10584C1.10584 4.26415 4.42148 0.711681 8.92128 0.711681Z M13.0263 9.39579C13.1052 9.00107 13.0263 8.60636 12.9474 8.21164L14.2894 7.4222L13.5789 6.00121L12.1579 6.39593C11.9211 6.08015 11.6053 5.84332 11.2895 5.60649L11.6843 4.10656L10.1843 3.55396L9.47383 4.97494C9.07911 4.896 8.68439 4.97494 8.28968 5.05389L7.50024 3.71184L6.07925 4.42234L6.55291 5.92227C6.23714 6.1591 6.00031 6.47487 5.76347 6.79065L4.26354 6.39593L3.71094 7.89586L5.13193 8.60636C5.05298 9.00107 5.13192 9.39579 5.21087 9.79051L3.86882 10.5799L4.57932 12.0009L6.07925 11.5273C6.31608 11.8431 6.63186 12.0799 6.94763 12.3167L6.55291 13.8166L8.05284 14.3692L8.76334 12.9483C9.15806 13.0272 9.55278 12.9483 9.9475 12.8693L10.7369 14.2114L12.1579 13.5009L11.5264 12.1588C11.8421 11.922 12.079 11.6062 12.3158 11.2904L13.8157 11.6852L14.3683 10.1852L13.0263 9.39579ZM9.78961 10.5799C8.92123 10.9747 7.81601 10.5799 7.42129 9.71157C7.02658 8.84319 7.42129 7.73797 8.28968 7.34325C9.15806 6.94854 10.2633 7.34326 10.658 8.21164C11.0527 9.08002 10.658 10.1852 9.78961 10.5799Z"
                           Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" /> -->
-                        <Image Stretch="Uniform" Height="25" Width="25" x:Name="DDPMInco" Source="{DynamicResource QAMImage_CallDDPM}" IsHitTestVisible="False" />
-                    </Border>
-                </Grid>
-            </Grid>
-        </Border>
+            <Image Stretch="Uniform" Height="25" Width="25" x:Name="DDPMInco" Source="{DynamicResource QAMImage_CallDDPM}" IsHitTestVisible="False" />
+          </Border>
+        </Grid>
+      </Grid>
     </Border>
+  </Border>
 </Window>
