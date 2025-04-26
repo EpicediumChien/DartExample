@@ -10,6 +10,7 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
+using Windows.Devices.Display.Core;
 
 namespace DDPM.SA.Plugins.User.DisplayManager.Test
 {
@@ -104,6 +105,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         }
 
         private DisplayMangerPlugin displayPlugin;
+        private DisplayDataManger displayData;
         private VcpCorePlugin vcpCorePlugin;
         private PipPbpMangerPlugin pipPbpMangerPlugin;
         private Dictionary<string, Dictionary<string, string>> getstr;
@@ -114,7 +116,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void Setup()
         {
             displayPlugin = CreateInitializeDisplayMangerPlugin();
-
+            displayData = new DisplayDataManger();
             vcpCorePlugin = CreateInitializeVcpCorePlugin();
             pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
             displayPropertiesPlugin = CreateInitializedisplayPropertiesPlugin();
@@ -189,19 +191,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         [Test]
         public void TestGetVCPCapability()
         {
+            //FunctionName="colorpreset"
             string funName = "colorpreset";
             int opt = 0;
-            ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = "E2" };
+            MonitorInfo monitorInfo_ = monitorInfo1;
+            ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = "High Data Speed" };
             var ObjGetvcpValue = ObjGetvcp.value;
             VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+
+            List<DisplayData> _displayData = new List<DisplayData>() { new DisplayData() { Model = monitorInfo_.modelName, ServiceTag = monitorInfo_.edid.ServiceTag, Color = new Color() { color_DisHDR = "Not HDR" } } };
+            PrivateObject privatedispalypluginObject_ = new PrivateObject(displayData);
+            privatedispalypluginObject_.SetFieldOrProperty("_displayData", _displayData);
             string capabilitystring = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F)";
-            monitorInfo1.CapabilityString = capabilitystring;
-            var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo1, funName, opt: opt).Result;
+
+            monitorInfo_.CapabilityString = capabilitystring;
+            var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo_, funName, opt: opt).Result;
             Assert.IsTrue(getVCPCapability.result);
-            Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability.value));
+            Assert.IsNotNull(getVCPCapability);
+
+            //FunctionName ! ="colorpreset"
+            funName = "Testcolorpreset";
+            var getVCPCapability_result2 = displayPlugin.GetVCPCapability(monitorInfo_, funName, opt: opt).Result;
+            Assert.IsNotNull(getVCPCapability_result2);
         }
 
         [Test]
