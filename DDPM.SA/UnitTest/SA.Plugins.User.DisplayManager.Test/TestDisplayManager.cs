@@ -201,6 +201,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+            privatedispalypluginObject.SetField("_displayDataManger", displayData);
 
             List<DisplayData> _displayData = new List<DisplayData>() { new DisplayData() { Model = monitorInfo_.modelName, ServiceTag = monitorInfo_.edid.ServiceTag, Color = new Color() { color_DisHDR = "Not HDR" } } };
             PrivateObject privatedispalypluginObject_ = new PrivateObject(displayData);
