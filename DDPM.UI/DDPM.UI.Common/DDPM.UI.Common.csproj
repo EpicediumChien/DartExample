@@ -157,6 +157,7 @@
 		<None Remove="Resources\Vbar.Display.Gaming.png" />
 		<None Remove="Resources\Vbar.Display.InputSource.png" />
 		<None Remove="Resources\Vbar.Display.KVM.png" />
+		<None Remove="Resources\Vbar.Display.MonitorAudio.png" />
 		<None Remove="Resources\Vbar.Display.Others.png" />
 		<None Remove="Resources\Vbar.Display.Settings.png" />
 		<None Remove="Resources\Vbar.Keyboard.Collaboration.png" />
@@ -357,6 +358,9 @@
 		</Resource>
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Vbar.Display.MonitorAudio.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD19.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>

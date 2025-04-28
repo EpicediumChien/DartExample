@@ -118,6 +118,7 @@ namespace DDPM.UI.Common
         public static readonly string VbarText_InputSource = GetString("InputSource");
         public static readonly string VbarText_EasyArrange = GetString("EasyArrange");
         public static readonly string VbarText_Gaming = GetString("Gaming");
+        public static readonly string VbarText_MonitorAudio = GetString("Audio");
         public static readonly string VbarText_KVM = GetString("KVM");
         public static readonly string VbarText_DisplayOthers = GetString("VbarText_DisplayOthers");
 

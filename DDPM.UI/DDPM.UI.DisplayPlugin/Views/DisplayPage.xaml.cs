@@ -24,6 +24,7 @@ using DDPM.UI.Module.Kvm;
 using DDPM.UI.Module.PipPbp;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
+using DDPM.UI.Module.MonitorAudio;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
@@ -493,6 +494,28 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 groups.Add(moduleGroup);
             }
+
+            /*//Group[3.5] Monitor Audio
+            //         Header[0] Audio
+            moduleGroup = new ModuleGroup()
+            {
+                GroupName = Constants.GroupName_MonitorAudio, // "Audio",
+                VbarText = Strings.VbarText_MonitorAudio,
+                IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_MonitorAudio"),
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.MonitorAudio.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplayMonitorAudio)
+            };
+            {
+                sw.Restart();
+                moduleGroup.AddHeader(Strings.VbarText_MonitorAudio, typeof(MonitorAudioModule), Constants.ModuleName_MonitorAudio);
+                sw.Stop();
+                _log?.Info($"* MonitorAudioModule ctor consume {sw.ElapsedMilliseconds} msec");
+            }
+            //If this ModuleGroup has any item, then add into moduleGroups
+            if (moduleGroup.HeaderCount > 0)
+            {
+                groups.Add(moduleGroup);
+            }*/
 
             //Group[4] KVM
             //         Header[0] KVM,   KvmModule

@@ -117,6 +117,7 @@ public class Constants
     public const string GroupName_InputSource = "InputSource";
     public const string GroupName_EasyArrange = "EasyArrange";
     public const string GroupName_Gaming = "Gaming";
+    public const string GroupName_MonitorAudio = "Audio";
     public const string GroupName_KVM = "KVM";
     public const string GroupName_DisplayOthers = "Others";
 
@@ -149,6 +150,8 @@ public class Constants
     public const string ModuleName_KVM = "KvmModule";
     //GroupName_DisplayOthers = "Others"
     public const string ModuleName_DisplayOthers = "DisplayOthersModule";
+    //MonitorAudio = "MonitorAudio"
+    public const string ModuleName_MonitorAudio = "MonitorAudioModule";
 
     #endregion  ModuleNames - DisplayPlugin
 
