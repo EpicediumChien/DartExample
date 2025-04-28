@@ -2752,897 +2752,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Layout.
-        /// </summary>
-        internal static string EATooltip_00 {
-            get {
-                return ResourceManager.GetString("EATooltip_00", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.1: 2 columns, split equally..
-        /// </summary>
-        internal static string EATooltip_21H {
-            get {
-                return ResourceManager.GetString("EATooltip_21H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.1: 2 rows, split equally..
-        /// </summary>
-        internal static string EATooltip_21V {
-            get {
-                return ResourceManager.GetString("EATooltip_21V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.2: 2 rows, split equally..
-        /// </summary>
-        internal static string EATooltip_22H {
-            get {
-                return ResourceManager.GetString("EATooltip_22H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.2: 2 columns, split equally..
-        /// </summary>
-        internal static string EATooltip_22V {
-            get {
-                return ResourceManager.GetString("EATooltip_22V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.3: 2 columns, split 70/30%..
-        /// </summary>
-        internal static string EATooltip_23H {
-            get {
-                return ResourceManager.GetString("EATooltip_23H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.3: 2 rows, split 30/70%..
-        /// </summary>
-        internal static string EATooltip_23V {
-            get {
-                return ResourceManager.GetString("EATooltip_23V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.4: 2 columns, split 30/70%..
-        /// </summary>
-        internal static string EATooltip_24H {
-            get {
-                return ResourceManager.GetString("EATooltip_24H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 2.4: 2 rows, split 70/30%..
-        /// </summary>
-        internal static string EATooltip_24V {
-            get {
-                return ResourceManager.GetString("EATooltip_24V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.1: 3 rows, split equally..
-        /// </summary>
-        internal static string EATooltip_31H {
-            get {
-                return ResourceManager.GetString("EATooltip_31H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.1: 3 columns, split equally..
-        /// </summary>
-        internal static string EATooltip_31V {
-            get {
-                return ResourceManager.GetString("EATooltip_31V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.2: 3 columns, split equally..
-        /// </summary>
-        internal static string EATooltip_32H {
-            get {
-                return ResourceManager.GetString("EATooltip_32H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.2: 3 rows, split equally..
-        /// </summary>
-        internal static string EATooltip_32V {
-            get {
-                return ResourceManager.GetString("EATooltip_32V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.3: 3 columns, split 30/40/30%..
-        /// </summary>
-        internal static string EATooltip_33H {
-            get {
-                return ResourceManager.GetString("EATooltip_33H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.3: 3 rows, split 30/40/30%..
-        /// </summary>
-        internal static string EATooltip_33V {
-            get {
-                return ResourceManager.GetString("EATooltip_33V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.4: 2 rows, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_34H {
-            get {
-                return ResourceManager.GetString("EATooltip_34H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.4: 2 rows, split equally. Row 1, no split. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_34V {
-            get {
-                return ResourceManager.GetString("EATooltip_34V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.5: 2 rows, split equally. Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_35H {
-            get {
-                return ResourceManager.GetString("EATooltip_35H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.5: 2 rows, split equally. Row 1, split equally. Row 2, no split..
-        /// </summary>
-        internal static string EATooltip_35V {
-            get {
-                return ResourceManager.GetString("EATooltip_35V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.6: 2 rows, split equally. Column 1, split 30/70%. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_36H {
-            get {
-                return ResourceManager.GetString("EATooltip_36H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.6: 2 rows, split 70/30%. Row 1, no split, Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_36V {
-            get {
-                return ResourceManager.GetString("EATooltip_36V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.7: 2 rows, split equally. Column 1, split 70/30%. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_37H {
-            get {
-                return ResourceManager.GetString("EATooltip_37H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.7: 2 rows, split 30/70%. Row 1, split equally, Row 2, no split..
-        /// </summary>
-        internal static string EATooltip_37V {
-            get {
-                return ResourceManager.GetString("EATooltip_37V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.8: 2 rows, split equally. Row 1, no split. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_38H {
-            get {
-                return ResourceManager.GetString("EATooltip_38H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.8: 2 columns, split equally.  Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_38V {
-            get {
-                return ResourceManager.GetString("EATooltip_38V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.9: 2 rows, split equally. Row 1, split equally. Row 2, no split..
-        /// </summary>
-        internal static string EATooltip_39H {
-            get {
-                return ResourceManager.GetString("EATooltip_39H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 3.9: 2 columns, split equally. Column 1, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_39V {
-            get {
-                return ResourceManager.GetString("EATooltip_39V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.1: split in 4 quadrants..
-        /// </summary>
-        internal static string EATooltip_41H {
-            get {
-                return ResourceManager.GetString("EATooltip_41H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.1: split in 4 quadrants..
-        /// </summary>
-        internal static string EATooltip_41V {
-            get {
-                return ResourceManager.GetString("EATooltip_41V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.2: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_42H {
-            get {
-                return ResourceManager.GetString("EATooltip_42H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.2: 2 rows, split equally. Row 1, no split. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_42V {
-            get {
-                return ResourceManager.GetString("EATooltip_42V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.3: 2 columns, split equally. Column 1, no split. Column 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_43H {
-            get {
-                return ResourceManager.GetString("EATooltip_43H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.3: 2 rows, split equally. Row 1, split equally in 3 sections. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_43V {
-            get {
-                return ResourceManager.GetString("EATooltip_43V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.4: 4 columns split equally..
-        /// </summary>
-        internal static string EATooltip_44H {
-            get {
-                return ResourceManager.GetString("EATooltip_44H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.4: 4 rows, split equally..
-        /// </summary>
-        internal static string EATooltip_44V {
-            get {
-                return ResourceManager.GetString("EATooltip_44V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.5: 3 columns split equally. Column 1, split equally. Columns 2 and 3, no split..
-        /// </summary>
-        internal static string EATooltip_45H {
-            get {
-                return ResourceManager.GetString("EATooltip_45H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.5: 3 rows, split equally.  Rows 1 and 2, no split. Row 3, split equally..
-        /// </summary>
-        internal static string EATooltip_45V {
-            get {
-                return ResourceManager.GetString("EATooltip_45V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.6: 3 columns, split equally. Columns 1 and 2, no split. Column 3, split equally..
-        /// </summary>
-        internal static string EATooltip_46H {
-            get {
-                return ResourceManager.GetString("EATooltip_46H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 4.6: 3 rows, split equally, Row 1, split equally, Rows 2 and 3, no split..
-        /// </summary>
-        internal static string EATooltip_46V {
-            get {
-                return ResourceManager.GetString("EATooltip_46V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.1: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_51H {
-            get {
-                return ResourceManager.GetString("EATooltip_51H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.1: 2 columns, split equallly. Column 1, split equally in 3 sections. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_51V {
-            get {
-                return ResourceManager.GetString("EATooltip_51V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.2: 2 rows, split equally. Row 1, split equally. Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_52H {
-            get {
-                return ResourceManager.GetString("EATooltip_52H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.2: 2 columns, split equally. Column 1, split equally. Column 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_52V {
-            get {
-                return ResourceManager.GetString("EATooltip_52V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.3: 2 rows, split 30/70% split. Row 1, split equally in 3 sections. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_53H {
-            get {
-                return ResourceManager.GetString("EATooltip_53H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.3: 2 columns, split 30/70%, Row 1, split equally in 3 sections. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_53V {
-            get {
-                return ResourceManager.GetString("EATooltip_53V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_54H {
-            get {
-                return ResourceManager.GetString("EATooltip_54H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_54V {
-            get {
-                return ResourceManager.GetString("EATooltip_54V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.5: 2 rows, split 30/70%. Rows 1 and 2, each split equally. Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_55H {
-            get {
-                return ResourceManager.GetString("EATooltip_55H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.5: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split 30/70%..
-        /// </summary>
-        internal static string EATooltip_55V {
-            get {
-                return ResourceManager.GetString("EATooltip_55V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.6: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split 30/70%..
-        /// </summary>
-        internal static string EATooltip_56H {
-            get {
-                return ResourceManager.GetString("EATooltip_56H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.6: 2 rows, split equally, Row 1, split 30/70%. Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_56V {
-            get {
-                return ResourceManager.GetString("EATooltip_56V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.7: 3 columns, split equally, Columns 1 and 3, each split equally, Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_57H {
-            get {
-                return ResourceManager.GetString("EATooltip_57H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.7: 3 rows, split equally, Rows 1 and 3, each split equally, Row 2, no split..
-        /// </summary>
-        internal static string EATooltip_57V {
-            get {
-                return ResourceManager.GetString("EATooltip_57V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.8: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_58H {
-            get {
-                return ResourceManager.GetString("EATooltip_58H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.8: 2 columns, split 30/70%. Column 1, split 70/30%, Column 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_58V {
-            get {
-                return ResourceManager.GetString("EATooltip_58V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.9: 2 rows, split 70/30%. Row 1, split 70/30%, Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_59H {
-            get {
-                return ResourceManager.GetString("EATooltip_59H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 5.9: 2 columns, split 70/30%. Column 1, split 70/30%, Column 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_59V {
-            get {
-                return ResourceManager.GetString("EATooltip_59V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally..
-        /// </summary>
-        internal static string EATooltip_61H {
-            get {
-                return ResourceManager.GetString("EATooltip_61H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_61V {
-            get {
-                return ResourceManager.GetString("EATooltip_61V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.2: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections.Column 1, no split. Column 2, equally split..
-        /// </summary>
-        internal static string EATooltip_62H {
-            get {
-                return ResourceManager.GetString("EATooltip_62H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.2: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_62V {
-            get {
-                return ResourceManager.GetString("EATooltip_62V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.3: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split equally..
-        /// </summary>
-        internal static string EATooltip_63H {
-            get {
-                return ResourceManager.GetString("EATooltip_63H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.3: 2 columns, split 30/70%. Column 1, split equally in 4 sections. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_63V {
-            get {
-                return ResourceManager.GetString("EATooltip_63V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.4: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_64H {
-            get {
-                return ResourceManager.GetString("EATooltip_64H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.4: 2 columns, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_64V {
-            get {
-                return ResourceManager.GetString("EATooltip_64V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.5: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_65H {
-            get {
-                return ResourceManager.GetString("EATooltip_65H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_65V {
-            get {
-                return ResourceManager.GetString("EATooltip_65V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Column 1, split evenly. Column 2, no split. Row 1, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_66H {
-            get {
-                return ResourceManager.GetString("EATooltip_66H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, no split. Column 2, split equally..
-        /// </summary>
-        internal static string EATooltip_66V {
-            get {
-                return ResourceManager.GetString("EATooltip_66V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.7: 2 columns, split equally. Rows 1, 2, and 3, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_67H {
-            get {
-                return ResourceManager.GetString("EATooltip_67H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.7: 3 columns, split equally. Columns 1, 2, and 3, each split equally..
-        /// </summary>
-        internal static string EATooltip_67V {
-            get {
-                return ResourceManager.GetString("EATooltip_67V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.8: 4 columns, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no splits..
-        /// </summary>
-        internal static string EATooltip_68H {
-            get {
-                return ResourceManager.GetString("EATooltip_68H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.8: 4 rows, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no split..
-        /// </summary>
-        internal static string EATooltip_68V {
-            get {
-                return ResourceManager.GetString("EATooltip_68V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.9: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 4 sections..
-        /// </summary>
-        internal static string EATooltip_69H {
-            get {
-                return ResourceManager.GetString("EATooltip_69H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.9: 2 rows, split equally. Row 1, split 70/30%. Column 1, no split, Column 2, split equally. Row 2, split 70/30%..
-        /// </summary>
-        internal static string EATooltip_69V {
-            get {
-                return ResourceManager.GetString("EATooltip_69V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.10: 2 columns, split 70/30%. Columns 1, 2, and 3, each split equally..
-        /// </summary>
-        internal static string EATooltip_6AH {
-            get {
-                return ResourceManager.GetString("EATooltip_6AH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 6.10: 2 rows, split 70/30%. Rows 1 and 2, each split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_6AV {
-            get {
-                return ResourceManager.GetString("EATooltip_6AV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.1: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Columns 2 and 3, no splits..
-        /// </summary>
-        internal static string EATooltip_71H {
-            get {
-                return ResourceManager.GetString("EATooltip_71H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.1: 3 rows, split equally. Rows 1 and 2, each split 30/70%, Row 3, split in 3 equal sections..
-        /// </summary>
-        internal static string EATooltip_71V {
-            get {
-                return ResourceManager.GetString("EATooltip_71V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.2: 2 rows, 30/70% split. Rows 1 and 2, each split equally in 3 sections. Columns 1 and 2, no split. Column 3, split equally..
-        /// </summary>
-        internal static string EATooltip_72H {
-            get {
-                return ResourceManager.GetString("EATooltip_72H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.2: 3 rows, split equally. Rows 1 and 3, each split equally in 3 sections. Row 2, split 30/70%..
-        /// </summary>
-        internal static string EATooltip_72V {
-            get {
-                return ResourceManager.GetString("EATooltip_72V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.3: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_73H {
-            get {
-                return ResourceManager.GetString("EATooltip_73H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.3: 2 columns, split equally. Column 1, split equally in 4 sections. Column 2, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_73V {
-            get {
-                return ResourceManager.GetString("EATooltip_73V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.4: 2 rows, split equally. Rows 1 and 3, each split equally. Row 2, split equally in 4 sections..
-        /// </summary>
-        internal static string EATooltip_74H {
-            get {
-                return ResourceManager.GetString("EATooltip_74H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.4: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split equally in 4 sections..
-        /// </summary>
-        internal static string EATooltip_74V {
-            get {
-                return ResourceManager.GetString("EATooltip_74V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.5: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_75H {
-            get {
-                return ResourceManager.GetString("EATooltip_75H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.5: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, 30/70% split. Column 1, split equally. Column 2, no split. Row 3, split in 3 equal sections..
-        /// </summary>
-        internal static string EATooltip_75V {
-            get {
-                return ResourceManager.GetString("EATooltip_75V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.6: 2 rows, split 30/70%. Row 1, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. Row 2, split equally in 4 sections..
-        /// </summary>
-        internal static string EATooltip_76H {
-            get {
-                return ResourceManager.GetString("EATooltip_76H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.6: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Row 3, split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_76V {
-            get {
-                return ResourceManager.GetString("EATooltip_76V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.7: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split 50/25/25%. Column 1, no split. Columns 2 and 3, each split equally..
-        /// </summary>
-        internal static string EATooltip_77H {
-            get {
-                return ResourceManager.GetString("EATooltip_77H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.7: 3 rows, split 25/25/50%. Rows 1 and 2, each split equally in 3 sections. Row 3, 30/70% split. Column 1, split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_77V {
-            get {
-                return ResourceManager.GetString("EATooltip_77V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.8: 2 rows, split 30/70%. Rows 1 and 4, each split equally. Row 2, split 25/25/50%. Columns 1 and 2, each split equally. Column 3, no split..
-        /// </summary>
-        internal static string EATooltip_78H {
-            get {
-                return ResourceManager.GetString("EATooltip_78H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.8: 3 rows, 30/70% split. Row 1, 30/70% split. Column 1, split equally. Column 2, no split. Rows 2 and 3, each split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_78V {
-            get {
-                return ResourceManager.GetString("EATooltip_78V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.9: 4 columns, split equally. Columns 1, 2, 3, and 4, each split equally..
-        /// </summary>
-        internal static string EATooltip_79H {
-            get {
-                return ResourceManager.GetString("EATooltip_79H", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.9: 4 columns, split equally. Rows 1, 2, 3, and 4, each split equally..
-        /// </summary>
-        internal static string EATooltip_79V {
-            get {
-                return ResourceManager.GetString("EATooltip_79V", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_7AH {
-            get {
-                return ResourceManager.GetString("EATooltip_7AH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections..
-        /// </summary>
-        internal static string EATooltip_7AV {
-            get {
-                return ResourceManager.GetString("EATooltip_7AV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.11: 2 rows, split 30/70%. Rows 1 and 2, each split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split..
-        /// </summary>
-        internal static string EATooltip_7BH {
-            get {
-                return ResourceManager.GetString("EATooltip_7BH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Option 7.11: 3 columns, split 30/70%. Columns 1, 2, and 3 split 25/50/25%. Rows 1 and 3, split equally. Row 2, no split..
-        /// </summary>
-        internal static string EATooltip_7BV {
-            get {
-                return ResourceManager.GetString("EATooltip_7BV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Automatic Startup:.
         /// </summary>
         internal static string EazyMemory_0 {
@@ -7837,7 +6946,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Located next to HDMI port 的當地語系化字串。
+        ///   Looks up a localized string similar to Located next to HDMI port.
         /// </summary>
         internal static string RtkHub_19 {
             get {
@@ -7846,7 +6955,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Located next to USB-A port 的當地語系化字串。
+        ///   Looks up a localized string similar to Located next to USB-A port.
         /// </summary>
         internal static string RtkHub_20 {
             get {
@@ -7855,7 +6964,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
+        ///   Looks up a localized string similar to Port is unavailable because power capacity was exceeded or to allow other connected devices to function.
         /// </summary>
         internal static string RtkHub_21 {
             get {
@@ -7864,7 +6973,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Unavailable 的當地語系化字串。
+        ///   Looks up a localized string similar to Unavailable.
         /// </summary>
         internal static string RtkHub_22 {
             get {
@@ -7873,7 +6982,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices. 的當地語系化字串。
+        ///   Looks up a localized string similar to Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices..
         /// </summary>
         internal static string RtkHub_23 {
             get {
@@ -7882,7 +6991,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
+        ///   Looks up a localized string similar to Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry..
         /// </summary>
         internal static string RtkHub_24 {
             get {
@@ -7891,7 +7000,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
+        ///   Looks up a localized string similar to Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry..
         /// </summary>
         internal static string RtkHub_25 {
             get {
@@ -7900,7 +7009,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected. 的當地語系化字串。
+        ///   Looks up a localized string similar to Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected..
         /// </summary>
         internal static string RtkHub_26 {
             get {
@@ -7909,7 +7018,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Dell Pro 4-in-1 USB-C Travel Hub: Alert 的當地語系化字串。
+        ///   Looks up a localized string similar to Dell Pro 4-in-1 USB-C Travel Hub: Alert.
         /// </summary>
         internal static string RtkHub_27 {
             get {
@@ -7918,7 +7027,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 USB port is NOT functioning. Unplug the device and retry. 的當地語系化字串。
+        ///   Looks up a localized string similar to USB port is NOT functioning. Unplug the device and retry..
         /// </summary>
         internal static string RtkHub_28 {
             get {
@@ -7927,7 +7036,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
+        ///   Looks up a localized string similar to Port is unavailable because power capacity was exceeded or to allow other connected devices to function.
         /// </summary>
         internal static string RtkHub_29 {
             get {
@@ -7936,7 +7045,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Save 的當地語系化字串。
+        ///   Looks up a localized string similar to Save.
         /// </summary>
         internal static string Save {
             get {
