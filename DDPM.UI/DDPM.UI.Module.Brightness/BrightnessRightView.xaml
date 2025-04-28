@@ -2597,6 +2597,7 @@
                         Opacity="{Binding BrightnessOpacity}"
                         Style="{DynamicResource RightGroupBorderStyle}"
                         Visibility="{Binding IsScheduledLuminanceShow}"
+                        Padding="16,10,16,10"
                         Margin="0,0,0,16">
 
                             <Expander
@@ -2606,7 +2607,7 @@
 
                                 <Expander.Header>
                                     <!--  Group Header: Scheduled.Luminance  -->
-                                    <Grid Height="60">
+                                    <Grid Height="40">
                                         <UXControls:UXTextBlock
                                         Margin="30,0,0,0"
                                         HorizontalAlignment="Left"
