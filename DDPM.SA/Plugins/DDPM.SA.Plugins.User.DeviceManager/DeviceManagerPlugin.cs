@@ -212,6 +212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
+        private bool isDDPMLaunchedByQAMMenu = false;
         private bool isWidgetSettingPageLoadedByQAM = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource = null;
@@ -662,7 +663,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-#endregion
+        #endregion
 
         #region Overriding methods
 
@@ -12291,15 +12292,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
         {
-            isDDPMLaunchedByQAM = newValue;
-            writelog($"IsDDPMLaunchByQAM: {newValue}");
+            isDDPMLaunchedByQAM = true;
+            isDDPMLaunchedByQAMMenu = !newValue;
+            writelog($"IsDDPMLaunchByQAM: {true}");
 
-            if (newValue)
+            if (!newValue)
             {
+                DeviceInfo di = new()
+                {
+                    ID = DdpmCommonHelper.QAMCameraID
+                };
                 DeviceChangedEventArgs _EventArgs = new()
                 {
                     type = DeviceChangedType.Peripherals_SettingsChange,
-                    device_peripherals = DdpmCommonHelper.QAMPageViewModel.CurrentDeviceInfo,
+                    device_peripherals = di,
                     changedProperty = "DDPMStartByQAM"
                 };
                 _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
@@ -12342,7 +12348,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 isDDPMHomepageReady = false;
                 isDDPMLaunchedByQAM = false;
-                SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                if (isDDPMLaunchedByQAMMenu)
+                {
+                    DeviceInfo di = new()
+                    {
+                        ID = DdpmCommonHelper.QAMCameraID
+                    };
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = di,
+                        changedProperty = "DDPMStartByQAM"
+                    };
+                    _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+                }
+                else
+                {
+                    SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                }
+                isDDPMLaunchedByQAMMenu = false;
             }
 
             return Task.CompletedTask;
