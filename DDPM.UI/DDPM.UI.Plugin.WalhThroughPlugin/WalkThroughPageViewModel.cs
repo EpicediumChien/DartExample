@@ -25,6 +25,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public string last_logicalDeviceType = string.Empty;
         public MonitorInfo MInfo = new MonitorInfo();
         public DeviceInfo DInfo = new DeviceInfo();
+
+        private bool _isDarkTheme;
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            private set => SetProperty(ref _isDarkTheme, value); // Use private set if only updated internally
+        }
+
         public WalkThroughPageViewModel()
         {
             Debug.WriteLine($"Queue Count: {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count}");
@@ -47,11 +55,39 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 }
                 InitializeDeviceFromQueue();
                 UpdateButtonVisibility();
+
+                // Set initial theme state
+                UpdateThemeState(DdpmCommonHelper.PreviousOsTheme);
+
+                // Subscribe to theme changes
+                DdpmCommonHelper.BitmapImageUpdated += HandleThemeChange;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WalkThroughPageViewModel Exception: {ex.Message}");
             }
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WalkThroughPageViewModel ... end ");
+        }
+
+        // Destructor or an Unload method to unsubscribe
+        ~WalkThroughPageViewModel()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= HandleThemeChange;
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Unsubscribed from theme changes.");
+        }
+
+        private void HandleThemeChange(OSThemeEnum newTheme)
+        {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Theme changed to: {newTheme}");
+            UpdateThemeState(newTheme);
+        }
+
+        private void UpdateThemeState(OSThemeEnum currentTheme)
+        {
+            // Assuming Dark = 1, Light = 0 or other values based on OSThemeEnum definition
+            IsDarkTheme = (currentTheme == OSThemeEnum.Dark); 
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] IsDarkTheme set to: {IsDarkTheme}");
+            // Note: SetProperty in IsDarkTheme setter already triggers OnPropertyChanged
         }
 
         public void InitializeDeviceFromQueue()
@@ -126,6 +162,19 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                         _currentDeviceinfo = DInfo.ID;
                         DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DeviceInfo (ID = {_currentDeviceinfo}) ...");
 
+                        // Kevin Add set default value for air audio device
+                        switch (deviceModel)
+                        {
+                            case "SB725":
+                            case "SL525":
+                            case "SP325":
+                                IsAirAudioDevice = true;
+                                break;
+                            default:
+                                IsAirAudioDevice = false;
+                                break;
+                        }
+                             
                         // << 250328 added by Hess to set default values
                         switch (DInfo.LogicalDeviceType)
                         {
@@ -138,6 +187,49 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                                 break;
                         }
                         // >>
+
+                        // Init and set default statuses for AirAudio devices
+                        if (IsAirAudioDevice)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initializing default audio states for {deviceModel}");
+                            // Set ViewModel state directly first
+                            _outgoingAudioStatus = true;
+                            _incomingAudioStatus = false;
+                            // Notify UI of the initial state
+                            OnPropertyChanged(nameof(OutgoingAudioStatus));
+                            OnPropertyChanged(nameof(OutgoingAudio_String));
+                            OnPropertyChanged(nameof(IncomingAudioStatus));
+                            OnPropertyChanged(nameof(IncomingAudio_String));
+
+                            // Call device manager to set hardware state
+                            var currentDeviceId = DInfo?.ID.ToString();
+                            if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNoiseCancellationAsync(currentDeviceId, true)
+                                    .ContinueWith(t => { 
+                                        if (t.IsFaulted) DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set initial OutgoingAudioStatus: {t.Exception?.InnerException?.Message}");
+                                        else DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initial SetAirAudioMicNoiseCancellationAsync called with true");
+                                    });
+                                DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNCIncomingAsync(currentDeviceId, false)
+                                    .ContinueWith(t => { 
+                                        if (t.IsFaulted) DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set initial IncomingAudioStatus: {t.Exception?.InnerException?.Message}");
+                                        else DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initial SetAirAudioMicNCIncomingAsync called with false");
+                                    });
+
+                                // Set default audio preset
+                                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Setting initial audio preset to Default (1)");
+                                SetAudioSelectedPresetInBackgroundAsync("DefaultCheck", 1);
+                                // Update ViewModel state for presets (already defaults to DefaultChecked = true)
+                                OnPropertyChanged(nameof(IsDefaultChecked));
+                                OnPropertyChanged(nameof(IsBassBoostChecked));
+                                OnPropertyChanged(nameof(IsSpeechBoostChecked));
+                                OnPropertyChanged(nameof(IsTrebleBoostChecked));
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] DeviceManagerSA or DeviceID is null during initial audio state setting.");
+                            }
+                        }
                         break;
 
                     case MonitorInfo monitorInfo:
@@ -628,11 +720,189 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             get
             {
-                if (ConsentPageVisibility == Visibility.Visible)
+                if (IsDDPMVisibility)
+                    return Visibility.Visible;
+                else
                     return Visibility.Collapsed;
-                return Visibility.Visible;
             }
         }
+
+        public Visibility AirAudioDevice => IsAirAudioDevice ? Visibility.Visible : Visibility.Collapsed;
+
+        public bool _isAirAudioDeviceVisibility = false;
+
+        public bool IsAirAudioDevice
+        {
+            get => _isAirAudioDeviceVisibility;
+            set
+            {
+                SetProperty(ref _isAirAudioDeviceVisibility, value);
+
+                OnPropertyChanged(nameof(IsAirAudioDevice));
+            }
+        }
+
+        // <<< Additions for Audio Toggle Status Strings >>>
+        private bool _outgoingAudioStatus = true; // Default to true
+        public bool OutgoingAudioStatus
+        {
+            get => _outgoingAudioStatus;
+            set
+            {
+                var currentDeviceId = DInfo?.ID.ToString();
+                if (SetProperty(ref _outgoingAudioStatus, value))
+                {
+                    OnPropertyChanged(nameof(OutgoingAudio_String));
+                    // Call the device manager
+                    if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNoiseCancellationAsync(currentDeviceId, value)
+                            .ContinueWith(t => { 
+                                if (t.IsFaulted)
+                                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set OutgoingAudioStatus: {t.Exception?.InnerException?.Message}");
+                                else
+                                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] SetAirAudioMicNoiseCancellationAsync for Outgoing called with {value}");
+                            });
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] DeviceManagerSA or DeviceID is null, cannot set OutgoingAudioStatus.");
+                    }
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] OutgoingAudioStatus property set to: {value}");
+                }
+            }
+        }
+
+        public string OutgoingAudio_String => OutgoingAudioStatus ? "ON" : "OFF";
+
+        private bool _incomingAudioStatus = false; // Default to false
+        public bool IncomingAudioStatus
+        {
+            get => _incomingAudioStatus;
+            set
+            {
+                var currentDeviceId = DInfo?.ID.ToString();
+                if (SetProperty(ref _incomingAudioStatus, value))
+                {
+                    OnPropertyChanged(nameof(IncomingAudio_String));
+                    // Call the device manager
+                    if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNCIncomingAsync(currentDeviceId, value) // <-- Example, likely needs correction
+                            .ContinueWith(t => { 
+                                if (t.IsFaulted)
+                                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set IncomingAudioStatus: {t.Exception?.InnerException?.Message}");
+                                else
+                                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] SetAirAudioMicNCIncomingAsync for Incoming called with {value}"); // <-- Log needs correction if method changes
+                            }); 
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] DeviceManagerSA or DeviceID is null, cannot set IncomingAudioStatus.");
+                    }
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] IncomingAudioStatus property set to: {value}");
+                }
+            }
+        }
+        public string IncomingAudio_String => IncomingAudioStatus ? "ON" : "OFF";
+
+
+        private bool _isDefaultChecked = true; // Assuming Default is the initial state
+        private bool _isBassBoostChecked = false;
+        private bool _isSpeechBoostChecked = false;
+        private bool _isTrebleBoostChecked = false;
+
+        public bool IsDefaultChecked
+        {
+            get => _isDefaultChecked;
+            set
+            {
+                if (_isDefaultChecked != value && value)
+                {
+                    SetProperty(ref _isDefaultChecked, true, nameof(IsDefaultChecked));
+                    SetProperty(ref _isBassBoostChecked, false, nameof(IsBassBoostChecked));
+                    SetProperty(ref _isSpeechBoostChecked, false, nameof(IsSpeechBoostChecked));
+                    SetProperty(ref _isTrebleBoostChecked, false, nameof(IsTrebleBoostChecked));
+                    SetAudioSelectedPresetInBackgroundAsync("DefaultCheck", 1);
+                }
+            }
+        }
+
+        public bool IsBassBoostChecked
+        {
+            get => _isBassBoostChecked;
+            set
+            {
+                if (_isBassBoostChecked != value && value)
+                {
+                    SetProperty(ref _isBassBoostChecked, true, nameof(IsBassBoostChecked));
+                    SetProperty(ref _isDefaultChecked, false, nameof(IsDefaultChecked));
+                    SetProperty(ref _isSpeechBoostChecked, false, nameof(IsSpeechBoostChecked));
+                    SetProperty(ref _isTrebleBoostChecked, false, nameof(IsTrebleBoostChecked));
+                    SetAudioSelectedPresetInBackgroundAsync("BassBoostCheck", 3);
+                }
+            }
+        }
+
+        public bool IsSpeechBoostChecked
+        {
+            get => _isSpeechBoostChecked;
+            set
+            {
+                if (_isSpeechBoostChecked != value && value)
+                {
+                    SetProperty(ref _isSpeechBoostChecked, true, nameof(IsSpeechBoostChecked));
+                    SetProperty(ref _isDefaultChecked, false, nameof(IsDefaultChecked));
+                    SetProperty(ref _isBassBoostChecked, false, nameof(IsBassBoostChecked));
+                    SetProperty(ref _isTrebleBoostChecked, false, nameof(IsTrebleBoostChecked));
+                    SetAudioSelectedPresetInBackgroundAsync("SpeechBoostCheck", 2);
+                }
+            }
+        }
+
+        public bool IsTrebleBoostChecked
+        {
+            get => _isTrebleBoostChecked;
+            set
+            {
+                if (_isTrebleBoostChecked != value && value)
+                {
+                    SetProperty(ref _isTrebleBoostChecked, true, nameof(IsTrebleBoostChecked));
+                    SetProperty(ref _isDefaultChecked, false, nameof(IsDefaultChecked));
+                    SetProperty(ref _isBassBoostChecked, false, nameof(IsBassBoostChecked));
+                    SetProperty(ref _isSpeechBoostChecked, false, nameof(IsSpeechBoostChecked));
+                    SetAudioSelectedPresetInBackgroundAsync("TrebleBoostCheck", 4);
+                }
+            }
+        }
+
+        private async void SetAudioSelectedPresetInBackgroundAsync(string Debounce, int Preset)
+        {
+            var currentDeviceId = DInfo?.ID.ToString();
+            if (string.IsNullOrEmpty(currentDeviceId) || DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] DeviceManagerSA or DeviceID is null, cannot set Audio Preset.");
+                return;
+            }
+
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Setting Audio Preset to {Preset} for device {currentDeviceId}...");
+                await DdpmCommonHelper.DeviceManagerSA.SetAirAudioSelectedPresetAsync(currentDeviceId, Preset);
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Successfully set Audio Preset to {Preset}.");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set Audio Preset {Preset}: {ex.Message}");
+            }
+        }
+
+
+        // Assume SupportedOutgoingAudio is already defined elsewhere or add if needed
+        // We might need to initialize these statuses based on the current device
+        // when InitializeDevice is called.
+        // Example: OutgoingAudioStatus = GetInitialOutgoingStatusFromDevice(DInfo);
+        // <<< End Additions >>>
 
         public void SwitchToDDPMPage()
         {
