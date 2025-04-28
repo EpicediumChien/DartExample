@@ -67,7 +67,7 @@
                 </Grid.Resources>
 
                 <!-- Icon0, MonitorConfig -->
-                <Grid Grid.Column="0" Visibility="Visible">
+                <Grid Grid.Column="0" Visibility="Visible" Name="awsIcon0">
                     <Border Width="120" Height="90" BorderThickness="1" BorderBrush="White"
                             CornerRadius="6">
                         <Canvas Name="icon0Canvas">
@@ -90,10 +90,11 @@
                 <ContentControl Grid.Column="0" Content="{Binding AwsIcon0}" Visibility="Collapsed"/>
                 
                 <!-- Icon1 ~ Icon4, EA Layouts load from RecentList -->
-                <ContentControl Grid.Column="1" Content="{Binding AwsIcon1}"/>
-                <ContentControl Grid.Column="2" Content="{Binding AwsIcon2}"/>
-                <ContentControl Grid.Column="3" Content="{Binding AwsIcon3}"/>
-                <ContentControl Grid.Column="4" Content="{Binding AwsIcon4}"/>
+                <!-- Robert_Lin 2025-4-25 Add name to help AwsWindow to get the Rect of AwsIcons from the name instead of AwsIcon? -->
+                <ContentControl Grid.Column="1" Content="{Binding AwsIcon1}" Name="awsIcon1"/>
+                <ContentControl Grid.Column="2" Content="{Binding AwsIcon2}" Name="awsIcon2"/>
+                <ContentControl Grid.Column="3" Content="{Binding AwsIcon3}" Name="awsIcon3"/>
+                <ContentControl Grid.Column="4" Content="{Binding AwsIcon4}" Name="awsIcon4"/>
             </Grid>
         </Border>
     </Grid></Window>

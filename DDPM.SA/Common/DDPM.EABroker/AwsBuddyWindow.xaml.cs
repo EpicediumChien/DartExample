@@ -115,6 +115,17 @@ namespace DDPM.EABroker
                         rcScreen.Width = _workScreen.WorkingArea.Width * awsBuddyOverlapScale;
                         rcScreen.Height = _workScreen.WorkingArea.Height * awsBuddyOverlapScale;
 
+                        //Check if it's migrate from DDM
+                        if ((localSplit.Settings != null) && (localSplit.Settings.Count >= 8))
+                        {
+                            if ((localSplit.Settings[2] == 1.000) && (localSplit.Settings[3] == 1.0000))
+                            {
+                                rcScreen.Width /= _vm.ScreenScale;
+                                rcScreen.Height /= _vm.ScreenScale;
+                            }
+                        }
+
+
                         //Create Borders and CellBorders to canvas grid
                         sp0B.ApplySettingsToCellList(rcScreen);
 
@@ -122,12 +133,20 @@ namespace DDPM.EABroker
                     localSplit.SplitMode = eSplitModes.Work;
                     localSplit.IsEditable = false;
                     localSplit.IsVertical = IsVertical;
-                    //localSplit.HoveringCell = hoverCellName;
+                    localSplit.HoveringCell = hoverCellName;
                     splitContent.Content = localSplit;
+
 
                     _workSplit = localSplit;
                 }//Check if workSplit is changed
-
+                else
+                {
+                    if (_workSplit != null)
+                    {
+                        _workSplit.HoveringCell = hoverCellName;
+                    }
+                }
+                /*
                 if (localSplit != null)
                 {
                     //Set the hovering Cell to Hover state
@@ -150,7 +169,7 @@ namespace DDPM.EABroker
                         localSplit.HoveringCell = hoverCellName;
                     }
                 }
-
+                */
 
                 //Robert_Lin, 2024-10-23 Temporary comment-out
 
@@ -284,7 +303,7 @@ namespace DDPM.EABroker
         #endregion
         private void HandleHoveringAwsIconChanged(object? sender, ISplitCtrl newSplit)
         {
-            SetWorkSplit(newSplit);
+    //        SetWorkSplit(newSplit);
         }
         private void HandleHoveringAwsCellObjChanged(object? sender, CellObj cellObj)
         {

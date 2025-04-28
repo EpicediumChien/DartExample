@@ -11,49 +11,49 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="554" Loaded="UserControl_Loaded">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-      <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
-      <PluginCommon:BooleanToInverseConverter x:Key="BooleanToInverseConverter" />
-      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
-      <PluginCommon:HeightConverter x:Key="HeightConverter" />
-      <Style x:Key="TextBlockStyle1" TargetType="{x:Type UXControls:UXTextBlock}">
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="Medium" />
-      </Style>
-      <Style x:Key="ToggleSwitch1" TargetType="{x:Type UXControls:UXToggleSwitch}">
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="16" />
-      </Style>
-      <Style x:Key="DisableToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
-        <Setter Property="Placement" Value="Top" />
-        <Setter Property="VerticalOffset" Value="45" />
-        <Setter Property="HorizontalOffset">
-          <Setter.Value>
-            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
-              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
-              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
-            </MultiBinding>
-          </Setter.Value>
-        </Setter>
-      </Style>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,0,0,15" to Margin="0,0,6,16"-->
-  <Grid Margin="0,0,6,16">
-    <Border CornerRadius="13" Margin="0,10,10,0" Width="auto">
-      <Border.Height>
-        <MultiBinding Converter="{StaticResource HeightConverter}">
-          <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
-        </MultiBinding>
-      </Border.Height>
-      <StackPanel Margin="16,16,2,0" Orientation="Vertical">
-        <Grid>
-          <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraSettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
+            <PluginCommon:BooleanToInverseConverter x:Key="BooleanToInverseConverter" />
+            <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+            <PluginCommon:HeightConverter x:Key="HeightConverter" />
+            <Style x:Key="TextBlockStyle1" TargetType="{x:Type UXControls:UXTextBlock}">
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="Medium" />
+            </Style>
+            <Style x:Key="ToggleSwitch1" TargetType="{x:Type UXControls:UXToggleSwitch}">
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+            <Style x:Key="DisableToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+                <Setter Property="Placement" Value="Top" />
+                <Setter Property="VerticalOffset" Value="45" />
+                <Setter Property="HorizontalOffset">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,0,0,15" to Margin="0,0,6,16"-->
+    <Grid Margin="0,0,6,16">
+        <Border CornerRadius="13" Margin="0,10,10,0" Width="auto">
+            <Border.Height>
+                <MultiBinding Converter="{StaticResource HeightConverter}">
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                </MultiBinding>
+            </Border.Height>
+            <StackPanel Margin="16,16,2,0" Orientation="Vertical">
+                <Grid>
+                    <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraSettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
 
                     <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
                         <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
@@ -566,7 +566,7 @@
                                         <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotAutoFramingOn}" />
                                     </Grid>
                                     <StackPanel Orientation="Vertical" Margin="16,16,16,16">
-                                        <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
+                                        <UXControls:UXSlider Name="AutofocusSlider" Height="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
                                          Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AutofocusSlider_KeyUp"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -679,9 +679,10 @@
                                 </Border.ToolTip>
                                 <Grid Margin="18,27,16,27">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock MaxWidth="330" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                        <!--20250425 Chewlin for PIMS-358676 Change MaxWidth="330" to MaxWidth="220" -->
+                                        <UXControls:UXTextBlock MaxWidth="220" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" -->
-                                        <Border Background="{StaticResource FakeTransparent}">
+                                        <Border Background="{StaticResource FakeTransparent}"> 
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="14" HorizontalOffset="6" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
@@ -694,7 +695,8 @@
                                             </Border.ToolTip>
                                         </Border>
                                     </StackPanel>
-                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                                    <!--20250425 Chewlin for PIMS-358978 add Content="{Binding Path=PrioritizeExternalWebcamStatus_Text}" ,FontFamily="Roboto" FontSize="16" and remove Foreground="White" -->
+                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_Text}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16"  />
                                 </Grid>
                             </Border>
                             <Border x:Name="brdHello" Visibility="{Binding brdHello_show_control }" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">

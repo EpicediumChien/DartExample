@@ -11630,6 +11630,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 //_Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
                 _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
                 _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                if (webcamList.Count > 0)
+                {
+                    if (webcamList[0].webcamCommodity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _nextWebcam
+                        && _nextWebcam != null)
+                    {
+                        _nextWebcam.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
+                    }
+                }
                 _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
                 _Webcamcom.ZoomMeetingTypeChanged -= Webcam_ZoomMeetingTypeChanged; //for QAM
 
