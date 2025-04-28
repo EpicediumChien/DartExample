@@ -48,6 +48,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
                 for (int i = 0; i < VisionEngineList.Count; i++)
                 {
                     VisionEngineList[i].VisionEngine_Enable = e.IsEnable_VisionEngineType[i];
+                    VisionEngineList[i].Refresh();
                 }                
             }
             RefreshUI();
@@ -182,10 +183,15 @@ namespace DDPM.UI.Module.GamingVisionEngine
             OnPropertyChanged("VisionEngineIsEnable");
         }
     }
-    internal class UI_VisionEngine
+    internal class UI_VisionEngine : INotifyPropertyChanged
     {
         public bool VisionEngine_Enable { get; set; }
         public Gaming_VisionEngineType VisionEngineType { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public string DisplayText
         {
@@ -214,6 +220,11 @@ namespace DDPM.UI.Module.GamingVisionEngine
         {
             VisionEngine_Enable = isEnable;
             VisionEngineType = type;
+        }
+        public void Refresh()
+        {
+            OnPropertyChanged(nameof(VisionEngine_Enable));
+            OnPropertyChanged(nameof(VisionEngineType));
         }
     }
 }

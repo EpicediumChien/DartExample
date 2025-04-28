@@ -342,7 +342,7 @@ namespace DDPM.UI.Common
 
                 #region SplitListView - EzBtn
                 UpdateFreezable("EzBtn_BkColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF193457"));
-                UpdateFreezable("EzBtn_BkColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF596067"));
+                UpdateFreezable("EzBtn_BkColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#596067"));
 
                 UpdateFreezable("EzBtn_BdColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
                 UpdateFreezable("EzBtn_BdColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
@@ -426,13 +426,21 @@ namespace DDPM.UI.Common
                 #endregion
 
                 #region EzArrange
+                //Robert_Lin 2025-4-25, update new values which is converted by ChatGPT
                 UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) =>
                 {
-                    shadow.Color = (Color)ColorConverter.ConvertFromString("#7F000000");
+                    //NEW:
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#FF000000");
                     shadow.ShadowDepth = 0;
-                    shadow.BlurRadius = 12;
-                    shadow.Opacity = 1;
+                    shadow.BlurRadius = 8;
+                    shadow.Opacity = 0.5;
                     shadow.Direction = 0;
+                    //OLD:
+                    //shadow.Color = (Color)ColorConverter.ConvertFromString("#7F000000");
+                    //shadow.ShadowDepth = 0;
+                    //shadow.BlurRadius = 12;
+                    //shadow.Opacity = 1;
+                    //shadow.Direction = 0;
                 });
                 #endregion
 

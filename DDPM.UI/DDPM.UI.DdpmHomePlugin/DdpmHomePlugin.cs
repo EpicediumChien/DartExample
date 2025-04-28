@@ -142,7 +142,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //Robert_Lin 2025-4-18 added, to keep the DIspatcher, which will be used for Dispose static UI resources.
         private readonly Dispatcher? uiDIspatcher = null;
 
-  //      private WindowsServiceMonitor _dthMonitor = new WindowsServiceMonitor(UI.Common.Constants.DTH_ServiceName);
+        //      private WindowsServiceMonitor _dthMonitor = new WindowsServiceMonitor(UI.Common.Constants.DTH_ServiceName);
 
         /// <summary>
         /// Default constructor
@@ -534,6 +534,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 if ((e != null) && !string.IsNullOrEmpty(e.changedProperty))
                 {
+                    // << 25-04-25 added by Hess to jump to webcam when open from QAM
+                    // seperate Peripherals_UnPlug event
+                    if (e.changedProperty == "DDPMStartByQAM")
+                    {
+                        _log.Info("DdpmHomePlugin.DeviceChanged.DDPMStartByQAM...");
+                        var id = e.device_peripherals.ID;
+                        if (id != null)
+                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId, id.ToString());
+                        else
+                            _log.Info("DdpmHomePlugin.DeviceChanged.DDPMStartByQAM ID is null.");
+                        return;
+                    }
+
                     // << 25-04-14 added by Hess to tune Unpair peripheral performance
                     // seperate Peripherals_UnPlug event
                     if (e.type == DeviceChangedType.Peripherals_UnPlug && _deviceManager != null)
@@ -1403,7 +1416,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (_iconAddDevice != null)
                     {
-                        Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                        Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+                        {
                             _iconAddDevice.Visibility = Visibility.Collapsed;
                         }, DispatcherPriority.Loaded);
                     }
@@ -1420,7 +1434,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (_iconAddDevice != null)
                     {
-                        Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                        Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+                        {
                             _iconAddDevice.IsEnabled = isEnabled;
                         }, DispatcherPriority.Loaded);
                     }
@@ -1449,7 +1464,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else
                 {
-                    Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                    Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+                    {
                         if (_gearBtn != null)
                             _gearBtn.Visibility = Visibility.Collapsed;
                         if (_iconGear != null)
@@ -1460,7 +1476,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 bool isEnabled = param[1];
 
-                Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+                {
                     if (_gearBtn != null)
                         _gearBtn.IsEnabled = isEnabled;
                     if (_iconGear != null)

@@ -150,21 +150,27 @@ namespace DDPM.UI.Module.WebCameraCapture
             }
 
         }
+
+        private Task _currentOperation;
         private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {
-
             try
             {
-
                 if (sender is Border bdr)
                 {
-                    int idx;
-                    if (!(bdr.Tag is string))
+                    if (bdr.Tag is not string)
                         return;
-                    bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                    if (!r)
+                    if (!int.TryParse(bdr.Tag.ToString(), out int idx))
                         return;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _vm.AlertType = WebcamAlert.Alert1;
+                        _vm.AlertVisibility = Visibility.Visible;
+                    });
+
                     _vm.SetResolution_Selected(idx);
+                    await Task.Delay(1000);
                     InitializeFPS();
 
                     //for default 30 fps
@@ -198,35 +204,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                             //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                             DdpmCommonHelper.WriteUILog($"[btnResolution_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
 
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertType = WebcamAlert.Alert1;
-                                _vm.AlertVisibility = Visibility.Visible;
-                            });
-
-
-                            bool set_ok = false;
-                            while (set_ok != true)
-                            {
-                                try
-                                {
-                                    //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                    await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                                    set_ok = true;
-                                }
-                                catch
-                                {
-                                    _vm._log.Debug("WebCameraCaptureRightView.cs set Resolution fail!");
-                                    await Task.Delay(250);
-                                }
-                            }
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertVisibility = Visibility.Hidden;
-                            });
-
-
+                            //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                            if (_currentOperation != null && !_currentOperation.IsCompleted)
+                                await _currentOperation;
+                            _currentOperation = SetMediaStreamPropertiesAsync(encodingProperties);
 
                             break;
                         }
@@ -237,23 +218,40 @@ namespace DDPM.UI.Module.WebCameraCapture
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click() ex:" + ex.Message);
             }
+            finally
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _vm.AlertVisibility = Visibility.Hidden;
+                });
+            }
+        }
+
+        private async Task SetMediaStreamPropertiesAsync(IMediaEncodingProperties encodingProperties)
+        {
+            await _vm.MediaCapture?.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoRecord, encodingProperties);
         }
 
         private async void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
-
             try
             {
-
                 if (sender is Border bdr)
                 {
-                    int idx;
-                    if (!(bdr.Tag is string))
+                    if (bdr.Tag is not string)
                         return;
-                    bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                    if (!r)
+
+                    if (!int.TryParse(bdr.Tag.ToString(), out int idx))
                         return;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _vm.AlertType = WebcamAlert.Alert1;
+                        _vm.AlertVisibility = Visibility.Visible;
+                    });
+
                     _vm.SetFPS_Selected(idx);
+                    await Task.Delay(1000);
                     foreach (var property in _vm.allProperties)
                     {
                         string properties_temp = property.GetFriendlyName();
@@ -265,32 +263,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                             DdpmCommonHelper.WriteUILog($"[btnFPS_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
                             //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertType = WebcamAlert.Alert1;
-                                _vm.AlertVisibility = Visibility.Visible;
-                            });
-
-                            bool set_ok = false;
-                            while (set_ok != true)
-                            {
-                                try
-                                {
-                                    //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                    await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                                    set_ok = true;
-                                }
-                                catch
-                                {
-                                    _vm._log.Debug("WebCameraCaptureRightView.cs set FPS fail!");
-                                    await Task.Delay(250);
-                                }
-                            }
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertVisibility = Visibility.Hidden;
-                            });
+                            //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                            if (_currentOperation != null && !_currentOperation.IsCompleted)
+                                await _currentOperation;
+                            _currentOperation = SetMediaStreamPropertiesAsync(encodingProperties);
 
                             break;
                         }
@@ -301,7 +277,13 @@ namespace DDPM.UI.Module.WebCameraCapture
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnFPS_Click() ex:" + ex.Message);
             }
-
+            finally
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _vm.AlertVisibility = Visibility.Hidden;
+                });
+            }
         }
 
         private void Open_Click(object sender, MouseButtonEventArgs e)

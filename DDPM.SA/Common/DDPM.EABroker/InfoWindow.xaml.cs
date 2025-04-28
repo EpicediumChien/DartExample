@@ -330,8 +330,8 @@ namespace DDPM.EABroker
 
             //NEW: using Dispatcher.InvokeAsync
             //
-            /*
-            //_pendingOp_DeterminHoveringCell?.Abort();
+            ///*
+            _pendingOp_DeterminHoveringCell?.Abort();
             //Dispatcher.BeginInvoke(new Action(() =>
             _pendingOp_DeterminHoveringCell = Dispatcher.InvokeAsync(() =>
             {
@@ -352,10 +352,11 @@ namespace DDPM.EABroker
                     Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
                 }
             }, DispatcherPriority.Loaded);
-            */
+            //*/
 
             //OLD: using Dispatcher.BeginInvoke
             //
+            /*
             Dispatcher.BeginInvoke(new Action(() =>
             {
 
@@ -374,7 +375,7 @@ namespace DDPM.EABroker
                     Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
                 }
             }));
-
+            */
         }
 
         #endregion Window Event Handlers

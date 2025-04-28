@@ -146,10 +146,14 @@
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
                     <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
+                    <Setter Property="Opacity" Value="1"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsEnabled}" Value="False">
                             <Setter Property="AutomationProperties.ItemStatus"
                                     Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -169,7 +173,7 @@
                                 <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
                                 <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
                             </DataTrigger>
-                        </Style.Triggers>
+                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Viewbox Width="16" Height="16">
@@ -180,9 +184,18 @@
                                 <Style TargetType="Path">
                                     <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=prevButton, Path=IsMouseOver}" Value="True">
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=prevButton, Path=IsMouseOver}" Value="True"/>
+                                                <Condition Binding="{Binding IsPrevButtonEnabled}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <!--<DataTrigger Binding="{Binding ElementName=prevButton, Path=IsMouseOver}" Value="True">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
-                                        </DataTrigger>
+                                        </DataTrigger>-->
                                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
                                                  Value="False">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
@@ -205,10 +218,14 @@
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
                     <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
+                    <Setter Property="Opacity" Value="1"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsEnabled}" Value="False">
                             <Setter Property="AutomationProperties.ItemStatus"
                                    Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -237,9 +254,18 @@
                                 <Style TargetType="Path">
                                     <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsMouseOver}" Value="True">
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=nextBtn, Path=IsMouseOver}" Value="True"/>
+                                                <Condition Binding="{Binding IsNextButtonEnabled}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <!--<DataTrigger Binding="{Binding ElementName=nextButton, Path=IsMouseOver}" Value="True">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
-                                        </DataTrigger>
+                                        </DataTrigger>-->
                                         <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsEnabled}" Value="False">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                         </DataTrigger>

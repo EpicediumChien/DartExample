@@ -171,6 +171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //osd queue
         private OsdQueue _showOsdQueue = new OsdQueue();
+
         //hotkey settings
         private List<HotkeySettings> _hotkeySettings = null;// = new List<HotkeySettings>();
 
@@ -276,6 +277,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
+#if DEBUG
+            Debug.WriteLine($"[_DTPProxyPlugin_DTPEventHandler] {e.UI_Field_Name}.");
+#endif
             if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen") || e.UI_Field_Name.StartsWith("Camera"))
             {
                 var paras = e.UI_Field_Name.Split('|');
@@ -658,7 +662,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        #endregion
+#endregion
 
         #region Overriding methods
 
@@ -909,7 +913,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             MonitorPresetCache mpc = _ColorProfileHelper?.GetPresetListFromCache(m, SmartHDR_ON);
             if (mpc != null)
             {
-                return Task.FromResult(mpc.preset_list);
+                if (_ColorPresetPlugin.CompareColorPresetSupportList(mpc.preset_list).Result)
+                {
+                    return Task.FromResult(mpc.preset_list);
+                }
             }
 
             List<string> multiColorPreset = new List<string>();
@@ -939,6 +946,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                         foreach (string info in _SupportedColorPreset)
                         {
+                            Debug.WriteLine("info color : " + info);
                             multiColorPreset.Add(ColorprofileMulti(info));
                         }
                     }
@@ -8010,7 +8018,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
-
             }
             if (instanceSettings == null)
             {
@@ -12063,6 +12070,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //}
         private Task QAMClose(bool openQAMOSD)
         {
+#if DEBUG
+            if (threadQAM != null)
+                Debug.WriteLine($"Thread found! {threadQAM}");
+#endif
             if (null == _QAM)
                 return Task.CompletedTask;
 
@@ -12134,9 +12145,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
-
+                            Debug.WriteLine($"QAM position: {QAM_Position}");
                             //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0 && IsPointOnScreen(QAM_Position))
                             {
                                 //_QAM.Top = QAM_Position.Y;
                                 //_QAM.Left = QAM_Position.X;
@@ -12210,6 +12221,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        private bool IsPointOnScreen(Point point)
+        {
+            // Convert WPF Point to WinForms Point
+            var winFormsPoint = new System.Drawing.Point((int)point.X, (int)point.Y);
+
+            // Check if the point is inside any screen's bounds
+            foreach (var screen in Screen.AllScreens)
+            {
+                if (screen.WorkingArea.Contains(winFormsPoint))
+                {
+                    return true; // Point is on a visible part of a screen
+                }
+            }
+
+            return false; // Off screen
+        }
         private Task CloseDDPM()
         {
             UpdateUINotify e = new()
@@ -12266,6 +12293,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             isDDPMLaunchedByQAM = newValue;
             writelog($"IsDDPMLaunchByQAM: {newValue}");
+
+            if (newValue)
+            {
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = DdpmCommonHelper.QAMPageViewModel.CurrentDeviceInfo,
+                    changedProperty = "DDPMStartByQAM"
+                };
+                _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+            }
 
             return Task.CompletedTask;
         }
@@ -15249,7 +15287,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                     }
-
                 }
             }
 
@@ -15267,24 +15304,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             /*iTest++;
             if (iTest % 2 == 1)
             {
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
+                *//*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");*//*
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error", LangHelper.Instance["Timeout_error"], true));
             }
             else
             {
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                *//*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
-                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));*//*
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Update in progress", "Dell Pro Premium Mouse(MS900) may be intermittently available. Do not disconnect the device during the update.", true));
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error", LangHelper.Instance["Timeout_error"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error-autoclose", LangHelper.Instance["Timeout_error"], false));
+                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
@@ -15397,7 +15435,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                      }
                  }
              }*/
-
         }
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
@@ -17859,12 +17896,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Migration
 
+        //Robert_Lin 2025-4-23 Rewrite EzMemory.UserSettings Migration
+        private bool Migrate_EzMemory_UserSettings(DDMUserSettings dDMUserSettings)
+        {
+            //Validation
+            if (dDMUserSettings == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  dDMUserSettings is null");
+                return false;
+            }
+            if (dDMUserSettings.Profiles == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  dDMUserSettings.Profiles is null");
+                return false;
+            }
+            if (dDMUserSettings.Profiles.Count() <= 0)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: OK, but dDMUserSettings.Profiles is empty");
+                return true;
+            }
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ Migrate_EzMemory_UserSettings: ERROR,  _SettingsPlugin is null");
+                return false;
+            }
+
+            writelog($"@ Migrate_EzMemory_UserSettings: Profiles.Count={dDMUserSettings.Profiles}");
+            //Phase I, Convert DDM Profiles to DDPM Profiles
+            List<EAProfileDDPM> ddpmProfiles = new List<EAProfileDDPM>();
+            int idxProfile = 0;
+            foreach (var dDMuserProfile in dDMUserSettings.Profiles)
+            {
+                EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
+                                      (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
+                ddpmProfiles.Add(eaProfileDDPM);
+                writelog($"  * Migrate Profile[{idxProfile}]: ID={dDMuserProfile.ID}, Name=[{dDMuserProfile.Name}], Layout={dDMuserProfile.Layout}");
+            }
+            //Phase II. Write (Replace) to DDPM UserSettings
+            //Read DDPM UserSettings
+            DDPMSettings ddpmUserSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmUserSettings == null)
+            {
+                //It should not be null, it should be the default settings
+                ddpmProfiles.Clear();
+                writelog($"@ Migrate_EzMemory_UserSettings: ERROR,  ReloadAppConfigData() return null");
+                return false;
+            }
+            if (ddpmUserSettings.UserSettings == null)
+            {
+                //It should not be null, it should be the default settings
+                ddpmProfiles.Clear();
+                writelog($"@ Migrate_EzMemory_UserSettings: ERROR,  DDPM UserSettings in file is null");
+                return false;
+            }
+            //Replace with DDM Profiles
+            ddpmUserSettings.UserSettings.EAProfile = ddpmProfiles;
+
+            //Write to DDPM UserSettings
+            bool writeOK = _SettingsPlugin.SetAppConfigData(ddpmUserSettings).Result;
+            writelog($"  * Write to DDPM UserSettings.Profile, result={writeOK}");
+            return writeOK;
+
+        }
+
         public Task<bool> DDMtoDDPM_EzMemory(DDMMonitorSettings dDMMonitorSettings, DDMUserSettings dDMUserSettings)
         {
+            return Task.FromResult(true);
             bool result = false;
             try
             {
+                result = Migrate_EzMemory_UserSettings(dDMUserSettings);
                 //DDMUserSettings
+                /*
                 if (dDMUserSettings.Profiles.Count != 0)
                 {
                     List<EAProfileDDPM> userEAProfileDDPMList = ReadUserEAProfileDDPM().Result;
@@ -17885,6 +17988,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else
                         writelog($"@ DDMtoDDPM_EzMemory: UserSettings Fail");
                 }
+                */
 
                 //DDMMonitorSettings
                 if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
@@ -18116,7 +18220,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //EA
             DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
-            DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+            //Robert_Lin 2025-4-23, move the migration code of EasyMemory into DDMtoDDPM_EzArrange()
+            //        DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
@@ -18425,9 +18530,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //
             if (ddmUserSettings != null)
             {
-                //Phase 1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+                //Phase I Convert DDMUserSettings.CustLayouts to ddpmCustomList
                 if (ddmUserSettings.CustLayouts != null)
                 {
+                    #region Migration_EAM Phase I - Custom List
                     writelog($"@ DDMtoDDPM_EzArrange() - Phase I - migrate DDM User Settings.CustLayouts. Count={ddmUserSettings.CustLayouts.Count}");
 
                     int idxCustLayout = 0;
@@ -18482,13 +18588,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"  * CustLayout[{idxCustLayout}]: ID=[{custLayout.ID}], Name=[{custLayout.Name}], Overlap=[{custLayout.Overlap}], Rects={sbRects.ToString()} => {spJson.ToString()}");
                         idxCustLayout++;
                     } //foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
+
                     bool saveCustomListOK = WriteEACustomList(ddpmCustomList.ToArray()).Result;
                     writelog($"  * WriteEACustomList() return {saveCustomListOK}");
+                    #endregion Migration_EAM Phase I - Custom List
                 }// if (ddmUserSettings.CustLayouts != null)
 
-                //Phase 2 Convert EasyArrange Per-user settings (EzSettings)
+                //Phase II Convert EasyArrange Per-user settings (EzSettings)
                 //
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase II - migrate DDM User Settings.EasyArrange");
+                #region Migration_EAM Phase II - EzSettings
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase II - migrate DDM User Settings: EzSettings");
 
                 bool saveOK = WriteEzSettings_IsWidthoutGap(ddmUserSettings.EAWithoutGap).Result;
                 writelog($"  * EAWithoutGap -> IsWidthoutGap = {ddmUserSettings.EAWithoutGap} ... Result={saveOK}");
@@ -18501,26 +18610,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 saveOK = WriteEzSettings_IsAwsEnabled(ddmUserSettings.SnapEnable).Result;
                 writelog($"  * SnapEnable -> IsAwsEnabled = {ddmUserSettings.SnapEnable} ... Result={saveOK}");
+                #endregion Migration_EAM Phase II - EzSettings
+
+                //Phase III - Migrate EasyMemory UserSettings
+                #region Migration_EAM Phase III - EasyMemory UserSettings
+                Migrate_EzMemory_UserSettings(ddmUserSettings);
+                #endregion Migration_EAM Phase III - EasyMemory UserSettings
             } //if (ddmUserSettings != null)
             else
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase I~II - ddmUserSettings is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase I~III - ddmUserSettings is null.");
             }
 
             if (ddmMonitorSettings == null)
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - ddmMonitorSettings is null.");
                 return;
             }
             if (ddmMonitorSettings.EasyArrangement == null)
             {
-                writelog($"@ DDMtoDDPM_EzArrange() - Phase III - ddmMonitorSettings.EasyArrangement is null.");
+                writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - ddmMonitorSettings.EasyArrangement is null.");
                 return;
             }
 
             //Phase 3 Migration MonitorSettings
             //
-            writelog($"@ DDMtoDDPM_EzArrange() - Phase III - Migrate monitor settings.");
+            writelog($"@ DDMtoDDPM_EzArrange() - Phase IV - Migrate monitor settings.");
 
             string model = ddmMonitorSettings.Model;
             string serviceTag = ddmMonitorSettings.ServiceTag;
@@ -18533,8 +18648,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmCustomList.AddRange(ReadEACustomList().Result);
             }
 
-            //Create a EA1 list, to collect the convert results
+            //The Data to be writen to DDPM Per-Monitor-Model-ServiceTag record
             List<EAMonitorSettings> ea1List = new List<EAMonitorSettings>();
+            List<DesktopDDPM> ddpmDesktops = new List<DesktopDDPM>();
 
             int idxDesktop = 0;
             //Enumerate for each Instace and convert Desktop to EAMonitorSettings, add to eaPerServiceTagSettings
@@ -18547,7 +18663,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //  int ActiveLayout;                                               SplitJson SelectedSplit;
                 //  List<int> LayoutMRU;                                            SplitJson[] RecentList;
                 //  List<int> ProfileMRU; //unused, always empty
-                //  List<Profile> Profiles; //unused, always empty
+                //  List<Profile> Profiles; //unused, always empty                 
                 //  List<ProfileSetting> ProfileSettings; //used by Easy Memory
 
                 //Create a object to collecting the settings from ddmMonitorSetting.EasyArrangement.Desktops[i]
@@ -18637,10 +18753,80 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 eaPerInstanceSetting.RecentList = recentList.ToArray();
                 ea1List.Add(eaPerInstanceSetting);
+
+                //Migrate EasyMemory portion
+                //   Desktop {
+                //      List<Desktop> Desktops
+                //
+                DesktopDDPM ddpmDesktop = new DesktopDDPM(ddmDesktop.ID, ddmDesktop.ActiveLayout);
+                ddpmDesktop.LayoutMRU = new List<int>(ddmDesktop.LayoutMRU);
+
+                // Profiles
+                ddpmDesktop.Profiles = new List<EzProfileDDPM>();
+                foreach (var profile in ddmDesktop.Profiles)
+                {
+                    //Robert_Lin 2025-4-24, for those profiles that using custom layouts will not be migrated.
+                    //It's because of the limitation in Custom layouts in DDM.
+                    //There is not provide enough information in DDM settings to tell DDPM that the custom layout
+                    //is edited from which preset layout.
+                    //So all the custom layout of DDM will be converted to Overlap layouts.
+                    //In EasyMemory, the profiles are support overlap layouts.
+                    //So when migrate a profile using custom layout will not be migrated.
+
+                    //If the layout (EAID) is a custom layout (EAID >= 1000)
+                    if (profile.Layout >= EAEMConstants.EAID_FirstCustom)
+                        continue;
+
+                    var newProfile = new EzProfileDDPM(
+                        profile.ID,
+                        profile.Name,
+                        profile.Layout,
+                        profile.Auto,
+                        profile.AutoStartTime ?? 0,
+                        profile.StartUpLaunch,
+                        new List<EAAppInfoDDPM>()
+                    );
+
+                    // AppInfos
+                    foreach (var app in profile.AppInfos)
+                    {
+                        var newAppInfo = new EAAppInfoDDPM(
+                            app.Name,
+                            app.Path,
+                            app.IsUWP,
+                            app.AppUserModelID,
+                            app.Param
+                        );
+                        newProfile.AppInfos.Add(newAppInfo);
+                    }
+
+                    ddpmDesktop.Profiles.Add(newProfile);
+                } //foreach (var profile in ddmDesktop.Profiles)
+
+                // ProfileSettings
+                ddpmDesktop.ProfileSettings = new List<EzProfileSettingDDPM>();
+                foreach (var setting in ddmDesktop.ProfileSettings)
+                {
+                    var newSetting = new EzProfileSettingDDPM(
+                        setting.ID,
+                        setting.Auto,
+                        setting.AutoStartTime ?? 0,
+                        setting.StartUpLaunch
+                    );
+
+                    //Robert_Lin, fix the AutoStartTime value > 1000000 case when migrate from DDM
+                    if (newSetting.AutoStartTime != null)
+                    {
+                        if (newSetting.AutoStartTime > 1000000)
+                            newSetting.AutoStartTime /= 10000000;
+                    }
+
+                    ddpmDesktop.ProfileSettings.Add(newSetting);
+                }
+                ddpmDesktops.Add(ddpmDesktop);
+
                 idxDesktop++;
-
             } //foreach (Desktop ddmDesktop in ddmMonitorSettings.EasyArrangement.Desktops)
-
 
             //Save this model-ServiceTage settings to DDPM Per-Monitor model settings file
             //
@@ -18664,7 +18850,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ddpmMonitorSettings.Model = model;
                 ddpmMonitorSettings.ServiceTag = serviceTag;
                 ddpmMonitorSettings.EA1 = ea1List.ToArray();
+
+                ddpmMonitorSettings.easyArrangementDDPM = new EasyArrangementDDPM()
+                {
+                    Desktops = ddpmDesktops
+                };
+
                 modelSettings.Add(ddpmMonitorSettings);
+
                 bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
 
                 writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
@@ -18674,6 +18867,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"  * DDPM Settings found the existing settings of Model=[{model}], ServiceTag=[{serviceTag}] => replace it.");
 
                 modelSettings[idxThisServiceTag].EA1 = ea1List.ToArray();
+                modelSettings[idxThisServiceTag].easyArrangementDDPM = new EasyArrangementDDPM()
+                {
+                    Desktops = ddpmDesktops
+                };
+
                 bool writeOK = _SettingsPlugin.WriteMonitorSettings(model, modelSettings).Result;
 
                 writelog($"  * Save migrated settings Model=[{model}], ServiceTag=[{serviceTag}], Result=[{writeOK}]");
@@ -18683,13 +18881,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //
             //if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
             //{
-
             /*
             MonitorInfo moinfo = new MonitorInfo();
             moinfo.modelName = ddmMonitorSettings.Model;
             moinfo.edid.ModelName = ddmMonitorSettings.Model;
             moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
-
 
             //Will migrate Desktop[0] only
             if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
@@ -18705,7 +18901,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
                     if (selJson != null)
                     {
-
                     }
                 }
                 else
@@ -18758,7 +18953,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    writelog($"@ Migrate EA monitor settings: ERROR, No Monitor (model+ServiceTag) settings, or no EasyArrangement settings.");
             //}
         }
-
 
         private void DDMtoDDPM_PowerNap(DDMMonitorSettings ddmMonitorSettings)
         {
@@ -19169,8 +19363,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 bool state = (bool)param[2];
                 _ = ShowOSD(Screen.PrimaryScreen.DeviceName, oSDType, state);
             }
-
         }
+
         public Task ShowOSD(object monitorInfo, OSDType type, bool State)
         {
             if (monitorInfo != null)
@@ -19585,12 +19779,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOnGuid : guid.ToString(), OSDType_Device.ScrollLockOn, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19607,12 +19801,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpScrollLockOffGuid : guid.ToString(), OSDType_Device.ScrollLockOff, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19649,12 +19843,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOnGuid : guid.ToString(), OSDType_Device.NumLockOn, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19671,12 +19865,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpNumLockOffGuid : guid.ToString(), OSDType_Device.NumLockOff, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19705,12 +19899,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOnGuid : guid.ToString(), OSDType_Device.CapsLockOn, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19727,12 +19921,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
-                                            await Task.Run(async () =>
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpCapsLockOffGuid : guid.ToString(), OSDType_Device.CapsLockOff, OSDType_Op.CloseAll, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            /*await Task.Run(async () =>
                                             {
                                                 await Task.Delay(1000);
                                                 _OSD_Controler.CloseMultipleOSD(null, null);
-                                            });
+                                            });*/
                                         }
                                         else
                                         {
@@ -19818,10 +20012,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //}
                                 //else
                                 //{
+
                                 try
                                 {
                                     Debug.WriteLine($"title={title},Content={Content}");
-                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    if (stayOpen)
+                                    {
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    }
+                                    else
+                                    {
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FWAutoClose, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                    }
                                     /* _OSD_Controler.Error_CloseWindow(null, null);
                                      _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                 }
@@ -19830,6 +20032,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
                                 }
                                 //}
+
                             }
                             break;
 

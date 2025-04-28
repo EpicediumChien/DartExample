@@ -1493,17 +1493,10 @@ namespace DDPM.EABroker
             //Validation: recentList count >= 4
             if (recentList != null && recentList.Length >= 4)
             {
-                AwsIcon1 = SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS);
-                if (AwsIcon1 != null)
-                {
-                    if (AwsIcon1.IsOverlapCustomLayout)
-                    {
-
-                    }
-                }
-                AwsIcon2 = SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS);
-                AwsIcon3 = SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS);
-                AwsIcon4 = SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS);
+                AwsIcon1 = SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS, _rcIcon1);
+                AwsIcon2 = SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS, _rcIcon2);
+                AwsIcon3 = SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS, _rcIcon3);
+                AwsIcon4 = SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS, _rcIcon4);
                 return true;
 
             }
@@ -1545,6 +1538,56 @@ namespace DDPM.EABroker
                 {
                     splitMode = eSplitModes.Work;
                     spctrl0B.ApplySettingsToCellList(new Rect(0, 0, ArrangeVM.cxIcon*ScreenScale , ArrangeVM.cyIcon*ScreenScale));
+                }
+            }
+
+            return splitCtrl;
+        }
+        public ISplitCtrl? SplitCtrlFromSplitJson(SplitJson spJson, eSplitModes splitMode, Rect rcView)
+        {
+            ISplitCtrl? splitCtrl = ISplitCtrl.Create(spJson.CellCount, spJson.SplitKey);
+
+            if (splitCtrl == null)
+                return null;
+
+            if (spJson.Settings != null)
+            {
+                splitCtrl.Settings = new List<double>(spJson.Settings);
+            }
+            splitCtrl.FriendlyName = spJson.CustomName;
+
+            splitCtrl.SplitMode = splitMode;
+            if (spJson.IsOverlapLayout)
+            {
+                splitCtrl.EAID = spJson.EAID;
+                SplitCtrl0B spctrl0B = (SplitCtrl0B)splitCtrl;
+                if (splitMode == eSplitModes.AWS)
+                {
+                    //splitMode = eSplitModes.Work;
+                    //spctrl0B.ApplySettingsToCellList(new Rect(0, 0, ArrangeVM.cxIcon*ScreenScale , ArrangeVM.cyIcon*ScreenScale));
+                    if (spJson.IsMigratedFromDdm)
+                    {
+                        Rect rcApply = new Rect()
+                        {
+                            X = rcView.Left,
+                            Y = rcView.Top,
+                            Width = rcView.Width / ScreenScale,
+                            Height = rcView.Height / ScreenScale
+                        };
+                        spctrl0B.ApplySettingsToCellList(rcApply);
+                    }
+                    else
+                    {
+                        Rect rcApply = new Rect()
+                        {
+                            X = rcView.Left,
+                            Y = rcView.Top,
+                            Width = rcView.Width ,
+                            Height = rcView.Height
+                        };
+                        spctrl0B.ApplySettingsToCellList(rcApply);
+                    }
+
                 }
             }
 

@@ -572,7 +572,7 @@ namespace DDPM.SA.Common
             FirmwareVersion = deviceInfo.FirmwareVersion;
             BatteryStatus = deviceInfo.BatteryStatus;
             DeviceType = deviceInfo.LogicalDeviceType;
-            Connectiontype = (deviceInfo.PhysicalDeviceType.ToString().Contains("Dongle") || deviceInfo.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
+            Connectiontype = (deviceInfo.PhysicalDeviceType.ToString().Contains("Dongle") || deviceInfo.PhysicalDeviceType.ToString().Contains("Bluetooth") || deviceInfo.PhysicalDeviceType.ToString().Contains("Pen")) ? "Wireless" : "Wired";
         }
 
         public string ID { get; set; } = "N/A";

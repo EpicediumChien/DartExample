@@ -699,7 +699,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         IsBgBlurOn = DdpmCommonHelper.DeviceManagerSA.GetIsBgBlurEnable(CurrentDeviceInfo?.ID.ToString()).Result;
                         int DtpBgBlur = DdpmCommonHelper.DeviceManagerSA.GetBgBlur(CurrentDeviceInfo?.ID.ToString()).Result;
-                        BgBlur = IsBgBlurOn == false ? 1 : DtpBgBlur == 0 ? 1 : DtpBgBlur;
+                        BgBlur = IsBgBlurOn == false ? 7 : DtpBgBlur == 0 ? 7 : DtpBgBlur;
                     }
                 }
 
@@ -1092,6 +1092,12 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
 
+        // 20250425 Chewlin for PIMS-358978 add PrioritizeExternalWebcamStatus_Text property
+        public string PrioritizeExternalWebcamStatus_Text
+        {
+            get => IsPrioritizeExternalWebcam ? Strings.On : Strings.Off;
+        }
+
         private bool _isPrioritizeExternalWebcam = false;
         public bool IsPrioritizeExternalWebcam
         {
@@ -1101,6 +1107,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isPrioritizeExternalWebcam = value;
                 DdpmCommonHelper.DeviceManagerSA?.SetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString(), value);
                 OnPropertyChanged();
+                // 20250425 Chewlin for PIMS-358978 add OnPropertyChanged(nameof(PrioritizeExternalWebcamStatus_Text));
+                OnPropertyChanged(nameof(PrioritizeExternalWebcamStatus_Text));
             }
         }
         public string CurrentProfileName

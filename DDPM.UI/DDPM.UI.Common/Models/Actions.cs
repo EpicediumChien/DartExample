@@ -31,7 +31,7 @@ namespace DDPM.UI.Common
         public PenActions() { }
         public PenActions(bool hasFile)
         {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
 
             try

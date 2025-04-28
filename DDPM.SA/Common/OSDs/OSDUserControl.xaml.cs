@@ -204,6 +204,9 @@ namespace DDPM.OSDs
                 case OSDType_Device.WalkAwayLock:
                     time = TimeSpan.FromMilliseconds(5000);
                     break;
+                case OSDType_Device.FWAutoClose:
+                    time = TimeSpan.FromMilliseconds(3000);
+                    break;
                 default:
                     return;
             }

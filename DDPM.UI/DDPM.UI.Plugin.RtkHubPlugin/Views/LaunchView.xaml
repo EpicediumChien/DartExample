@@ -117,17 +117,21 @@
             </Grid>
             <!--Battery-->
             <Grid VerticalAlignment="Bottom">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,90" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+                <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Center">-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,40">
+                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,8,0" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+                    
+                    <Border  Width="auto" Cursor="Hand" Margin="0,0,0,0" x:Name="btnUpdate" Background="Transparent" >
+                        <Button Name="txtUpdate" Margin="0,0,0,0" Width="176" Height="40" Click="txtUpdate_Click" Cursor="Hand" FontSize="14" FontFamily="{StaticResource RobotoFontMedium}" Grid.Column="0" HorizontalAlignment="Center" Content="{Binding [UpdateFirmware], Source={x:Static lang:LangHelper.Instance}}" Style="{DynamicResource Button_WhiteFrame}" Background="Transparent"/>
+                    </Border>
                     </StackPanel>
-                </StackPanel>
+                <!--</StackPanel>-->
             </Grid>
-            <Grid VerticalAlignment="Bottom" Background="Transparent">
+            <!--<Grid VerticalAlignment="Bottom" Background="Transparent">
                 <Border  Width="auto" Cursor="Hand" Margin="0,0,0,0" x:Name="btnUpdate" Background="Transparent" >
                     <Button Name="txtUpdate" Margin="0,0,0,40" Width="176" Height="40" Click="txtUpdate_Click" Cursor="Hand" FontSize="14" FontFamily="{StaticResource RobotoFontMedium}" Grid.Column="0" HorizontalAlignment="Center" Content="{Binding [UpdateFirmware], Source={x:Static lang:LangHelper.Instance}}" Style="{DynamicResource Button_WhiteFrame}" Background="Transparent"/>
                 </Border>
-            </Grid>
+            </Grid>-->
         </Grid>
 
         <!-- Please Wait -->

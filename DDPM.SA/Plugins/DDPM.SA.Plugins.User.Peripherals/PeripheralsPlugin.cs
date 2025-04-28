@@ -458,6 +458,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     {
                         _logicalDevice3.SetBackLightingLevel(newValue);
                         _deviceInfo.BackLightingLevel = newValue;
+                        writelog($"SetBackLightingLevel: value:{newValue}.....................{DateTime.Now:HH:mm:ss.ff}");
                         break;
                     }
                 }
@@ -3060,6 +3061,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
+                    writelog($"BackLightingLevelChanged: value:{arg2}.....................{DateTime.Now:HH:mm:ss.ff}");
                     deviceInfo.BackLightingLevel = arg2;
 
                     DeviceChangedEventArgs _EventArgs = new();
