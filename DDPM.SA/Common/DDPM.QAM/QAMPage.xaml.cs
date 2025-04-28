@@ -184,8 +184,8 @@ namespace DDPM.QAM
             if (CameraSetting != null)
             {
                 CameraSetting.Close();
-                CameraSetting = null;
-                DdpmCommonHelper.QAMCameraMenuIsOpen = false;
+                //CameraSetting = null;
+                //DdpmCommonHelper.QAMCameraMenuIsOpen = false;
             }
             else
             {
@@ -212,17 +212,21 @@ namespace DDPM.QAM
                 //Derek 2025/02/13 auto open present page
                 CameraSetting.OpenPresetsFullView();
                 DdpmCommonHelper.QAMCameraMenuIsOpen = true;
+                if (DataContext is QAMPageViewModel vm)
+                    vm.IsCameraSettingSelected = true;
             }
 
 
-            if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
-                vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
+            //if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
+            //    vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
         }
 
         private void CameraSetting_Closed(object? sender, EventArgs e)
         {
             CameraSetting = null;
             DdpmCommonHelper.QAMCameraMenuIsOpen = false;
+            if (DataContext is QAMPageViewModel vm)
+                vm.IsCameraSettingSelected = false;
         }
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)

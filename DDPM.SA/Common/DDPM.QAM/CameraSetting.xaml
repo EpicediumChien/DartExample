@@ -13,7 +13,6 @@
         ShowInTaskbar="True"
         AllowsTransparency="True"
         Background="Transparent" ResizeMode="NoResize"
-        Unloaded="Window_Unloaded"
         Topmost="True">
   <Window.Resources>
     <ResourceDictionary>
