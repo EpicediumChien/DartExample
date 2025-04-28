@@ -51,6 +51,7 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo != null)
                     {
+                        DdpmCommonHelper.QAMCameraID = CurrentDeviceInfo.ID;
                         //DeviceModel = CurrentDeviceInfo.Name;
                         DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
 

@@ -49,7 +49,6 @@ namespace DDPM.QAM
                     if (processes.Length > 0)
                     {
                         //info DDPM navigate to webcam preview directly
-                        DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(true);
                         IntPtr mainWindowHandle = processes[0].MainWindowHandle;
                         // 將窗口最大化
                         _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
@@ -75,10 +74,8 @@ namespace DDPM.QAM
                                 FileName = ddpmExePath,
                                 UseShellExecute = true
                             });
-
-                        //Info SA that new DDPM instance launched by QAM
-                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
+                    DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(false);
                 }
                 catch (Exception ex)
                 {
@@ -231,22 +228,22 @@ namespace DDPM.QAM
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
-            //ShowDDPM();
+            ShowDDPM();
             //SendMessageToDDPM(10);
 
-            if (ShowDDPM())
-            {
-                //Info SA that DDPM launched by QAM
-                //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+            //if (ShowDDPM())
+            //{
+            //    //Info SA that DDPM launched by QAM
+            //    //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
-                //Close_Click(this, null); //Derek 1209
-                WriteLog($"Lanuch DDPM successfully!");
-            }
-            else
-            {
-                WriteLog($"Going to run SetIsDDPMLaunchByQAMAsync()");
-                DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(false);
-            }
+            //    //Close_Click(this, null); //Derek 1209
+            //    WriteLog($"Lanuch DDPM successfully!");
+            //}
+            //else
+            //{
+            //    WriteLog($"Going to run SetIsDDPMLaunchByQAMAsync()");
+            //    DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(false);
+            //}
         }
 
         //private void SendMessageToDDPM(int timeout)
