@@ -436,13 +436,13 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" 
+                            <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  FontSize="16" LineHeight="24" FontFamily="{StaticResource RobotoFont}" VerticalAlignment="Center" 
                                            Focusable="True" KeyboardNavigation.TabIndex="150"
                                            Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
-                            <TextBlock Text="(" Grid.Column="1"  FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
-                            <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" 
+                            <TextBlock Text="(" Grid.Column="1"  FontFamily="{StaticResource RobotoFont}" FontSize="16" LineHeight="24" VerticalAlignment="Center"  HorizontalAlignment="Center" />
+                            <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" VerticalAlignment="Center" FontFamily="{StaticResource RobotoFont}" FontSize="16" LineHeight="24" HorizontalAlignment="Center" 
                                            Focusable="True" KeyboardNavigation.TabIndex="152"/>
-                            <TextBlock Text=")" Grid.Column="3" FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
+                            <TextBlock Text=")" Grid.Column="3" FontFamily="{StaticResource RobotoFont}" FontSize="16" LineHeight="24" VerticalAlignment="Center"  HorizontalAlignment="Center" />
                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
                             <Border Grid.Column="4" Margin="10,0,0,0" Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
