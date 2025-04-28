@@ -11,222 +11,241 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="600">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
-      </ResourceDictionary.MergedDictionaries>
-      <PluginCommon:HeightConverter x:Key="HeightConverter" />
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,0,0,15" to Margin="0,0,6,16"-->
-  <Grid Margin="0,0,6,16">
-    <Border CornerRadius="13" Margin="0,10,10,0" Width="auto">
-      <Border.Height>
-        <MultiBinding Converter="{StaticResource HeightConverter}">
-          <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
-        </MultiBinding>
-      </Border.Height>
-      <StackPanel IsEnabled="{Binding IsNotAddingProfile}">
-        <Grid Margin="16,16,14,16">
-          <Grid>
-            <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [Camera.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
+            </ResourceDictionary.MergedDictionaries>
+            <PluginCommon:HeightConverter x:Key="HeightConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,0,0,15" to Margin="0,0,6,16"-->
+    <Grid Margin="0,0,6,16">
+        <Border CornerRadius="13" Margin="0,10,10,0" Width="auto">
+            <Border.Height>
+                <MultiBinding Converter="{StaticResource HeightConverter}">
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                </MultiBinding>
+            </Border.Height>
+            <StackPanel IsEnabled="{Binding IsNotAddingProfile}">
+                <Grid Margin="16,16,14,16">
+                    <Grid>
+                        <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [Camera.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
 
-            <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
-              <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+                        <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
+                            <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-            </Border>
+                        </Border>
 
-            <Border Margin="0,0,17,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}">
-              <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+                        <Border Margin="0,0,17,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}">
+                            <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-            </Border>
+                        </Border>
 
-            <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
+                        <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0" Cursor="Hand">
-              <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+                            <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-            </Border>
+                        </Border>
 
-            <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
+                        <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1" Cursor="Hand">
-              <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+                            <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-            </Border>
-          </Grid>
-          <Image  Visibility="{Binding LockMaskVisible}" 
+                        </Border>
+                    </Grid>
+                    <Image  Visibility="{Binding LockMaskVisible}" 
                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="85,0,0,0" Width="16" Height="16">
-            <Image.ToolTip>
-              <ToolTip>
-                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                  <Border.Resources>
-                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                  </Border.Resources>
-                  <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                      <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                    </StackPanel>
-                  </StackPanel>
-                </Border>
-              </ToolTip>
-            </Image.ToolTip>
-          </Image>
-
-        </Grid>
-        <StackPanel Visibility="{Binding UPD_Visibility}">
-          <Grid Margin="16,0,16,10" >
-            <Border CornerRadius="6">
-              <StackPanel Orientation="Vertical">
-                <Grid Margin="18,22,18,0">
-                  <StackPanel Orientation="Horizontal">
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                    <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}">
-                      <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
-                      <Border.ToolTip>
-                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                            <TextBlock Text="{Binding [WebCameraPresenceDetection.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
-                          </Border>
-                        </ToolTip>
-                      </Border.ToolTip>
-                    </Border>
-                  </StackPanel>
-                  <UXControls:UXToggleSwitch IsEnabled="{Binding IsProximitySensorEnable}" IsChecked="{Binding IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
-                </Grid>
-                <Border  CornerRadius="6" Margin="16">
-                  <StackPanel Orientation="Vertical">
-                    <Grid Margin="18,20,18,0">
-                      <StackPanel Orientation="Horizontal">
-                        <!-- Derek for PIMS-332099 -->
-                        <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                        <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}">
-                          <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
-                          <Border.ToolTip>
-                            <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                              <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
-                              </Border>
-                            </ToolTip>
-                          </Border.ToolTip>
-                        </Border>
-                      </StackPanel>
-                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" />
-                    </Grid>
-                    <StackPanel Orientation="Vertical" Margin="18,20,18,0">
-                      <Grid>
-                        <StackPanel Orientation="Horizontal">
-                          <UXControls:UXTextBlock MaxWidth="280" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                          <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}">
-                            <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
-                            <Border.ToolTip>
-                              <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                        <Image.ToolTip>
+                            <ToolTip>
                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                  <TextBlock Text="{Binding [WebCameraPresenceDetection.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                    <Border.Resources>
+                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                    </Border.Resources>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                        </StackPanel>
+                                    </StackPanel>
                                 </Border>
-                              </ToolTip>
-                            </Border.ToolTip>
-                          </Border>
-                        </StackPanel>
-                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
-                      </Grid>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="28,20,18,0">
-                      <Grid>
-                        <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                        <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+
+                </Grid>
+                <StackPanel Visibility="{Binding UPD_Visibility}">
+                    <Grid Margin="16,0,16,10" >
+                        <Border CornerRadius="6">
+                            <StackPanel Orientation="Vertical">
+                                <Grid Margin="18,22,18,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                        <!--20250428 Chewlin for PIMS-358997 Remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
+                                        <Border Background="{StaticResource FakeTransparent}">
+                                            <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                            <Border.ToolTip>
+                                                <!--20250428 Chewlin for PIMS-358997 change VerticalOffset="8" to VerticalOffset="14", change HorizontalOffset="6" to "HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <!--20250428 Chewlin for PIMS-358997 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                        <TextBlock Text="{Binding [WebCameraPresenceDetection.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Border.ToolTip>
+                                        </Border>
+                                    </StackPanel>
+                                    <!--20250428 Chewlin for PIMS-358997 ADD FontFamily="Roboto" FontSize="16" and Remove Foreground="White"-->
+                                    <UXControls:UXToggleSwitch IsEnabled="{Binding IsProximitySensorEnable}" IsChecked="{Binding IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsTabStop="{Binding isTabStoppable}"/>
+                                </Grid>
+                                <Border  CornerRadius="6" Margin="16">
+                                    <StackPanel Orientation="Vertical">
+                                        <Grid Margin="18,20,18,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- Derek for PIMS-332099 -->
+                                                <!-- 20250428 Chewlin for PIMS-358997 change MaxWidth="270" to MaxWidth="220"-->
+                                                <UXControls:UXTextBlock MaxWidth="220" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                                <!--20250428 Chewlin for PIMS-358997 Remove ToolTipService.Placement="Left"-->
+                                                <Border Background="{StaticResource FakeTransparent}">
+                                                    <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                    <Border.ToolTip>
+                                                        <!--20250428 Chewlin for PIMS-358997 change VerticalOffset="8" to VerticalOffset="14", change HorizontalOffset="6" to "HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                        <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
+                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                <!--20250428 Chewlin for PIMS-358997 change MaxWidth="350" to "230" -->
+                                                                <TextBlock MaxWidth="230" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                            </Border>
+                                                        </ToolTip>
+                                                    </Border.ToolTip>
+                                                </Border>
+                                            </StackPanel>
+                                            <!--20250428 Chewlin for PIMS-358997 ADD FontFamily="Roboto" FontSize="16" and Remove Foreground="White"-->
+                                            <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsTabStop="{Binding isTabStoppable}" />
+                                        </Grid>
+                                        <StackPanel Orientation="Vertical" Margin="18,20,18,0">
+                                            <Grid>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <UXControls:UXTextBlock MaxWidth="280" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                                    <!--20250428 Chewlin for PIMS-358997 Remove ToolTipService.Placement="Left"-->
+                                                    <Border Background="{StaticResource FakeTransparent}">
+                                                        <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                        <Border.ToolTip>
+                                                            <!--20250428 Chewlin for PIMS-358997 change VerticalOffset="8" to VerticalOffset="14", change HorizontalOffset="6" to "HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                            <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <!--20250428 Chewlin for PIMS-358997 ADD MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                    <TextBlock Text="{Binding [WebCameraPresenceDetection.6], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Border.ToolTip>
+                                                    </Border>
+                                                </StackPanel>
+                                                <!--20250428 Chewlin for PIMS-358997 ADD FontFamily="Roboto" FontSize="16" and Remove Foreground="White"-->
+                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsTabStop="{Binding isTabStoppable}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical" Margin="28,20,18,0">
+                                            <Grid>
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
+                                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
                                         SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
                                         IsEnabled="{Binding Path= IsEnable_WalkAwayLock}"
                                         TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
-                      </Grid>
-                      <Grid Margin="0,20,0,0">
-                        <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsEnable_Snooze}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" Checked = "HandleSnoozeCheck" Unchecked = "HandleSnoozeUnchecked"/>
-                        <!--Timer-->
-                        <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="{Binding WALSnoozeTimeLeft, Mode=TwoWay}"
-                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,75,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
-                      </Grid>
-                      <Grid Margin="0,20,0,15">
-                        <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" MaxWidth="170" Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                        <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
+                                            </Grid>
+                                            <Grid Margin="0,20,0,0">
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
+                                                <!--20250428 Chewlin for PIMS-358997 ADD FontFamily="Roboto" FontSize="16" and Remove Foreground="White"-->
+                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsEnable_Snooze}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsTabStop="{Binding isTabStoppable}" Checked = "HandleSnoozeCheck" Unchecked = "HandleSnoozeUnchecked"/>
+                                                <!--Timer-->
+                                                <!--20250428 Chewlin for PIMS-358997 change Margin="0,0,75,0" to Margin="0,0,100,0"-->
+                                                <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="{Binding WALSnoozeTimeLeft, Mode=TwoWay}"
+                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,120,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
+                                            </Grid>
+                                            <Grid Margin="0,20,0,15">
+                                                <!--Chewlin for PIMS-358997 change MaxWidth="170" to MaxWidth="150" -->
+                                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" MaxWidth="150" Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
+                                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                   SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
                                   IsEnabled="{Binding Path= IsEnable_SnoozeLength}"
                                   TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}" SelectionChanged="onSoozeLegthcbxSelectionChanged" />
-                      </Grid>
-                    </StackPanel>
-                  </StackPanel>
-                </Border>
-              </StackPanel>
-            </Border>
-
-            <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
-
-          </Grid>
-          <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding brdHello_show}">
-            <Border CornerRadius="6" Margin="0,0,0,4000">
-              <Grid Margin="18,22,18,18">
-                <StackPanel Orientation="Horizontal">
-                  <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                  <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="50" Background="{StaticResource FakeTransparent}">
-                    <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
-                    <Border.ToolTip>
-                      <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                          <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}"  Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
                         </Border>
-                      </ToolTip>
-                    </Border.ToolTip>
-                  </Border>
-                </StackPanel>
-                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
-                  <UXControls:UXLink.Resources>
-                    <Style TargetType="Border">
-                      <Setter Property="Background"  Value="Transparent" />
-                    </Style>
-                  </UXControls:UXLink.Resources>
-                </UXControls:UXLink>
-              </Grid>
-            </Border>
-          </Grid>
-        </StackPanel>
-        <!-- MPS(1) -->
-        <StackPanel Visibility="{Binding MPS_Setting_Visibility}">
-          <Grid Margin="16,0,16,10" >
-            <UXControls:UXTextBlock Text="{Binding [WebcamMPS.0], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" Style="{StaticResource ModuleItemStyle}" TextBlock.FontSize="16" />
-          </Grid>
 
-          <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_Setting_Visibility}">
-            <Border CornerRadius="6" Margin="0,0,0,4000">
-              <Grid Margin="18,22,18,18">
-                <StackPanel Orientation="Horizontal">
-                  <UXControls:UXTextBlock Text="{Binding [Camera.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
+
+                    </Grid>
+                    <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding brdHello_show}">
+                        <Border CornerRadius="6" Margin="0,0,0,4000">
+                            <Grid Margin="18,22,18,18">
+                                <StackPanel Orientation="Horizontal">
+                                    <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <!--20250428 Chewlin for PIMS-358997 Remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="50"-->
+                                    <Border Background="{StaticResource FakeTransparent}">
+                                        <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                        <Border.ToolTip>
+                                            <!--20250428 Chewlin for PIMS-358997 change VerticalOffset="8" to VerticalOffset="16", change HorizontalOffset="6" to "HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                            <ToolTip Placement="Top" VerticalOffset="16" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <!--20250428 Chewlin for PIMS-358997 change MaxWidth="350" to "230"-->
+                                                    <TextBlock MaxWidth="230" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}"  Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                </Border>
+                                            </ToolTip>
+                                        </Border.ToolTip>
+                                    </Border>
+                                </StackPanel>
+                                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <UXControls:UXLink.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"  Value="Transparent" />
+                                        </Style>
+                                    </UXControls:UXLink.Resources>
+                                </UXControls:UXLink>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </StackPanel>
-                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallPresenceSensor_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
-              </Grid>
-            </Border>
-          </Grid>
-        </StackPanel>
-        <StackPanel Visibility="{Binding MPS_UpdateFW_Visibility}">
-          <!-- MPS(2) -->
-          <Grid Margin="16,0,16,10" >
-            <UXControls:UXAlert Margin="0,0,0,0">
-              <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
+                <!-- MPS(1) -->
+                <StackPanel Visibility="{Binding MPS_Setting_Visibility}">
+                    <Grid Margin="16,0,16,10" >
+                        <UXControls:UXTextBlock Text="{Binding [WebcamMPS.0], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" Style="{StaticResource ModuleItemStyle}" TextBlock.FontSize="16" />
+                    </Grid>
+
+                    <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_Setting_Visibility}">
+                        <Border CornerRadius="6" Margin="0,0,0,4000">
+                            <Grid Margin="18,22,18,18">
+                                <StackPanel Orientation="Horizontal">
+                                    <UXControls:UXTextBlock Text="{Binding [Camera.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallPresenceSensor_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+                <StackPanel Visibility="{Binding MPS_UpdateFW_Visibility}">
+                    <!-- MPS(2) -->
+                    <Grid Margin="16,0,16,10" >
+                        <UXControls:UXAlert Margin="0,0,0,0">
+                            <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
                       Message="{Binding [ColorMsg.1], Source={x:Static lang:LangHelper.Instance}}" />
-            </UXControls:UXAlert>
-          </Grid>
+                        </UXControls:UXAlert>
+                    </Grid>
 
-          <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_UpdateFW_Visibility}">
-            <Border CornerRadius="6" Margin="0,0,0,4000">
-              <Grid Margin="18,22,18,18">
-                <StackPanel Orientation="Horizontal">
-                  <UXControls:UXTextBlock Text="{Binding [CompatibleFirmware], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_UpdateFW_Visibility}">
+                        <Border CornerRadius="6" Margin="0,0,0,4000">
+                            <Grid Margin="18,22,18,18">
+                                <StackPanel Orientation="Horizontal">
+                                    <UXControls:UXTextBlock Text="{Binding [CompatibleFirmware], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <UXControls:UXLink Content="Dell.com" Click="CallUpdateMPSFW_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </StackPanel>
-                <UXControls:UXLink Content="Dell.com" Click="CallUpdateMPSFW_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
-              </Grid>
-            </Border>
-          </Grid>
-        </StackPanel>
-      </StackPanel>
-    </Border>
-  </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>
