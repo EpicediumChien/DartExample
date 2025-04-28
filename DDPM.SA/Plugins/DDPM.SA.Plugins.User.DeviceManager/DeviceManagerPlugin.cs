@@ -13299,6 +13299,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
                 }).ConfigureAwait(false);
+                //Jason add Task Run color preset list
             }
         }
 

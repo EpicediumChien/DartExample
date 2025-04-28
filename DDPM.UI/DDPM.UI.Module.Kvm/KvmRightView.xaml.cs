@@ -139,6 +139,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     if (!vm.LockSendNoKVM)
                     {
+                        vm.isOnNKVM(false);
+                        vm.NKVMisON = false;
                         vm.SelectKVM();
                     }
                 }
