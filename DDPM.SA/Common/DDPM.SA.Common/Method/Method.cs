@@ -180,7 +180,7 @@ namespace DDPM.SA.Common.Method
         public bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             bool all_pass = true;
-            // 確保目標資料夾存在
+            // make sure Directory exit
             try
             {
                 Directory.CreateDirectory(destDirName);
@@ -190,7 +190,7 @@ namespace DDPM.SA.Common.Method
                 WriteLog($"[DirectoryCopy] Failed to create destination directory {destDirName} : {ex.Message}");
                 all_pass = false;
             }
-            // 複製檔案，列出目錄下的所有檔案
+            // copy file and list down all file
             string[] files = null;
             try
             {
@@ -217,7 +217,7 @@ namespace DDPM.SA.Common.Method
                     }
                 }
             }
-            // 遞迴複製子資料夾
+            // foreach and copy sub-Directory
             if (copySubDirs)
             {
                 string[] subDirs = null;
@@ -235,7 +235,7 @@ namespace DDPM.SA.Common.Method
                     foreach (var subDir in subDirs)
                     {
                         var destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                        // 即使某個子資料夾複製失敗，也繼續處理其他子資料夾
+                        // even copy sub-Directory fail, still need continue other sub-Directory
                         if (!DirectoryCopy(subDir, destSubDir, copySubDirs))
                         {
                             all_pass = false;
