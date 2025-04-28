@@ -410,6 +410,38 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
         }
 
+        //20250428 Chewlin add for tooltip issue fix
+        private double GetScreenScaleX()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                return source.CompositionTarget.TransformToDevice.M11;
+            }
+            return 1;
+        }
+
+        //20250428 Chewlin add for tooltip issue fix
+        private void toolTip_Opened(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;
+            if (target == null)
+                return;
+            double screenScaleX = GetScreenScaleX();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            double winRightX = (mainWindow.Left + mainWindow!.ActualWidth) * screenScaleX;
+            double mousepositionX = System.Windows.Forms.Cursor.Position.X;
+            double mouseaddtooltip = mousepositionX + target.ActualWidth * screenScaleX;
+            if (winRightX > mouseaddtooltip)
+            {
+                target.HorizontalOffset = 11;
+            }
+            else
+            {
+                target.HorizontalOffset = -1 * target.ActualWidth + 23;
+            }
+        }
+
         //private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
         //{
         //    _vm._log.Info($" Catch event {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} ");
