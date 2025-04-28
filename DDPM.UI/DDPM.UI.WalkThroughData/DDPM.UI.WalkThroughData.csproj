@@ -20,6 +20,20 @@
   </ItemGroup>
  
   <ItemGroup>
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SB725\SB725_1.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SB725\SB725_2.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SL525\SL525_1.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SL525\SL525_2.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SL525\SL525_3.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SP325\SP325_1.png" />
+    <None Remove="WalkThrough\AirAudio\Light_Mode\SP325\SP325_2.png" />
+    <None Remove="WalkThrough\AirAudio\SB725\SB725_1.png" />
+    <None Remove="WalkThrough\AirAudio\SB725\SB725_2.png" />
+    <None Remove="WalkThrough\AirAudio\SL525\SL525_1.png" />
+    <None Remove="WalkThrough\AirAudio\SL525\SL525_2.png" />
+    <None Remove="WalkThrough\AirAudio\SL525\SL525_3.png" />
+    <None Remove="WalkThrough\AirAudio\SP325\SP325_1.png" />
+    <None Remove="WalkThrough\AirAudio\SP325\SP325_2.png" />
     <None Remove="WalkThrough\DDPM\DDPM1-1.png" />
     <None Remove="WalkThrough\DDPM\DDPM1-2.png" />
     <None Remove="WalkThrough\DDPM\DDPM2.png" />
@@ -235,12 +249,60 @@
     <None Remove="WalkThrough\Webcam\WB7022\WB7022_4.png" />
     <None Remove="WalkThrough\Webcam\WB7022\WB7022_5.png" />
   </ItemGroup>
+ 
+  <ItemGroup>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SP325\SP325_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SP325\SP325_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SL525\SL525_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SB725\SB725_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SB725\SB725_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SL525\SL525_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\Light_Mode\SL525\SL525_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SB725\SB725_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SB725\SB725_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SL525\SL525_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SL525\SL525_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SL525\SL525_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SP325\SP325_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\AirAudio\SP325\SP325_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="WalkThrough\DDPM\DDPM1-1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
