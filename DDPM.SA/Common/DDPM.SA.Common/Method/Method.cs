@@ -180,35 +180,103 @@ namespace DDPM.SA.Common.Method
         public bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             bool all_pass = true;
-            // 確保目標資料夾存在
-            Directory.CreateDirectory(destDirName);
-            // 複製檔案
+            // make sure Directory exit
             try
             {
-                foreach (string file in Directory.GetFiles(sourceDirName))
-                {
-                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                    File.Copy(file, destFile, true);
-                }
+                Directory.CreateDirectory(destDirName);
             }
             catch (Exception ex)
             {
-                WriteLog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                WriteLog($"[DirectoryCopy] Failed to create destination directory {destDirName} : {ex.Message}");
                 all_pass = false;
             }
-
-            // 複製子資料夾
+            // copy file and list down all file
+            string[] files = null;
+            try
+            {
+                files = Directory.GetFiles(sourceDirName);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[DirectoryCopy] Failed to list files in directory {sourceDirName} : {ex.Message}");
+                all_pass = false;
+            }
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    var destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                    try
+                    {
+                        File.Copy(file, destFile, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[DirectoryCopy] Failed to copy file {file} to {destFile} : {ex.Message}");
+                        all_pass = false;
+                    }
+                }
+            }
+            // foreach and copy sub-Directory
             if (copySubDirs)
             {
-                foreach (string subDir in Directory.GetDirectories(sourceDirName))
+                string[] subDirs = null;
+                try
                 {
-                    string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                    if (!DirectoryCopy(subDir, destSubDir, true))
-                        all_pass = false;
+                    subDirs = Directory.GetDirectories(sourceDirName);
+                }
+                catch (Exception ex)
+                {
+                    WriteLog($"[DirectoryCopy] Failed to list sub-directories in directory {sourceDirName} : {ex.Message}");
+                    all_pass = false;
+                }
+                if (subDirs != null)
+                {
+                    foreach (var subDir in subDirs)
+                    {
+                        var destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
+                        // even copy sub-Directory fail, still need continue other sub-Directory
+                        if (!DirectoryCopy(subDir, destSubDir, copySubDirs))
+                        {
+                            all_pass = false;
+                        }
+                    }
                 }
             }
             return all_pass;
         }
+        //public bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        //{
+        //    bool all_pass = true;
+        //    // 確保目標資料夾存在
+        //    Directory.CreateDirectory(destDirName);
+        //    // 複製檔案
+        //    try
+        //    {
+        //        foreach (string file in Directory.GetFiles(sourceDirName))
+        //        {
+        //            string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+        //            File.Copy(file, destFile, true);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        WriteLog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+        //        all_pass = false;
+        //    }
+
+        //    // 複製子資料夾
+        //    if (copySubDirs)
+        //    {
+        //        foreach (string subDir in Directory.GetDirectories(sourceDirName))
+        //        {
+        //            string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
+        //            if (!DirectoryCopy(subDir, destSubDir, true))
+        //                all_pass = false;
+        //        }
+        //    }
+        //    return all_pass;
+        //}
         public bool DeleteFolder(string folderPath)
         {
             WriteLog($"{nameof(DeleteFolder)} start");
