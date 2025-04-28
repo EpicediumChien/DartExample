@@ -206,6 +206,7 @@ namespace DDPM.QAM
                 CameraSetting.Left = this.Left + this.Width;
                 CameraSetting.Top = this.Top;
 
+                CameraSetting.Closed += CameraSetting_Closed;
                 CameraSetting.Show();
 
                 //Derek 2025/02/13 auto open present page
@@ -216,6 +217,12 @@ namespace DDPM.QAM
 
             if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
                 vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
+        }
+
+        private void CameraSetting_Closed(object? sender, EventArgs e)
+        {
+            CameraSetting = null;
+            DdpmCommonHelper.QAMCameraMenuIsOpen = false;
         }
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
