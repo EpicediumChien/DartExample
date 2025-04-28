@@ -23,14 +23,13 @@ namespace DDPM.SA.Common
             log.Info($"{nameof(SaveLogFile)} WTSFunction._WTSGetActiveConsoleSessionId() : {WTSFunction._WTSGetActiveConsoleSessionId()}");
             if (WTSFunction._WTSGetActiveConsoleSessionId() >= 1)
             {
+                string startTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string fail_info = string.Empty;
-                string success_info = string.Empty;
+                string success_info = "[*****************StartTime] : " + startTimestamp + ", ";
                 string path_info = "[************SaveFolderPath] = " + saveFolderPath + ", ";
                 if (!string.IsNullOrEmpty(saveFolderPath))
                 {
                     log.Info($"{nameof(SaveLogFile)} saveFolderPath : {saveFolderPath}");
-
-
                     //DDPM.SA.Common.Method.Method method = new Method.Method(log);
                     using (DDPM.SA.Common.Method.Method method = new Method.Method(log))
                     {
