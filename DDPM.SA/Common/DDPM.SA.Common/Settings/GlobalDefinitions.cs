@@ -1,5 +1,5 @@
 ﻿//#define SUPPORT_200
-//#define SUPPORT_210
+#define SUPPORT_210
 #define REMOVE_EA_SPLITTERS //Robert_Lin 2025-4-15, Define this symbol to remove all (unused VSplitters and HSplitters)
 #define DISABLE_LOCK
 
