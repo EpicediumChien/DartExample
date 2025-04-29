@@ -350,7 +350,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                 _vm.is_ProximitySensor_enable = true;
                 //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
             }
-            print_debug("CheckUSBtype() end");
+            print_debug("[DisplayWebcamLeftView] CheckUSBtype() end");
         }
 
         private void SetPrioritizeShow(Visibility visibility)
@@ -524,7 +524,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             {
                 if (_vm.IsRecording)
                     _vm.IsRecording = false;
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
                 // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
             }
@@ -812,10 +812,10 @@ namespace DDPM.UI.Module.DisplayWebcam
 
             if (!rst)
             {
-                DdpmCommonHelper.WriteUILog("[LaunchView] GetDiskFreeSpaceEx failed.");
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] GetDiskFreeSpaceEx failed.");
 
 #if DEBUG
-                Console.WriteLine("[LaunchView] GetDiskFreeSpaceEx failed.");
+                Console.WriteLine("[DisplayWebcamLeftView] GetDiskFreeSpaceEx failed.");
 #endif
             }
 
@@ -846,7 +846,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                     if (null != msgs && msgs.Length == 2)
                     {
                         //_vm.CurrentProfileName = msgs[1];
-                        DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify profileName: {msgs[1]}");
+                        DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] UIUpdateNotify profileName: {msgs[1]}");
 
                         ChangeProfileByQAM(msgs[1]);
                     }
@@ -854,7 +854,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
             }
 
         }
@@ -880,7 +880,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ChangeProfileByQAM() ex:" + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ChangeProfileByQAM() ex:" + ex.Message);
             }
         }
 
@@ -894,13 +894,13 @@ namespace DDPM.UI.Module.DisplayWebcam
             // Unexpected closed recording.
             if (_vm.IsRecording)
             {
-                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] force stop recording.");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] [FreeWebcamResource] force stop recording.");
                 StopRecord();
             }
 
             try
             {
-                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] Free PowerEventControl");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] [FreeWebcamResource] Free PowerEventControl");
 
                 if (_pwr_Mon != null)
                 {
@@ -913,7 +913,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] PowerEvent Control got exception: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] [FreeWebcamResource] PowerEvent Control got exception: " + ex.Message);
             }
 
 
@@ -925,7 +925,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 1:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] [FreeWebcamResource] got exception 1:{ex.ToString()}");
             }
 
             try
@@ -941,7 +941,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 2:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] [FreeWebcamResource] got exception 2:{ex.ToString()}");
             }
 
 
@@ -952,7 +952,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] Free MediaFrameReader got exception: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] [FreeWebcamResource] Free MediaFrameReader got exception: " + ex.Message);
             }
 
             try
@@ -965,7 +965,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 4:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] [FreeWebcamResource] got exception 4:{ex.ToString()}");
             }
 
             try
@@ -974,7 +974,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
             }
 
             //try
@@ -992,7 +992,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             //{
             //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
             //}
-            DdpmCommonHelper.WriteUILog("[FreeWebcamResource] Webcam LaunchView_Unloaded end");
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] [FreeWebcamResource] Webcam LaunchView_Unloaded end");
             /*if ( _vm?.close_app == true )
             {
                 Console.WriteLine("force exit");
@@ -1012,7 +1012,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                 }
                 catch (Exception ex)
                 {
-                    DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+                    DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] Error del MediaFrameReader FrameArrived: {ex.Message}");
                 }
 
                 try
@@ -1022,7 +1022,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                 }
                 catch (Exception ex)
                 {
-                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+                    DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] Error stopping MediaFrameReader: {ex.Message}");
                 }
 
                 try
@@ -1035,7 +1035,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                 }
                 catch (Exception ex)
                 {
-                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                    DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] Error Dispose MediaFrameReader: {ex.Message}");
                 }
             }
 
@@ -1097,7 +1097,7 @@ namespace DDPM.UI.Module.DisplayWebcam
             {
 
                 // Log the exception details for further analysis
-                DdpmCommonHelper.WriteUILog($"Exception occurred: {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] Exception occurred: {ex.Message}");
                 _running = false;
                 return;
             }
@@ -1155,14 +1155,14 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"MediaFrameReader_FrameArrived Exception occurred 2 : {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] MediaFrameReader_FrameArrived Exception occurred 2 : {ex.Message}");
             }
 
             _running = false;
         }
         private void DeviceManagerSA_OnSystemSessionEnd(object? sender, EventArgs e)
         {
-            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemSessionEnd");
+            DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] catch event DeviceManagerSA_OnSystemSessionEnd");
             if (_vm.IsRecording)
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1171,7 +1171,7 @@ namespace DDPM.UI.Module.DisplayWebcam
         }
         private void DeviceManagerSA_OnSystemResume(object? sender, EventArgs e)
         {
-            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemResume");
+            DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] catch event DeviceManagerSA_OnSystemResume");
             //Debug.WriteLine("DeviceManagerSA_OnSystemResume");
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -1199,7 +1199,7 @@ namespace DDPM.UI.Module.DisplayWebcam
         private void DeviceManagerSA_OnSystemSuspend(object? sender, EventArgs e)
         {
             //Debug.WriteLine("DeviceManagerSA_OnSystemSuspend");
-            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemSuspend");
+            DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] catch event DeviceManagerSA_OnSystemSuspend");
 
             if (_vm.IsRecording)
                 Dispatcher.Invoke(new Action(() =>
@@ -1210,7 +1210,7 @@ namespace DDPM.UI.Module.DisplayWebcam
 
         private void UserStopRecord()
         {
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() start");
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  UserStopRecord() start");
 
             try
             {
@@ -1237,9 +1237,9 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() ex:" + ex.Message);
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  UserStopRecord() ex:" + ex.Message);
             }
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() end");
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  UserStopRecord() end");
 
         }
         private void MonitorEvent_On(object? sender, EventArgs e)
@@ -1272,7 +1272,7 @@ namespace DDPM.UI.Module.DisplayWebcam
                 }
                 catch (Exception ex)
                 {
-                    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StopRecordingAsync() : " + ex.Message);
+                    DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  StopRecordingAsync() : " + ex.Message);
                 }
             }
             _vm.IsRecording = false;
@@ -1297,14 +1297,70 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"UserControl_Loaded catch exception: {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] UserControl_Loaded catch exception: {ex.Message}");
             }
-            DdpmCommonHelper.WriteUILog($"Webcam UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+            DdpmCommonHelper.WriteUILog($"[DisplayWebcamLeftView] Webcam UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void ChangePan(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ChangePan() start");
 
+            try
+            {
+                if (sender is Image img)
+                {
+                    var value = 0;
+                    switch (img.Tag.ToString())
+                    {
+                        case "L":
+                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo?.PanMin)
+                                return;
+
+                            value = _vm.CurrentProfile.Pan - _vm.CurrentDeviceInfo?.PanSteppingDelta ?? 1;
+                            if (value < _vm.CurrentDeviceInfo?.PanMin)
+                                value = _vm.CurrentDeviceInfo?.PanMin ?? 0;
+
+                            _vm.SetPan(value);
+                            break;
+                        case "R":
+                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo?.PanMax)
+                                return;
+
+                            value = _vm.CurrentProfile.Pan + _vm.CurrentDeviceInfo?.PanSteppingDelta ?? 1;
+                            if (value > _vm.CurrentDeviceInfo?.PanMax)
+                                value = _vm.CurrentDeviceInfo?.PanMax ?? 0;
+
+                            _vm.SetPan(value);
+                            break;
+                        case "T":
+                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo?.TiltMax)
+                                return;
+
+                            value = _vm.CurrentProfile.Tilt + _vm.CurrentDeviceInfo?.TiltSteppingDelta ?? 1;
+                            if (value > _vm.CurrentDeviceInfo?.TiltMax)
+                                value = _vm.CurrentDeviceInfo?.TiltMax ?? 0;
+
+                            _vm.SetTilt(value);
+                            break;
+                        case "D":
+                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo?.TiltMin)
+                                return;
+
+                            value = _vm.CurrentProfile.Tilt - _vm.CurrentDeviceInfo?.TiltSteppingDelta ?? 1;
+                            if (value < _vm.CurrentDeviceInfo?.TiltMin)
+                                value = _vm.CurrentDeviceInfo?.TiltMin ?? 0;
+
+                            _vm.SetTilt(value);
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ChangePan() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ChangePan() end");
         }
 
         private void btnFolder_Click(object sender, MouseButtonEventArgs e)
@@ -1380,6 +1436,20 @@ namespace DDPM.UI.Module.DisplayWebcam
         private void SaveClick(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("LaunchView_Unloaded start");
+
+            FreeWebcamResource();
+            if (AlertTimer != null)
+            {
+                AlertTimer.Stop();
+                AlertTimer.Tick -= AlertTimer_Tick;
+            }
+
+            Console.WriteLine("LaunchView_Unloaded end");
         }
     }
 }
