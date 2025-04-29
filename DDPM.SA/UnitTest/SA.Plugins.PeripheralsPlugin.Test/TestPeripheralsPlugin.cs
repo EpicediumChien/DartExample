@@ -1,3 +1,5 @@
+#define SUPPORT_210
+
 using DDPM.SA.Common;
 using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DisplayManager;
@@ -2379,10 +2381,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             string newValue = "TestSetCurrentSelectedProfile";
             Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
             Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
-            Mock<IWebcamProfileManager> WebcamProfileManager = new Mock<IWebcamProfileManager>();
             Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
-
+#if SUPPORT_210
+            //Mock<IWebcamProfileManager> WebcamProfileManager = new Mock<IWebcamProfileManager>();
+            //LogicalDeviceWebcam.Setup(ld => ld.ProfileManager).Returns(WebcamProfileManager.Object);
+#else
+            Mock<IWebcamProfileManager> WebcamProfileManager = new Mock<IWebcamProfileManager>();
             LogicalDeviceWebcam.Setup(ld => ld.ProfileManager).Returns(WebcamProfileManager.Object);
+#endif
             LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
             PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
             mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID- ILogicalDeviceWebcam ProfileManager

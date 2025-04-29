@@ -1852,6 +1852,12 @@ namespace DDPM.SA.Common
 
         Task<int> GetAirAudioMaxAllowedPariedHost(string Guid);
 
+        Task<bool> GetAirAudioIsConnectedAsync(string Guid);
+
+        Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid);
+
+        Task<bool> GetAirAudioIsConnectedRightAsync(string Guid);
+
         #endregion Get
 
         #region Set

@@ -1,4 +1,6 @@
-﻿using DDPM.SA.Common;
+﻿#define SUPPORT_210
+
+using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
@@ -1218,6 +1220,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+#if SUPPORT_210
+        public async Task<bool> GetAirAudioIsConnectedAsync(string Guid)
+        {
+            try
+            {
+                var result = await DTPService.GetAirAudioIsConnectedAsync(Guid);
+                if (result)
+                    writelog($"GetAirAudioIsConnectedAsync Success");
+                else
+                    writelog($"GetAirAudioIsConnectedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetAirAudioIsConnectedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid)
+        {
+            try
+            {
+                var result = await DTPService.GetAirAudioIsConnectedLeftAsync(Guid);
+                if (result)
+                    writelog($"GetAirAudioIsConnectedLeftAsync Success");
+                else
+                    writelog($"GetAirAudioIsConnectedLeftAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetAirAudioIsConnectedLeftAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedRightAsync(string Guid)
+        {
+            try
+            {
+                var result = await DTPService.GetAirAudioIsConnectedRightAsync(Guid);
+                if (result)
+                    writelog($"GetAirAudioIsConnectedRightAsync Success");
+                else
+                    writelog($"GetAirAudioIsConnectedRightAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetAirAudioIsConnectedRightAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+#endif
         public async Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue)
         {
             try

@@ -1,5 +1,5 @@
 ﻿#region LicenceHeader
-
+#define SUPPORT_210
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -21290,8 +21290,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await _AirAudioHelper?.SetAirAudioAutoPowerOffIntervalAsync(Guid, newValue);
         }
+#if SUPPORT_210
+        public async Task<bool> GetAirAudioIsConnectedAsync(string Guid)
+        {
+            return await _AirAudioHelper?.GetAirAudioIsConnectedAsync(Guid);
+        }
 
-        #endregion
+        public async Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid)
+        {
+            return await _AirAudioHelper?.GetAirAudioIsConnectedLeftAsync(Guid);
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedRightAsync(string Guid)
+        {
+            return await _AirAudioHelper?.GetAirAudioIsConnectedRightAsync(Guid);
+        }
+#endif
+#endregion
 
         //Get latest all monitors cache
         public Task<List<MonitorInfo>> GetCurrentMonitorCache()
