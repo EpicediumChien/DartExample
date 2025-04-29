@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.NKVM
 {
+    public class NeedUpdateMonitorInfo
+    {
+        public string Model { get; set; } = string.Empty;
+        public string seviceTag { get; set; } = string.Empty;
+    }
     public class NKVMSupportList
     {
         public List<string> SupportList = new List<string>
