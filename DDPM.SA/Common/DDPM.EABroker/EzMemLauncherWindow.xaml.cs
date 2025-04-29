@@ -51,16 +51,6 @@ namespace DDPM.EABroker
             return rst;
         }
 
-        /*[DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private bool EzMemorySetForegroundWindow(IntPtr hWnd)
-        {
-            return SetForegroundWindow(hWnd);
-        }*/
-
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -81,10 +71,6 @@ namespace DDPM.EABroker
         private const int SW_SHOWN = 5;
         //private const int SW_SHOWNA = 8;
         //private const int SW_RESTORE = 9;
-
-
-        //[DllImport("user32.dll")]
-        //private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
 
         #region Private members
@@ -721,7 +707,7 @@ namespace DDPM.EABroker
         {
             List<IntPtr> windowHandles = new List<IntPtr>();
 
-            EnumWindows((hWnd, lParam) =>
+            _EnumWindows((hWnd, lParam) =>
             {
                 if (_IsWindowVisible(hWnd) && GetWindowTitle(hWnd).Length > 0)
                 {
@@ -856,6 +842,10 @@ namespace DDPM.EABroker
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        private static bool _EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
+        {
+            return EnumWindows(lpEnumFunc, lParam);
+        }
         private static bool EzMemoryEnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
         {
             bool rst = EnumWindows(lpEnumFunc, lParam);
