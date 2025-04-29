@@ -34,6 +34,7 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -56,6 +57,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         private readonly DisplayViewModel _vmDisplay;
 
         private WebCameraViewModel? _webCameraViewModel;
+
+        private DisplayWebcamModule? _displayWebCamModule;
 
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private bool _isDisposed = false;
@@ -558,6 +561,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
             //Group[6] Webcam
             //         Header[0] Webcam,   DisplayWebcamModule
+            _displayWebCamModule = new DisplayWebcamModule(_webCameraViewModel);
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Constants.GroupName_DisplayWebcam, //  "Others",
@@ -569,8 +573,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //If the monitor has DisplayOthers capability
             //if (moduleCapabilities.DisplayOthers)
             {
+
                 sw.Restart();
-                moduleGroup.AddHeader(LangHelper.Instance["Camera.0"], new WebCameraSettingsModule(_webCameraViewModel));
+                var webCamSettingModule = new WebCameraSettingsModule(_webCameraViewModel);
+                UpdateFieldOrProperty(webCamSettingModule, "_leftView", _displayWebCamModule.GetLeftView());
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.0"], webCamSettingModule);
                 sw.Stop();
                 _log?.Info($"* DisplayWebcamModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -597,7 +604,39 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
             return groups;
         }
+        public bool UpdateFieldOrProperty(object target, string name, object value)
+        {
+            try
+            {
+                Type type = target.GetType();
+                var props = type.GetProperties();
+                var fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
+                if (false == props.Any(x => x.Name.Equals(name)) &&
+                    false == fields.Any(x => x.Name.Equals(name)))
+                    return false;
+
+                var prop = props.FirstOrDefault(x => x.Name.Equals(name));
+                if (null != prop)
+                {
+                    prop.SetValue(target, value);
+                    return true;
+                }
+
+                var field = fields.FirstOrDefault(x => x.Name.Equals(name));
+                if (null != field)
+                {
+                    field.SetValue(target, value);
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         //private bool SupportNKVM(string ModelName)
         //{
         //    if (string.IsNullOrEmpty(ModelName))

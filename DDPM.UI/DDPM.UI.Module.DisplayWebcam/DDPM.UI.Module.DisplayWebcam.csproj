@@ -15,5 +15,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
 		<ProjectReference Include="..\DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebCameraCapture\DDPM.UI.Module.WebCameraCapture.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebCameraSettings\DDPM.UI.Module.WebCameraSettings.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebColorImage\DDPM.UI.Module.WebCameraColorImage.csproj" />
 	</ItemGroup>
 </Project>
