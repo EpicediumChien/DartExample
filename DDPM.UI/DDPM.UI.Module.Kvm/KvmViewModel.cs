@@ -3482,5 +3482,22 @@ namespace DDPM.UI.Module.Kvm
                 return CurrentCultureArrowRight == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
         }
+
+        private Visibility _fullMode { get; set; }
+
+        public Visibility FullMode
+        {
+            get
+            {
+                return _fullMode;
+            }
+
+            set {
+                _fullMode = value;
+                OnPropertyChanged("FullMode");
+            }
+        }
+
+        public Visibility ShrinkMode => FullMode == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
     }
 }

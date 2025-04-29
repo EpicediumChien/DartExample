@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" SizeChanged="RDWForWindowSize"
              d:DesignHeight="671" d:DesignWidth="1278">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -40,158 +40,161 @@
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <StackPanel>
-            <Grid Margin="24" x:Name="splitGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="621"/>
-                    <ColumnDefinition Width="*" MinWidth="621"/>
-                </Grid.ColumnDefinitions>
-                <Grid x:Name="LeftGrid" Grid.Column="0" Margin="64, 60, 0, 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <!-- Progress Bar -->
-                    <Grid Grid.Column="0" Grid.Row="0">
-                        <ProgressBar x:Name="WalkThroughProgressbar" Background="#293B4D" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Left" Height="5" Width="281" Minimum="0" Maximum="3" Value="{Binding ToProgressValue}">
-                            <ProgressBar.Style>
-                                <Style TargetType="ProgressBar">
-                                    <Setter Property="Foreground" Value="#A4B8CD" />
-                                </Style>
-                            </ProgressBar.Style>
+        <Grid Margin="24" x:Name="splitGrid" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="324"/>
+                <ColumnDefinition Width="*" MinWidth="678"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="LeftGrid" Grid.Column="0" Grid.Row="0" Margin="64, 60, 0, 0" HorizontalAlignment="Right" MaxWidth="932">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <!-- Progress Bar -->
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <ProgressBar x:Name="WalkThroughProgressbar" Background="#293B4D" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Left" Height="5" Width="281" Minimum="0" Maximum="3" Value="{Binding ToProgressValue}">
+                        <ProgressBar.Style>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Foreground" Value="#A4B8CD" />
+                            </Style>
+                        </ProgressBar.Style>
 
-                            <ProgressBar.Triggers>
-                                <EventTrigger RoutedEvent="ProgressBar.Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Value" From="{Binding FromProgressValue}" To="{Binding ToProgressValue}" Duration="0:0:1" FillBehavior="HoldEnd" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </ProgressBar.Triggers>
-                        </ProgressBar>
-                    </Grid>
-                    <Grid Grid.Column="0" Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="GridTxt_Row1" Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
+                        <ProgressBar.Triggers>
+                            <EventTrigger RoutedEvent="ProgressBar.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Value" From="{Binding FromProgressValue}" To="{Binding ToProgressValue}" Duration="0:0:1" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ProgressBar.Triggers>
+                    </ProgressBar>
+                </Grid>
+                <Grid Grid.Column="0" Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
+                    <UXControls:UXTextBlock x:Name="GridTxt_Row1" Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
-                    </Grid>
-                    <Grid Grid.Column="0" Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
-                        <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="48" LineHeight="76" to FontSize="42" LineHeight="40" add TextWrapping="WrapWithOverflow" -->
-                        <UXControls:UXTextBlock  x:Name="GridTxt_Row2" Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
+                </Grid>
+                <Grid Grid.Column="0" Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
+                    <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="48" LineHeight="76" to FontSize="42" LineHeight="40" add TextWrapping="WrapWithOverflow" -->
+                    <UXControls:UXTextBlock  x:Name="GridTxt_Row2" Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="64" LineHeight="40" TextWrapping="WrapWithOverflow"/>
-                    </Grid>
-                    <!--<Grid Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
-                    <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
-                    <UXControls:UXTextBlock Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left" x:Name="GridTxt_Row3"
+                </Grid>
+                <!--<Grid Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
+                <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
+                <UXControls:UXTextBlock Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left" x:Name="GridTxt_Row3"
                             Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
                             Text="{Binding [Kvm.7], Source={x:Static lang:LangHelper.Instance}}" 
                                                 FontSize="16" LineHeight="24" TextTrimming="None" TextWrapping="WrapWithOverflow"/>
-                    <!--</Grid>-->
-                    <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0">
-                            <!--<UXControls:UXProgressButton CompletedIconPosition="IconRight" PausedIconPosition="IconRight" RunningIconPosition="IconRight" NormalIconPosition="IconRight" AutomationProperties.Name="ProgressContent" Width="120"
+                <!--</Grid>-->
+                <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <!--<UXControls:UXProgressButton CompletedIconPosition="IconRight" PausedIconPosition="IconRight" RunningIconPosition="IconRight" NormalIconPosition="IconRight" AutomationProperties.Name="ProgressContent" Width="120"
                             NormalContent="Next"
                             ProgressButtonState="Normal"
                             Click="OpenMKFullView" />-->
-                            <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to MinWidth="164"-->
-                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                        <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to MinWidth="164"-->
+                        <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
                                                  IconAnimation="Move" MinWidth="164" Height="40"
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Path x:Name="LeftArrow" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path x:Name="LeftArrow" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"
+                                          Visibility="{Binding CurrentCultureArrowLeft}"/>
+                                <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
+                                <Path x:Name="RightArrow" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"
                                           Visibility="{Binding CurrentCultureArrowRight}"/>
-                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
-                                    <Path x:Name="RightArrow" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"
-                                          Visibility="{Binding CurrentCultureArrowRight}"/>
-                                </StackPanel>
-                            </UXControls:UXButton>
-                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                            </StackPanel>
+                        </UXControls:UXButton>
+                        <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
                                                  Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
                                                  IconAnimation="Move" MinWidth="164" Height="40"
                                                  Click="SaveInput" Visibility="{Binding EditInput}" />
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
                                                  ButtonSize="Medium" Margin="10, 0"
                                                  Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
                                                  IconAnimation="Move"
                                                  Click="CloseUSBKVM" Visibility="{Binding SetInput}" />
-                            <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
+                        <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
                                                  ButtonSize="Medium" Margin="10, 0"
                                                  Content="{Binding [Cancel], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
                                                  IconAnimation="Move"
                                                  Click="CloseUSBKVM" Visibility="{Binding EditInput}" />
-                        </Grid>
                     </Grid>
                 </Grid>
-                <Grid Grid.Column="1" Margin="0, 60, 0, 0" VerticalAlignment="Stretch"
-                      MinWidth="621">
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="0" Margin="0, 60, 0, 0" VerticalAlignment="Stretch" MaxWidth="932" Visibility="{Binding FullMode}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="20, 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Margin="20, 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
+                    <Border Grid.Column="0" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Margin="16, 16, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                    <UXControls:UXTextBox Text="{Binding InputName1}" BorderThickness="1" 
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName1}" BorderThickness="1" 
                                                         VerticalContentAlignment="Center" MaxLength="30" 
                                                         PreviewTextInput="UXTextBox_PreviewTextInput"
                                                         TextChanged="UXTextBox_TextChanged1"/>
-                                </Grid>
-                                <Grid Grid.Row="2" Margin="16, 8, 16, 16">
-                                    <StackPanel x:Name="Ports_StackPanel_0">
-                                        <StackPanel.Style>
-                                            <Style TargetType="StackPanel">
-                                                <Setter Property="Orientation" Value="Horizontal" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
-                                                        <Setter Property="Orientation" Value="Vertical" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <StackPanel>
-                                            <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 16">
+                                <StackPanel x:Name="Ports_StackPanel_0">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
                                                                 Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                                 FontSize="16" LineHeight="24"
                                                                 HorizontalAlignment="Center"
                                                                 Margin="0, 0, 0, 2"/>
-                                            <ComboBox AutomationProperties.Name="SelectedCheck"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck"
                                                     Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                                     ItemsSource="{Binding PC1InputsList}"
@@ -199,23 +202,23 @@
                                                     DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
                                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                                        </StackPanel>
-                                        <StackPanel x:Name="SecondPort_StackPanel_0">
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Setter Property="Margin" Value="8, 0, 0, 0" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
-                                                            <Setter Property="Margin" Value="0, 16, 0, 0" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                    </StackPanel>
+                                    <StackPanel x:Name="SecondPort_StackPanel_0">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
                                                                 Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                                 FontSize="16" LineHeight="24"
                                                                 HorizontalAlignment="Center" />
-                                            <ComboBox AutomationProperties.Name="SelectedCheck"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck"
                                                     Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                                     ItemsSource="{Binding USBsList}"
@@ -224,75 +227,75 @@
                                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                                     IsEnabled="{Binding PC1USB_Enable}" Opacity="{Binding PC1USB_Opacity}"/>
-                                        </StackPanel>
                                     </StackPanel>
-                                </Grid>
+                                </StackPanel>
                             </Grid>
-                        </Border>
-                        <Border Grid.Column="1" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Margin="16, 16, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}"
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                    <UXControls:UXTextBox Text="{Binding InputName2}"
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName2}"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30"
                                                       PreviewTextInput="UXTextBox_PreviewTextInput"
                                                       TextChanged="UXTextBox_TextChanged2"/>
-                                </Grid>
-                                <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
-                                    <StackPanel x:Name="Ports_StackPanel_1">
-                                        <StackPanel.Style>
-                                            <Style TargetType="StackPanel">
-                                                <Setter Property="Orientation" Value="Horizontal" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
-                                                        <Setter Property="Orientation" Value="Vertical" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <StackPanel>
-                                            <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
+                                <StackPanel x:Name="Ports_StackPanel_1">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                                            <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                 HorizontalAlignment="Center" VerticalAlignment="Top"
                                                 ItemsSource="{Binding PC2InputsList}" 
                                                 SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
                                                 DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
                                                 Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                                        </StackPanel>
-                                        <StackPanel x:Name="SecondPort_StackPanel_1">
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Setter Property="Margin" Value="8, 0, 0, 0" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
-                                                            <Setter Property="Margin" Value="0, 16, 0, 0" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                    </StackPanel>
+                                    <StackPanel x:Name="SecondPort_StackPanel_1">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                                            <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                                   ItemsSource="{Binding USBsList}" 
                                                   SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
@@ -300,57 +303,57 @@
                                                   Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                   BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                                   IsEnabled="{Binding PC2USB_Enable}" Opacity="{Binding PC2USB_Opacity}"/>
-                                        </StackPanel>
                                     </StackPanel>
-                                </Grid>
+                                </StackPanel>
                             </Grid>
-                        </Border>
-                        <Border Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" CornerRadius="13"
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" CornerRadius="13"
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC3_Visibility}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Margin="16, 16, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}3}"
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}3}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16" LineHeight="24"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                    <UXControls:UXTextBox Text="{Binding InputName3}"
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName3}"
                                                           BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30"
                                                           PreviewTextInput="UXTextBox_PreviewTextInput"
                                                           TextChanged="UXTextBox_TextChanged3"/>
-                                </Grid>
-                                <Grid Grid.Row="2" Margin="16, 8, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16" LineHeight="24"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                    <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               ItemsSource="{Binding PC3InputsList}"
                                               SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
                                               DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                                </Grid>
-                                <Grid Grid.Row="4" Margin="16, 8, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                    <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               ItemsSource="{Binding USBsList}" Width="103"
                                               SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
@@ -358,55 +361,55 @@
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                               IsEnabled="{Binding PC3USB_Enable}" Opacity="{Binding PC3USB_Opacity}"/>
-                                </Grid>
                             </Grid>
-                        </Border>
-                        <Border Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC4_Visibility}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Margin="16, 16, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}4}"
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}4}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16" LineHeight="24"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                    <UXControls:UXTextBox Text="{Binding InputName4}"
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName4}"
                                                           BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30"
                                                           PreviewTextInput="UXTextBox_PreviewTextInput"
                                                           TextChanged="UXTextBox_TextChanged4"/>
-                                </Grid>
-                                <Grid Grid.Row="2" Margin="16, 8, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16" LineHeight="24"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                    <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               ItemsSource="{Binding PC4InputsList}"
                                               SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
                                               DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                                </Grid>
-                                <Grid Grid.Row="4" Margin="16, 8, 16, 0">
-                                    <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                             FontSize="16" LineHeight="24"
                                                             HorizontalAlignment="Center" />
-                                </Grid>
-                                <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                    <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                     ItemsSource="{Binding USBsList}" Width="103"
                                     SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"
@@ -414,162 +417,636 @@
                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                     IsEnabled="{Binding PC4USB_Enable}" Opacity="{Binding PC4USB_Opacity}"/>
-                                </Grid>
                             </Grid>
-                        </Border>
-                    </Grid>
-                    <Grid Grid.Row="1" HorizontalAlignment="Center">
-                        <Grid.Resources>
-                            <Style TargetType="Path">
-                                <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_USBKVMLineColor}" />
-                                <Setter Property="Fill" Value="Transparent" />
-                            </Style>
-                        </Grid.Resources>
-                        <Canvas Visibility="{Binding PCImage_2}">
-                            <Path Data="M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.3" ScaleY="1"/>
-                                        <TranslateTransform X="-165" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path Data="M126 122V77.8526C126 70.6729 131.82 64.8526 139 64.8526H238C245.18 64.8526 251 59.0323 251 51.8526V0" StrokeThickness="2">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.3" ScaleY="1" />
-                                        <TranslateTransform X="-165" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Canvas RenderTransformOrigin="0,0">
-                                <Canvas.Resources>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                        <Setter Property="Fill" Value="Transparent" />
-                                    </Style>
-                                </Canvas.Resources>
-                                <Canvas.RenderTransform>
-                                    <TranslateTransform X="-215" Y="25"/>
-                                </Canvas.RenderTransform>
-                                <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
-                                <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
-                                <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                            </Canvas>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Row="1" HorizontalAlignment="Center">
+                    <Grid.Resources>
+                        <Style TargetType="Path">
+                            <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_USBKVMLineColor}" />
+                            <Setter Property="Fill" Value="Transparent" />
+                        </Style>
+                    </Grid.Resources>
+                    <Canvas Visibility="{Binding PCImage_2}">
+                        <Path Data="M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.3" ScaleY="1"/>
+                                    <TranslateTransform X="-165" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M126 122V77.8526C126 70.6729 131.82 64.8526 139 64.8526H238C245.18 64.8526 251 59.0323 251 51.8526V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.3" ScaleY="1" />
+                                    <TranslateTransform X="-165" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="25"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                         </Canvas>
-                        <Canvas Visibility="{Binding PCImage_3}">
-                            <Path Data="M146.293 96.7071C146.683 97.0976 147.317 97.0976 147.707 96.7071L154.071 90.3431C154.462 89.9526 154.462 89.3195 154.071 88.9289C153.681 88.5384 153.047 88.5384 152.657 88.9289L147 94.5858L141.343 88.9289C140.953 88.5384 140.319 88.5384 139.929 88.9289C139.538 89.3195 139.538 89.9526 139.929 90.3431L146.293 96.7071ZM148 96V64.0316H146V96H148ZM134 50.0316H14V52.0316H134V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM148 64.0316C148 56.2996 141.732 50.0316 134 50.0316V52.0316C140.627 52.0316 146 57.4042 146 64.0316H148Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
-                                        <TranslateTransform X="-180" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path StrokeThickness="2">
-                                <Path.Data>
-                                    <LineGeometry StartPoint="1,4.32559e-08" EndPoint="0.999996,96"/>
-                                </Path.Data>
-                                <Path.RenderTransform>
+                    </Canvas>
+                    <Canvas Visibility="{Binding PCImage_3}">
+                        <Path Data="M146.293 96.7071C146.683 97.0976 147.317 97.0976 147.707 96.7071L154.071 90.3431C154.462 89.9526 154.462 89.3195 154.071 88.9289C153.681 88.5384 153.047 88.5384 152.657 88.9289L147 94.5858L141.343 88.9289C140.953 88.5384 140.319 88.5384 139.929 88.9289C139.538 89.3195 139.538 89.9526 139.929 90.3431L146.293 96.7071ZM148 96V64.0316H146V96H148ZM134 50.0316H14V52.0316H134V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM148 64.0316C148 56.2996 141.732 50.0316 134 50.0316V52.0316C140.627 52.0316 146 57.4042 146 64.0316H148Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="-180" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path StrokeThickness="2">
+                            <Path.Data>
+                                <LineGeometry StartPoint="1,4.32559e-08" EndPoint="0.999996,96"/>
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="0" />
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M1.00001 96V64.0316C1.00001 56.8519 6.8203 51.0316 14 51.0316H133C140.18 51.0316 146 45.2113 146 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
                                     <TranslateTransform X="0" />
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path Data="M1.00001 96V64.0316C1.00001 56.8519 6.8203 51.0316 14 51.0316H133C140.18 51.0316 146 45.2113 146 38.0316V0" StrokeThickness="2">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
-                                        <TranslateTransform X="0" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Canvas RenderTransformOrigin="0,0">
-                                <Canvas.Resources>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                        <Setter Property="Fill" Value="Transparent" />
-                                    </Style>
-                                </Canvas.Resources>
-                                <Canvas.RenderTransform>
-                                    <TranslateTransform X="-215" Y="0"/>
-                                </Canvas.RenderTransform>
-                                <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
-                                <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
-                                <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                            </Canvas>
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="0"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                         </Canvas>
-                        <Canvas Visibility="{Binding PCImage_4}">
-                            <Path Data="M216.293 96.7071C216.683 97.0976 217.317 97.0976 217.707 96.7071L224.071 90.3431C224.462 89.9526 224.462 89.3195 224.071 88.9289C223.681 88.5384 223.047 88.5384 222.657 88.9289L217 94.5858L211.343 88.9289C210.953 88.5384 210.319 88.5384 209.929 88.9289C209.538 89.3195 209.538 89.9526 209.929 90.3431L216.293 96.7071ZM218 96V64.0316H216V96H218ZM204 50.0316H14V52.0316H204V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM218 64.0316C218 56.2996 211.732 50.0316 204 50.0316V52.0316C210.627 52.0316 216 57.4042 216 64.0316H218Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
-                                        <TranslateTransform X="-265" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path Data="M72 96V64.0316C72 56.8519 66.1797 51.0316 59 51.0316H14C6.8203 51.0316 1 45.2113 1 38.0316V0" StrokeThickness="2">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.28" ScaleY="1"/>
-                                        <TranslateTransform X="-90" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path Data="M0.999997 96V64.0316C0.999997 56.8519 6.8203 51.0316 14 51.0316H59C66.1797 51.0316 72 45.2113 72 38.0316V0" StrokeThickness="2">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.28" ScaleY="1"/>
-                                        <TranslateTransform X="0" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Path Data="M0.999996 96V64.0316C0.999996 56.8519 6.82029 51.0316 14 51.0316H204C211.18 51.0316 217 45.2113 217 38.0316V0" StrokeThickness="2">
-                                <Path.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="1.23" ScaleY="1"/>
-                                        <TranslateTransform X="0" />
-                                    </TransformGroup>
-                                </Path.RenderTransform>
-                            </Path>
-                            <Canvas RenderTransformOrigin="0,0">
-                                <Canvas.Resources>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                        <Setter Property="Fill" Value="Transparent" />
-                                    </Style>
-                                </Canvas.Resources>
-                                <Canvas.RenderTransform>
-                                    <TranslateTransform X="-215" Y="0"/>
-                                </Canvas.RenderTransform>
-                                <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
-                                <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
-                                <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                                <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                            </Canvas>
+                    </Canvas>
+                    <Canvas Visibility="{Binding PCImage_4}">
+                        <Path Data="M216.293 96.7071C216.683 97.0976 217.317 97.0976 217.707 96.7071L224.071 90.3431C224.462 89.9526 224.462 89.3195 224.071 88.9289C223.681 88.5384 223.047 88.5384 222.657 88.9289L217 94.5858L211.343 88.9289C210.953 88.5384 210.319 88.5384 209.929 88.9289C209.538 89.3195 209.538 89.9526 209.929 90.3431L216.293 96.7071ZM218 96V64.0316H216V96H218ZM204 50.0316H14V52.0316H204V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM218 64.0316C218 56.2996 211.732 50.0316 204 50.0316V52.0316C210.627 52.0316 216 57.4042 216 64.0316H218Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="-265" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M72 96V64.0316C72 56.8519 66.1797 51.0316 59 51.0316H14C6.8203 51.0316 1 45.2113 1 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                    <TranslateTransform X="-90" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M0.999997 96V64.0316C0.999997 56.8519 6.8203 51.0316 14 51.0316H59C66.1797 51.0316 72 45.2113 72 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                    <TranslateTransform X="0" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M0.999996 96V64.0316C0.999996 56.8519 6.82029 51.0316 14 51.0316H204C211.18 51.0316 217 45.2113 217 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="0" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="0"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                         </Canvas>
-                    </Grid>
+                    </Canvas>
                 </Grid>
             </Grid>
-        </StackPanel>
+            <Grid Grid.Column="0" Grid.Row="1" Visibility="{Binding ShrinkMode}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="20, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                        FontSize="16" LineHeight="24"
+                                                        HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName1}" BorderThickness="1" 
+                                                        VerticalContentAlignment="Center" MaxLength="30" 
+                                                        PreviewTextInput="UXTextBox_PreviewTextInput"
+                                                        TextChanged="UXTextBox_TextChanged1"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 16">
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                                                Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                                FontSize="16" LineHeight="24"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="0, 0, 0, 2"/>
+                                        <ComboBox AutomationProperties.Name="SelectedCheck"
+                                                    Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                    ItemsSource="{Binding PC1InputsList}"
+                                                    SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
+                                                    DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                                    Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                    BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                                                Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                                FontSize="16" LineHeight="24"
+                                                                HorizontalAlignment="Center" />
+                                        <ComboBox AutomationProperties.Name="SelectedCheck"
+                                                    Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                    ItemsSource="{Binding USBsList}"
+                                                    SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
+                                                    DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                                    Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                    BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                                    IsEnabled="{Binding PC1USB_Enable}" Opacity="{Binding PC1USB_Opacity}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                        FontSize="16" LineHeight="24"
+                                                        HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName2}"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30"
+                                                      PreviewTextInput="UXTextBox_PreviewTextInput"
+                                                      TextChanged="UXTextBox_TextChanged2"/>
+                            </Grid>
+                            <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                        FontSize="16" LineHeight="24"
+                                                        HorizontalAlignment="Center" />
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                                ItemsSource="{Binding PC2InputsList}" 
+                                                SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
+                                                DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                                Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                        FontSize="16" LineHeight="24"
+                                                        HorizontalAlignment="Center" />
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  ItemsSource="{Binding USBsList}" 
+                                                  SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
+                                                  DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                                  Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                                  IsEnabled="{Binding PC2USB_Enable}" Opacity="{Binding PC2USB_Opacity}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC3_Visibility}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}3}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16" LineHeight="24"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName3}"
+                                                          BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30"
+                                                          PreviewTextInput="UXTextBox_PreviewTextInput"
+                                                          TextChanged="UXTextBox_TextChanged3"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16" LineHeight="24"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              ItemsSource="{Binding PC3InputsList}"
+                                              SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                              Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                              BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              ItemsSource="{Binding USBsList}" Width="103"
+                                              SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                              Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                              BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                              IsEnabled="{Binding PC3USB_Enable}" Opacity="{Binding PC3USB_Opacity}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC4_Visibility}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}4}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16" LineHeight="24"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName4}"
+                                                          BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30"
+                                                          PreviewTextInput="UXTextBox_PreviewTextInput"
+                                                          TextChanged="UXTextBox_TextChanged4"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16" LineHeight="24"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              ItemsSource="{Binding PC4InputsList}"
+                                              SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80"
+                                              Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                              BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                            FontSize="16" LineHeight="24"
+                                                            HorizontalAlignment="Center" />
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    ItemsSource="{Binding USBsList}" Width="103"
+                                    SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"
+                                    DisplayMemberPath="inputDisplayText" MinWidth="133" MinHeight="80" 
+                                    Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                    BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                    IsEnabled="{Binding PC4USB_Enable}" Opacity="{Binding PC4USB_Opacity}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Row="1" HorizontalAlignment="Center">
+                    <Grid.Resources>
+                        <Style TargetType="Path">
+                            <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_USBKVMLineColor}" />
+                            <Setter Property="Fill" Value="Transparent" />
+                        </Style>
+                    </Grid.Resources>
+                    <Canvas Visibility="{Binding PCImage_2}">
+                        <Path Data="M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.3" ScaleY="1"/>
+                                    <TranslateTransform X="-165" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M126 122V77.8526C126 70.6729 131.82 64.8526 139 64.8526H238C245.18 64.8526 251 59.0323 251 51.8526V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.3" ScaleY="1" />
+                                    <TranslateTransform X="-165" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="25"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        </Canvas>
+                    </Canvas>
+                    <Canvas Visibility="{Binding PCImage_3}">
+                        <Path Data="M146.293 96.7071C146.683 97.0976 147.317 97.0976 147.707 96.7071L154.071 90.3431C154.462 89.9526 154.462 89.3195 154.071 88.9289C153.681 88.5384 153.047 88.5384 152.657 88.9289L147 94.5858L141.343 88.9289C140.953 88.5384 140.319 88.5384 139.929 88.9289C139.538 89.3195 139.538 89.9526 139.929 90.3431L146.293 96.7071ZM148 96V64.0316H146V96H148ZM134 50.0316H14V52.0316H134V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM148 64.0316C148 56.2996 141.732 50.0316 134 50.0316V52.0316C140.627 52.0316 146 57.4042 146 64.0316H148Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="-180" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path StrokeThickness="2">
+                            <Path.Data>
+                                <LineGeometry StartPoint="1,4.32559e-08" EndPoint="0.999996,96"/>
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="0" />
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M1.00001 96V64.0316C1.00001 56.8519 6.8203 51.0316 14 51.0316H133C140.18 51.0316 146 45.2113 146 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="0" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="0"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        </Canvas>
+                    </Canvas>
+                    <Canvas Visibility="{Binding PCImage_4}">
+                        <Path Data="M216.293 96.7071C216.683 97.0976 217.317 97.0976 217.707 96.7071L224.071 90.3431C224.462 89.9526 224.462 89.3195 224.071 88.9289C223.681 88.5384 223.047 88.5384 222.657 88.9289L217 94.5858L211.343 88.9289C210.953 88.5384 210.319 88.5384 209.929 88.9289C209.538 89.3195 209.538 89.9526 209.929 90.3431L216.293 96.7071ZM218 96V64.0316H216V96H218ZM204 50.0316H14V52.0316H204V50.0316ZM2 38.0316V0H0V38.0316H2ZM14 50.0316C7.37259 50.0316 2 44.659 2 38.0316H0C0 45.7636 6.26802 52.0316 14 52.0316V50.0316ZM218 64.0316C218 56.2996 211.732 50.0316 204 50.0316V52.0316C210.627 52.0316 216 57.4042 216 64.0316H218Z" Fill="{DynamicResource DefaultTheme_USBKVMLineColor}" StrokeThickness="0.1">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="-265" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M72 96V64.0316C72 56.8519 66.1797 51.0316 59 51.0316H14C6.8203 51.0316 1 45.2113 1 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                    <TranslateTransform X="-90" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M0.999997 96V64.0316C0.999997 56.8519 6.8203 51.0316 14 51.0316H59C66.1797 51.0316 72 45.2113 72 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.28" ScaleY="1"/>
+                                    <TranslateTransform X="0" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Data="M0.999996 96V64.0316C0.999996 56.8519 6.82029 51.0316 14 51.0316H204C211.18 51.0316 217 45.2113 217 38.0316V0" StrokeThickness="2">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.23" ScaleY="1"/>
+                                    <TranslateTransform X="0" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Canvas RenderTransformOrigin="0,0">
+                            <Canvas.Resources>
+                                <Style TargetType="Path">
+                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                            </Canvas.Resources>
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="-215" Y="0"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z" StrokeMiterLimit="10"/>
+                            <Path Data="M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                            <Path Data="M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.208 190.011H213.829" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M195.861 216.571H190.704V217H195.861V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M219.352 216.571H214.195V217H219.352V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                            <Path Data="M242.842 216.571H237.686V217H242.842V216.571Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        </Canvas>
+                    </Canvas>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="0" Grid.Row="2" Margin="0, 90, 0 ,0" Visibility="{Binding ShrinkMode}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <!--<UXControls:UXProgressButton CompletedIconPosition="IconRight" PausedIconPosition="IconRight" RunningIconPosition="IconRight" NormalIconPosition="IconRight" AutomationProperties.Name="ProgressContent" Width="120"
+                            NormalContent="Next"
+                            ProgressButtonState="Normal"
+                            Click="OpenMKFullView" />-->
+                    <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to MinWidth="164"-->
+                    <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 IconAnimation="Move" MinWidth="164" Height="40"
+                                                 ContentStringFormat="{}{0}"
+                                                 Click="OpenMKFullView" Visibility="{Binding SetInput}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"
+                                          Visibility="{Binding CurrentCultureArrowLeft}"/>
+                            <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
+                            <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"
+                                          Visibility="{Binding CurrentCultureArrowRight}"/>
+                        </StackPanel>
+                    </UXControls:UXButton>
+                    <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
+                                                 IconAnimation="Move" MinWidth="164" Height="40"
+                                                 Click="SaveInput" Visibility="{Binding EditInput}" />
+                </Grid>
+                <Grid Grid.Column="1">
+                    <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
+                                                 IconAnimation="Move"
+                                                 Click="CloseUSBKVM" Visibility="{Binding SetInput}" />
+                    <UXControls:UXButton ButtonType="Tertiary" MinWidth="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="{Binding [Cancel], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
+                                                 IconAnimation="Move"
+                                                 Click="CloseUSBKVM" Visibility="{Binding EditInput}" />
+                </Grid>
+            </Grid>
+        </Grid>
         <!--<StackPanel>
         <TextBlock Text="This is Test1 FullView" FontSize="24" Foreground="Cyan" />
         <StackPanel Orientation="Horizontal">
