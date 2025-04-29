@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
@@ -25,10 +26,10 @@ namespace DDPM.UI.Module.DisplayWebcam
 
         public HomeDevice? SelectedHomeDevice { get; set; }
 
-        public DisplayWebcamModule(IModuleOwner moduleOwner = null)
+        public DisplayWebcamModule(WebCameraViewModel webCameraViewModel)
         {
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-
+            _leftView = new DisplayWebcamLeftView();
             //_leftView.DataContext = vm;
 
         }

@@ -5,6 +5,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using DDPM.UI.Module.DisplayWebcam;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
 using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
@@ -68,7 +69,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         //Robert_Lin, 2024-6-27 using the single view model in DisplayPlugin, copy from other plugins (for example, MousePlugin)
         private DisplayViewModel? _viewModel;
         private WebCameraViewModel? _webCameraViewModel;
-
+        private DeviceHelper _deviceHelper = new();
         #endregion Private
 
         /// <summary>
@@ -201,7 +202,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             PrepareHomeDevices();
             _log?.Info("[DisplayPlugin] OnShown() ... out");
         }
+        private void GetPeripheralsAsync()
+        {
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... in");
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(); //(true);
+                _deviceHelper = task.Result;
+            }
 
+            _webCameraViewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... out");
+        }
         /// <summary>
         /// Get HomeDevices and SelectedHomeDevice from DdpmHomePlugin, and add them to IDisplayPageViewModel
         /// </summary>
