@@ -453,7 +453,7 @@
     <value>Synchronize between monitors</value>
   </data>
   <data name="Brightness.5" xml:space="preserve">
-    <value>Apply the above brightness/luminance, contrast, and color preset controls to your connected monitors.</value>
+    <value>Applies the above brightness/luminance, contrast, and color preset controls to your connected monitors</value>
   </data>
   <data name="Luminance" xml:space="preserve">
     <value>Luminance</value>
@@ -471,7 +471,7 @@
     <value>Auto Brightness Range Level  </value>
   </data>
   <data name="Brightness.9" xml:space="preserve">
-    <value>Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low)</value>
+    <value>Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/Mid/Low)</value>
   </data>
   <data name="Brightness.10" xml:space="preserve">
     <value>Auto Color Temperature  </value>
@@ -483,7 +483,7 @@
     <value>Primary Monitor for Sync  </value>
   </data>
   <data name="Brightness.13" xml:space="preserve">
-    <value>Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors</value>
+    <value>Synchronizes the brightness, contrast, color preset and color temperature from the primary monitor with other ALS monitors</value>
   </data>
   <data name="Scheduled" xml:space="preserve">
     <value>Scheduled</value>
@@ -726,7 +726,7 @@
     <value>Application Settings</value>
   </data>
   <data name="DisplayOthers.7" xml:space="preserve">
-    <value>Export a configuration and important to another monitor of the same model</value>
+    <value>Export a configuration and import to another monitor of the same model</value>
   </data>
   <data name="DisplayOthers.8" xml:space="preserve">
     <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
