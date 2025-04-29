@@ -245,21 +245,21 @@ namespace DDPM.UI.Module.Kvm
             e.Handled = !textString.CheckChar(e.Text);
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
+        //private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        //{
 
-            if (CultureInfo.CurrentUICulture.Name == "ar-SA")
-            {
-                LeftArrow.Visibility = System.Windows.Visibility.Visible;
-                RightArrow.Visibility = System.Windows.Visibility.Hidden;
-            }
-            else
-            {
-                LeftArrow.Visibility = System.Windows.Visibility.Hidden;
-                RightArrow.Visibility = System.Windows.Visibility.Visible;
-            }
+        //    if (CultureInfo.CurrentUICulture.Name == "ar-SA")
+        //    {
+        //        LeftArrow.Visibility = System.Windows.Visibility.Visible;
+        //        RightArrow.Visibility = System.Windows.Visibility.Hidden;
+        //    }
+        //    else
+        //    {
+        //        LeftArrow.Visibility = System.Windows.Visibility.Hidden;
+        //        RightArrow.Visibility = System.Windows.Visibility.Visible;
+        //    }
 
-        }
+        //}
 
         private void AdjustFontSizeForWWO(object sender, RoutedEventArgs e)
         {

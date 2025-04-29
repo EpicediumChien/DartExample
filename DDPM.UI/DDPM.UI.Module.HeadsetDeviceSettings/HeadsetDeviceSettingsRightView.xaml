@@ -117,22 +117,35 @@
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock x:Name="BusyLightText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
                                 <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                                <Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <!--<Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
-                                        <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                        --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                         <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                 </Border.Resources>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <!--Elsa 20250401 for PIMS-348390 add TextWrapping="WrapWithOverflow" MaxWidth="230" -->
+                                                    --><!--Elsa 20250401 for PIMS-348390 add TextWrapping="WrapWithOverflow" MaxWidth="230" --><!--
                                                     <TextBlock Text="{Binding BusyLightToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230" />
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
-                                </Image>
+                                </Image>-->
+                                <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                    <!-- The (i) icon 16x16 -->
+                                    <ContentControl Template="{StaticResource icon_Info}"/>
+                                    <!-- ToolTip -->
+                                    <Button.ToolTip>
+                                        <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Text="{Binding BusyLightToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                            </Border>
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
                                 <UXControls:UXToggleSwitch x:Name="BusyLightToggleSwitch" FontSize="16" Content="{Binding Path=BusyLight_String, FallbackValue='OFF'}" IsChecked="{Binding Path=BusyLightStatus}" IsEnabled="{Binding Path=SupportedBusyLight}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,8" />
                             </Grid>
                             <Grid>
@@ -149,23 +162,35 @@
                                     </Grid.RowDefinitions>
                                     <UXControls:UXTextBlock x:Name="VoiceGuidanceText" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,10" />
                                     <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                                    <Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
+                                    <!--<Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
                                         <Image.ToolTip>
-                                            <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                            --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                             <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
                                                         <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                     </Border.Resources>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                        --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" --><!--
                                                         <TextBlock Text="{Binding VoiceGuidanceToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
                                         </Image.ToolTip>
-                                    </Image>
-
+                                    </Image>-->
+                                    <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" HorizontalAlignment="Left" Margin="8,20,0,10" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                        <!-- The (i) icon 16x16 -->
+                                        <ContentControl Template="{StaticResource icon_Info}"/>
+                                        <!-- ToolTip -->
+                                        <Button.ToolTip>
+                                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <TextBlock Text="{Binding VoiceGuidanceToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                </Border>
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
                                     <!-- Voice Guidance Buttons -->
                                     <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
                                         <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"

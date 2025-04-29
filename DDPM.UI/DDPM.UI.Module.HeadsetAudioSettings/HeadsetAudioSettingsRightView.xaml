@@ -212,7 +212,7 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>-->
-                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                         <!-- The (i) icon 16x16 -->
                                         <ContentControl Template="{StaticResource icon_Info}"/>
                                         <!-- ToolTip -->
@@ -291,7 +291,7 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
@@ -347,7 +347,7 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
@@ -405,7 +405,7 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
@@ -504,7 +504,7 @@
                                                                 </ToolTip>
                                                             </Image.ToolTip>
                                                         </Image>-->
-                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                             <!-- The (i) icon 16x16 -->
                                                             <ContentControl Template="{StaticResource icon_Info}"/>
                                                             <!-- ToolTip -->
@@ -639,7 +639,7 @@
                                                                 </ToolTip>
                                                             </Image.ToolTip>
                                                         </Image>-->
-                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                             <!-- The (i) icon 16x16 -->
                                                             <ContentControl Template="{StaticResource icon_Info}"/>
                                                             <!-- ToolTip -->

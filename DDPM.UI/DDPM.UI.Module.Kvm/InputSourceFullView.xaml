@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" 
-             d:DesignHeight="671" d:DesignWidth="1278" Loaded="UserControl_Loaded">
+             d:DesignHeight="671" d:DesignWidth="1278">
     <UserControl.Resources>
         <ResourceDictionary>
             <Storyboard x:Key="StoryGotoTwoView">
@@ -43,10 +43,10 @@
         <StackPanel>
             <Grid Margin="24" x:Name="splitGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" MinWidth="645" />
+                    <ColumnDefinition Width="*" MinWidth="621"/>
+                    <ColumnDefinition Width="*" MinWidth="621"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="LeftGrid" Grid.Column="0" Margin="76, 60, 0, 0">
+                <Grid x:Name="LeftGrid" Grid.Column="0" Margin="64, 60, 0, 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -109,9 +109,11 @@
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Path x:Name="LeftArrow" Visibility="Visible" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"/>
+                                    <Path x:Name="LeftArrow" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"
+                                          Visibility="{Binding CurrentCultureArrowRight}"/>
                                     <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
-                                    <Path x:Name="RightArrow" Visibility="Visible" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
+                                    <Path x:Name="RightArrow" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"
+                                          Visibility="{Binding CurrentCultureArrowRight}"/>
                                 </StackPanel>
                             </UXControls:UXButton>
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
@@ -135,8 +137,8 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid Grid.Column="1" Margin="0, 60, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                      MinWidth="424">
+                <Grid Grid.Column="1" Margin="0, 60, 0, 0" VerticalAlignment="Stretch"
+                      MinWidth="621">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
