@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.DisplayWebcam
         public DisplayWebcamModule(WebCameraViewModel webCameraViewModel)
         {
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            _leftView = new DisplayWebcamLeftView();
+            _leftView = new DisplayWebcamLeftView(webCameraViewModel);
             //_leftView.DataContext = vm;
 
         }

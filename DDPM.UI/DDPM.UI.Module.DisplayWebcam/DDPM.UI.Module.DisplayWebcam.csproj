@@ -19,4 +19,13 @@
 		<ProjectReference Include="..\DDPM.UI.Module.WebCameraSettings\DDPM.UI.Module.WebCameraSettings.csproj" />
 		<ProjectReference Include="..\DDPM.UI.Module.WebColorImage\DDPM.UI.Module.WebCameraColorImage.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="DDPM.PowerMon">
+			<HintPath>..\CommonDll\DDPM.PowerMon.dll</HintPath>
+		</Reference>
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>
