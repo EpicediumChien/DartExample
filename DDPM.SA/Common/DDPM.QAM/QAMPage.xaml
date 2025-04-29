@@ -10,7 +10,7 @@
         Height="138"
         Width="72"
         ResizeMode="NoResize"
-        ShowInTaskbar="False"
+        ShowInTaskbar="True"
         AllowsTransparency="True" IsVisibleChanged="Window_IsVisibleChanged"
         Background="Transparent" Closing="Window_Closing"
         Topmost="True"

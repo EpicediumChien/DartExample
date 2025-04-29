@@ -1199,6 +1199,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            _PeripheralsPluginMock.Setup(x => x.SetMicNoiseCancellation(It.IsAny<bool>(), It.IsAny<Guid>()));
 
             // Execute and Verify
             Assert.IsNotNull(deviceMangerPlugin.SetMicNoiseCancellation(true, Guid.NewGuid()), $"SetMicNoiseCancellation() returns null");
@@ -1954,7 +1955,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         {
             // Setup
             string DDPMPath = "Test_DDPMPath";
-           
+
             // Execute and Verify
             var CallDDPMUI_result = deviceMangerPlugin.CallDDPMUI(DDPMPath).Result;
             Assert.IsNotNull(CallDDPMUI_result);
@@ -1975,5 +1976,76 @@ namespace SA.Plugins.User.DeviceManager.Test
             var RestoreDDPMUI_result = deviceMangerPlugin.RestoreDDPMUI().Result;
             Assert.IsNotNull(RestoreDDPMUI_result);
         }
+
+        [Test]
+        public void TestGetUSBKVMPCsList()
+        {
+            // Setup
+            Dictionary<string, PCsInfo> USBKVMPCsList = new Dictionary<string, PCsInfo>() { { "USBKVM", new PCsInfo() { Code = 0x11, InputName = "HDMI-1", InputType = "HDMI-1", USBUpstream = "Upstream 1" } } };
+            MonitorInfo monitorInfo_ = monitorInfo;
+            Dictionary<string, InputInfo> inputList = new Dictionary<string, InputInfo>()
+            {
+                { "HDMI 1", new InputInfo { InputName = "HDMI-1", USBUpstream = "Upstream 1" } },
+                { "HDMI 2", new InputInfo { InputName = "HDMI-2", USBUpstream = "Upstream 2" } }
+            };
+            List<InputSourceObj> subInputList = new List<InputSourceObj>()
+            {
+                new InputSourceObj(0x11, "HDMI-1"),
+                new InputSourceObj(0x12, "HDMI-2")
+            };
+            var _DisplayManagerPlugin = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin.Object);
+            _DisplayManagerPlugin.Setup(x => x.GetUSBKVMPCsList(It.IsAny<MonitorInfo>(), It.IsAny<Dictionary<string, InputInfo>>(), It.IsAny<List<InputSourceObj>>())).Returns(Task.FromResult(USBKVMPCsList));
+            // Execute and Verify
+            var GetUSBKVMPCsList_result = deviceMangerPlugin.GetUSBKVMPCsList(monitorInfo_, inputList, subInputList).Result;
+            Assert.IsNotNull(GetUSBKVMPCsList_result);
+            Assert.Greater(GetUSBKVMPCsList_result.Count, 0);
+        }
+        [Test]
+        public void TestSetUSBKVMPCsList()
+        {
+            // Setup  settings = null
+            List<DDPMMonitorSettings>? settings = null;
+            Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>() { { "USBKVM", new PCsInfo() { Code = 0x11, InputName = "HDMI-1", InputType = "HDMI-1", USBUpstream = "Upstream 1" } } };
+            MonitorInfo monitorInfo_ = monitorInfo;
+            var _SettingsPlugin = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin.Object);
+            _SettingsPlugin.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(settings));
+            // Execute and Verify
+            var SetUSBKVMPCsList_result1 = deviceMangerPlugin.SetUSBKVMPCsList(monitorInfo_, pcsList).Result;
+            Assert.IsNotNull(SetUSBKVMPCsList_result1);
+            Assert.IsFalse(SetUSBKVMPCsList_result1);
+            // Setup  settings ! = null
+            settings = new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = monitorInfo_.edid.ServiceTag } };
+            _SettingsPlugin.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(settings));
+            _SettingsPlugin.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
+            // Execute and Verify
+            var SetUSBKVMPCsList_result2 = deviceMangerPlugin.SetUSBKVMPCsList(monitorInfo_, pcsList).Result;
+            Assert.IsNotNull(SetUSBKVMPCsList_result2);
+            Assert.IsTrue(SetUSBKVMPCsList_result2);
+        }
+        [Test]
+        public void TestPCInfoSwap()
+        {
+            // Setup  pcsList = null
+            Dictionary<string, PCsInfo>? pcsList = new Dictionary<string, PCsInfo>();
+            string swapPC1 = "PC1";
+            string swapPC2 = "PC2";
+            // Execute and Verify
+            var PCInfoSwap_result1 = deviceMangerPlugin.PCInfoSwap(pcsList, swapPC1, swapPC2).Result;
+            Assert.IsNotNull(PCInfoSwap_result1);
+            Assert.That(PCInfoSwap_result1, Is.EqualTo(pcsList));
+            // Setup  pcsList ! = null
+            pcsList = new Dictionary<string, PCsInfo>()
+            {
+                { "PC1", new PCsInfo() { Code = 0x11, InputName = "HDMI-1", InputType = "HDMI-1", USBUpstream = "Upstream 1" } },
+                { "PC2", new PCsInfo() { Code = 0x12, InputName = "HDMI-2", InputType = "HDMI-2", USBUpstream = "Upstream 2" } }
+            };
+            // Execute and Verify
+            var PCInfoSwap_result2 = deviceMangerPlugin.PCInfoSwap(pcsList, swapPC1, swapPC2).Result;
+            Assert.IsNotNull(PCInfoSwap_result2);
+            Assert.Greater(PCInfoSwap_result2.Count, 0);
+        }
+
     }
 }
