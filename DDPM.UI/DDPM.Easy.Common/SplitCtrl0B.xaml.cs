@@ -260,6 +260,13 @@ namespace DDPM.Easy.Common
                 cellListH.Add(cell);
                 Trace.WriteLine($"Cell[{idx}]:({cell.rc.X},{cell.rc.Y})-({cell.rc.Right},{cell.rc.Bottom}){cell.rc.Width}x{cell.rc.Height}");
 
+                //Robert_Lin 2025-4-29 although Overlap layouts will not show vertial layout, but we need add them
+                // into CellListV, or it will not be hovering
+                CellObj cellV = new CellObj(cellName, cellBorder);
+                cellV.rc = new Rect(left, top, width, height);
+                cellListV.Add(cellV);
+
+
                 //Add CellBorders
                 //
                 //CellBorder cellBorder = new CellBorder();
