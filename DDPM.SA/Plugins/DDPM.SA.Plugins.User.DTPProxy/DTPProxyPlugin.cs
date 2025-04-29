@@ -1,5 +1,5 @@
 ﻿#region LicenceHeader
-
+//#define SUPPORT_210
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -9,6 +9,7 @@
 //
 
 #endregion
+
 
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
@@ -177,7 +178,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
-#endregion
+        #endregion
 
         #region Constructor
 
@@ -9944,7 +9945,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#endif
                     _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -9980,7 +9985,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#endif
                     _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -10010,7 +10019,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
                 _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
                 _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                //_Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#else
                 _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#endif
                 _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
                 _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
                 _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -10143,7 +10156,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#endif
+
                     _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -10211,7 +10229,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Speaker] Catch event Speaker_OnInstanceNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+#if SUPPORT_210
+        //private void Speaker_OnCurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        //{
+        //    SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnCurrentSelectedProfileChanged",
+        //                            e.DeviceId, $"Speaker_OnCurrentSelectedProfileChanged:{e.ProfileId.ToString()}"));
 
+        //    writelog($"[Speaker] Catch event Speaker_OnCurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+#else
         private void Speaker_OnCurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
         {
             SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnCurrentSelectedProfileChanged",
@@ -10219,7 +10245,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Speaker] Catch event Speaker_OnCurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
-
+#endif
         private void Speaker_OnIsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
         {
             SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnIsIMicNSEnabledChanged",
@@ -11448,10 +11474,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
                     //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
                     _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+#if SUPPORT_210
+                    //_Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                    //_Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                    //_Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+#else
                     _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
                     _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
                     _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
-
+#endif
                     _Webcamcom.PriorityChanged += Webcam_PriorityChanged;
                     _Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
                     _Webcamcom.FocusChanged += Webcam_FocusChanged;
@@ -11668,9 +11699,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
                 _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+#if SUPPORT_210
+                //_Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                //_Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                //_Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+#else
                 _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
                 _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
                 _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+#endif
 
                 _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
                 _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
@@ -12374,7 +12411,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Catch event _Webcamcom_CustomProfileRemoved, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+#if SUPPORT_210
+        //private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
+        //{
+        //    SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
+        //                            e.DeviceId, $"NewValue:{e.ProfileId}"));
 
+        //    writelog($"Catch event _Webcamcom_CustomProfileAdded, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+
+        //private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        //{
+        //    SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
+        //                            e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+        //    writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+#else
         private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
         {
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
@@ -12390,7 +12443,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
-
+#endif
         private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
         {
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
@@ -12900,47 +12953,47 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //// Content is same as GetAirAudioBoomMicAsync?
-        //public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
-        //{
-        //    string guid = Guid;
+        // Content is same as GetAirAudioBoomMicAsync?
+        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        {
+            string guid = Guid;
 
-        //    try
-        //    {
-        //        if (!await GetItemIDAsync("AirAudio", guid))
-        //            return false;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
 
-        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-        //        if (commodity is ICommodity)
-        //        {
-        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
-        //            if (value == null)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
-        //                return false;
-        //            }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+                        return false;
+                    }
 
-        //            if (value is bool boolValue)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
-        //                return boolValue;
-        //            }
-        //            else
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
-        //                return false;
-        //            }
-        //        }
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+                        return false;
+                    }
+                }
 
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
-        //        return false;
-        //    }
-        //}
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
 
         public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
         {
@@ -15182,6 +15235,130 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return -99;
             }
         }
+#if SUPPORT_210
+        public async Task<bool> GetAirAudioIsConnectedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnected");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnectedLeft");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedRightAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnectedRight");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+#endif
         #endregion
 
         #region AirAudio Set
@@ -16040,6 +16217,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
+#if SUPPORT_210
+                    _AirAudiocom.BatteryLevelChanged += _AirAudiocom_BatteryLevelChanged;
+                    _AirAudiocom.BatteryStatusChanged += _AirAudiocom_BatteryStatusChanged;
+                    _AirAudiocom.IsConnectedChanged += _AirAudiocom_IsConnectedChanged;
+                    _AirAudiocom.IsConnectedLeftChanged += _AirAudiocom_IsConnectedLeftChanged;
+                    _AirAudiocom.IsConnectedRightChanged += _AirAudiocom_IsConnectedRightChanged;
+#endif
+
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
                     //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
                     //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
@@ -16080,7 +16265,48 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             return false;
         }
+#if SUPPORT_210
 
+        private void _AirAudiocom_IsConnectedRightChanged(object sender, IsConnectedRightChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedRightChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedRightChanged:{e.IsConnectedRight}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedRightChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_IsConnectedLeftChanged(object sender, IsConnectedLeftChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedLeftChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedLeftChanged:{e.IsConnectedLeft}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedLeftChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_IsConnectedChanged(object sender, IsConnectedChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedChanged:{e.IsConnected}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_BatteryStatusChanged(object sender, BatteryStatusChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_BatteryStatusChanged",
+                                   e.DeviceId, $"AirAudiocom_BatteryStatusChanged:{e.BatteryStatus}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_BatteryStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_BatteryLevelChanged(object sender, BatteryLevelChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_BatteryLevelChanged",
+                                   e.DeviceId, $"AirAudiocom_BatteryLevelChanged:{e.BatteryLevel}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_BatteryLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+#endif
         private async Task<bool> UnregisterEventsForAirAudioAsync(int index)
         {
             if (null == _commSdk || null == _comdity || index < 0)
