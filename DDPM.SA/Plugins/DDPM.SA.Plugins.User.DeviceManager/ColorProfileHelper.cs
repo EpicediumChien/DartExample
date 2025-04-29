@@ -18,6 +18,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public string serviceTag { get; set; } = string.Empty;
         public bool isHDROn { get; set; } = false;
         public List<string> preset_list { get; set; } = new List<string>();
+        public List<string> presets_list_HDR { get; set;} = new List<string>();
     }        
 
     public class ColorProfileHelper : IDisposable
