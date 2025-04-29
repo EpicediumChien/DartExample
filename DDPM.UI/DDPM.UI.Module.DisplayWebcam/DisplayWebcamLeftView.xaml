@@ -133,17 +133,17 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
-                       VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
+                 VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                                 <Image.InputBindings>
                                     <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
                                 </Image.InputBindings>
                             </Image>
                             <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
-                            Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+                      Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
-                                        Style="{StaticResource ModelNumberTextStyle}" />
+                                  Style="{StaticResource ModelNumberTextStyle}" />
                             <Border Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                                 <Border.InputBindings>
