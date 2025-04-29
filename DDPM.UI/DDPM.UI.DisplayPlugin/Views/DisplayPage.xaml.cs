@@ -584,14 +584,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
             {
                 sw.Restart();
-                moduleGroup.AddHeader(LangHelper.Instance["Camera.1"], new WebCameraColorImageModule(_webCameraViewModel));
+                var webCameraColorImageModule = new WebCameraColorImageModule(_webCameraViewModel);
+                UpdateFieldOrProperty(webCameraColorImageModule, "_leftView", _displayWebCamModule.GetLeftView());
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.1"], webCameraColorImageModule);
                 sw.Stop();
                 _log?.Info($"* VisionEngineModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
 
             {
                 sw.Restart();
-                moduleGroup.AddHeader(LangHelper.Instance["Camera.3"], new WebCameraCaptureModule(_webCameraViewModel));
+                var webCameraCaptureModule = new WebCameraCaptureModule(_webCameraViewModel);
+                UpdateFieldOrProperty(webCameraCaptureModule, "_leftView", _displayWebCamModule.GetLeftView());
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.3"], webCameraCaptureModule);
                 sw.Stop();
                 _log?.Info($"* VisionEngineModule ctor consume {sw.ElapsedMilliseconds} msec");
             }

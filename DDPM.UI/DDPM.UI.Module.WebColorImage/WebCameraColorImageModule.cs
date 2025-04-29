@@ -18,6 +18,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
         public WebCameraColorImageModule(WebCameraViewModel vm)
         {
             _rightView = new WebCameraColorImageRightView(vm);
+            _rightView.DataContext = vm;
         }
 
         public string ModuleName { get => "WebCameraColorImageModule"; }

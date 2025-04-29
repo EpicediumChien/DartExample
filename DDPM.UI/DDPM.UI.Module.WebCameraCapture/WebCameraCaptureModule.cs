@@ -18,6 +18,7 @@ namespace DDPM.UI.Module.WebCameraCapture
         public WebCameraCaptureModule(WebCameraViewModel vm)
         {
             _rightView = new WebCameraCaptureRightView(vm);
+            _rightView.DataContext = vm;
         }
 
         public string ModuleName { get => "WebCameraCaptureModule"; }

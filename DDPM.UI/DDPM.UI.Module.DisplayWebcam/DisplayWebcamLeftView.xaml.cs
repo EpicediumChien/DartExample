@@ -24,6 +24,7 @@ using System.Windows.Threading;
 using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
+using WinRT;
 
 namespace DDPM.UI.Module.DisplayWebcam
 {

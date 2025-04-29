@@ -18,6 +18,7 @@ namespace DDPM.UI.Module.WebCameraSettings
         public WebCameraSettingsModule(WebCameraViewModel vm)
         {
             _rightView = new WebCameraSettingsRightView(vm);
+            _rightView.DataContext = vm;
         }
 
         public string ModuleName { get => "WebCameraSettingsModule"; }

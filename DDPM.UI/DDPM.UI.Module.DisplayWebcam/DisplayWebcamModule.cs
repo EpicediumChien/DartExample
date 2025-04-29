@@ -20,7 +20,6 @@ namespace DDPM.UI.Module.DisplayWebcam
         private UserControl? _leftView = null;
         private UserControl? _rightView = null;
 
-        private WebCameraViewModel vm;
         private bool isSelectChanged = false;
         public string ModuleName { get => Constants.ModuleName_DisplayWebcam; }
 
@@ -30,7 +29,7 @@ namespace DDPM.UI.Module.DisplayWebcam
         {
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             _leftView = new DisplayWebcamLeftView(webCameraViewModel);
-            //_leftView.DataContext = vm;
+            _leftView.DataContext = webCameraViewModel;
 
         }
         public IModuleOwner? ModuleOwner
