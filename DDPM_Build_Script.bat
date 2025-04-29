@@ -98,6 +98,14 @@ for /d /r "%target_folder%" %%d in (bin,obj,_bin) do (
         rd /s /q "%%d"
     )
 )
+echo Done.
+::---
+Echo -------------------------------------------
+Echo [Clear all older EA folders]
+Echo -------------------------------------------
+rd /s /q %RootDir%\DDPM.UI\DDPM.Easy.Common
+rd /s /q %RootDir%\DDPM.UI\UnitTest\DDPM.Easy.Common.Tests
+echo Done.
 ::-----------
 IF "%1"=="clear" (
     echo [Data cleared], exit directly by command code "clear"
