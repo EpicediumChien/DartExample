@@ -117,6 +117,7 @@ namespace DDPM.UI.Common
         WebcamDetection,
         WebcamCapture,
         WebcamMicrophone,
-        RtkHubPortInfo
+        RtkHubPortInfo,
+        DisplayWebcam
     }
 }

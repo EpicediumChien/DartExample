@@ -9,11 +9,13 @@ using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Interfaces;
 using DDPM.UI.Module.Brightness;
 using DDPM.UI.Module.Color;
 using DDPM.UI.Module.DisplayHotkeys;
 using DDPM.UI.Module.DisplayOthers;
 using DDPM.UI.Module.DisplayProperties;
+using DDPM.UI.Module.DisplayWebcam;
 using DDPM.UI.Module.EzArrange;
 using DDPM.UI.Module.EzMemory;
 using DDPM.UI.Module.EzSettings;
@@ -22,8 +24,13 @@ using DDPM.UI.Module.GamingVisionEngine;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Module.Kvm;
 using DDPM.UI.Module.PipPbp;
+using DDPM.UI.Module.WebCameraCapture;
+using DDPM.UI.Module.WebCameraColorImage;
+using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
+using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using DDPM.UI.Module.MonitorAudio;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -49,10 +56,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         //private IDevicePageViewModel? _idevPageVm;
         private readonly DisplayViewModel _vmDisplay;
 
+        private WebCameraViewModel? _webCameraViewModel;
+
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private bool _isDisposed = false;
 
-        private ModuleGroup moduleGroup;        
+        private ModuleGroup moduleGroup;
         #endregion
 
         #region Init
@@ -65,6 +74,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             _log?.Debug("DisplayPage.ctor()");
 
             _vmDisplay = DisplayPlugin.PluginIoc?.GetService<IDisplayViewModel>() as DisplayViewModel;
+            _webCameraViewModel = (WebCameraViewModel?)DisplayPlugin.PluginIoc.GetService<IPeripheralViewModel>();
             _deviceManagerSA = DisplayPlugin.PluginIoc?.GetService<IDeviceManagerSA>();
 
             _ivm = DisplayPlugin.PluginIoc?.GetService<IDisplayPageViewModel>();
@@ -561,6 +571,45 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 moduleGroup.AddHeader(Strings.VbarText_DisplayOthers, new DisplayOthersModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* DisplayOthersModule ctor consume {sw.ElapsedMilliseconds} msec");
+            }
+
+            //If this ModuleGroup has any item, then add into moduleGroups
+            if (moduleGroup.HeaderCount > 0)
+            {
+                groups.Add(moduleGroup);
+            }
+
+            //Group[6] Webcam
+            //         Header[0] Webcam,   DisplayWebcamModule
+            moduleGroup = new ModuleGroup()
+            {
+                GroupName = Constants.GroupName_DisplayWebcam, //  "Others",
+                VbarText = LangHelper.Instance["AddDevice.Webcam"],
+                IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplayWebcam"),
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Webcam.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplayWebcam)
+            };
+            //If the monitor has DisplayOthers capability
+            //if (moduleCapabilities.DisplayOthers)
+            {
+                sw.Restart();
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.0"], new WebCameraSettingsModule(_webCameraViewModel));
+                sw.Stop();
+                _log?.Info($"* DisplayWebcamModule ctor consume {sw.ElapsedMilliseconds} msec");
+            }
+
+            {
+                sw.Restart();
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.1"], new WebCameraColorImageModule(_webCameraViewModel));
+                sw.Stop();
+                _log?.Info($"* VisionEngineModule ctor consume {sw.ElapsedMilliseconds} msec");
+            }
+
+            {
+                sw.Restart();
+                moduleGroup.AddHeader(LangHelper.Instance["Camera.3"], new WebCameraCaptureModule(_webCameraViewModel));
+                sw.Stop();
+                _log?.Info($"* VisionEngineModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
 
             //If this ModuleGroup has any item, then add into moduleGroups

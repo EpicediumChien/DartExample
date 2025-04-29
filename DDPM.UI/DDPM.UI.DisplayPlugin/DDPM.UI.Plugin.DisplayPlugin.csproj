@@ -1,65 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-	  <OutputPath>..\bin</OutputPath>
-	  <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<OutputPath>..\bin</OutputPath>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="assets\Icon_Info.png" />
-    <None Remove="assets\VertNavBar.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="assets\Icon_Info.png" />
+		<None Remove="assets\VertNavBar.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DCF.UX.WPF" Version="2.3.14.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DCF.UX.WPF" Version="2.3.14.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
-    <ProjectReference Include="..\DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.Brightness\DDPM.UI.Module.Brightness.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.Color\DDPM.UI.Module.Color.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.DisplayHotkeys\DDPM.UI.Module.DisplayHotkeys.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.DisplayOthers\DDPM.UI.Module.DisplayOthers.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.DisplayProperties\DDPM.UI.Module.DisplayProperties.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.EzArrange\DDPM.UI.Module.EzArrange.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.EzMemory\DDPM.UI.Module.EzMemory.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.EzSettings\DDPM.UI.Module.EzSettings.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.GamingVisionEngine\DDPM.UI.Module.GamingVisionEngine.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.Gaming\DDPM.UI.Module.Gaming.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.InputSource\DDPM.UI.Module.InputSource.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.Kvm\DDPM.UI.Module.Kvm.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.MonitorAudio\DDPM.UI.Module.MonitorAudio.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Module.PipPbp\DDPM.UI.Module.PipPbp.csproj" />
-    <!-- 20240617 jim add -->
-    <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+		<ProjectReference Include="..\DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.Brightness\DDPM.UI.Module.Brightness.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.Color\DDPM.UI.Module.Color.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.DisplayHotkeys\DDPM.UI.Module.DisplayHotkeys.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.DisplayOthers\DDPM.UI.Module.DisplayOthers.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.DisplayProperties\DDPM.UI.Module.DisplayProperties.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.DisplayWebcam\DDPM.UI.Module.DisplayWebcam.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.EzArrange\DDPM.UI.Module.EzArrange.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.EzMemory\DDPM.UI.Module.EzMemory.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.EzSettings\DDPM.UI.Module.EzSettings.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.GamingVisionEngine\DDPM.UI.Module.GamingVisionEngine.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.Gaming\DDPM.UI.Module.Gaming.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.InputSource\DDPM.UI.Module.InputSource.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.Kvm\DDPM.UI.Module.Kvm.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.PipPbp\DDPM.UI.Module.PipPbp.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebCameraCapture\DDPM.UI.Module.WebCameraCapture.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebCameraSettings\DDPM.UI.Module.WebCameraSettings.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.WebColorImage\DDPM.UI.Module.WebCameraColorImage.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Module.MonitorAudio\DDPM.UI.Module.MonitorAudio.csproj" />
+		<!-- 20240617 jim add -->
+		<ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <!-- 20240617 jim add -->
-    <Reference Include="DDPM.SA.Common">
-      <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
-    </Reference>
-    
-    <Reference Include="VcpCore.Common">
-      <HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<!-- 20240617 jim add -->
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
 
-  <ItemGroup>
-    <Resource Include="assets\Icon_Info.png" />
-    <Resource Include="assets\VertNavBar.png" />
-  </ItemGroup>
+		<Reference Include="VcpCore.Common">
+			<HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="assets\Icon_Info.png" />
+		<Resource Include="assets\VertNavBar.png" />
+	</ItemGroup>
 
 </Project>
