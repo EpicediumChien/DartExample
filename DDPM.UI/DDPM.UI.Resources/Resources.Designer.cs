@@ -2797,7 +2797,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Empty Layout 的當地語系化字串。
+        ///   Looks up a localized string similar to Empty Layout.
         /// </summary>
         internal static string EATooltip_00 {
             get {
@@ -2806,7 +2806,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.1: 2 columns, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.1: 2 columns, split equally..
         /// </summary>
         internal static string EATooltip_21H {
             get {
@@ -2815,7 +2815,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.1: 2 rows, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.1: 2 rows, split equally..
         /// </summary>
         internal static string EATooltip_21V {
             get {
@@ -2824,7 +2824,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.2: 2 rows, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.2: 2 rows, split equally..
         /// </summary>
         internal static string EATooltip_22H {
             get {
@@ -2833,7 +2833,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.2: 2 columns, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.2: 2 columns, split equally..
         /// </summary>
         internal static string EATooltip_22V {
             get {
@@ -2842,7 +2842,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.3: 2 columns, split 70/30%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.3: 2 columns, split 70/30%..
         /// </summary>
         internal static string EATooltip_23H {
             get {
@@ -2851,7 +2851,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.3: 2 rows, split 30/70%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.3: 2 rows, split 30/70%..
         /// </summary>
         internal static string EATooltip_23V {
             get {
@@ -2860,7 +2860,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.4: 2 columns, split 30/70%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.4: 2 columns, split 30/70%..
         /// </summary>
         internal static string EATooltip_24H {
             get {
@@ -2869,7 +2869,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 2.4: 2 rows, split 70/30%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 2.4: 2 rows, split 70/30%..
         /// </summary>
         internal static string EATooltip_24V {
             get {
@@ -2878,7 +2878,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.1: 3 rows, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.1: 3 rows, split equally..
         /// </summary>
         internal static string EATooltip_31H {
             get {
@@ -2887,7 +2887,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.1: 3 columns, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.1: 3 columns, split equally..
         /// </summary>
         internal static string EATooltip_31V {
             get {
@@ -2896,7 +2896,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.2: 3 columns, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.2: 3 columns, split equally..
         /// </summary>
         internal static string EATooltip_32H {
             get {
@@ -2905,7 +2905,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.2: 3 rows, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.2: 3 rows, split equally..
         /// </summary>
         internal static string EATooltip_32V {
             get {
@@ -2914,7 +2914,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.3: 3 columns, split 30/40/30%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.3: 3 columns, split 30/40/30%..
         /// </summary>
         internal static string EATooltip_33H {
             get {
@@ -2923,7 +2923,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.3: 3 rows, split 30/40/30%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.3: 3 rows, split 30/40/30%..
         /// </summary>
         internal static string EATooltip_33V {
             get {
@@ -2932,7 +2932,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.4: 2 rows, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.4: 2 rows, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_34H {
             get {
@@ -2941,7 +2941,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.4: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.4: 2 rows, split equally. Row 1, no split. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_34V {
             get {
@@ -2950,7 +2950,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.5: 2 rows, split equally. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.5: 2 rows, split equally. Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_35H {
             get {
@@ -2959,7 +2959,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.5: 2 rows, split equally. Row 1, split equally. Row 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.5: 2 rows, split equally. Row 1, split equally. Row 2, no split..
         /// </summary>
         internal static string EATooltip_35V {
             get {
@@ -2968,7 +2968,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.6: 2 rows, split equally. Column 1, split 30/70%. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.6: 2 rows, split equally. Column 1, split 30/70%. Column 2, no split..
         /// </summary>
         internal static string EATooltip_36H {
             get {
@@ -2977,7 +2977,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.6: 2 rows, split 70/30%. Row 1, no split, Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.6: 2 rows, split 70/30%. Row 1, no split, Row 2, split equally..
         /// </summary>
         internal static string EATooltip_36V {
             get {
@@ -2986,7 +2986,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.7: 2 rows, split equally. Column 1, split 70/30%. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.7: 2 rows, split equally. Column 1, split 70/30%. Column 2, no split..
         /// </summary>
         internal static string EATooltip_37H {
             get {
@@ -2995,7 +2995,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.7: 2 rows, split 30/70%. Row 1, split equally, Row 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.7: 2 rows, split 30/70%. Row 1, split equally, Row 2, no split..
         /// </summary>
         internal static string EATooltip_37V {
             get {
@@ -3004,7 +3004,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.8: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.8: 2 rows, split equally. Row 1, no split. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_38H {
             get {
@@ -3013,7 +3013,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.8: 2 columns, split equally.  Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.8: 2 columns, split equally.  Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_38V {
             get {
@@ -3022,7 +3022,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.9: 2 rows, split equally. Row 1, split equally. Row 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.9: 2 rows, split equally. Row 1, split equally. Row 2, no split..
         /// </summary>
         internal static string EATooltip_39H {
             get {
@@ -3031,7 +3031,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 3.9: 2 columns, split equally. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 3.9: 2 columns, split equally. Column 1, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_39V {
             get {
@@ -3040,7 +3040,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.1: split in 4 quadrants. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.1: split in 4 quadrants..
         /// </summary>
         internal static string EATooltip_41H {
             get {
@@ -3049,7 +3049,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.1: split in 4 quadrants. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.1: split in 4 quadrants..
         /// </summary>
         internal static string EATooltip_41V {
             get {
@@ -3058,7 +3058,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.2: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.2: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, no split..
         /// </summary>
         internal static string EATooltip_42H {
             get {
@@ -3067,7 +3067,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.2: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.2: 2 rows, split equally. Row 1, no split. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_42V {
             get {
@@ -3076,7 +3076,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.3: 2 columns, split equally. Column 1, no split. Column 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.3: 2 columns, split equally. Column 1, no split. Column 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_43H {
             get {
@@ -3085,7 +3085,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.3: 2 rows, split equally. Row 1, split equally in 3 sections. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.3: 2 rows, split equally. Row 1, split equally in 3 sections. Column 2, no split..
         /// </summary>
         internal static string EATooltip_43V {
             get {
@@ -3094,7 +3094,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.4: 4 columns split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.4: 4 columns split equally..
         /// </summary>
         internal static string EATooltip_44H {
             get {
@@ -3103,7 +3103,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.4: 4 rows, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.4: 4 rows, split equally..
         /// </summary>
         internal static string EATooltip_44V {
             get {
@@ -3112,7 +3112,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.5: 3 columns split equally. Column 1, split equally. Columns 2 and 3, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.5: 3 columns split equally. Column 1, split equally. Columns 2 and 3, no split..
         /// </summary>
         internal static string EATooltip_45H {
             get {
@@ -3121,7 +3121,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.5: 3 rows, split equally.  Rows 1 and 2, no split. Row 3, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.5: 3 rows, split equally.  Rows 1 and 2, no split. Row 3, split equally..
         /// </summary>
         internal static string EATooltip_45V {
             get {
@@ -3130,7 +3130,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.6: 3 columns, split equally. Columns 1 and 2, no split. Column 3, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.6: 3 columns, split equally. Columns 1 and 2, no split. Column 3, split equally..
         /// </summary>
         internal static string EATooltip_46H {
             get {
@@ -3139,7 +3139,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 4.6: 3 rows, split equally, Row 1, split equally, Rows 2 and 3, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 4.6: 3 rows, split equally, Row 1, split equally, Rows 2 and 3, no split..
         /// </summary>
         internal static string EATooltip_46V {
             get {
@@ -3148,7 +3148,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.1: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.1: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_51H {
             get {
@@ -3157,7 +3157,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.1: 2 columns, split equallly. Column 1, split equally in 3 sections. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.1: 2 columns, split equallly. Column 1, split equally in 3 sections. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_51V {
             get {
@@ -3166,7 +3166,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.2: 2 rows, split equally. Row 1, split equally. Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.2: 2 rows, split equally. Row 1, split equally. Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_52H {
             get {
@@ -3175,7 +3175,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.2: 2 columns, split equally. Column 1, split equally. Column 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.2: 2 columns, split equally. Column 1, split equally. Column 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_52V {
             get {
@@ -3184,7 +3184,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.3: 2 rows, split 30/70% split. Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.3: 2 rows, split 30/70% split. Row 1, split equally in 3 sections. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_53H {
             get {
@@ -3193,7 +3193,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.3: 2 columns, split 30/70%, Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.3: 2 columns, split 30/70%, Row 1, split equally in 3 sections. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_53V {
             get {
@@ -3202,7 +3202,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_54H {
             get {
@@ -3211,7 +3211,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_54V {
             get {
@@ -3220,7 +3220,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.5: 2 rows, split 30/70%. Rows 1 and 2, each split equally. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.5: 2 rows, split 30/70%. Rows 1 and 2, each split equally. Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_55H {
             get {
@@ -3229,7 +3229,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.5: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split 30/70%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.5: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split 30/70%..
         /// </summary>
         internal static string EATooltip_55V {
             get {
@@ -3238,7 +3238,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.6: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split 30/70%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.6: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split 30/70%..
         /// </summary>
         internal static string EATooltip_56H {
             get {
@@ -3247,7 +3247,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.6: 2 rows, split equally, Row 1, split 30/70%. Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.6: 2 rows, split equally, Row 1, split 30/70%. Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_56V {
             get {
@@ -3256,7 +3256,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.7: 3 columns, split equally, Columns 1 and 3, each split equally, Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.7: 3 columns, split equally, Columns 1 and 3, each split equally, Column 2, no split..
         /// </summary>
         internal static string EATooltip_57H {
             get {
@@ -3265,7 +3265,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.7: 3 rows, split equally, Rows 1 and 3, each split equally, Row 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.7: 3 rows, split equally, Rows 1 and 3, each split equally, Row 2, no split..
         /// </summary>
         internal static string EATooltip_57V {
             get {
@@ -3274,7 +3274,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.8: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.8: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_58H {
             get {
@@ -3283,7 +3283,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.8: 2 columns, split 30/70%. Column 1, split 70/30%, Column 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.8: 2 columns, split 30/70%. Column 1, split 70/30%, Column 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_58V {
             get {
@@ -3292,7 +3292,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.9: 2 rows, split 70/30%. Row 1, split 70/30%, Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.9: 2 rows, split 70/30%. Row 1, split 70/30%, Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_59H {
             get {
@@ -3301,7 +3301,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 5.9: 2 columns, split 70/30%. Column 1, split 70/30%, Column 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 5.9: 2 columns, split 70/30%. Column 1, split 70/30%, Column 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_59V {
             get {
@@ -3310,7 +3310,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally..
         /// </summary>
         internal static string EATooltip_61H {
             get {
@@ -3319,7 +3319,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_61V {
             get {
@@ -3328,7 +3328,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.2: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections.Column 1, no split. Column 2, equally split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.2: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections.Column 1, no split. Column 2, equally split..
         /// </summary>
         internal static string EATooltip_62H {
             get {
@@ -3337,7 +3337,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.2: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.2: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_62V {
             get {
@@ -3346,7 +3346,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.3: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.3: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split equally..
         /// </summary>
         internal static string EATooltip_63H {
             get {
@@ -3355,7 +3355,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.3: 2 columns, split 30/70%. Column 1, split equally in 4 sections. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.3: 2 columns, split 30/70%. Column 1, split equally in 4 sections. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_63V {
             get {
@@ -3364,7 +3364,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.4: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.4: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_64H {
             get {
@@ -3373,7 +3373,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.4: 2 columns, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.4: 2 columns, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_64V {
             get {
@@ -3382,7 +3382,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.5: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.5: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_65H {
             get {
@@ -3391,7 +3391,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_65V {
             get {
@@ -3400,7 +3400,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Column 1, split evenly. Column 2, no split. Row 1, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Column 1, split evenly. Column 2, no split. Row 1, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_66H {
             get {
@@ -3409,7 +3409,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, no split. Column 2, split equally..
         /// </summary>
         internal static string EATooltip_66V {
             get {
@@ -3418,7 +3418,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.7: 2 columns, split equally. Rows 1, 2, and 3, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.7: 2 columns, split equally. Rows 1, 2, and 3, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_67H {
             get {
@@ -3427,7 +3427,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.7: 3 columns, split equally. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.7: 3 columns, split equally. Columns 1, 2, and 3, each split equally..
         /// </summary>
         internal static string EATooltip_67V {
             get {
@@ -3436,7 +3436,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.8: 4 columns, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no splits. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.8: 4 columns, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no splits..
         /// </summary>
         internal static string EATooltip_68H {
             get {
@@ -3445,7 +3445,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.8: 4 rows, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.8: 4 rows, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no split..
         /// </summary>
         internal static string EATooltip_68V {
             get {
@@ -3454,7 +3454,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.9: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 4 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.9: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 4 sections..
         /// </summary>
         internal static string EATooltip_69H {
             get {
@@ -3463,7 +3463,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.9: 2 rows, split equally. Row 1, split 70/30%. Column 1, no split, Column 2, split equally. Row 2, split 70/30%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.9: 2 rows, split equally. Row 1, split 70/30%. Column 1, no split, Column 2, split equally. Row 2, split 70/30%..
         /// </summary>
         internal static string EATooltip_69V {
             get {
@@ -3472,7 +3472,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.10: 2 columns, split 70/30%. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.10: 2 columns, split 70/30%. Columns 1, 2, and 3, each split equally..
         /// </summary>
         internal static string EATooltip_6AH {
             get {
@@ -3481,7 +3481,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 6.10: 2 rows, split 70/30%. Rows 1 and 2, each split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 6.10: 2 rows, split 70/30%. Rows 1 and 2, each split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_6AV {
             get {
@@ -3490,7 +3490,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.1: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Columns 2 and 3, no splits. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.1: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Columns 2 and 3, no splits..
         /// </summary>
         internal static string EATooltip_71H {
             get {
@@ -3499,7 +3499,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.1: 3 rows, split equally. Rows 1 and 2, each split 30/70%, Row 3, split in 3 equal sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.1: 3 rows, split equally. Rows 1 and 2, each split 30/70%, Row 3, split in 3 equal sections..
         /// </summary>
         internal static string EATooltip_71V {
             get {
@@ -3508,7 +3508,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.2: 2 rows, 30/70% split. Rows 1 and 2, each split equally in 3 sections. Columns 1 and 2, no split. Column 3, split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.2: 2 rows, 30/70% split. Rows 1 and 2, each split equally in 3 sections. Columns 1 and 2, no split. Column 3, split equally..
         /// </summary>
         internal static string EATooltip_72H {
             get {
@@ -3517,7 +3517,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.2: 3 rows, split equally. Rows 1 and 3, each split equally in 3 sections. Row 2, split 30/70%. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.2: 3 rows, split equally. Rows 1 and 3, each split equally in 3 sections. Row 2, split 30/70%..
         /// </summary>
         internal static string EATooltip_72V {
             get {
@@ -3526,7 +3526,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.3: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.3: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_73H {
             get {
@@ -3535,7 +3535,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.3: 2 columns, split equally. Column 1, split equally in 4 sections. Column 2, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.3: 2 columns, split equally. Column 1, split equally in 4 sections. Column 2, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_73V {
             get {
@@ -3544,7 +3544,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.4: 2 rows, split equally. Rows 1 and 3, each split equally. Row 2, split equally in 4 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.4: 2 rows, split equally. Rows 1 and 3, each split equally. Row 2, split equally in 4 sections..
         /// </summary>
         internal static string EATooltip_74H {
             get {
@@ -3553,7 +3553,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.4: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split equally in 4 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.4: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split equally in 4 sections..
         /// </summary>
         internal static string EATooltip_74V {
             get {
@@ -3562,7 +3562,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.5: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.5: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_75H {
             get {
@@ -3571,7 +3571,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.5: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, 30/70% split. Column 1, split equally. Column 2, no split. Row 3, split in 3 equal sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.5: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, 30/70% split. Column 1, split equally. Column 2, no split. Row 3, split in 3 equal sections..
         /// </summary>
         internal static string EATooltip_75V {
             get {
@@ -3580,7 +3580,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.6: 2 rows, split 30/70%. Row 1, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. Row 2, split equally in 4 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.6: 2 rows, split 30/70%. Row 1, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. Row 2, split equally in 4 sections..
         /// </summary>
         internal static string EATooltip_76H {
             get {
@@ -3589,7 +3589,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.6: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Row 3, split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.6: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Row 3, split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_76V {
             get {
@@ -3598,7 +3598,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.7: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split 50/25/25%. Column 1, no split. Columns 2 and 3, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.7: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split 50/25/25%. Column 1, no split. Columns 2 and 3, each split equally..
         /// </summary>
         internal static string EATooltip_77H {
             get {
@@ -3607,7 +3607,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.7: 3 rows, split 25/25/50%. Rows 1 and 2, each split equally in 3 sections. Row 3, 30/70% split. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.7: 3 rows, split 25/25/50%. Rows 1 and 2, each split equally in 3 sections. Row 3, 30/70% split. Column 1, split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_77V {
             get {
@@ -3616,7 +3616,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.8: 2 rows, split 30/70%. Rows 1 and 4, each split equally. Row 2, split 25/25/50%. Columns 1 and 2, each split equally. Column 3, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.8: 2 rows, split 30/70%. Rows 1 and 4, each split equally. Row 2, split 25/25/50%. Columns 1 and 2, each split equally. Column 3, no split..
         /// </summary>
         internal static string EATooltip_78H {
             get {
@@ -3625,7 +3625,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.8: 3 rows, 30/70% split. Row 1, 30/70% split. Column 1, split equally. Column 2, no split. Rows 2 and 3, each split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.8: 3 rows, 30/70% split. Row 1, 30/70% split. Column 1, split equally. Column 2, no split. Rows 2 and 3, each split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_78V {
             get {
@@ -3634,7 +3634,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.9: 4 columns, split equally. Columns 1, 2, 3, and 4, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.9: 4 columns, split equally. Columns 1, 2, 3, and 4, each split equally..
         /// </summary>
         internal static string EATooltip_79H {
             get {
@@ -3643,7 +3643,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.9: 4 columns, split equally. Rows 1, 2, 3, and 4, each split equally. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.9: 4 columns, split equally. Rows 1, 2, 3, and 4, each split equally..
         /// </summary>
         internal static string EATooltip_79V {
             get {
@@ -3652,7 +3652,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_7AH {
             get {
@@ -3661,7 +3661,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections..
         /// </summary>
         internal static string EATooltip_7AV {
             get {
@@ -3670,7 +3670,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.11: 2 rows, split 30/70%. Rows 1 and 2, each split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.11: 2 rows, split 30/70%. Rows 1 and 2, each split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split..
         /// </summary>
         internal static string EATooltip_7BH {
             get {
@@ -3679,7 +3679,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Option 7.11: 3 columns, split 30/70%. Columns 1, 2, and 3 split 25/50/25%. Rows 1 and 3, split equally. Row 2, no split. 的當地語系化字串。
+        ///   Looks up a localized string similar to Option 7.11: 3 columns, split 30/70%. Columns 1, 2, and 3 split 25/50/25%. Rows 1 and 3, split equally. Row 2, no split..
         /// </summary>
         internal static string EATooltip_7BV {
             get {
@@ -3688,7 +3688,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Automatic Startup: 的當地語系化字串。
+        ///   Looks up a localized string similar to Automatic Startup:.
         /// </summary>
         internal static string EazyMemory_0 {
             get {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -23,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DDPM.Easy.Common">
+      <HintPath>..\..\CommonDll\DDPM.Easy.Common.dll</HintPath>
+    </Reference>
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>

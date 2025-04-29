@@ -1975,8 +1975,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             void GetBuffer(out byte* buffer, out uint capacity);
         }
-        //[DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
-        //public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
+
         int ImageBufferSize = 0;
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)

@@ -1062,7 +1062,7 @@ namespace DDPM.EABroker
                 Topmost = true;
 
                 //Refresh the Rects of AwsIcons
-                bool ret = RefreshAwsIconsRectFromUI(methodName);
+                bool ret = RefreshAwsIconsRectFromUI();
 
                 //OUTPUT: _vm.rcIcon0, _vm.rcIcon1, _vm.rcIcon2, _vm.rcIcon3, _vm.rcIcon4
                 // RefreshAwsIconRects();
@@ -1159,17 +1159,18 @@ namespace DDPM.EABroker
                 //}
 
 
+                ReloadRecentList(newScreen.DeviceName);
 
                 //Get current working screen
-                Screen? scr = _vm.GetScreenFromCursor();
-                if (scr != null)
-                {
-                    ReloadRecentList(scr.DeviceName);
-                }
+                //        Screen? scr = _vm.GetScreenFromCursor();
+                //        if (scr != null)
+                //        {
+                //            ReloadRecentList(scr.DeviceName);
+                //        }
 
-        //        RefreshAwsIconRects();
-        //        RefreshCellBordersInAwsIcons();
-        //        Dispatcher_RefreshCellRects();
+                //        RefreshAwsIconRects();
+                //        RefreshCellBordersInAwsIcons();
+                //        Dispatcher_RefreshCellRects();
                 Dispatcher_RefreshIcon0();
 
             }, DispatcherPriority.Loaded);

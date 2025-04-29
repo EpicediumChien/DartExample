@@ -669,19 +669,6 @@ namespace NGA.ThickClient
         #endregion  Move to new position event
 
         #region Workaround solution - Robert_Lin 2024-12-03, can be removed
-        /*private void RefreshWindowTaskbar()
-        {
-            const int HWND_BROADCAST = 0xffff;
-            const uint WM_SETTINGCHANGE = 0x001A;
-            bool result = PostMessage((IntPtr)HWND_BROADCAST, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero);
-        }*/
-        /*[DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);*/
-
-        /*[DllImport("user32.dll")]
-        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);*/
-
-
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
@@ -695,32 +682,10 @@ namespace NGA.ThickClient
         private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
         private const int MOUSEEVENTF_RIGHTUP = 0x10;
 
-        private static void DoMouseClick()
+        /*private static void DoMouseClick()
         {
             _mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }
-
-        /*[DllImport("user32.dll")]
-        static extern bool SetCursorPos(int X, int Y);
-
-        private static void MoveCursorToPoint(int x, int y)
-        {
-            SetCursorPos(x, y);
         }*/
-
-        //public const short SWP_NOMOVE = 0X2;
-        //public const short SWP_NOSIZE = 1;
-        //public const short SWP_NOZORDER = 0X4;
-        //public const int SWP_SHOWWINDOW = 0x0040;
-
-        //[DllImport("user32.dll", EntryPoint = "SetWindowPos", SetLastError = true)]
-        //[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        //private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
-
-        //public static IntPtr _SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags)
-        //{
-        //    return SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
-        //}
 
         #endregion
 

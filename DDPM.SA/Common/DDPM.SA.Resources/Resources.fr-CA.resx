@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Échec de l’ouverture de l’application</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>sera mis à jour vers </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>peut être mis à jour vers</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Erreur de temporisation</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Déplacez ou cliquez deux fois sur le bouton gauche de la souris cible</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Appuyez deux fois sur la touche « U » pour activer la mise à jour du micrologiciel du clavier cible</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Appareil connecté</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Verrouillage des majuscules activé</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Verrouillage des majuscules</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Verrouillage à l’éloignement</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Verrouillage des majuscules</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Impossible de synchroniser le profil ICC correspondant pour</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>sera mis à jour vers </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Verrouillage des majuscules</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Des profils Mémoire facile sont associés à cette mise en page personnalisée.\nL’enregistrement de cette mise en page personnalisée met à jour la mise en page de tous les profils associés.\nVoulez-vous enregistrer la mise en page?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utilise l’analyse intelligente de la scène et le suivi du visage pour effectuer un zoom et un panoramique lorsque vous vous déplacez</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>N’éteignez pas le système tant que les mises à jour ne sont pas terminées</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Le profil ICC par défaut est pour Smart HDR. Nous ne sommes pas en mesure de modifier le préréglage des couleurs dans le</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Le profil ICC par défaut ne convient pas à Smart HDR. Nous ne sommes pas en mesure de modifier le préréglage des couleurs dans le</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Plusieurs stations d’accueil ont été détectées. Pour éviter tout dommage aux stations d’accueil, veuillez n’en connecter qu’une.</value>
   </data>
@@ -524,21 +539,6 @@
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Plusieurs stations d’accueil détectées. Gardez une seule station d’accueil connectée pour éviter d’endommager vos stations d’accueil. Redémarrez l’ordinateur, puis connectez une seule station d’accueil.</value>
-  </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>N’éteignez pas le système tant que les mises à jour ne sont pas terminées</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Déplacez ou cliquez deux fois sur le bouton gauche de la souris cible</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Appuyez deux fois sur la touche « U » pour activer la mise à jour du micrologiciel du clavier cible</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>Le profil ICC par défaut est pour Smart HDR. Nous ne sommes pas en mesure de modifier le préréglage des couleurs dans le</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>Le profil ICC par défaut ne convient pas à Smart HDR. Nous ne sommes pas en mesure de modifier le préréglage des couleurs dans le</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>La mise à jour peut prendre environ 10 à 30 minutes, selon le modèle et la configuration de votre moniteur (par exemple, le type de connexion). Cela peut prendre plus de temps si vous mettez à jour plusieurs moniteurs du même modèle. N’éteignez pas votre écran et ne débranchez pas les câbles pendant le téléchargement de la mise à jour.</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Veuillez connecter votre moniteur à l’aide du port USB en amont pour éviter les erreurs pendant le processus de mise à jour du micrologiciel</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Mise en page vide</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Option 2.1 : 2 colonnes, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Option 2.1 : 2 rangées, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Option 2.2 : 2 rangées, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Option 2.2 : 2 colonnes, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Option 2.3 : 2 colonnes, divisées 70/30 %.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Option 2.3 : 2 rangées, divisées 30/70 %.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Option 2.4 : 2 colonnes, divisées 30/70 %.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Option 2.4 : 2 rangées, divisées 70/30 %.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Option 3.1 : 3 rangées, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Option 3.1 : 3 colonnes, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Option 3.2 : 3 colonnes, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Option 3.2 : 3 rangées, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Option 3.3 : 3 colonnes, divisées 30/40/30 %.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Option 3.3 : 3 rangées, divisées 30/40/30 %.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Option 3.4 : 2 rangées, divisées en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Option 3.4 : 2 rangées, divisées en parts égales. Rangée 1, pas de division. Rangée 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Option 3.5 : 2 rangées, divisées en parts égales. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Option 3.5 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Option 3.6 : 2 rangées, divisées en parts égales. Colonne 1, divisée 30/70 %. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Option 3.6 : 2 rangées, divisées 70/30 %. Rangée 1, pas de division. Rangée 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Option 3.7 : 2 rangées, divisées en parts égales. Colonne 1, divisée 70/30 %. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Option 3.7 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Option 3.8 : 2 rangées, divisées en parts égales. Rangée 1, pas de division. Rangée 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Option 3.8 : 2 colonnes, divisées en parts égales. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Option 3.9 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Option 3.9 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Option 4.1 : diviser en 4 quadrants.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Option 4.1 : diviser en 4 quadrants.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Option 4.2 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales dans 3 sections. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Option 4.2 : 2 rangées, divisées en parts égales. Rangée 1, pas de division. Rangée 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Option 4.3 : 2 colonnes, divisées en parts égales. Colonne 1, pas de division. Colonne 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Option 4.3 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales dans 3 sections. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Option 4.4 : 4 colonnes, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Option 4.4 : 4 rangées, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Option 4.5 : 3 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales. Colonnes 2 et 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Option 4.5 : 3 rangées, divisées en parts égales. Rangées 1 et 2, pas de division. Rangée 3, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Option 4.6 : 3 colonnes, divisées en parts égales. Colonnes 1 et 2, pas de division. Colonne 3, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Option 4.6 : 3 rangées, divisées en parts égales. Rangée 1, divisée en parts égales. Rangée 2 et 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Option 5.1 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Option 5.1 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales dans 3 sections. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Option 5.2 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Option 5.2 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales. Colonne 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Option 5.3 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Option 5.3 : 2 colonnes, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Option 5.4 : 2 rangées, divisées 70/30 %. Rangée 1, divisée en parts égales. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Option 5.4 : 2 colonnes, divisées 70/30 %. Rangée 1, divisée en parts égales. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Option 5.5 : 2 rangées, divisées 30/70 %. Rangées 1 et 2, divisées en parts égales. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Option 5.5 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Option 5.6 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales dans 3 sections. Colonne 2, divisée 30/70 %.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Option 5.6 : 2 rangées, divisées en parts égales. Rangée 1, divisée 30/70 %. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Option 5.7 : 3 colonnes, divisées en parts égales. Colonnes 1 et 3, divisées en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Option 5.7 : 3 rangées, divisées en parts égales. Rangées 1 et 3, divisées en parts égales. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Option 5.8 : 2 rangées, divisées 70/30 %. Rangée 1, divisée 70/30 %. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Option 5.8 : 2 colonnes, divisées 30/70 %. Colonne 1, divisée 70/30 %. Colonne 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Option 5.9 : 2 rangées, divisées 70/30 %. Rangée 1, divisée 70/30 %. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Option 5.9 : 2 colonnes, divisées 70/30 %. Colonne 1, divisée 70/30 %. Colonne 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Option 6.1 : 3 colonnes, divisées en parts égales. Colonnes 1, 2 et 3, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Option 6.1 : 2 colonnes, divisées en parts égales. Colonnes 1 et 2, divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Option 6.2 : 2 rangées, divisées 70/30 %. Rangée 1, divisée 70/30 %. Rangée 2, divisée en parts égales dans 3 sections. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Option 6.2 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Option 6.3 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales dans 4 sections. Rangée 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Option 6.3 : 2 colonnes, divisées 30/70 %. Colonne 1, divisée en parts égales dans 4 sections. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Option 6.4 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 70/30 %. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Option 6.4 : 2 colonnes, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Option 6.5 : 2 colonnes, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Option 6.5 : 2 colonnes, divisées 30/70 %. Rangée 1, divisée 30/70 %. Rangée 2, divisée en parts égales dans 3 sections. Colonne 1, divisée en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Option 6.6 : 2 rangées, divisées 30/70 %. Rangée 1, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division. Rangée 1, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Option 6.6 : 2 rangées, divisées 30/70%. Rangée 1, divisée 30/70%. Rangée 2, divisée en parts égales dans 3 sections. Colonne 1, pas de division. Colonne 2, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Option 6.7 : 2 colonnes, divisées en parts égales. Rangées 1, 2 et 3 divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Option 6.7 : 3 colonnes, divisées en parts égales. Colonnes 1, 2 et 3, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Option 6.8 : 4 colonnes, divisées en parts égales. Rangées 1 et 4, divisées en parts égales. Rangées 2 et 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Option 6.8 : 4 rangées, divisées en parts égales. Rangées 1 et 4, divisées en parts égales. Rangées 2 et 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Option 6.9 : 2 rangées, divisées 70/30 %. Rangée 1, divisée en parts égales. Rangée 2, divisée en parts égales dans 4 sections.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Option 6.9 : 2 rangées, divisées en parts égales. Rangée 1, divisée 70/30 %. Colonne 1, pas de division. Colonne 2, divisée en parts égales. Rangée 2, divisée 70/30 %.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Option 6.10 : 2 colonnes, divisées 70/30 %. Colonnes 1, 2 et 3 divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Option 6.10 : 2 rangées, divisées 70/30 %. Rangées 1 et 2, divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Option 7.1 : 2 colonnes, divisées 30/70 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonnes 2 et 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Option 7.1 : 3 rangées, divisées en parts égales. Rangées 1 et 2, divisées 30/70 %. Rangée 3, divisée en 3 sections égales.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Option 7.2 : 2 rangées, divisées 30/70 %. Rangées 1 et 2, divisées en parts égales dans 3 sections. Colonnes 1 et 2, pas de division. Colonne 3, divisée en parts égales.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Option 7.2 : 3 rangées, divisées en parts égales. Rangées 1 et 3, divisées en parts égales dans 3 sections. Rangée 2, divisée 30/70 %.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Option 7.3 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales dans 4 sections. Rangée 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Option 7.3 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales dans 4 sections. Colonne 2, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Option 7.4 : 2 rangées, divisées en parts égales. Rangées 1 et 3, divisées en parts égales. Rangée 2, divisée en parts égales dans 4 sections.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Option 7.4 : 2 colonnes, divisées en parts égales. Colonne 1, divisée en parts égales dans 3 sections. Colonne 2, divisée en parts égales dans 4 sections.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Option 7.5 : 2 rangées, divisées en parts égales. Rangée 1, divisée en parts égales dans 4 sections. Rangée 2, divisée 25/50/25 %. Colonnes 1 et 3, divisées en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Option 7.5 : 3 rangées, divisées 25/50/25 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division. Rangée 3, divisée en 3 sections égales.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Option 7.6 : 2 rangées, divisées 30/70 %. Rangée 1, divisée 25/50/25 %. Colonnes 1 et 3, divisées en parts égales. Colonne 2, pas de division. Rangée 2, divisée en parts égales dans 4 sections.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Option 7.6 : 3 rangées, divisées 25/50/25 %. Rangée 1, divisée en parts égales dans 3 sections. Rangée 2, divisée 70/30 %. Rangée 3, divisée en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Option 7.7 : 2 rangées, divisées 30/70 %. Rangée 1, divisée en parts égales dans 4 sections. Rangée 2, divisée 50/25/25 %. Colonne 1, pas de division. Colonnes 2 et 3, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Option 7.7 : 3 rangées, divisées 25/25/50 %. Rangées 1 et 2, divisées en parts égales dans 3 sections. Rangée 3, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Option 7.8 : 2 rangées, divisées 30/70 %. Rangées 1 et 4, divisées en parts égales. Rangée 2, divisée 25/25/50 %. Colonnes 1 et 2, divisées en parts égales. Colonne 3, pas de division.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Option 7.8 : 3 rangées, divisées 30/70 %. Rangée 1, divisée 30/70 %. Colonne 1, divisée en parts égales. Colonne 2, pas de division. Rangées 2 et 3, divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Option 7.9 : 4 colonnes, divisées en parts égales. Colonnes 1, 2, 3 et 4, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Option 7.9 : 4 colonnes, divisées en parts égales. Rangées 1, 2, 3 et 4, divisées en parts égales.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Option 7.10 : 4 colonnes, divisées en parts égales. Colonnes 1, 2, 3 et 4, divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Option 7.10 : 4 colonnes, divisées en parts égales. Colonnes 1, 2, 3 et 4, divisées en parts égales dans 3 sections.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Option 7.11 : 2 rangées, divisées 30/70 %. Rangées 1 et 2, divisées 25/50/25 %. Colonnes 1 et 3, divisées en parts égales. Colonne 2, pas de division.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Option 7.11 : 3 colonnes, divisées 30/70 %. Colonnes 1, 2 et 3, divisées 25/50/25 %. Rangées 1 et 3, divisées en parts égales. Rangée 2, pas de division.</value>
   </data>
 </root>
