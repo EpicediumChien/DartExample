@@ -4,10 +4,12 @@ using DDPM.SA.Common.Interfaces;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
 using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Views;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -65,6 +67,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         //Robert_Lin, 2024-6-27 using the single view model in DisplayPlugin, copy from other plugins (for example, MousePlugin)
         private DisplayViewModel? _viewModel;
+        private WebCameraViewModel? _webCameraViewModel;
 
         #endregion Private
 
@@ -173,7 +176,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             services.AddSingleton<IDisplayPageViewModel, DisplayPageViewModel>();
             services.AddSingleton<IDisplayViewModel, DisplayViewModel>();
 
+            services.AddSingleton<IPeripheralViewModel, WebCameraViewModel>();
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
+
+            _webCameraViewModel = (WebCameraViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
 
             _viewModel = (DisplayViewModel?)PluginIoc.GetService<IDisplayViewModel>();
             if (_viewModel != null)

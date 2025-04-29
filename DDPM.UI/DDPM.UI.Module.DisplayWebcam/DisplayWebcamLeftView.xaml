@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="DDPM.UI.Module.DisplayWebcam.DisplayWebcamLeftView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.DisplayWebcam"
+             mc:Ignorable="d"
+             xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             d:DesignHeight="450" d:DesignWidth="360">
+    <Grid>
+
+    </Grid>
+</UserControl>

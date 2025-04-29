@@ -119,6 +119,7 @@ public class Constants
     public const string GroupName_Gaming = "Gaming";
     public const string GroupName_KVM = "KVM";
     public const string GroupName_DisplayOthers = "Others";
+    public const string GroupName_DisplayWebcam = "Webcam";
 
     #endregion ModuleGroupNames
     //Robert_Lin, 2024-11-15 added to standardlize GroupNames/ModuleNames
@@ -149,7 +150,8 @@ public class Constants
     public const string ModuleName_KVM = "KvmModule";
     //GroupName_DisplayOthers = "Others"
     public const string ModuleName_DisplayOthers = "DisplayOthersModule";
-
+    //GroupName Webcam
+    public const string ModuleName_DisplayWebcam = "DisplayWebcamModule";
     #endregion  ModuleNames - DisplayPlugin
 
     #region General Constants
