@@ -9,7 +9,7 @@
 //
 
 #endregion
-#define SUPPORT_210
+//#define SUPPORT_210
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
@@ -1398,7 +1398,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             return nRes;
         }
 
-#endregion
+        #endregion
 
         #region Overriding methods
 
@@ -1755,7 +1755,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.SharpnessMin = _iLogicalDeviceWebcam.SharpnessMin;
                                 info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                                 info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
-                                
+
                                 info.SupportedResolutions = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.SupportedResolutions);
                                 info.SelectedResolution = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.GetSelectedResolution());
                                 info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
@@ -2466,7 +2466,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             return i;
         }
 
-#endregion
+        #endregion
 
         #region EventHandlers
 

@@ -1852,12 +1852,13 @@ namespace DDPM.SA.Common
 
         Task<int> GetAirAudioMaxAllowedPariedHost(string Guid);
 
+#if SUPPORT_210
         Task<bool> GetAirAudioIsConnectedAsync(string Guid);
 
         Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid);
 
         Task<bool> GetAirAudioIsConnectedRightAsync(string Guid);
-
+#endif
         #endregion Get
 
         #region Set
@@ -1918,7 +1919,7 @@ namespace DDPM.SA.Common
 
         #endregion Set
 
-        #endregion IAirAudioCommodity
+#endregion IAirAudioCommodity
 
         Task<List<MonitorInfo>> GetCurrentMonitorCache();
     }

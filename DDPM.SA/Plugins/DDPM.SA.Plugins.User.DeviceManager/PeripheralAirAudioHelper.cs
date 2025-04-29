@@ -1,4 +1,4 @@
-﻿#define SUPPORT_210
+﻿//#define SUPPORT_210
 
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
@@ -26,7 +26,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _log = Log;
         }
 
-        private void writelog(string text, 
+        private void writelog(string text,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)

@@ -1,5 +1,5 @@
 ﻿#region LicenceHeader
-#define SUPPORT_210
+//#define SUPPORT_210
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -10,7 +10,6 @@
 
 #endregion
 
-#define SUPPORT_210
 
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
@@ -179,7 +178,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
-#endregion
+        #endregion
 
         #region Constructor
 
@@ -10011,7 +10010,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return false;
         }
 
-#endregion  Speaker Already connected do this
+        #endregion  Speaker Already connected do this
 
         private bool UnregisterEventsForSpeaker(SpeakerEventHandleObject obj)
         {
@@ -10160,7 +10159,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 #if SUPPORT_210
                     //_Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
 #else
-                   _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+                    _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
 #endif
 
                     _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
@@ -10307,7 +10306,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             OnUIUpdateNotify(sEventNotify);
         }
 
-#endregion
+        #endregion
 
         #region Dongle
 
@@ -12507,7 +12506,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
 
-#endregion
+        #endregion
 
         #region AirAudio Get
         public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)
@@ -12954,47 +12953,47 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //// Content is same as GetAirAudioBoomMicAsync?
-        //public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
-        //{
-        //    string guid = Guid;
+        // Content is same as GetAirAudioBoomMicAsync?
+        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        {
+            string guid = Guid;
 
-        //    try
-        //    {
-        //        if (!await GetItemIDAsync("AirAudio", guid))
-        //            return false;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
 
-        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-        //        if (commodity is ICommodity)
-        //        {
-        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
-        //            if (value == null)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
-        //                return false;
-        //            }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+                        return false;
+                    }
 
-        //            if (value is bool boolValue)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
-        //                return boolValue;
-        //            }
-        //            else
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
-        //                return false;
-        //            }
-        //        }
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+                        return false;
+                    }
+                }
 
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
-        //        return false;
-        //    }
-        //}
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
 
         public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
         {
@@ -15360,7 +15359,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 #endif
-#endregion
+        #endregion
 
         #region AirAudio Set
         public async Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue)
@@ -16359,7 +16358,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return false;
         }
 
-#endregion  AirAudio Already connected do this
+        #endregion  AirAudio Already connected do this
 
         private bool UnregisterEventsForAirAudio(AirAudioEventHandleObject obj)
         {
@@ -16886,7 +16885,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return string.Empty;
             }
         }
-#endregion AirAudio Event
+        #endregion AirAudio Event
 
 #if Support_210
 
