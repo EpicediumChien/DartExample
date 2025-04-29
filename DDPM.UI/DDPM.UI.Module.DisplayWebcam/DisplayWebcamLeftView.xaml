@@ -127,9 +127,9 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" Grid.RowSpan="3" Grid.ColumnSpan="2" />
+                <!--<Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" Grid.RowSpan="3" Grid.ColumnSpan="2" />-->
                 <!--Name & Model-->
-                <Grid Grid.ColumnSpan="2" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
+                <!--<Grid Grid.ColumnSpan="2" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
@@ -144,24 +144,15 @@
                         <StackPanel Orientation="Horizontal">
                             <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                         Style="{StaticResource ModelNumberTextStyle}" />
-                            <!--<Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
-                       VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-                    <Image.InputBindings>
-                        <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
-                    </Image.InputBindings>
-                    <Image.ToolTip>
-                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                            <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
-                        </ToolTip>
-                    </Image.ToolTip>
-                </Image>-->
                             <Border Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                                 <Border.InputBindings>
                                     <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                                 </Border.InputBindings>
                                 <Border.ToolTip>
-                                    <!--Elsa 20250401 for PIMS-348390 change Placement="MousePoint" to Placement="Top" VerticalOffset="-50" to VerticalOffset="34" HorizontalOffset="-5" to HorizontalOffset="11" -->
+                                    -->
+                <!--Elsa 20250401 for PIMS-348390 change Placement="MousePoint" to Placement="Top" VerticalOffset="-50" to VerticalOffset="34" HorizontalOffset="-5" to HorizontalOffset="11" -->
+                <!--
                                     <ToolTip Placement="Top" VerticalOffset="34" HorizontalOffset="11">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                             <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding FirmwareVersion2}" />
@@ -171,7 +162,7 @@
                             </Border>
                         </StackPanel>
                     </StackPanel>
-                </Grid>
+                </Grid>-->
                 <!--Image-->
                 <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="0,10,80,100" Grid.ColumnSpan="2" >
                     <Viewbox Name="largeImage">
