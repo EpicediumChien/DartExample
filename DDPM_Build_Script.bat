@@ -135,21 +135,21 @@ if not %errorlevel% == 0 goto copy_ddm_lib_fail
 xcopy ".\ConsoleApp2\bin\%build_type%\net8.0-windows10.0.19041.0\*.json" "%RootDir%\DDPM.SA\dll" /Y /S /Q
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto copy_ddm_lib_fail
-Echo --------------------------------------------
-Echo [Build EA common]
-Echo --------------------------------------------
-::Build Easy arrange dll, it will be used for DDPM.SA
-cd /d "%RootDir%\DDPM.UI"
-dotnet.exe clean -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.Easy.Common\DDPM.Easy.Common.sln"
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto EA_CleanFail
-dotnet.exe build -c %build_type% -v normal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true /p:DebugSymbols=false /p:DebugType=None ".\DDPM.Easy.Common\DDPM.Easy.Common.sln"
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto EA_Fail
-::Copy EA dll to SA
-xcopy "%RootDir%\DDPM.UI\bin\net8.0-windows10.0.19041.0\DDPM.Easy.Common.*" "..\DDPM.SA\dll" /Y 
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto :EA_CopyDllFail
+::Echo --------------------------------------------
+::Echo [Build EA common]
+::Echo --------------------------------------------
+::::Build Easy arrange dll, it will be used for DDPM.SA
+::cd /d "%RootDir%\DDPM.UI"
+::dotnet.exe clean -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+::echo errorlevel is %errorlevel%
+::if not %errorlevel% == 0 goto EA_CleanFail
+::dotnet.exe build -c %build_type% -v normal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true /p:DebugSymbols=false /p:DebugType=None ".\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+::echo errorlevel is %errorlevel%
+::if not %errorlevel% == 0 goto EA_Fail
+::::Copy EA dll to SA
+::xcopy "%RootDir%\DDPM.UI\bin\net8.0-windows10.0.19041.0\DDPM.Easy.Common.*" "..\DDPM.SA\dll" /Y 
+::echo errorlevel is %errorlevel%
+::if not %errorlevel% == 0 goto :EA_CopyDllFail
 Echo --------------------------------------------
 Echo [Build VCPSDK]
 Echo --------------------------------------------
@@ -323,9 +323,9 @@ mkdir SA
 mkdir UI
 mkdir VCPSDK
 mkdir DTP
-mkdir ICON
+::mkdir ICON
 mkdir MINI
-mkdir CER
+::mkdir CER
 cd SA
 mkdir CLI
 mkdir User
@@ -352,8 +352,6 @@ if not %errorlevel% == 0 goto Installer_CopyFail
 ::--------
 echo [copy support list to user SA folder]
 cd /d "%RootDir%"
-echo [copy icon]
-::xcopy ".\DDPM.SA\dll\*.txt" ".\Installer\BIN\SA\User" /Y
 xcopy ".\DDPM.SA\dll\LSTDDPM" ".\Installer\BIN\SA\User" /Y
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
