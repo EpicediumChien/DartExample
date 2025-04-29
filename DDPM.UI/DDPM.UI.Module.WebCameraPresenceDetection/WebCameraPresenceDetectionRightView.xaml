@@ -125,7 +125,8 @@
                                         <StackPanel Orientation="Vertical" Margin="18,20,18,0">
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <UXControls:UXTextBlock MaxWidth="280" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                                    <!--20250429 Chewlin for Pt-BR language Text clipping issue change MaxWidth="280" to "200" -->
+                                                    <UXControls:UXTextBlock MaxWidth="200" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                                     <!--20250428 Chewlin for PIMS-358997 Remove ToolTipService.Placement="Left"-->
                                                     <Border Background="{StaticResource FakeTransparent}">
                                                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
