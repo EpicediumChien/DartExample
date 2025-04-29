@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Impossibile aprire l'applicazione</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>sarà aggiornato a </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>può essere aggiornato a</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Errore di timeout</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Spostare o cliccare due volte con il pulsante sinistro del mouse di destinazione</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Premere due volte il tasto "U" per attivare l'aggiornamento firmware della tastiera di destinazione</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo connesso</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>BLOC MAIUSC attivato</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blocco in assenza</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>BLOC MAIUSC disattivato</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Impossibile sincronizzare il profilo ICC corrispondente per</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>sarà aggiornato a </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Esistono profili Easy Memory associati a questo layout personalizzato.\nSalvando questo layout personalizzato, il layout verrà aggiornato per tutti i profili associati.\nSalvare il layout?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utilizza l'analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Non spegnere il sistema fino al completamento degli aggiornamenti</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Il profilo ICC predefinito è idoneo per HDR intelligente. Non è possibile modificare le impostazioni predefinite del colore in</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Il profilo ICC predefinito non è idoneo per HDR intelligente. Non è possibile modificare le impostazioni predefinite del colore in</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Sono stati rilevati più dock. Tenere collegato un solo dock per evitare di danneggiarli.</value>
   </data>
@@ -525,23 +540,8 @@
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Più dock rilevati. Mantenere collegato un solo dock per evitare danni ai dock. Riavviare il PC, quindi collegare un solo dock.</value>
   </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>Non spegnere il sistema fino al completamento degli aggiornamenti</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Spostare o cliccare due volte con il pulsante sinistro del mouse di destinazione</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Premere due volte il tasto &quot;U&quot; per attivare l&apos;aggiornamento firmware della tastiera di destinazione</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>Il profilo ICC predefinito è idoneo per HDR intelligente. Non è possibile modificare le impostazioni predefinite del colore in</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>Il profilo ICC predefinito non è idoneo per HDR intelligente. Non è possibile modificare le impostazioni predefinite del colore in</value>
-  </data>
   <data name="Update_Display_Alert" xml:space="preserve">
-    <value>Il completamento dell&apos;aggiornamento potrebbe richiedere dai 10 ai 30 minuti, a seconda del modello e della configurazione del monitor (ad esempio, in base al tipo di connessione). L&apos;aggiornamento di più monitor dello stesso modello potrebbe richiedere più tempo. Non spegnere lo schermo o scollegare i cavi durante il download dell&apos;aggiornamento.</value>
+    <value>Il completamento dell'aggiornamento potrebbe richiedere dai 10 ai 30 minuti, a seconda del modello e della configurazione del monitor (ad esempio, in base al tipo di connessione). L'aggiornamento di più monitor dello stesso modello potrebbe richiedere più tempo. Non spegnere lo schermo o scollegare i cavi durante il download dell'aggiornamento.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Operazione riuscita</value>
@@ -550,43 +550,43 @@
     <value>Firmware aggiornato.</value>
   </data>
   <data name="Display_FWU_Error_1" xml:space="preserve">
-    <value>L&apos;aggiornamento firmware non è riuscito a causa di un problema del pacchetto dell&apos;utilità del firmware. Il file potrebbe essere danneggiato.</value>
+    <value>L'aggiornamento firmware non è riuscito a causa di un problema del pacchetto dell'utilità del firmware. Il file potrebbe essere danneggiato.</value>
   </data>
   <data name="Display_FWU_Error_3" xml:space="preserve">
-    <value>Si è verificato un errore durante l&apos;aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l&apos;aggiornamento firmware.</value>
+    <value>Si è verificato un errore durante l'aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l'aggiornamento firmware.</value>
   </data>
   <data name="Display_FWU_Error_5" xml:space="preserve">
-    <value>Si è verificato un errore durante l&apos;aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l&apos;aggiornamento firmware.</value>
+    <value>Si è verificato un errore durante l'aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l'aggiornamento firmware.</value>
   </data>
   <data name="Display_FWU_Error_7" xml:space="preserve">
-    <value>L&apos;aggiornamento firmware non è riuscito. Il codice del firmware è stato cancellato e la verifica del codice del firmware ha avuto esito negativo.</value>
+    <value>L'aggiornamento firmware non è riuscito. Il codice del firmware è stato cancellato e la verifica del codice del firmware ha avuto esito negativo.</value>
   </data>
   <data name="Display_FWU_Error_9" xml:space="preserve">
     <value>Il firmware del monitor è la versione più recente.</value>
   </data>
   <data name="Display_FWU_Error_10" xml:space="preserve">
-    <value>Potrebbe essere in esecuzione un&apos;altra istanza dell&apos;utilità di aggiornamento firmware. Chiudere un&apos;istanza dell&apos;utilità per continuare.</value>
+    <value>Potrebbe essere in esecuzione un'altra istanza dell'utilità di aggiornamento firmware. Chiudere un'istanza dell'utilità per continuare.</value>
   </data>
   <data name="Display_FWU_Error_12" xml:space="preserve">
-    <value>Potrebbe essere in esecuzione un&apos;altra istanza dell&apos;utilità di aggiornamento firmware. Chiudere un&apos;istanza dell&apos;utilità per continuare.</value>
+    <value>Potrebbe essere in esecuzione un'altra istanza dell'utilità di aggiornamento firmware. Chiudere un'istanza dell'utilità per continuare.</value>
   </data>
   <data name="Display_FWU_Error_201" xml:space="preserve">
-    <value>L&apos;aggiornamento potrebbe richiedere fino a xx minuti. Tenere il monitor acceso e collegato durante l&apos;aggiornamento.</value>
+    <value>L'aggiornamento potrebbe richiedere fino a xx minuti. Tenere il monitor acceso e collegato durante l'aggiornamento.</value>
   </data>
   <data name="Display_FWU_Error_501" xml:space="preserve">
     <value>La versione del firmware rilevata sul monitor non è una versione ufficiale.</value>
   </data>
   <data name="Display_FWU_Error_61" xml:space="preserve">
-    <value>Si è verificato un errore durante l&apos;aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l&apos;aggiornamento firmware.</value>
+    <value>Si è verificato un errore durante l'aggiornamento firmware. Per risolvere questo problema, scollegare e ricollegare il cavo USB e spegnere e riaccendere il monitor. Quindi, provare a ripetere l'aggiornamento firmware.</value>
   </data>
   <data name="Display_FWU_Error_Other" xml:space="preserve">
-    <value>L&apos;aggiornamento firmware non è riuscito.</value>
+    <value>L'aggiornamento firmware non è riuscito.</value>
   </data>
   <data name="Update_Display_Alert_2" xml:space="preserve">
-    <value>L&apos;aggiornamento potrebbe richiedere fino a [XXXXXX] minuti. Tenere il dispositivo acceso e collegato durante questo intervallo di tempo.</value>
+    <value>L'aggiornamento potrebbe richiedere fino a [XXXXXX] minuti. Tenere il dispositivo acceso e collegato durante questo intervallo di tempo.</value>
   </data>
   <data name="Update_in_progress_body" xml:space="preserve">
-    <value>Aggiornamento firmware di [XXXXXX] in corso. La disponibilità potrebbe essere intermittente. Non scollegare il dispositivo durante l&apos;aggiornamento. </value>
+    <value>Aggiornamento firmware di [XXXXXX] in corso. La disponibilità potrebbe essere intermittente. Non scollegare il dispositivo durante l'aggiornamento. </value>
   </data>
   <data name="Update_successful_body" xml:space="preserve">
     <value>Aggiornamento firmware di [XXXXXX] riuscito</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Collegare il monitor utilizzando la porta USB upstream per evitare errori durante il processo di aggiornamento firmware</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Layout vuoto</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Opzione 2.1: 2 colonne, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Opzione 2.1: 2 righe, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Opzione 2.2: 2 righe, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Opzione 2.2: 2 colonne, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Opzione 2.3: 2 colonne, suddivise 70/30%.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Opzione 2.3: 2 righe, suddivise 30/70%.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Opzione 2.4: 2 colonne, suddivise 30/70%.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Opzione 2.4: 2 righe, suddivise 70/30%.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Opzione 3.1: 3 righe, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Opzione 3.1: 3 colonne, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Opzione 3.2: 3 colonne, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Opzione 3.2: 3 righe, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Opzione 3.3: 3 colonne, suddivise 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Opzione 3.3: 3 righe, suddivise 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Opzione 3.4: 2 righe, suddivise equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Opzione 3.4: 2 righe, suddivise equamente. Riga 1, nessuna suddivisione. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Opzione 3.5: 2 righe, suddivise equamente. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Opzione 3.5: 2 righe, suddivise equamente. Riga 1, suddivisa equamente. Riga 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Opzione 3.6: 2 righe, suddivise equamente. Colonna 1, suddivise 30/70%. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Opzione 3.6: 2 righe, suddivise 70/30%. Riga 1, nessuna suddivisione, riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Opzione 3.7: 2 righe, suddivise equamente. Colonna 1, suddivisione 70/30%. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Opzione 3.7: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente, riga 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Opzione 3.8: 2 righe, suddivise equamente. Riga 1, nessuna suddivisione. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Opzione 3.8: 2 colonne, suddivise equamente. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Opzione 3.9: 2 righe, suddivise equamente. Riga 1, suddivisa equamente. Riga 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Opzione 3.9: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Opzione 4.1: suddivisione in 4 quadranti.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Opzione 4.1: suddivisione in 4 quadranti.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Opzione 4.2: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente in 3 sezioni. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Opzione 4.2: 2 righe, suddivise equamente. Riga 1, nessuna suddivisione. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Opzione 4.3: 2 colonne, suddivise equamente. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Opzione 4.3: 2 righe, suddivise equamente. Riga 1, suddivisa equamente in 3 sezioni. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Opzione 4.4: 4 colonne suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Opzione 4.4: 4 righe, suddivise equamente.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Opzione 4.5: 3 colonne suddivise equamente. Colonna 1, suddivisa equamente. Colonne 2 e 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Opzione 4.5: 3 righe, suddivise equamente. Righe 1 e 2, nessuna suddivisione. Riga 3, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Opzione 4.6: 3 colonne, suddivise equamente. Colonne 1 e 2, nessuna suddivisione. Colonna 3, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Opzione 4.6: 3 righe, suddivise equamente. Riga 1, suddivisa equamente. Righe 2 e 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Opzione 5.1: 2 righe, suddivise equamente. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Opzione 5.1: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente in 3 sezioni. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Opzione 5.2: 2 righe, suddivise equamente. Riga 1, suddivisa equamente. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Opzione 5.2: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente. Colonna 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Opzione 5.3: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Opzione 5.3: 2 colonne, suddivise 30/70%, Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Opzione 5.4: 2 righe, suddivise 70/30%. Riga 1, suddivisa equamente. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Opzione 5.4: 2 colonne, suddivise 70/30%. Riga 1, suddivisa equamente. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Opzione 5.5: 2 righe, suddivise 30/70%. Righe 1 e 2, ciascuna suddivisa equamente. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Opzione 5.5: 2 righe, suddivise equamente. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Opzione 5.6: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente in 3 sezioni. Colonna 2, suddivisa 30/70%.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Opzione 5.6: 2 righe, suddivise equamente. Riga 1, suddivisa 30/70%. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Opzione 5.7: 3 colonne, suddivise equamente. Colonne 1 e 3, ciascuna suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Opzione 5.7: 3 righe, suddivise in parti uguali. Righe 1 e 3, ciascuna suddivisa in parti uguali. Riga 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Opzione 5.8: 2 righe, suddivise 70/30%. Riga 1, suddivisa 70/30%. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Opzione 5.8: 2 colonne, suddivise 30/70%. Colonna 1, suddivisa 70/30%. Colonna 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Opzione 5.9: 2 righe, suddivise 70/30%. Riga 1, suddivisa 70/30%. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Opzione 5.9: 2 colonne, suddivise 70/30%. Colonna 1, suddivisa 70/30%. Colonna 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Opzione 6.1: 3 colonne, suddivise equamente. Colonne 1, 2 e 3, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Opzione 6.1: 2 colonne, suddivise equamente. Colonne 1 e 2, ciascuna suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Opzione 6.2: 2 righe, suddivise 70/30%. Riga 1, suddivisa 70/30%. Riga 2, suddivisa equamente in 3 sezioni. Colonna 1, nessuna suddivisione. Colonna 2, suddivisione equa.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Opzione 6.2: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Opzione 6.3: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 4 sezioni. Riga 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Opzione 6.3: 2 colonne, suddivise 30/70%. Colonna 1, suddivisa equamente in 4 sezioni. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Opzione 6.4: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 70/30%. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Opzione 6.4: 2 colonne, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Opzione 6.5: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Opzione 6.5: 2 colonne, suddivise 30/70%. Riga 1, suddivisa 30/70%. Riga 2, suddivisa equamente in 3 sezioni. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Opzione 6.6: 2 righe, suddivise 30/70%. Riga 1, suddivisa 30/70%. Colonna 1, suddivisa in modo uniforme. Colonna 2, nessuna suddivisione. Riga 1, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Opzione 6.6: 2 righe, suddivise 30/70%. Riga 1, suddivisa 30/70%. Riga 2, suddivisa equamente in 3 sezioni. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Opzione 6.7: 2 colonne, suddivise equamente. Righe 1, 2 e 3 suddivise equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Opzione 6.7: 3 colonne, suddivise equamente. Colonne 1, 2 e 3, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Opzione 6.8: 4 colonne, suddivise equamente. Righe 1 e 4, suddivise equamente. Righe 2 e 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Opzione 6.8: 4 righe, suddivise equamente. Righe 1 e 4, suddivise equamente. Righe 2 e 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Opzione 6.9: 2 righe, suddivise 70/30%. Riga 1, suddivisa equamente. Riga 2, suddivisa equamente in 4 sezioni.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Opzione 6.9: 2 righe, suddivise equamente. Riga 1, suddivisa 70/30%. Colonna 1, nessuna suddivisione. Colonna 2, suddivisa equamente. Riga 2, suddivisa 70/30%.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Opzione 6.10: 2 colonne, suddivise 70/30%. Colonne 1, 2 e 3, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Opzione 6.10: 2 righe, suddivise 70/30%. Righe 1 e 2, ciascuna suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Opzione 7.1: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%. Colonna 1, suddivisa equamente. Colonne 2 e 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Opzione 7.1: 3 righe, suddivise equamente. Righe 1 e 2, ciascuna suddivisa 30/70%, riga 3, suddivisa in 3 sezioni uguali.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Opzione 7.2: 2 righe, suddivise 30/70%. Righe 1 e 2, ciascuna suddivisa equamente in 3 sezioni. Colonne 1 e 2, nessuna suddivisione. Colonna 3, suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Opzione 7.2: 3 righe, suddivise equamente. Righe 1 e 3, ciascuna suddivisa equamente in 3 sezioni. Riga 2, suddivisa 30/70%.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Opzione 7.3: 2 righe, suddivise equamente. Riga 1, suddivisa equamente in 4 sezioni. Riga 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Opzione 7.3: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente in 4 sezioni. Colonna 2, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Opzione 7.4: 2 righe, suddivise equamente. Righe 1 e 3, ciascuna suddivisa equamente. Riga 2, suddivisa equamente in 4 sezioni.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Opzione 7.4: 2 colonne, suddivise equamente. Colonna 1, suddivisa equamente in 3 sezioni. Colonna 2, suddivisa equamente in 4 sezioni.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Opzione 7.5: 2 righe, suddivise equamente. Riga 1, suddivisa equamente in 4 sezioni. Riga 2, suddivisa 25/50/25%. Colonne 1 e 3, ciascuna suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Opzione 7.5: 3 righe, suddivisa 25/50/25%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivise 30/70%. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione. Riga 3, suddivisa in 3 sezioni uguali.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Opzione 7.6: 2 righe, suddivise 30/70%. Riga 1, suddivisa 25/50/25%. Colonne 1 e 3, ciascuna suddivisa equamente. Colonna 2, nessuna suddivisione. Riga 2, suddivisa equamente in 4 sezioni.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Opzione 7.6: 3 righe, suddivise 25/50/25%. Riga 1, suddivisa equamente in 3 sezioni. Riga 2, suddivisa 70/30%. Riga 3, suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Opzione 7.7: 2 righe, suddivise 30/70%. Riga 1, suddivisa equamente in 4 sezioni. Riga 2, suddivisa 50/25/25%. Colonna 1, nessuna suddivisione. Colonne 2 e 3, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Opzione 7.7: 3 righe, suddivisa 25/25/50%. Righe 1 e 2, ciascuna suddivisa equamente in 3 sezioni. Riga 3, suddivise 30/70%. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Opzione 7.8: 2 righe, suddivise 30/70%. Righe 1 e 4, ciascuna suddivisa equamente. Riga 2, suddivisa 25/25/50%. Colonne 1 e 2, ciascuna suddivisa equamente. Colonna 3, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Opzione 7.8: 3 righe, suddivise 30/70%. Riga 1, suddivise 30/70%. Colonna 1, suddivisa equamente. Colonna 2, nessuna suddivisione. Righe 2 e 3 suddivise equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Opzione 7.9: 4 colonne, suddivise equamente. Colonne 1, 2, 3 e 4, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Opzione 7.9: 4 colonne, suddivise equamente. Righe 1, 2, 3 e 4, ciascuna suddivisa equamente.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Opzione 7.10: 4 colonne, suddivise equamente, colonne 1, 2, 3, e 4, ciascuna suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Opzione 7.10: 4 colonne, suddivise equamente, colonne 1, 2, 3, e 4, ciascuna suddivisa equamente in 3 sezioni.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Opzione 7.11: 2 righe, suddivise 30/70%. Righe 1 e 2, ciascuna suddivisa del 25/50/25%. Colonne 1 e 3, ciascuna suddivisa equamente. Colonna 2, nessuna suddivisione.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Opzione 7.11: 3 colonne, suddivise 30/70%. Colonne 1, 2 e 3 suddivise 25/50/25%. Righe 1 e 3, suddivise equamente. Riga 2, nessuna suddivisione.</value>
   </data>
 </root>

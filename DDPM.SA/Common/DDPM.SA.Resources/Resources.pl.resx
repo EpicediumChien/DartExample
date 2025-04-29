@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Nie można otworzyć aplikacji</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>zostanie zaktualizowane do </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>może zostać zaktualizowane do</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Błąd przekroczenia limitu czasu</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Przesuń lub kliknij dwukrotnie lewy przycisk docelowej myszy</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Naciśnij dwukrotnie przycisk „U”, aby aktywować aktualizację oprogramowania wewnętrznego docelowej klawiatury</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Urządzenie podłączone</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock włączony</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock wyłączony</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blokuj przy odejściu</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Caps Lock wyłączony</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Menu Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Nie można zsynchronizować odpowiedniego profilu ICC dla</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>zostanie zaktualizowane do </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock wyłączony</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Z tym układem niestandardowym są powiązane profile Easy Memory.\nZapisanie tego układu niestandardowego spowoduje aktualizację układu dla wszystkich powiązanych profili.\nCzy chcesz zapisać układ?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Wykorzystuje inteligentną analizę scen i śledzenie twarzy w celu powiększania i przesuwania widoku, gdy jesteś w ruchu</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Nie wyłączaj systemu do czasu zakończenia aktualizacji</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Domyślny profil ICC to Smart HDR. Nie możemy zmienić predefiniowanych ustawień kolorów w</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Domyślny profil ICC nie jest odpowiedni dla Smart HDR. Nie można zmienić predefiniowanych ustawień kolorów w</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Wykryto wiele stacji dokujących. Należy podłączyć tylko jedną stację dokującą, aby zapobiec uszkodzeniu stacji dokujących.</value>
   </data>
@@ -524,21 +539,6 @@
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Wykryto wiele stacji dokujących. Aby zapobiec uszkodzeniu stacji dokujących, odłącz wszystkie stacje dokujące, uruchom ponownie komputer, a następnie podłącz tylko jedną stację dokującą.</value>
-  </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>Nie wyłączaj systemu do czasu zakończenia aktualizacji</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Przesuń lub kliknij dwukrotnie lewy przycisk docelowej myszy</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Naciśnij dwukrotnie przycisk „U”, aby aktywować aktualizację oprogramowania wewnętrznego docelowej klawiatury</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>Domyślny profil ICC to Smart HDR. Nie możemy zmienić predefiniowanych ustawień kolorów w</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>Domyślny profil ICC nie jest odpowiedni dla Smart HDR. Nie można zmienić predefiniowanych ustawień kolorów w</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>Aktualizacja może potrwać od 10 do 30 minut, w zależności od modelu i konfiguracji monitora (np. typu połączenia). Aktualizacja wielu monitorów tego samego modelu może potrwać dłużej. Nie wyłączaj wyświetlania ani nie odłączaj kabli podczas pobierania aktualizacji.</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Podłącz monitor za pomocą portu USB typu upstream, aby uniknąć błędów podczas aktualizacji oprogramowania wewnętrznego.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Pusty układ</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Opcja 2.1: 2 kolumny podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Opcja 2.1: 2 wiersze podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Opcja 2.2: 2 wiersze podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Opcja 2.2: 2 kolumny podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Opcja 2.3: 2 kolumny podzielone 70/30%.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Opcja 2.3: 2 wiersze podzielone 30/70%.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Opcja 2.4: 2 kolumny podzielone 30/70%.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Opcja 2.4: 2 wiersze podzielone 70/30%.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Opcja 3.1: 3 wiersze podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Opcja 3.1: 3 kolumny podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Opcja 3.2: 3 kolumny podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Opcja 3.2: 3 wiersze podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Opcja 3.3: 3 kolumny podzielone 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Opcja 3.3: 3 wiersze podzielone 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Opcja 3.4: 2 wiersze podzielone po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Opcja 3.4: 2 wiersze podzielone po równo. Wiersz 1 bez podziału. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Opcja 3.5: 2 wiersze podzielone po równo. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Opcja 3.5: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo. Wiersza 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Opcja 3.6: 2 wiersze podzielone po równo. Kolumna 1 podzielona 30/70%. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Opcja 3.6: 2 wiersze podzielone 70/30%. Wiersz 1 bez podziału, Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Opcja 3.7: 2 wiersze podzielone po równo. Kolumna 1 podzielona 70/30%. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Opcja 3.7: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo, wiersz 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Opcja 3.8: 2 wiersze podzielone po równo. Wiersz 1 bez podziału. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Opcja 3.8: 2 kolumny podzielone po równo. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Opcja 3.9: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo. Wiersz 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Opcja 3.9: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Opcja 4.1: podział na 4 ćwiartki.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Opcja 4.1: podział na 4 ćwiartki.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Opcja 4.2: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo na 3 sekcje. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Opcja 4.2: 2 wiersze podzielone po równo. Wiersz 1 bez podziału. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Opcja 4.3: 2 kolumny podzielone po równo. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Opcja 4.3: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo na 3 sekcje. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Opcja 4.4: 4 kolumny podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Opcja 4.4: 4 wiersze podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Opcja 4.5: 3 kolumny podzielone po równo. Kolumna 1 podzielona po równo. Kolumny 2 i 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Opcja 4.5: 3 wiersze podzielone po równo. Wiersze 1 i 2 bez podziału. Wiersz 3 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Opcja 4.6: 3 kolumny podzielone po równo. Kolumny 1 i 2 bez podziału. Kolumna 3 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Opcja 4.6: 3 wiersze podzielone po równo, wiersz 1 podzielony po równo, wiersze 2 i 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Opcja 5.1: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Opcja 5.1: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo na 3 sekcje. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Opcja 5.2: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo. Wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Opcja 5.2: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo. Kolumna 2 podzielona po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Opcja 5.3: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Opcja 5.3: 2 kolumny podzielone 30/70%, wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Opcja 5.4: 2 wiersze podzielone 70/30%. Wiersz 1 podzielony po równo. Wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Opcja 5.4: 2 kolumny podzielone 70/30%. Wiersz 1 podzielony po równo, wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Opcja 5.5: 2 wiersze podzielone 30/70%. Wiersze 1 i 2 podzielone po równo. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Opcja 5.5: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Opcja 5.6: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo na 3 sekcje. Kolumna 2 podzielona 30/70%.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Opcja 5.6: 2 wiersze podzielone po równo, Wiersz 1 podzielony 30/70%. Wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Opcja 5.7: 3 kolumny podzielone po równo, Kolumny 1 i 3 podzielone po równo, kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Opcja 5.7: 3 wiersze podzielone po równo, wiersze 1 i 3 podzielone po równo, wiersz 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Opcja 5.8: 2 wiersze podzielone 70/30%. Wiersz 1 podzielony 70/30%. Wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Opcja 5.8: 2 kolumny podzielone 30/70%. Kolumna 1 podzielona 70/30%, kolumna 2 podzielona po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Opcja 5.9: 2 wiersze podzielone 70/30%. Wiersz 1 podzielony 70/30%, wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Opcja 5.9: 2 kolumny podzielone 70/30%. Kolumna 1 podzielona 70/30%, kolumna 2 podzielona po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Opcja 6.1: 3 kolumny podzielone po równo. Kolumny 1, 2 i 3 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Opcja 6.1: 2 kolumny podzielone po równo. Kolumny 1 i 2 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Opcja 6.2: 2 wiersze podzielone 70/30%. Wiersz 1 podzielony 70/30%. Wiersz 2 podzielony po równo na 3 sekcje. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Opcja 6.2: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Opcja 6.3: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 4 sekcje. Wiersz 2 podzielony po równo.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Opcja 6.3: 2 kolumny podzielone 30/70%. Kolumna 1 podzielona po równo na 4 sekcje. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Opcja 6.4: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 70/30%. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Opcja 6.4: 2 kolumny podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Opcja 6.5: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Opcja 6.5: 2 kolumny podzielone 30/70%. Wiersz 1 podzielony 30/70%. Wiersz 2 podzielony po równo na 3 sekcje. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Opcja 6.6: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału. Wiersz 1 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Opcja 6.6: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony 30/70%. Wiersz 2 podzielony po równo na 3 sekcje. Kolumna 1 bez podziału. Kolumna 2 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Opcja 6.7: 2 kolumny podzielone po równo. Wiersze 1, 2 i 3 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Opcja 6.7: 3 kolumny podzielone po równo. Kolumny 1, 2 i 3 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Opcja 6.8: 4 kolumny podzielone po równo. Wiersze 1 i 4 podzielone po równo. Wiersze 2 i 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Opcja 6.8: 4 wiersze podzielone po równo. Wiersze 1 i 4 podzielone po równo. Wiersze 2 i 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Opcja 6.9: 2 wiersze podzielone 70/30%. Wiersz 1 podzielony po równo. Wiersz 2 podzielony po równo na 4 sekcje.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Opcja 6.9: 2 wiersze podzielone po równo. Wiersz 1 podzielony 70/30%. Kolumna 1 bez podziału, kolumna 2 podzielona po równo. Wiersz 2 podzielony 70/30%.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Opcja 6.10: 2 kolumny podzielone 70/30%. Kolumny 1, 2 i 3 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Opcja 6.10: 2 wiersze podzielone 70/30%. Wiersze 1 i 2 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Opcja 7.1: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumny 2 i 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Opcja 7.1: 3 wiersze podzielone po równo. Wiersze 1 i 2 podzielone 30/70%, wiersz 3 podzielony na 3 równe sekcje.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Opcja 7.2: 2 wiersze podzielone 30/70%. Wiersze 1 i 2 podzielone po równo na 3 sekcje. Kolumny 1 i 2 bez podziału. Kolumna 3 podzielona po równo.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Opcja 7.2: 3 wiersze podzielone po równo. Wiersze 1 i 3 podzielone po równo na 3 sekcje. Wiersz 2 podzielony 30/70%.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Opcja 7.3: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo na 4 sekcje. Wiersz 2 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Opcja 7.3: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo na 4 sekcje. Kolumna 2 podzielona po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Opcja 7.4: 2 wiersze podzielone po równo. Wiersze 1 i 3 podzielone po równo. Wiersz 2 podzielony po równo na 4 sekcje.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Opcja 7.4: 2 kolumny podzielone po równo. Kolumna 1 podzielona po równo na 3 sekcje. Kolumna 2 podzielona po równo na 4 sekcje.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Opcja 7.5: 2 wiersze podzielone po równo. Wiersz 1 podzielony po równo na 4 sekcje. Wiersz 2 podzielony 25/50/25%. Kolumny 1 i 3 podzielone po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Opcja 7.5: 3 wiersze podzielone 25/50/25%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału. Wiersz 3 podzielony na 3 równe sekcje.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Opcja 7.6: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony 25/50/25%. Kolumny 1 i 3 podzielone po równo. Kolumna 2 bez podziału. Wiersz 2 podzielony po równo na 4 sekcje.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Opcja 7.6: 3 wiersze podzielone 25/50/25%. Wiersz 1 podzielony po równo na 3 sekcje. Wiersz 2 podzielony 70/30%. Wiersz 3 podzielony po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Opcja 7.7: 2 wiersze podzielone 30/70%. Wiersz 1 podzielony po równo na 4 sekcje. Wiersz 2 podzielony 50/25/25%. Kolumna 1 bez podziału. Kolumny 2 i 3 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Opcja 7.7: 3 wiersze podzielone 25/25/50%. Wiersze 1 i 2 podzielone po równo na 3 sekcje. Wiersz 3 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Opcja 7.8: 2 wiersze podzielone 30/70%. Wiersze 1 i 4 podzielone po równo. Wiersz 2 podzielony 25/25/50%. Kolumny 1 i 2 podzielone po równo. Kolumna 3 bez podziału.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Opcja 7.8: 3 wiersze podzielone 30/70%. Wiersz 1 podzielony 30/70%. Kolumna 1 podzielona po równo. Kolumna 2 bez podziału. Wiersze 2 i 3 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Opcja 7.9: 4 kolumny podzielone po równo. Kolumny 1, 2, 3 i 4 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Opcja 7.9: 4 kolumny podzielone po równo. Wiersze 1, 2, 3 i 4 podzielone po równo.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Opcja 7.10: 4 kolumny podzielone po równo, kolumny 1, 2, 3 i 4 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Opcja 7.10: 4 kolumny podzielone po równo, kolumny 1, 2, 3 i 4 podzielone po równo na 3 sekcje.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Opcja 7.11: 2 wiersze podzielone 30/70%. Wiersze 1 i 2 podzielone 25/50/25%. Kolumny 1 i 3 podzielone po równo. Kolumna 2 bez podziału.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Opcja 7.11: 3 kolumny podzielone 30/70%. Kolumny 1, 2 i 3 podzielone 25/50/25%. Wiersze 1 i 3 podzielone po równo. Wiersz 2 bez podziału.</value>
   </data>
 </root>
