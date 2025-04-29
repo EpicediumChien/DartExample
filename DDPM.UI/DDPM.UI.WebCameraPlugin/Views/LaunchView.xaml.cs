@@ -201,7 +201,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.WebcamSettingChanged += WebcamSettingChanged;
                 _vm.ProfilePropertyChanged += ProfilePropertyChanged;
 
-                imgDevice.Visibility = Visibility.Hidden;
+                //imgDevice.Visibility = Visibility.Hidden;
                 Preview();
                 EnableMonitorOnEvent();
 
@@ -1240,7 +1240,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
-                        imgDevice.Visibility = Visibility.Hidden;
+                        //imgDevice.Visibility = Visibility.Hidden;
+                        //Debug.WriteLine("imgDevice Hidden..............");
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
 
@@ -1263,6 +1264,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.ShowGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
+                        Debug.WriteLine("imgDevice Showing..............");
                         DoubleAnimation visibilityAnimation = new()
                         {
                             From = 0,
@@ -1409,6 +1411,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
 
                     //if (audioDevices != null)
+                    gridPreview.Visibility = Visibility.Hidden;
                     if (!string.IsNullOrEmpty(AudioDeviceId))
                     {
                         await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
@@ -1434,6 +1437,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             StreamingCaptureMode = captureMode
                         });
                     }
+                    Debug.WriteLine("imgDevice Hidden before 1439 ..................................................");
+                    Debug.WriteLine($"imgDevice Visibility: {imgDevice.Visibility} ..................................................");
+                    Debug.WriteLine("imgDevice Hidden after 1439 ..................................................");
+                    Task.Delay(2000).Wait();
+                    imgDevice.Visibility = Visibility.Hidden;
+                    gridPreview.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
