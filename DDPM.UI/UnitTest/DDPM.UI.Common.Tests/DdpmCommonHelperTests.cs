@@ -114,9 +114,6 @@ namespace DDPM.UI.Common.Tests
             Assert.That(DdpmCommonHelper.UIDebugModeFlag, Is.EqualTo(true));
         }
 
-        //[DllImport("user32.dll", EntryPoint = "SendMessageA")]
-        //public static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
-
         [DllImport("User32.dll", EntryPoint = "FindWindow")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr FindWindow(string className, string windowName);

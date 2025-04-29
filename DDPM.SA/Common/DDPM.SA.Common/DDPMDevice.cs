@@ -58,9 +58,6 @@ namespace DDPM.SA.Common
         private string _deviceName;
         private bool _muteStatus;
 
-        //[DllImport("user32.dll", SetLastError = true)]
-        //public static extern int GetSystemMetrics(int nIndex);
-
         public const int SpiSetMouseButtonLeft = 23;
 
         [DllImport("user32.dll", SetLastError = true)]
