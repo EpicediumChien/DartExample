@@ -341,8 +341,17 @@
                                         <Grid
                                         Height="60"
                                         IsEnabled="{Binding BrightnessEnable}"
-                                        Opacity="{Binding BrightnessOpacity}"
                                         Visibility="{Binding isShowSynchronize}">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Opacity" Value="{Binding BrightnessOpacity}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSynchronizeDisabled}" Value="True">
+                                                            <Setter Property="Opacity" Value="0.5" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
