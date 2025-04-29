@@ -339,9 +339,9 @@
 
                                         <!--  synchronize  -->
                                         <Grid
-                                        Height="60"
-                                        IsEnabled="{Binding BrightnessEnable}"
-                                        Visibility="{Binding isShowSynchronize}">
+                                            Height="60"
+                                            IsEnabled="{Binding BrightnessEnable}"
+                                            Visibility="{Binding isShowSynchronize}">
                                             <Grid.Style>
                                                 <Style TargetType="Grid">
                                                     <Setter Property="Opacity" Value="{Binding BrightnessOpacity}" />
@@ -392,14 +392,14 @@
                                             -->
                                             <!--  Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                             <!--
-                                        <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
-                                        </StackPanel>
-                                        </StackPanel>
-                                        </Border>
-                                        </ToolTip>
-                                        </Image.ToolTip>
-                                        </Image>-->
-                                            <!--  Chewlin 20250429 for Tooltip  add  MaxWidth="272" Opened="toolTip_Opened"  MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                            <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                            </StackPanel>
+                                            </StackPanel>
+                                            </Border>
+                                            </ToolTip>
+                                            </Image.ToolTip>
+                                            </Image>-->
+                                            <!--  Chewlin 20250429 for Tooltip  add  MaxWidth="272" Opened="toolTip_Opened"  MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                             <Button
                                                 Grid.Column="1"
                                                 Width="16"
@@ -416,19 +416,21 @@
                                                 <Button.ToolTip>
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
                                                     <ToolTip
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    HorizontalOffset="2"
-                                                    Placement="Top"
-                                                    VerticalOffset="12"
-                                                    MaxWidth="272"
-                                                    Opened="toolTip_Opened">
+                                                        MaxWidth="272"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalOffset="2"
+                                                        Opened="toolTip_Opened"
+                                                        Placement="Top"
+                                                        VerticalOffset="12">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <!--  Chewlin 20250429 for Tooltip  add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                            <!--  Chewlin 20250429 for Tooltip  add MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                                             <TextBlock
-                                                            LineHeight="20"
-                                                            Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                            Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                                MaxWidth="230"
+                                                                LineHeight="20"
+                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                                Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}"
+                                                                TextWrapping="WrapWithOverflow" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Button.ToolTip>
@@ -887,18 +889,20 @@
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
                                                     <!--  Chewlin 20250429 for Tooltip ADD MaxWidth="272"  -->
                                                     <ToolTip
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    HorizontalOffset="2"
-                                                    Placement="Top"
-                                                    MaxWidth="272"
-                                                    VerticalOffset="12">
+                                                        MaxWidth="272"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalOffset="2"
+                                                        Placement="Top"
+                                                        VerticalOffset="12">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <!--  Chewlin 20250429 for Tooltip ADD MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                            <!--  Chewlin 20250429 for Tooltip ADD MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                                             <TextBlock
-                                                            LineHeight="20"
-                                                            Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                            Text="{Binding [Brightness.7], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
+                                                                MaxWidth="230"
+                                                                LineHeight="20"
+                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                                Text="{Binding [Brightness.7], Source={x:Static lang:LangHelper.Instance}}"
+                                                                TextWrapping="WrapWithOverflow" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Button.ToolTip>
@@ -1039,14 +1043,14 @@
                                                 <!--  ToolTip  -->
                                                 <Button.ToolTip>
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
-                                                    <!--  Chewlin 20250428 for Tooltip add  MaxWidth="272" -->
+                                                    <!--  Chewlin 20250428 for Tooltip add  MaxWidth="272"  -->
                                                     <ToolTip
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    HorizontalOffset="2"
-                                                    Placement="Top"
-                                                    MaxWidth="272"
-                                                    VerticalOffset="12">
+                                                        MaxWidth="272"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalOffset="2"
+                                                        Placement="Top"
+                                                        VerticalOffset="12">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock
                                                                 MaxWidth="230"
@@ -1179,20 +1183,22 @@
                                                 <!--  ToolTip  -->
                                                 <Button.ToolTip>
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
-                                                    <!--  Chewlin 20250428 for tooltip ADD MaxWidth="272" -->
+                                                    <!--  Chewlin 20250428 for tooltip ADD MaxWidth="272"  -->
                                                     <ToolTip
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    HorizontalOffset="2"
-                                                    Placement="Top"
-                                                    MaxWidth="272"
-                                                    VerticalOffset="12">
-                                                        <!--  Chewlin 20250428 for tooltip ADD MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                        MaxWidth="272"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalOffset="2"
+                                                        Placement="Top"
+                                                        VerticalOffset="12">
+                                                        <!--  Chewlin 20250428 for tooltip ADD MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock
-                                                            LineHeight="20"
-                                                            Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                            Text="{Binding [Brightness.11], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                                MaxWidth="230"
+                                                                LineHeight="20"
+                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                                Text="{Binding [Brightness.11], Source={x:Static lang:LangHelper.Instance}}"
+                                                                TextWrapping="WrapWithOverflow" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Button.ToolTip>
@@ -1339,18 +1345,20 @@
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
                                                     <!--  Chewlin 20250428 for Tooltip change Add MaxWidth="272"  -->
                                                     <ToolTip
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    HorizontalOffset="2"
-                                                    Placement="Top"
-                                                    MaxWidth="272"
-                                                    VerticalOffset="12">
+                                                        MaxWidth="272"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalOffset="2"
+                                                        Placement="Top"
+                                                        VerticalOffset="12">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <!--  Chewlin 20250428 for Tooltip change Add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                            <!--  Chewlin 20250428 for Tooltip change Add MaxWidth="230" TextWrapping="WrapWithOverflow"  -->
                                                             <TextBlock
-                                                            LineHeight="20"
-                                                            Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                            Text="{Binding [Brightness.13], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                                MaxWidth="230"
+                                                                LineHeight="20"
+                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                                Text="{Binding [Brightness.13], Source={x:Static lang:LangHelper.Instance}}"
+                                                                TextWrapping="WrapWithOverflow" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Button.ToolTip>
