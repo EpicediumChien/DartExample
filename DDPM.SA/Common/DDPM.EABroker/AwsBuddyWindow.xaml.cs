@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace DDPM.EABroker
 {
@@ -84,12 +85,21 @@ namespace DDPM.EABroker
                 }
             });
         }
+
+        /// <summary>
+        /// Assign a SplitCtrl to show on AwsBuddyWindow.
+        /// This method must be called from UI/Dispatcher thread.
+        /// </summary>
+        /// <param name="splitCtrl"></param>
+        /// <param name="hoverCellName"></param>
         public void SetWorkSplit(ISplitCtrl splitCtrl, string hoverCellName="")
         {
             if (splitCtrl == null)
                 return;
 
-            this.Dispatcher.BeginInvoke(() =>
+
+            Dispatcher.InvokeAsync(() => 
+          //  this.Dispatcher.BeginInvoke(() =>
             {
                 //If workSplit not been assigned, or changed
                 bool needToRefreshWorkSplit = (_workSplit == null) || (splitCtrl.EAID != _workSplit.EAID);
@@ -99,6 +109,8 @@ namespace DDPM.EABroker
                 {
                     //Create a new ISplitCtrl to the AwsBuddyWindow
                     localSplit = splitCtrl.Clone();
+                    // localSplit.IsVertical = splitCtrl.IsVertical;
+                    localSplit.IsVertical = IsVertical;
 
                     if (localSplit.IsOverlapCustomLayout) //SplitCtrl0B
                     {
@@ -138,6 +150,7 @@ namespace DDPM.EABroker
 
 
                     _workSplit = localSplit;
+                    _workSplit.IsVertical = IsVertical;
                 }//Check if workSplit is changed
                 else
                 {
@@ -206,8 +219,8 @@ namespace DDPM.EABroker
                 //splitContent.Content = localSplit;
 
                 //Delay to call RefreshCellRects
-          //      RefreshCellRects();
-            }, System.Windows.Threading.DispatcherPriority.Loaded);
+              //      RefreshCellRects();
+            }, DispatcherPriority.Loaded);
         }
 
         public void RefreshCellRects(int flag)

@@ -9,6 +9,7 @@
 //
 
 #endregion
+//#define SUPPORT_210
 
 using Dell.Client.Framework.Common;
 using Dell.TechHub.Commodity.Peripheral;
@@ -544,6 +545,13 @@ namespace DDPM.SA.Common
         Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid);
         Task<int> GetAirAudioMaxAllowedPariedHost(string Guid);
 
+#if SUPPORT_210
+        Task<bool> GetAirAudioIsConnectedAsync(string Guid);
+
+        Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid);
+
+        Task<bool> GetAirAudioIsConnectedRightAsync(string Guid);
+#endif
         //Task<string> GetAirAudioPairedHostName2Async(string Guid);
         #endregion Get
 

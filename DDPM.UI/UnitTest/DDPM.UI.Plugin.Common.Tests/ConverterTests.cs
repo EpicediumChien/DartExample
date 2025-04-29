@@ -31,7 +31,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         public void TestBoolToVisibilityConvert()
         {
             var boolToVisibilityConverter = new BoolToVisibilityConverter();
-            var result = boolToVisibilityConverter.Convert(Visibility.Visible,null,null,null);
+            var result = boolToVisibilityConverter.Convert(Visibility.Visible, null, null, null);
             Assert.IsNotNull(boolToVisibilityConverter);
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
@@ -50,7 +50,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             result = boolToHiddenConverter.Convert(true, null, null, null);
             Assert.That(result, Is.EqualTo(Visibility.Visible));
         }
-       
+
         [Test]
         public void TestThicknessConverter()
         {
@@ -59,19 +59,19 @@ namespace DDPM.UI.Plugin.Common.Tests
             Assert.IsNotNull(thicknessConverter);
             Assert.That(result.ToString, Is.EqualTo("1.1,1.1,1.1,1.1"));
 
-            var val = new double[0] {  };
+            var val = new double[0] { };
             result = thicknessConverter.Convert(val, null, null, null);
             Assert.That(result.ToString, Is.EqualTo("0,0,0,0"));
 
-            val =new double[1] { 1};
+            val = new double[1] { 1 };
             result = thicknessConverter.Convert(val, null, null, null);
             Assert.That(result.ToString, Is.EqualTo("1,1,1,1"));
 
-            val = new double[2] { 1,2 };
+            val = new double[2] { 1, 2 };
             result = thicknessConverter.Convert(val, null, null, null);
             Assert.That(result.ToString, Is.EqualTo("1,2,1,2"));
 
-            val = new double[4] { 1, 2,3,4 };
+            val = new double[4] { 1, 2, 3, 4 };
             result = thicknessConverter.Convert(val, null, null, null);
             Assert.That(result.ToString, Is.EqualTo("1,2,3,4"));
         }
@@ -83,7 +83,11 @@ namespace DDPM.UI.Plugin.Common.Tests
             var centerToolTipConverter = new CenterToolTipConverter();
             var result = centerToolTipConverter.Convert(val, null, null, null);
             Assert.IsNotNull(centerToolTipConverter);
-            Assert.That(result.ToString, Is.EqualTo("NaN"));
+
+            // << 250429  Updated by Hess
+            //Assert.That(result.ToString, Is.EqualTo("NaN"));
+            Assert.That(result, Is.EqualTo(double.NaN));
+            // >>
 
             var valu = new object[2] { 1.0, 2.0 };
             result = centerToolTipConverter.Convert(valu, null, null, null);
@@ -97,7 +101,11 @@ namespace DDPM.UI.Plugin.Common.Tests
             var centerVToolTipConverter = new CenterVToolTipConverter();
             var result = centerVToolTipConverter.Convert(val, null, null, null);
             Assert.IsNotNull(centerVToolTipConverter);
-            Assert.That(result.ToString, Is.EqualTo("NaN"));
+
+            // << 250429  Updated by Hess
+            //Assert.That(result.ToString, Is.EqualTo("NaN"));
+            Assert.That(result, Is.EqualTo(double.NaN));
+            // >>
 
             var valu = new object[2] { 1.0, 2.0 };
             result = centerVToolTipConverter.Convert(valu, null, null, null);
@@ -133,9 +141,13 @@ namespace DDPM.UI.Plugin.Common.Tests
             var heightConverter = new HeightConverter();
             var result = heightConverter.Convert(new object[2] { 1, 1 }, null, false, null);
             Assert.IsNotNull(heightConverter);
-            Assert.That(result.ToString, Is.EqualTo("NaN"));
 
-            result = heightConverter.Convert(new object[2] { 2.0, 1.2}, null, "1.2", null);
+            // << 250429  Updated by Hess
+            //Assert.That(result.ToString, Is.EqualTo("NaN"));
+            Assert.That(result, Is.EqualTo(double.NaN));
+            // >>
+
+            result = heightConverter.Convert(new object[2] { 2.0, 1.2 }, null, "1.2", null);
             Assert.That(result, Is.EqualTo(0.8));
         }
 

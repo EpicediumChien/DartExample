@@ -7,7 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.Subagent", "DDPM.Subag
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Dll", "_Dll", "{33B44B15-E9A2-4AA6-8A1C-B2267A356C7A}"
 	ProjectSection(SolutionItems) = preProject
-		dll\DDPM.Easy.Common.dll = dll\DDPM.Easy.Common.dll
 		dll\DPeMClientBroker.dll = dll\DPeMClientBroker.dll
 		dll\DPeMClientRpcHelper.dll = dll\DPeMClientRpcHelper.dll
 		dll\DPeMPublic.Common.dll = dll\DPeMPublic.Common.dll
@@ -156,6 +155,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI.Plugins.Display.Test", "UnitTest\CLI.Plugins.Display.Test\CLI.Plugins.Display.Test.csproj", "{47093D9E-20F4-40BA-936A-5DF6F0F25DA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SA.Plugins.User.DTPProxy.Test", "UnitTest\SA.Plugins.User.DTPProxy.Test\SA.Plugins.User.DTPProxy.Test.csproj", "{3EAE64E6-CD46-4007-87CA-5260DFA29A46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.Easy.Common", "Common\DDPM.Easy.Common\DDPM.Easy.Common.csproj", "{61AFEE5A-E30C-4BCF-EA93-393581C24909}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1304,6 +1305,24 @@ Global
 		{3EAE64E6-CD46-4007-87CA-5260DFA29A46}.Release|ARM64.Build.0 = Release|Any CPU
 		{3EAE64E6-CD46-4007-87CA-5260DFA29A46}.Release|x64.ActiveCfg = Release|Any CPU
 		{3EAE64E6-CD46-4007-87CA-5260DFA29A46}.Release|x64.Build.0 = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|Any CPU.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|Any CPU.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|ARM64.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|ARM64.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|x64.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug_NKVM|x64.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Debug|x64.Build.0 = Debug|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|ARM64.Build.0 = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|x64.ActiveCfg = Release|Any CPU
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1374,6 +1393,7 @@ Global
 		{286E83ED-3E38-4BE4-9F30-A0BC68239393} = {30DE57F5-A6A1-4345-B2EA-4B670A52181C}
 		{47093D9E-20F4-40BA-936A-5DF6F0F25DA8} = {30DE57F5-A6A1-4345-B2EA-4B670A52181C}
 		{3EAE64E6-CD46-4007-87CA-5260DFA29A46} = {30DE57F5-A6A1-4345-B2EA-4B670A52181C}
+		{61AFEE5A-E30C-4BCF-EA93-393581C24909} = {BB0F17D9-B7C1-420B-A6F6-FB13462CE83B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A314C9D-2EDF-489D-8D0C-C768798243F4}

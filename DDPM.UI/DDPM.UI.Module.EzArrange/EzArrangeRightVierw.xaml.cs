@@ -1,7 +1,6 @@
 ﻿#define ENABLE_CALL_SA
 //Robert_Lin, 2024-8-14, comment out the #define line if you would like to disable calling to Subagent EAPlugin
 using CommunityToolkit.Mvvm.Input;
-using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
@@ -28,6 +27,7 @@ using DDPM.SA.Common.Popup;
 using System.Windows.Interop;
 using DDPM.UI.Resources.Helper;
 using System.Diagnostics;
+using DDPM.Easy.Common;
 
 namespace DDPM.UI.Module.EzArrange
 {

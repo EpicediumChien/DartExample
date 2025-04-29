@@ -825,14 +825,15 @@ namespace DDPM.Win32Lib
         /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
         /// </para>
         /// </returns>
-        [DllImport("user32.dll", SetLastError = true)]
+        
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
         public static bool _SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl)
         {
             return SetWindowPlacement(hWnd, ref lpwndpl);
-        }
+        }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -1074,17 +1075,6 @@ namespace DDPM.Win32Lib
             return OpenProcess(processAccess, bInheritHandle, processId);
         }
 
-        //CloseHandle()
-        /*[DllImport("kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        [SuppressUnmanagedCodeSecurity]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool CloseHandle(IntPtr hObject);
-        public static bool _CloseHandle(IntPtr hObject)
-        {
-            return CloseHandle(hObject);
-        }*/
         #endregion
 
 
