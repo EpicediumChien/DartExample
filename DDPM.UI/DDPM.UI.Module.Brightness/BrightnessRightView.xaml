@@ -410,7 +410,8 @@
                                                     BorderThickness="0"
                                                     HorizontalOffset="2"
                                                     Placement="Top"
-                                                    VerticalOffset="12">
+                                                    VerticalOffset="12"
+                                                    Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock
                                                             LineHeight="20"
@@ -2530,7 +2531,8 @@
                                                     BorderThickness="0"
                                                     HorizontalOffset="2"
                                                     Placement="Top"
-                                                    VerticalOffset="12">
+                                                    VerticalOffset="12"
+                                                    Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock
                                                             LineHeight="20"

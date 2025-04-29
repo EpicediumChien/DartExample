@@ -160,7 +160,7 @@
                                     <!-- ToolTip -->
                                     <Button.ToolTip>
                                         <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <TextBlock Text="{Binding WearDetectionToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                             </Border>
@@ -359,7 +359,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding PauseMusicToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -429,7 +429,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding PauseMusicToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -499,7 +499,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding QuickPauseToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -688,7 +688,7 @@
                                 <!-- ToolTip -->
                                 <Button.ToolTip>
                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
+                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                             <TextBlock Text="{Binding AnswerCallsToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                         </Border>
