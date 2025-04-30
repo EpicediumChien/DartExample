@@ -130,13 +130,11 @@
                                     <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" 
                                                                Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" 
                                                                IsChecked="{Binding Path=OutgoingAudioStatus}" 
-                                                               IsEnabled="{Binding Path=SupportedOutgoingAudio}"
                                                                HorizontalAlignment="Right" VerticalAlignment="Top" 
                                                                VerticalContentAlignment="Center" 
                                                                AutomationProperties.Name="OutgoingAudioToggleSwitch" 
                                                                ContentPlacement="Left" ContentTextVisibility="True" 
-                                                               Foreground="{DynamicResource TextBlock_ForegroundColor}" 
-                                                                IsTabStop="{Binding isMicTabStopped}"/>
+                                                               Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
 
                                 </Grid>
                                 <Grid Margin="15,20,15,20" MinWidth="472">
@@ -146,13 +144,11 @@
                                     <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" 
                                                                Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" 
                                                                IsChecked="{Binding Path=IncomingAudioStatus}" 
-                                                               IsEnabled="{Binding Path=SupportedOutgoingAudio}"
                                                                HorizontalAlignment="Right" VerticalAlignment="Top" 
                                                                VerticalContentAlignment="Center" 
                                                                AutomationProperties.Name="IncomingAudioToggleSwitch" 
                                                                ContentPlacement="Left" ContentTextVisibility="True" 
-                                                               Foreground="{DynamicResource TextBlock_ForegroundColor}"  
-                                                               IsTabStop="{Binding isMicTabStopped}"/>
+                                                               Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -474,7 +470,81 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Image x:Name="MainImage" Grid.Row="0" Source="{Binding DeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" MaxWidth="670" Height="535" />
+                    <Image x:Name="MainImage" 
+                            Grid.Row="0" 
+                            Source="{Binding DeviceImage}" 
+                            HorizontalAlignment="Center"  
+                            VerticalAlignment="Center" 
+                            MaxWidth="670" 
+                            Height="535">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <!-- Default Visibility -->
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <!-- Trigger to Hide when AirAudio AND Step 3 -->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsAirAudioDevice}" Value="True" />
+                                            <Condition Binding="{Binding ProgressValue}" Value="3" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Border Name="AirAudio_Step3" Background="Transparent"  Grid.Row="0" Margin="0,48,0,0">
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource RightGroupBorderStyleForAudio}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ProgressValue}" Value="3">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Vertical">
+                            <UXControls:UXTextBlock Grid.Row="2" HorizontalAlignment="Center" Width="404" FontSize="24" LineHeight="32" Text="{Binding [WalkThroughAirAudio_Sub.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}"  TextWrapping="Wrap"/>
+                            
+                            <!-- Standard QR Codes for Step 3 -->
+                            <Grid Visibility="{Binding ShowStandardQrInStep3, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal" Margin="0,48,0,0" HorizontalAlignment="Center"> 
+                                    <StackPanel Name="AppleStore" Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="AppleStore_MouseLeftButtonDown">
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStoreQR.png" Width="178" Height="178"/>
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Name="GooglePlay" Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="GooglePlay_MouseLeftButtonDown" Margin="32,0,0,0">
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_GooglePlayStoreQR.png" Width="178" Height="178"/>
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_GooglePlayStore.png" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- China QR Codes for Step 3 -->
+                            <Grid Visibility="{Binding ShowChinaQrInStep3, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal" Margin="0,48,0,0" HorizontalAlignment="Center"> <!-- Added HorizontalAlignment -->
+                                    <!-- Assuming China Apple QR Code is the same or named _CN.png -->
+                                    <StackPanel Name="AppleStore_CN" Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="CNAppleStore_MouseLeftButtonDown">
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_CNAppleStoreQR.png" Width="178" Height="178"/> 
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                     <!-- Assuming China App DL QR Code is named Headset_ChinaAPPDL_QR.png -->
+                                    <StackPanel Name="ChinaAppDL" Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="CNGooglePlay_MouseLeftButtonDown" Margin="32,0,0,0">
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_CNAndroidQR.png" Width="178" Height="178"/>
+                                        <!-- Assuming the download text/logo image is also different or needs hiding/changing -->
+                                        <Image Source="/DDPM.UI.Common;component/Resources/Headset_TencentStore.png" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <UXControls:UXTextBlock Grid.Row="2" HorizontalAlignment="Center" Width="404" FontSize="14" LineHeight="24" Text="{Binding LearnMoreText}"  TextWrapping="Wrap" Foreground="#31A2E3" TextDecorations="Underline" Margin="0,48,0,0" MouseLeftButtonDown="UXTextBlock_MouseLeftButtonDown"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Grid>
         </StackPanel>
@@ -489,7 +559,7 @@
                     <!-- 第二張圖片，位於第一張圖片之上 -->
                     <Image x:Name="img2" Width="683" Height="343" Source="{Binding Img2Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="561,317,0,0" />
                 </Grid>
-                
+
                 <!-- 避免圖片遮到按鈕 -->
                 <Grid Margin="0, 0, 0, 0">
                     <Grid.RowDefinitions>
@@ -568,5 +638,53 @@
                 </Grid>
             </Grid>
         </StackPanel>
+
+        <!--QR code-->
+        <Grid x:Name="ScanQRCode" Background="Transparent" Margin="0,0,0,0"
+              Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+              Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              Visibility="{Binding FullQRCode}">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <UXControls:UXTextBlock Grid.Row="2" HorizontalAlignment="Center" Width="404" FontSize="24" LineHeight="32" Text="{Binding [WalkThroughAirAudio_Sub.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}"  TextWrapping="Wrap"/>
+                
+                <!-- Standard QR Codes for Full Screen (Logic Inverted) -->
+                <Grid Visibility="{Binding ShowStandardQrInFullScreen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" Margin="0,48,0,0" HorizontalAlignment="Center"> 
+                        <StackPanel Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="AppleStore_MouseLeftButtonDown">
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStoreQR.png" Width="178" Height="178"/>
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Margin="0,16,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="GooglePlay_MouseLeftButtonDown" Margin="32,0,0,0">
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_GooglePlayStoreQR.png" Width="178" Height="178"/>
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_GooglePlayStore.png" Margin="0,16,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- China QR Codes for Full Screen (Logic Inverted) -->
+                 <Grid Visibility="{Binding ShowChinaQrInFullScreen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" Margin="0,48,0,0" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="CNAppleStore_MouseLeftButtonDown">
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_CNAppleStoreQR.png" Width="178" Height="178"/> 
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Margin="0,16,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Width="178" Visibility="Visible" MouseLeftButtonDown="CNGooglePlay_MouseLeftButtonDown" Margin="32,0,0,0">
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_CNAndroidQR.png" Width="178" Height="178"/>
+                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_TencentStore.png" Margin="0,16,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="devNameStackPanel">
+                <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill" MouseLeftButtonDown="ArrowLeft_MouseLeftButtonDown" 
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Width="24" Height="24"/>
+
+                <UXControls:UXTextBlock Text="{Binding FullScreenQrTitle}" 
+                                    Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                    Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </UserControl>

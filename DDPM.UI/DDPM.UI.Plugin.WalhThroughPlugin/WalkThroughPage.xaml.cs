@@ -213,7 +213,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void MouseDragEvent(object sender, RoutedEventArgs e)
         {
-            if (msgBox != null) { 
+            if (msgBox != null)
+            {
                 msgBox.RefreshWalkThroughBoxPosition();
             }
         }
@@ -249,5 +250,42 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPage] skip_WalkThroughUnit Exception: {ex.Message}");
             }
         }
+
+        private void AppleStore_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://apps.apple.com/us/app/dell-audio/id6472411862") { UseShellExecute = true });
+
+        }
+
+        private void GooglePlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://play.google.com/store/apps/details?id=com.dell.dellaudio&pli=1") { UseShellExecute = true });
+
+        }
+
+        private void CNAppleStore_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+             Process.Start(new ProcessStartInfo("https://apps.apple.com/cn/app/dell-audio-%E8%BD%AF%E4%BB%B6/id6677017100") { UseShellExecute = true });
+
+        }
+
+        private void CNGooglePlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://sj.qq.com/appdetail/com.dell.dellaudio") { UseShellExecute = true });
+
+        }
+
+
+        private void UXTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsFullQRCode = true;
+        }
+
+        private void ArrowLeft_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsFullQRCode = false;
+
+        }
+
     }
 }

@@ -228,6 +228,8 @@
 		<Resource Include="Resources\Close_light.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\Headset_CNAppleStoreQR.png" />
+		<Resource Include="Resources\Headset_CNAndroidQR.png" />
 		<Resource Include="Resources\EzAdd.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
@@ -359,6 +361,7 @@
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\Headset_TencentStore.png" />
 		<Resource Include="Resources\Vbar.Display.MonitorAudio.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>

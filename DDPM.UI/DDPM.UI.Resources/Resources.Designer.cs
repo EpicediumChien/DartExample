@@ -700,7 +700,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio.
+        ///   查詢類似 Audio 的當地語系化字串。
         /// </summary>
         internal static string Audio {
             get {
@@ -709,7 +709,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Profiles.
+        ///   查詢類似 Audio Profiles 的當地語系化字串。
         /// </summary>
         internal static string Audio_Profiles {
             get {
@@ -718,7 +718,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Source.
+        ///   查詢類似 Audio Source 的當地語系化字串。
         /// </summary>
         internal static string Audio_Source {
             get {
@@ -727,7 +727,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Settings.
+        ///   查詢類似 Audio Settings 的當地語系化字串。
         /// </summary>
         internal static string AudioSettings {
             get {
@@ -2392,7 +2392,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display Speaker.
+        ///   查詢類似 Display Speaker 的當地語系化字串。
         /// </summary>
         internal static string Display_Speaker {
             get {
@@ -2401,7 +2401,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch monitor audio path based on system audio source selection.
+        ///   查詢類似 Switch monitor audio path based on system audio source selection 的當地語系化字串。
         /// </summary>
         internal static string Display_Speaker_Tooltips {
             get {
@@ -2410,7 +2410,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The monitor is currently busy. You can only control limited functions..
+        ///   查詢類似 The monitor is currently busy. You can only control limited functions. 的當地語系化字串。
         /// </summary>
         internal static string DisplayAlert {
             get {
@@ -4489,7 +4489,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game.
+        ///   查詢類似 Game 的當地語系化字串。
         /// </summary>
         internal static string Game {
             get {
@@ -4498,7 +4498,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game Enhance Mode.
+        ///   查詢類似 Game Enhance Mode 的當地語系化字串。
         /// </summary>
         internal static string Game_Enhance_Mode {
             get {
@@ -6109,7 +6109,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Main.
+        ///   查詢類似 Main 的當地語系化字串。
         /// </summary>
         internal static string Main {
             get {
@@ -6118,7 +6118,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manual.
+        ///   查詢類似 Manual 的當地語系化字串。
         /// </summary>
         internal static string Manual {
             get {
@@ -6460,7 +6460,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movie.
+        ///   查詢類似 Movie 的當地語系化字串。
         /// </summary>
         internal static string Movie {
             get {
@@ -6469,7 +6469,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movie HDR.
+        ///   查詢類似 Movie HDR 的當地語系化字串。
         /// </summary>
         internal static string Movie_HDR {
             get {
@@ -6568,7 +6568,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Music.
+        ///   查詢類似 Music 的當地語系化字串。
         /// </summary>
         internal static string Music {
             get {
@@ -6577,7 +6577,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Home.
+        ///   查詢類似 My Home 的當地語系化字串。
         /// </summary>
         internal static string MyHome {
             get {
@@ -7018,7 +7018,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PBP Audio.
+        ///   查詢類似 PBP Audio 的當地語系化字串。
         /// </summary>
         internal static string PBP_Audio {
             get {
@@ -7027,7 +7027,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prioritizes the audio of this input source when utilizing PBP mode.
+        ///   查詢類似 Prioritizes the audio of this input source when utilizing PBP mode 的當地語系化字串。
         /// </summary>
         internal static string PBP_Audio_Tooltips {
             get {
@@ -7036,7 +7036,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pen Settings.
+        ///   查詢類似 Pen Settings 的當地語系化字串。
         /// </summary>
         internal static string Pen_0 {
             get {
@@ -7936,7 +7936,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Located next to HDMI port.
+        ///   查詢類似 Located next to HDMI port 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_19 {
             get {
@@ -7945,7 +7945,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Located next to USB-A port.
+        ///   查詢類似 Located next to USB-A port 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_20 {
             get {
@@ -7954,7 +7954,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Port is unavailable because power capacity was exceeded or to allow other connected devices to function.
+        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_21 {
             get {
@@ -7963,7 +7963,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unavailable.
+        ///   查詢類似 Unavailable 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_22 {
             get {
@@ -7972,7 +7972,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices..
+        ///   查詢類似 Your USB power budget has reached full power capacity. To ensure proper functionality, disconnect one or more devices. 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_23 {
             get {
@@ -7981,7 +7981,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry..
+        ///   查詢類似 Your USB-A power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_24 {
             get {
@@ -7990,7 +7990,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry..
+        ///   查詢類似 Your USB-C2 power budget has exceeded its power capacity. Disconnect the device and retry. 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_25 {
             get {
@@ -7999,7 +7999,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected..
+        ///   查詢類似 Multiple DA225 Travel Hubs detected. We recommend to keep only one Travel Hub connected. 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_26 {
             get {
@@ -8008,7 +8008,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dell Pro 4-in-1 USB-C Travel Hub: Alert.
+        ///   查詢類似 Dell Pro 4-in-1 USB-C Travel Hub: Alert 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_27 {
             get {
@@ -8017,7 +8017,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to USB port is NOT functioning. Unplug the device and retry..
+        ///   查詢類似 USB port is NOT functioning. Unplug the device and retry. 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_28 {
             get {
@@ -8026,7 +8026,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Port is unavailable because power capacity was exceeded or to allow other connected devices to function.
+        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
         /// </summary>
         internal static string RtkHub_29 {
             get {
@@ -8035,7 +8035,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   查詢類似 Save 的當地語系化字串。
         /// </summary>
         internal static string Save {
             get {
@@ -8287,7 +8287,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spatial Audio.
+        ///   查詢類似 Spatial Audio 的當地語系化字串。
         /// </summary>
         internal static string Spatial_Audio {
             get {
@@ -8296,7 +8296,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates an immersive sound experience.
+        ///   查詢類似 Creates an immersive sound experience 的當地語系化字串。
         /// </summary>
         internal static string Spatial_Audio_Tooltips {
             get {
@@ -8305,7 +8305,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Preset.
+        ///   查詢類似 Audio Preset 的當地語系化字串。
         /// </summary>
         internal static string SpeakerAudioPreset_0 {
             get {
@@ -8476,7 +8476,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Standard.
+        ///   查詢類似 Standard 的當地語系化字串。
         /// </summary>
         internal static string Standard {
             get {
@@ -8485,7 +8485,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steady Vision.
+        ///   查詢類似 Steady Vision 的當地語系化字串。
         /// </summary>
         internal static string Steady_Vision {
             get {
@@ -8512,7 +8512,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sub.
+        ///   查詢類似 Sub 的當地語系化字串。
         /// </summary>
         internal static string Sub {
             get {
@@ -8521,7 +8521,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Success.
+        ///   查詢類似 Success 的當地語系化字串。
         /// </summary>
         internal static string Success {
             get {
@@ -9026,7 +9026,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to USB only.
+        ///   查詢類似 USB only 的當地語系化字串。
         /// </summary>
         internal static string USB_only {
             get {
@@ -9035,7 +9035,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to USB-C.
+        ///   查詢類似 USB-C 的當地語系化字串。
         /// </summary>
         internal static string USBC {
             get {
@@ -9170,7 +9170,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Voice.
+        ///   查詢類似 Voice 的當地語系化字串。
         /// </summary>
         internal static string Voice {
             get {
@@ -9179,7 +9179,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volume.
+        ///   查詢類似 Volume 的當地語系化字串。
         /// </summary>
         internal static string Volume {
             get {
@@ -9188,7 +9188,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to DDPM Subagent....
+        ///   查詢類似 Connecting to DDPM Subagent... 的當地語系化字串。
         /// </summary>
         internal static string Wait_DevMgr {
             get {
@@ -9278,15 +9278,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Mic Noise \nCancellation 的當地語系化字串。
-        /// </summary>
-        internal static string WalkThroughAirAudio_Main_4 {
-            get {
-                return ResourceManager.GetString("WalkThroughAirAudio_Main.4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查詢類似 Improve the audio experience of others by limiting the noise you transmit and improve your own audio experience by limiting the noise you hear from others 的當地語系化字串。
         /// </summary>
         internal static string WalkThroughAirAudio_Sub_0 {
@@ -9337,6 +9328,24 @@ namespace DDPM.UI.Resources {
         internal static string WalkThroughAirAudio_Sub_5 {
             get {
                 return ResourceManager.GetString("WalkThroughAirAudio_Sub.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 View QR codes to download Dell Audio from Global App store 的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_6 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Download Dell Audio Global App 的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_7 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.7", resourceCulture);
             }
         }
         
