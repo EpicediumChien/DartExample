@@ -1842,19 +1842,5 @@ namespace DDPM.UI.Module.DisplayWebcam
             }
             DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  SaveClick() end");
         }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("LaunchView_Unloaded start");
-
-            FreeWebcamResource();
-            if (AlertTimer != null)
-            {
-                AlertTimer.Stop();
-                AlertTimer.Tick -= AlertTimer_Tick;
-            }
-
-            Console.WriteLine("LaunchView_Unloaded end");
-        }
     }
 }
