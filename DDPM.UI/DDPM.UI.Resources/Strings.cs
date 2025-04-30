@@ -560,6 +560,8 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughAirAudio_Sub3 = GetString("WalkThroughAirAudio_Sub.3");
         public static readonly string WalkThroughAirAudio_Sub4 = GetString("WalkThroughAirAudio_Sub.4");
         public static readonly string WalkThroughAirAudio_Sub5 = GetString("WalkThroughAirAudio_Sub.5");
+        public static readonly string WalkThroughAirAudio_Sub6 = GetString("WalkThroughAirAudio_Sub.6");
+        public static readonly string WalkThroughAirAudio_Sub7 = GetString("WalkThroughAirAudio_Sub.7");
 
 
         //OpenAction

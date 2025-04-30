@@ -3534,4 +3534,10 @@
   <data name="Audio" xml:space="preserve">
     <value>Audio</value>
   </data>
+  <data name="WalkThroughAirAudio_Sub.6" xml:space="preserve">
+    <value>View QR codes to download Dell Audio from Global App store</value>
+  </data>
+  <data name="WalkThroughAirAudio_Sub.7" xml:space="preserve">
+    <value>Download Dell Audio Global App</value>
+  </data>
 </root>
