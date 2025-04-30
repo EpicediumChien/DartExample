@@ -517,27 +517,150 @@ namespace DDPM.UI.Module.DisplayWebcam
 
         private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-
+            if (_vm.CheckChar(e.Text))
+                e.Handled = false;
+            else
+            {
+                e.Handled = true;
+                ShowAlert();
+            }
         }
 
+        private void ShowAlert()
+        {
+            bdrAlert2.Visibility = Visibility.Visible;
+            AlertTimer.Stop();
+            AlertTimer.Start();
+        }
         private void txbName_LostFocus(object sender, RoutedEventArgs e)
         {
-
+            bdrAlert2.Visibility = Visibility.Hidden;
         }
 
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  NameTextChanged() start");
+            if (txbName.Text.Length > 30)
+            {
+                ShowAlert();
+                txbName.Text = txbName.Text.Substring(0, 30);
+                txbName.CaretIndex = 30;
+                return;
+            }
+            try
+            {
+                var txt = txbName.Text.Trim();
+                if (string.IsNullOrEmpty(txt))
+                {
+                    btnSave.IsEnabled = false;
+                    return;
 
+                }
+
+                if (_vm.ProfileCaptions.ContainsKey(txt) && txt != EditingProfileName)
+                {
+                    txtMsg.Visibility = Visibility.Visible;
+                    bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x3E, 0x3B));
+                    btnSave.IsEnabled = false;
+                }
+                else
+                {
+                    txtMsg.Visibility = Visibility.Hidden;
+                    bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x7E, 0x7E, 0x7E));
+                    btnSave.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  NameTextChanged() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  NameTextChanged() end");
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
-
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  CancelClick() start");
+            try
+            {
+                gdBattery.Visibility = Visibility.Visible;
+                gdAddProfile.Visibility = Visibility.Collapsed;
+                btnPreset_Click(this, null);
+                if (EditMode == "EDIT")
+                {
+                    _vm.CurrentProfileName = EditingProfileName;
+                    _vm.SetProfile();
+                }
+                //txtCaption.Text = _vm.Name;
+                //_vm.EnableVBar();
+                _vm.TooltipVisibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  CancelClick() ex: " + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  CancelClick() end");
         }
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  SaveClick() start");
 
+            try
+            {
+                var txt = txbName.Text.Trim();
+                //DdpmCommonHelper.DeviceManagerSA?.CreateCustomProfile(_vm.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
+                _vm.CurrentProfile.Name = txt;
+                Dictionary<string, WebcamProfile> NewProfiles = new();
+                if (EditMode == "EDIT")
+                {
+                    if (txt == EditingProfileName)
+                    {
+                        _vm.WebcamSettings.CustomProfiles[txt] = _vm.CurrentProfile;
+                    }
+                    else
+                    {
+                        foreach (var profile in _vm.WebcamSettings.CustomProfiles)
+                        {
+                            if (profile.Key == EditingProfileName)
+                            {
+                                NewProfiles.Add(txt, JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm.CurrentProfile))!);
+                            }
+                            else
+                            {
+                                NewProfiles.Add(profile.Key, profile.Value);
+                            }
+                        }
+                        _vm.WebcamSettings.CustomProfiles = NewProfiles;
+                    }
+                }
+                else
+                {
+                    var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm.CurrentProfile))!;
+                    //NewProfiles.Add(txt, profile);
+                    //_vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                    _vm.WebcamSettings.CustomProfiles.Add(_vm.CurrentProfile.Name, profile);
+                }
+                _vm.CurrentProfileName = txt;
+                WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
+                _vm.PrepareProfileItems();
+                ProfileItems.ItemsSource = null;
+                ProfileItems.ItemsSource = _vm.ProfileItems;
+                btnPreset_Click(this, null);
+                gdBattery.Visibility = Visibility.Visible;
+                gdAddProfile.Visibility = Visibility.Collapsed;
+                //txtCaption.Text = _vm.Name;
+                _vm.ClearUndo();
+                //_vm.EnableVBar();
+                _vm.TooltipVisibility = Visibility.Collapsed;
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  SaveClick() ex: " + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  SaveClick() end");
         }
     }
 }
