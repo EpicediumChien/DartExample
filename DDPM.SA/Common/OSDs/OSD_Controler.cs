@@ -144,10 +144,7 @@ namespace DDPM.OSDs
         }
         public bool ExistMultipleOSD()
         {
-            lock (osdLock)
-            {
-                return !(OSDMainWin == null) && OSDMainWin.OSDWins.Count > 0;
-            }
+            return !(OSDMainWin == null) && OSDMainWin.OSDWins.Count > 0;
         }
         public void CloseMultipleOSDByGuidAndOp(string guid, OSDType_Op oSDType_Op)
         {
