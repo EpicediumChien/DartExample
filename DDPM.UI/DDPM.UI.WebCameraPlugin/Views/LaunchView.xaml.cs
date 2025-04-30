@@ -631,7 +631,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
             noPresenceFunction = false;
 
-            if (!AllSupportedResolutions)
+            if (!AllSupportedResolutions&&model.ToUpper()!= "U3223QZ".ToUpper())
             {
                 print_debug("is_camera_dell7 ==2 && !AllSupportedResolutions");
                 noPresenceFunction = true;
