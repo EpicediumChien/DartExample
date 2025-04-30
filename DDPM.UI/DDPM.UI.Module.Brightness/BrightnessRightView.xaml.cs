@@ -15,10 +15,8 @@ namespace DDPM.UI.Module.Brightness
     /// </summary>
     public partial class BrightnessRightView : UserControl
     {
-        internal BrightnessViewModel? vm { get; set; }
-
-        private Debouncer Leave_WriteToConfig_Debouncer;
         private Debouncer Leave_Luminance_WriteToConfig_Debouncer;
+        private Debouncer Leave_WriteToConfig_Debouncer;
 
         public BrightnessRightView()
         {
@@ -42,6 +40,87 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
             DdpmCommonHelper.WriteUILog("~BrightnessRightView, exit");
+        }
+
+        internal BrightnessViewModel? vm { get; set; }
+
+        private void brightnessScheduledExpander_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void brightnewwManulExpander_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void cbAutoBrightness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int _previousSelectedIndex = 0;
+            var comboBox = sender as ComboBox;
+            if (comboBox == null) return;
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            if (localVm != null && localVm.Start_ALSConfig != null && localVm.Start_ALSConfig.AutoBrightnessRangeLevel != null)
+            {
+                _previousSelectedIndex = (int)localVm.Start_ALSConfig.AutoBrightnessRangeLevel.level_value;
+
+                int temp = (int)comboBox.SelectedIndex;// SelectedIndex;
+
+                if (temp == 0)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelLow; //"Low";
+                else if (temp == 1)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelMid; // "Mid";
+                else
+                    comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
+            }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            var rc = localVm.CheckIsTimeOverlap();
+
+            if (rc)
+            {
+                Thickness headMargin = new Thickness(36, 32, 36, 16);
+                Thickness subMargin = new Thickness(36, 0, 55, 32);
+                DdpmCommonHelper.DDPMEzMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this), 419, 180, headMargin, subMargin);
+            }
+
+            //if (rc)
+            //    DdpmCommonHelper.DDPMPureMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this));
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -97,160 +176,12 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void Reset_Click(object sender, RoutedEventArgs e)
+        private void Expander_Auto_Expanded(object sender, RoutedEventArgs e)
         {
-            BrightnessViewModel x = (BrightnessViewModel)DataContext;
-            x.ResetClick();
-        }
-
-        private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
-
-            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if ((bool)SynchronizeSwitch.IsChecked)
-            {
-                _vm.IsSynchronize = true;
-                //SynchronizeSwitch.Content = Strings.On;
-
-                // Brightness and contrast
-                _vm.BR_Con_Sync();
-
-                // Color
-                _vm.Invoke_ColorPreset_Sync();
-            }
-            else
-            {
-                _vm.IsSynchronize = false;
-                //SynchronizeSwitch.Content = Strings.Off;
-            }
-
-            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
-            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
-        }
-
-        private void Synchronize_LuminanceSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
-
-            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if ((bool)SynchronizeSwitch_Luminance.IsChecked)
-            {
-                _vm.IsSynchronize = true;
-                //SynchronizeSwitch.Content = Strings.On;
-
-                // Luminance
-                _vm.Luminance_Sync();
-
-                // Color
-                _vm.Invoke_ColorPreset_Sync();
-            }
-            else
-            {
-                _vm.IsSynchronize = false;
-                //SynchronizeSwitch.Content = Strings.Off;
-            }
-
-            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
-            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
-        }
-
-        private void Synchronize_ScheduledSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
-
-            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
-            {
-                _vm.IsSynchronize_Scheduled = true;
-                //SynchronizeSwitch.Content = Strings.On;
-
-                Synchronize_Scheduled(_vm);
-            }
-            else
-            {
-                _vm.IsSynchronize_Scheduled = false;
-                //SynchronizeSwitch.Content = Strings.Off;
-            }
-
-            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
-            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
-        }
-
-        private void Synchronize_Scheduled(BrightnessViewModel _vm)
-        {
-            if (_vm.IsSynchronize_Scheduled)
-            {
-                Task.Run(() =>
-                {
-                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
-                    {
-                        if (hd.MonitorInfo.IsDellMonitor &&
-                            hd.MonitorInfo.CapabilityDic.ContainsKey("12") &&
-                            !hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
-                            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
-                    }
-                });
-            }
-        }
-
-        private void Synchronize_LuminanceScheduledSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
-
-            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
-            {
-                _vm.IsSynchronize_Scheduled = true;
-                //SynchronizeSwitch.Content = Strings.On;
-
-                Synchronize_LuminanceScheduled(_vm);
-            }
-            else
-            {
-                _vm.IsSynchronize_Scheduled = false;
-                //SynchronizeSwitch.Content = Strings.Off;
-            }
-
-            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
-            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
-        }
-
-        private void Synchronize_LuminanceScheduled(BrightnessViewModel _vm)
-        {
-            if (_vm.IsSynchronize_Scheduled)
-            {
-                Task.Run(() =>
-                {
-                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
-                    {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                        {
-                            if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                            {
-                                if (hd.MonitorInfo.modelName.ToUpper().Equals("UP2720Q") && ((vm.ScheduleMap.Brightness1 > 250) || (vm.ScheduleMap.Brightness2 > 250)))
-                                {
-                                    var ScheduleMap = new scheduleInfo(vm.ScheduleMap);
-
-                                    if (vm.ScheduleMap.Brightness1 > 250)
-                                        ScheduleMap.Brightness1 = 250;  // UP2720Q max luminance is 250
-
-                                    if (vm.ScheduleMap.Brightness2 > 250)
-                                        ScheduleMap.Brightness2 = 250;  // UP2720Q max luminance is 250
-
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, ScheduleMap);
-                                }
-                                else
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
-                            }
-                        }
-                    }
-                });
-            }
+            Expander_Manual.IsExpanded = false;
+            Expander_Schedule.IsExpanded = false;
+            Expander_Manual_Luminance.IsExpanded = false;
+            Expander_Schedule_Luminance.IsExpanded = false;
         }
 
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
@@ -309,14 +240,6 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void Expander_Auto_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander_Manual.IsExpanded = false;
-            Expander_Schedule.IsExpanded = false;
-            Expander_Manual_Luminance.IsExpanded = false;
-            Expander_Schedule_Luminance.IsExpanded = false;
-        }
-
         private void Expander_Schedule_Expanded(object sender, RoutedEventArgs e)
         {
             Expander_Auto.IsExpanded = false;
@@ -333,6 +256,17 @@ namespace DDPM.UI.Module.Brightness
             Expander_Schedule.IsExpanded = false;
         }
 
+        //Elsa add for tooltip issue fix
+        private double GetScreenScaleX()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                return source.CompositionTarget.TransformToDevice.M11;
+            }
+            return 1;
+        }
+
         private void Hotkey_Click(object sender, RoutedEventArgs e)
         {
             DisplayHotkeyFullView displayHotkeyFullView = new DisplayHotkeyFullView();
@@ -340,217 +274,14 @@ namespace DDPM.UI.Module.Brightness
             DdpmCommonHelper.ModuleOwner?.OpenFullView(displayHotkeyFullView);
         }
 
-        private void Schedule_prest1_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_1 = true;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.StopScheduleManger();
-                    localVm.BrightnessValue = localVm.PR1BrightnessValue;
-                    localVm.ContrastValue = localVm.PR1ContrastValue;
-                });
-            }
         }
 
-        private void Schedule_prest2_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void InputName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_2 = true;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.StopScheduleManger();
-                    localVm.BrightnessValue = localVm.PR2BrightnessValue;
-                    localVm.ContrastValue = localVm.PR2ContrastValue;
-                });
-            }
-        }
-
-        private void Schedule_Luminance_prest1_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_1 = true;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.StopScheduleManger();
-                    localVm.LuminanceValue = localVm.PR1LuminanceValue;
-                });
-            }
-        }
-
-        private void Schedule_Luminance_prest2_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_2 = true;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.StopScheduleManger();
-                    localVm.LuminanceValue = localVm.PR2LuminanceValue;
-                });
-            }
-        }
-
-        private void Schedule_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_1 = false;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.CalculateNowValue();
-                    Leave_WriteToConfig_Debouncer.Debounce(localVm);
-                });
-            }
-        }
-
-        private void Schedule_prest2_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_2 = false;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.CalculateNowValue();
-                    Leave_WriteToConfig_Debouncer.Debounce(localVm);
-                });
-            }
-        }
-
-        private void Schedule_Luminance_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_1 = false;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.CalculateNowValue();
-                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(localVm);
-                });
-            }
-        }
-
-        private void Schedule_Luminance_prest2_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            localVm.IsMouseEnterSchedule_2 = false;
-            localVm.UpdataScheduleBoaderUI();
-
-            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
-            {
-                Task.Run(() =>
-                {
-                    localVm.CalculateNowValue();
-                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(localVm);
-                });
-            }
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            var rc = localVm.CheckIsTimeOverlap();
-
-            if (rc)
-            {
-                Thickness headMargin = new Thickness(36, 32, 36, 16);
-                Thickness subMargin = new Thickness(36, 0, 55, 32);
-                DdpmCommonHelper.DDPMEzMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this), 419, 180, headMargin, subMargin);
-            }
-
-            //if (rc)
-            //    DdpmCommonHelper.DDPMPureMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this));
-        }
-
-        private async void PR1_Preview_UXButton_Click(object sender, RoutedEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            if (!localVm.IsPR1Preview)
-            {
-                localVm.IsPR1Preview = true;
-                localVm.IsPR2Preview = false;
-
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    try
-                    {
-                        localVm.PreviewToken = tokenSource;
-                        var token = localVm.PreviewToken.Token;
-
-                        //TODO: May be you'll want to add .ConfigureAwait(false);
-                        await Task.Run(() => ShowPreview(1, localVm, token), token).ConfigureAwait(false);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        // Task was canceled before running.
-                        // Cancelled due to timeout
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Task was canceled while running.
-                        // Cancelled due to timeout
-                    }
-                    catch (Exception ex)
-                    {
-                        // Failed to complete due to e exception
-
-                        //Done: let's be nice and don't swallow the exception
-                        //throw;
-                    }
-                    finally
-                    {
-                        localVm.IsPR1Preview = false;
-                        localVm.IsPR2Preview = false;
-
-                        localVm.BrightnessValue = localVm.PR1BrightnessValue;
-                        localVm.ContrastValue = localVm.PR1ContrastValue;
-
-                        localVm.PreviewToken.Dispose();
-                        tokenSource.Dispose();
-                    }
-                }
-            }
-            else
-            {
-                try
-                {
-                    if (localVm.PreviewToken != null && !localVm.PreviewToken.IsCancellationRequested)
-                        localVm.PreviewToken.Cancel();
-                }
-                catch (Exception) { }
-                finally
-                {
-                    localVm.IsPR1Preview = false;
-                    localVm.IsPR2Preview = false;
-
-                    localVm.BrightnessValue = localVm.PR1BrightnessValue;
-                    localVm.ContrastValue = localVm.PR1ContrastValue;
-                }
-            }
+            TextString textString = new TextString();
+            e.Handled = !textString.CheckChar(e.Text);
         }
 
         private async void PR1_Luminance_Preview_UXButton_Click(object sender, RoutedEventArgs e)
@@ -630,13 +361,13 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private async void PR2_Preview_UXButton_Click(object sender, RoutedEventArgs e)
+        private async void PR1_Preview_UXButton_Click(object sender, RoutedEventArgs e)
         {
             BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            if (!localVm.IsPR2Preview)
+            if (!localVm.IsPR1Preview)
             {
-                localVm.IsPR2Preview = true;
-                localVm.IsPR1Preview = false;
+                localVm.IsPR1Preview = true;
+                localVm.IsPR2Preview = false;
 
                 using (var tokenSource = new CancellationTokenSource())
                 {
@@ -646,7 +377,7 @@ namespace DDPM.UI.Module.Brightness
                         var token = localVm.PreviewToken.Token;
 
                         //TODO: May be you'll want to add .ConfigureAwait(false);
-                        await Task.Run(() => ShowPreview(2, localVm, token), token).ConfigureAwait(false);
+                        await Task.Run(() => ShowPreview(1, localVm, token), token).ConfigureAwait(false);
                     }
                     catch (TaskCanceledException)
                     {
@@ -667,11 +398,11 @@ namespace DDPM.UI.Module.Brightness
                     }
                     finally
                     {
-                        localVm.IsPR2Preview = false;
                         localVm.IsPR1Preview = false;
+                        localVm.IsPR2Preview = false;
 
-                        localVm.BrightnessValue = localVm.PR2BrightnessValue;
-                        localVm.ContrastValue = localVm.PR2ContrastValue;
+                        localVm.BrightnessValue = localVm.PR1BrightnessValue;
+                        localVm.ContrastValue = localVm.PR1ContrastValue;
 
                         localVm.PreviewToken.Dispose();
                         tokenSource.Dispose();
@@ -688,13 +419,22 @@ namespace DDPM.UI.Module.Brightness
                 catch (Exception) { }
                 finally
                 {
-                    localVm.IsPR2Preview = false;
                     localVm.IsPR1Preview = false;
+                    localVm.IsPR2Preview = false;
 
-                    localVm.BrightnessValue = localVm.PR2BrightnessValue;
-                    localVm.ContrastValue = localVm.PR2ContrastValue;
+                    localVm.BrightnessValue = localVm.PR1BrightnessValue;
+                    localVm.ContrastValue = localVm.PR1ContrastValue;
                 }
             }
+        }
+
+        private void PR1Name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            if (textString.CheckChar(tb.Text))
+                localVm.PR1Name = tb.Text;
         }
 
         private async void PR2_Luminance_Preview_UXButton_Click(object sender, RoutedEventArgs e)
@@ -774,51 +514,216 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void WriteToConfig(object VM_)
+        private async void PR2_Preview_UXButton_Click(object sender, RoutedEventArgs e)
         {
-            BrightnessViewModel localVm = (BrightnessViewModel)VM_;
-
-            if (localVm.hOurs1 > -1 && localVm.hOurs2 > -1 && localVm.mIns1 > -1 && localVm.mIns2 > -1 && localVm.dUration1 > -1 && localVm.dUration2 > -1)
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            if (!localVm.IsPR2Preview)
             {
-                if (localVm.ScheduleMap == null)
-                    localVm.ScheduleMap = new scheduleInfo();
+                localVm.IsPR2Preview = true;
+                localVm.IsPR1Preview = false;
 
-                localVm.ScheduleMap.IsEnable = true;
-                localVm.ScheduleMap.model = localVm.SelectedHomeDevice.MonitorInfo.modelName;
-                localVm.ScheduleMap.serviceTag = localVm.SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
-                localVm.ScheduleMap.Pre1Name = localVm.PR1Name;
-                localVm.ScheduleMap.Pre2Name = localVm.PR2Name;
-                localVm.ScheduleMap.Hours1 = localVm.hOurs1;
-                localVm.ScheduleMap.Mins1 = localVm.mIns1;
-                localVm.ScheduleMap.Duration1 = localVm.dUration1;
-                localVm.ScheduleMap.Hours2 = localVm.hOurs2;
-                localVm.ScheduleMap.Mins2 = localVm.mIns2;
-                localVm.ScheduleMap.Duration2 = localVm.dUration2;
-                localVm.ScheduleMap.Contrast1 = localVm.PR1ContrastValue;
-                localVm.ScheduleMap.Contrast2 = localVm.PR2ContrastValue;
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    try
+                    {
+                        localVm.PreviewToken = tokenSource;
+                        var token = localVm.PreviewToken.Token;
 
-                if (localVm.isLuminanceSupport == Visibility.Visible)
-                {
-                    localVm.ScheduleMap.Brightness1 = localVm.PR1LuminanceValue;
-                    localVm.ScheduleMap.Brightness2 = localVm.PR2LuminanceValue;
-                }
-                else
-                {
-                    localVm.ScheduleMap.Brightness1 = localVm.PR1BrightnessValue;
-                    localVm.ScheduleMap.Brightness2 = localVm.PR2BrightnessValue;
-                }
+                        //TODO: May be you'll want to add .ConfigureAwait(false);
+                        await Task.Run(() => ShowPreview(2, localVm, token), token).ConfigureAwait(false);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Task was canceled before running.
+                        // Cancelled due to timeout
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Task was canceled while running.
+                        // Cancelled due to timeout
+                    }
+                    catch (Exception ex)
+                    {
+                        // Failed to complete due to e exception
 
-                if ((!localVm.IsMouseEnterSchedule_1 && !localVm.IsMouseEnterSchedule_2) && (!localVm.CheckIsTimeOverlap()) && (!localVm.IsPR1Preview && !localVm.IsPR2Preview))
-                {
-                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(localVm.SelectedHomeDevice.MonitorInfo, localVm.ScheduleMap);
-                    localVm.StartScheduleManger(60000);
+                        //Done: let's be nice and don't swallow the exception
+                        //throw;
+                    }
+                    finally
+                    {
+                        localVm.IsPR2Preview = false;
+                        localVm.IsPR1Preview = false;
+
+                        localVm.BrightnessValue = localVm.PR2BrightnessValue;
+                        localVm.ContrastValue = localVm.PR2ContrastValue;
+
+                        localVm.PreviewToken.Dispose();
+                        tokenSource.Dispose();
+                    }
                 }
             }
-
-            if (localVm.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                Synchronize_Scheduled(localVm);
             else
-                Synchronize_LuminanceScheduled(localVm);
+            {
+                try
+                {
+                    if (localVm.PreviewToken != null && !localVm.PreviewToken.IsCancellationRequested)
+                        localVm.PreviewToken.Cancel();
+                }
+                catch (Exception) { }
+                finally
+                {
+                    localVm.IsPR2Preview = false;
+                    localVm.IsPR1Preview = false;
+
+                    localVm.BrightnessValue = localVm.PR2BrightnessValue;
+                    localVm.ContrastValue = localVm.PR2ContrastValue;
+                }
+            }
+        }
+
+        private void PR2Name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            if (textString.CheckChar(tb.Text))
+                localVm.PR2Name = tb.Text;
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel x = (BrightnessViewModel)DataContext;
+            x.ResetClick();
+        }
+
+        private void Schedule_Luminance_prest1_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_1 = true;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.StopScheduleManger();
+                    localVm.LuminanceValue = localVm.PR1LuminanceValue;
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_1 = false;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.CalculateNowValue();
+                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(localVm);
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest2_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_2 = true;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.StopScheduleManger();
+                    localVm.LuminanceValue = localVm.PR2LuminanceValue;
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest2_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_2 = false;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1_Luminance_Preview && !localVm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.CalculateNowValue();
+                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(localVm);
+                });
+            }
+        }
+
+        private void Schedule_prest1_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_1 = true;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.StopScheduleManger();
+                    localVm.BrightnessValue = localVm.PR1BrightnessValue;
+                    localVm.ContrastValue = localVm.PR1ContrastValue;
+                });
+            }
+        }
+
+        private void Schedule_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_1 = false;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.CalculateNowValue();
+                    Leave_WriteToConfig_Debouncer.Debounce(localVm);
+                });
+            }
+        }
+
+        private void Schedule_prest2_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_2 = true;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.StopScheduleManger();
+                    localVm.BrightnessValue = localVm.PR2BrightnessValue;
+                    localVm.ContrastValue = localVm.PR2ContrastValue;
+                });
+            }
+        }
+
+        private void Schedule_prest2_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
+            localVm.IsMouseEnterSchedule_2 = false;
+            localVm.UpdataScheduleBoaderUI();
+
+            if (!localVm.IsPR1Preview && !localVm.IsPR2Preview)
+            {
+                Task.Run(() =>
+                {
+                    localVm.CalculateNowValue();
+                    Leave_WriteToConfig_Debouncer.Debounce(localVm);
+                });
+            }
         }
 
         private void ShowPreview(int pr, BrightnessViewModel vm, CancellationToken token)
@@ -982,106 +887,154 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void InputName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void Synchronize_LuminanceScheduled(BrightnessViewModel _vm)
         {
-            TextString textString = new TextString();
-            e.Handled = !textString.CheckChar(e.Text);
-        }
-
-        private void PR1Name_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            TextString textString = new TextString();
-            TextBox tb = sender as TextBox;
-            if (textString.CheckChar(tb.Text))
-                localVm.PR1Name = tb.Text;
-        }
-
-        private void PR2Name_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            TextString textString = new TextString();
-            TextBox tb = sender as TextBox;
-            if (textString.CheckChar(tb.Text))
-                localVm.PR2Name = tb.Text;
-        }
-
-        private void Hyperlink_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void cbAutoBrightness_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int _previousSelectedIndex = 0;
-            var comboBox = sender as ComboBox;
-            if (comboBox == null) return;
-            BrightnessViewModel localVm = (BrightnessViewModel)DataContext;
-            if (localVm != null && localVm.Start_ALSConfig != null && localVm.Start_ALSConfig.AutoBrightnessRangeLevel != null)
+            if (_vm.IsSynchronize_Scheduled)
             {
-                _previousSelectedIndex = (int)localVm.Start_ALSConfig.AutoBrightnessRangeLevel.level_value;
-
-                int temp = (int)comboBox.SelectedIndex;// SelectedIndex;
-
-                if (temp == 0)
-                    comboBox.SelectedValue = Strings.ALSRangeLevelLow; //"Low";
-                else if (temp == 1)
-                    comboBox.SelectedValue = Strings.ALSRangeLevelMid; // "Mid";
-                else
-                    comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
-            }
-        }
-
-        private void brightnewwManulExpander_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Expander expander = sender as Expander;
-                if (expander != null)
+                Task.Run(() =>
                 {
-                    e.Handled = true;
-                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
-                    if (expander.IsExpanded)
+                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
                     {
-                        //expander.IsExpanded = !expander.IsExpanded;
+                        if (hd.MonitorInfo.IsDellMonitor)
+                        {
+                            if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                            {
+                                if (hd.MonitorInfo.modelName.ToUpper().Equals("UP2720Q") && ((vm.ScheduleMap.Brightness1 > 250) || (vm.ScheduleMap.Brightness2 > 250)))
+                                {
+                                    var ScheduleMap = new scheduleInfo(vm.ScheduleMap);
+
+                                    if (vm.ScheduleMap.Brightness1 > 250)
+                                        ScheduleMap.Brightness1 = 250;  // UP2720Q max luminance is 250
+
+                                    if (vm.ScheduleMap.Brightness2 > 250)
+                                        ScheduleMap.Brightness2 = 250;  // UP2720Q max luminance is 250
+
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, ScheduleMap);
+                                }
+                                else
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
+                            }
+                        }
                     }
-                    else
-                    {
-                        expander.IsExpanded = !expander.IsExpanded;
-                    }
-                }
+                });
             }
         }
 
-        private void brightnessScheduledExpander_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Synchronize_LuminanceScheduledSwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
             {
-                Expander expander = sender as Expander;
-                if (expander != null)
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                Synchronize_LuminanceScheduled(_vm);
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_LuminanceSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch_Luminance.IsChecked)
+            {
+                _vm.IsSynchronize = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                // Luminance
+                _vm.Luminance_Sync();
+
+                // Color
+                _vm.Invoke_ColorPreset_Sync();
+            }
+            else
+            {
+                _vm.IsSynchronize = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_Scheduled(BrightnessViewModel _vm)
+        {
+            if (_vm.IsSynchronize_Scheduled)
+            {
+                Task.Run(() =>
                 {
-                    e.Handled = true;
-                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
-                    if (expander.IsExpanded)
+                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
                     {
-                        //expander.IsExpanded = !expander.IsExpanded;
+                        if (hd.MonitorInfo.IsDellMonitor &&
+                            hd.MonitorInfo.CapabilityDic.ContainsKey("12") &&
+                            !hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
                     }
-                    else
-                    {
-                        expander.IsExpanded = !expander.IsExpanded;
-                    }
-                }
+                });
             }
         }
 
-        //Elsa add for tooltip issue fix
-        private double GetScreenScaleX()
+        private void Synchronize_ScheduledSwitch_Click(object sender, RoutedEventArgs e)
         {
-            var source = PresentationSource.FromVisual(this);
-            if (source?.CompositionTarget != null)
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
             {
-                return source.CompositionTarget.TransformToDevice.M11;
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                Synchronize_Scheduled(_vm);
             }
-            return 1;
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch.IsChecked)
+            {
+                _vm.IsSynchronize = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                // Brightness and contrast
+                _vm.BR_Con_Sync();
+
+                // Color
+                _vm.Invoke_ColorPreset_Sync();
+            }
+            else
+            {
+                _vm.IsSynchronize = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
         //Elsa add for tooltip issue fix
@@ -1103,6 +1056,18 @@ namespace DDPM.UI.Module.Brightness
             {
                 target.HorizontalOffset = -1 * target.ActualWidth + 14;
             }
+        }
+
+        private void WriteToConfig(object VM_)
+        {
+            BrightnessViewModel localVm = (BrightnessViewModel)VM_;
+
+            localVm.WriteToConfig();
+
+            if (localVm.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                Synchronize_Scheduled(localVm);
+            else
+                Synchronize_LuminanceScheduled(localVm);
         }
     }
 }

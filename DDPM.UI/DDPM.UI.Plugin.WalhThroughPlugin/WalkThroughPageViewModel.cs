@@ -7,15 +7,29 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
+using DDPM.UI.Resources.Helper;
 using static DDPM.UI.WalkThroughData.WalkThroughData;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
     public class WalkThroughPageViewModel : ObservableObject
     {
+        // Add an enum to represent the sections
+        private enum VisibleSection
+        {
+            None,
+            Consent,
+            Peripheral,
+            DDPM,
+            Other
+        }
+
+        private VisibleSection _visibleSectionBeforeQRCode = VisibleSection.None; // Initialize
+
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
         public int _currentTotalPage = 0;// Control button Visibility.Collapsed 
         public int _currentPageIndex = 0;
@@ -30,8 +44,19 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public bool IsDarkTheme
         {
             get => _isDarkTheme;
-            private set => SetProperty(ref _isDarkTheme, value); // Use private set if only updated internally
+            private set => SetProperty(ref _isDarkTheme, value); 
         }
+
+        // Add properties for region-specific QR code visibility 
+        private readonly bool _isChinaRegion;
+        public bool ShowStandardQrInStep3 => !_isChinaRegion;
+        public bool ShowChinaQrInStep3 => _isChinaRegion;
+        public bool ShowStandardQrInFullScreen => _isChinaRegion; 
+        public bool ShowChinaQrInFullScreen => !_isChinaRegion; 
+
+        // Add properties for region-specific TextBlock content 
+        public string LearnMoreText { get; private set; } = string.Empty; 
+        public string FullScreenQrTitle { get; private set; } = string.Empty; 
 
         public WalkThroughPageViewModel()
         {
@@ -39,6 +64,33 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WalkThroughPageViewModel ... in ");
             try
             {
+                // Get Region 
+                try
+                {
+                    _isChinaRegion = RegionInfo.CurrentRegion.TwoLetterISORegionName.Equals("CN", StringComparison.OrdinalIgnoreCase);
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Detected Region: {RegionInfo.CurrentRegion.TwoLetterISORegionName}. IsChinaRegion: {_isChinaRegion}");
+                }
+                catch (Exception regionEx)
+                {
+                    _isChinaRegion = false; // Default to false if detection fails
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Error detecting region: {regionEx.Message}. Defaulting IsChinaRegion to false.");
+                }
+               
+
+                //  Set Region-Specific Text 
+                try
+                {
+                    string learnMoreKey = _isChinaRegion ? "WalkThroughAirAudio_Sub.6" : "WalkThroughAirAudio_Sub.4";
+                    string fullScreenTitleKey = _isChinaRegion ? "WalkThroughAirAudio_Sub.7" : "WalkThroughAirAudio_Sub.5";
+
+                    LearnMoreText = LangHelper.Instance[learnMoreKey] ?? learnMoreKey; 
+                    FullScreenQrTitle = LangHelper.Instance[fullScreenTitleKey] ?? fullScreenTitleKey; 
+                }
+                catch (Exception textEx)
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Error setting region-specific text: {textEx.Message}");
+                }
+
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "CONSENT_PAGE"))
                 {
                     IsConsentPageVisible = true;
@@ -85,7 +137,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void UpdateThemeState(OSThemeEnum currentTheme)
         {
             // Assuming Dark = 1, Light = 0 or other values based on OSThemeEnum definition
-            IsDarkTheme = (currentTheme == OSThemeEnum.Dark); 
+            IsDarkTheme = (currentTheme == OSThemeEnum.Dark);
             DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] IsDarkTheme set to: {IsDarkTheme}");
             // Note: SetProperty in IsDarkTheme setter already triggers OnPropertyChanged
         }
@@ -174,7 +226,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                                 IsAirAudioDevice = false;
                                 break;
                         }
-                             
+
                         // << 250328 added by Hess to set default values
                         switch (DInfo.LogicalDeviceType)
                         {
@@ -192,10 +244,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                         if (IsAirAudioDevice)
                         {
                             DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initializing default audio states for {deviceModel}");
-                            // Set ViewModel state directly first
                             _outgoingAudioStatus = true;
                             _incomingAudioStatus = false;
-                            // Notify UI of the initial state
                             OnPropertyChanged(nameof(OutgoingAudioStatus));
                             OnPropertyChanged(nameof(OutgoingAudio_String));
                             OnPropertyChanged(nameof(IncomingAudioStatus));
@@ -206,20 +256,18 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                             if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
                             {
                                 DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNoiseCancellationAsync(currentDeviceId, true)
-                                    .ContinueWith(t => { 
+                                    .ContinueWith(t => {
                                         if (t.IsFaulted) DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set initial OutgoingAudioStatus: {t.Exception?.InnerException?.Message}");
                                         else DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initial SetAirAudioMicNoiseCancellationAsync called with true");
                                     });
                                 DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNCIncomingAsync(currentDeviceId, false)
-                                    .ContinueWith(t => { 
+                                    .ContinueWith(t => {
                                         if (t.IsFaulted) DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set initial IncomingAudioStatus: {t.Exception?.InnerException?.Message}");
                                         else DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Initial SetAirAudioMicNCIncomingAsync called with false");
                                     });
 
-                                // Set default audio preset
                                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Setting initial audio preset to Default (1)");
                                 SetAudioSelectedPresetInBackgroundAsync("DefaultCheck", 1);
-                                // Update ViewModel state for presets (already defaults to DefaultChecked = true)
                                 OnPropertyChanged(nameof(IsDefaultChecked));
                                 OnPropertyChanged(nameof(IsBassBoostChecked));
                                 OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -682,15 +730,17 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             get => _isOtherVisibility;
             set
             {
-                SetProperty(ref _isOtherVisibility, value);
-
-                if (value)
+                if (SetProperty(ref _isOtherVisibility, value))
                 {
-                    IsPeripheralVisible = false;
-                    IsDDPMVisibility = false;
-                    //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+                    if (value)
+                    {
+                        IsConsentPageVisible = false;
+                        IsPeripheralVisible = false;
+                        IsDDPMVisibility = false;
+                        //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+                    }
+                    OnPropertyChanged(nameof(OtherVisibility));
                 }
-                OnPropertyChanged(nameof(OtherVisibility));
             }
         }
         public Visibility OtherVisibility => IsOtherVisibility ? Visibility.Visible : Visibility.Collapsed;
@@ -718,31 +768,92 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public Visibility AppWalkThroughVisibility
         {
-            get
+            get { return _isDDPMVisibility ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        #region Airaudio device setting in WalkThrough
+
+        public Visibility FullQRCode => _isFullQRCode ? Visibility.Visible : Visibility.Collapsed;
+        private bool _isFullQRCode = false;
+
+        public bool IsFullQRCode
+        {
+            get => _isFullQRCode;
+            set
             {
-                if (IsDDPMVisibility)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
+                var newValue = value;
+                if (_isFullQRCode == newValue) return; 
+
+                if (newValue) 
+                {                    
+                    if (_isConsentPageVisible)
+                        _visibleSectionBeforeQRCode = VisibleSection.Consent;
+                    else if (_isPeripheralVisible) 
+                        _visibleSectionBeforeQRCode = VisibleSection.Peripheral;
+                    else if (_isDDPMVisibility) 
+                        _visibleSectionBeforeQRCode = VisibleSection.DDPM;
+                    else if (_isOtherVisibility) 
+                        _visibleSectionBeforeQRCode = VisibleSection.Other;
+                    else 
+                        _visibleSectionBeforeQRCode = VisibleSection.None;
+                }
+
+                if (SetProperty(ref _isFullQRCode, newValue, nameof(IsFullQRCode)))
+                {
+                    OnPropertyChanged(nameof(FullQRCode));                     
+                    if (newValue) 
+                    {
+                        if (_isConsentPageVisible) {
+                            _isConsentPageVisible = false; 
+                            OnPropertyChanged(nameof(IsConsentPageVisible)); 
+                            OnPropertyChanged(nameof(ConsentPageVisibility)); 
+                        }
+                        if (_isPeripheralVisible) {
+                            _isPeripheralVisible = false;
+                            OnPropertyChanged(nameof(IsPeripheralVisible));
+                            OnPropertyChanged(nameof(PeripheralVisibility)); 
+                        }
+                        if (_isDDPMVisibility) {
+                            _isDDPMVisibility = false;
+                            OnPropertyChanged(nameof(IsDDPMVisibility));
+                            OnPropertyChanged(nameof(DDPMVisibility)); 
+                        }
+                        if (_isOtherVisibility) {
+                            _isOtherVisibility = false;
+                            OnPropertyChanged(nameof(IsOtherVisibility));
+                            OnPropertyChanged(nameof(OtherVisibility)); 
+                        }
+                    }
+                    else 
+                    {                       
+                        IsConsentPageVisible = (_visibleSectionBeforeQRCode == VisibleSection.Consent);
+                        IsPeripheralVisible = (_visibleSectionBeforeQRCode == VisibleSection.Peripheral);
+                        IsDDPMVisibility = (_visibleSectionBeforeQRCode == VisibleSection.DDPM);
+                        IsOtherVisibility = (_visibleSectionBeforeQRCode == VisibleSection.Other);
+                    }
+                }
             }
         }
 
         public Visibility AirAudioDevice => IsAirAudioDevice ? Visibility.Visible : Visibility.Collapsed;
-
-        public bool _isAirAudioDeviceVisibility = false;
+        private bool _isAirAudioDeviceVisibility = false;
 
         public bool IsAirAudioDevice
         {
             get => _isAirAudioDeviceVisibility;
             set
             {
-                SetProperty(ref _isAirAudioDeviceVisibility, value);
-
-                OnPropertyChanged(nameof(IsAirAudioDevice));
+                if (SetProperty(ref _isAirAudioDeviceVisibility, value))
+                {
+                    OnPropertyChanged(nameof(AirAudioDevice));
+                }
             }
         }
 
         // <<< Additions for Audio Toggle Status Strings >>>
+        public string OutgoingAudio_String => OutgoingAudioStatus ? "ON" : "OFF";
+        public string IncomingAudio_String => IncomingAudioStatus ? "ON" : "OFF";
+
         private bool _outgoingAudioStatus = true; // Default to true
         public bool OutgoingAudioStatus
         {
@@ -753,11 +864,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (SetProperty(ref _outgoingAudioStatus, value))
                 {
                     OnPropertyChanged(nameof(OutgoingAudio_String));
-                    // Call the device manager
                     if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
                     {
                         DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNoiseCancellationAsync(currentDeviceId, value)
-                            .ContinueWith(t => { 
+                            .ContinueWith(t => {
                                 if (t.IsFaulted)
                                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set OutgoingAudioStatus: {t.Exception?.InnerException?.Message}");
                                 else
@@ -773,9 +883,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
         }
 
-        public string OutgoingAudio_String => OutgoingAudioStatus ? "ON" : "OFF";
-
-        private bool _incomingAudioStatus = false; // Default to false
+        private bool _incomingAudioStatus = false;
         public bool IncomingAudioStatus
         {
             get => _incomingAudioStatus;
@@ -785,16 +893,15 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (SetProperty(ref _incomingAudioStatus, value))
                 {
                     OnPropertyChanged(nameof(IncomingAudio_String));
-                    // Call the device manager
                     if (!string.IsNullOrEmpty(currentDeviceId) && DdpmCommonHelper.DeviceManagerSA != null)
                     {
-                        DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNCIncomingAsync(currentDeviceId, value) // <-- Example, likely needs correction
-                            .ContinueWith(t => { 
+                        DdpmCommonHelper.DeviceManagerSA.SetAirAudioMicNCIncomingAsync(currentDeviceId, value)
+                            .ContinueWith(t => {
                                 if (t.IsFaulted)
                                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set IncomingAudioStatus: {t.Exception?.InnerException?.Message}");
                                 else
                                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] SetAirAudioMicNCIncomingAsync for Incoming called with {value}"); // <-- Log needs correction if method changes
-                            }); 
+                            });
                     }
                     else
                     {
@@ -804,14 +911,11 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 }
             }
         }
-        public string IncomingAudio_String => IncomingAudioStatus ? "ON" : "OFF";
 
-
-        private bool _isDefaultChecked = true; // Assuming Default is the initial state
+        private bool _isDefaultChecked = true;
         private bool _isBassBoostChecked = false;
         private bool _isSpeechBoostChecked = false;
         private bool _isTrebleBoostChecked = false;
-
         public bool IsDefaultChecked
         {
             get => _isDefaultChecked;
@@ -896,13 +1000,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] Failed to set Audio Preset {Preset}: {ex.Message}");
             }
         }
-
-
-        // Assume SupportedOutgoingAudio is already defined elsewhere or add if needed
-        // We might need to initialize these statuses based on the current device
-        // when InitializeDevice is called.
-        // Example: OutgoingAudioStatus = GetInitialOutgoingStatusFromDevice(DInfo);
-        // <<< End Additions >>>
+        #endregion
 
         public void SwitchToDDPMPage()
         {

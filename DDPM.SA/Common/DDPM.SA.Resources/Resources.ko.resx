@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>애플리케이션을 열지 못했습니다.</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>업데이트 예정: </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>업데이트 가능:</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>시간 초과 오류</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>대상 마우스를 움직이거나 왼쪽 버튼을 두 번 클릭합니다.</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>"U" 키를 두 번 눌러 대상 키보드의 펌웨어 업데이트를 활성화합니다.</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>디바이스 연결됨</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock 켜짐</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock 꺼짐</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>부재 시 잠금</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Caps Lock 꺼짐</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>다음에 해당하는 ICC 프로파일을 동기화할 수 없습니다.</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>업데이트 예정: </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock 꺼짐</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>이 맞춤형 레이아웃과 관련된 Easy Memory 프로파일이 있습니다.\n이 맞춤형 레이아웃을 저장하면 관련된 모든 프로파일의 레이아웃이 업데이트됩니다.\n레이아웃을 저장하시겠습니까?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>지능형 장면 분석 및 얼굴 추적 기능을 활용하여 확대/축소하며, 움직일 때 뷰를 좌우로 이동합니다.</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>업데이트가 완료될 때까지 시스템 전원을 끄지 마십시오.</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>기본 ICC 프로파일은 스마트 HDR용입니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>기본 ICC 프로파일은 스마트 HDR에 적합하지 않습니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>도크가 여러 개 감지되었습니다. 도크가 손상되지 않도록 1개의 도크만 연결해 두십시오.</value>
   </data>
@@ -524,21 +539,6 @@
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>도크가 여러 개 감지되었습니다. 도크가 손상되지 않도록 1개의 도크만 연결해 두십시오. PC를 재시작한 다음 도크를 1개만 연결하십시오.</value>
-  </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>업데이트가 완료될 때까지 시스템 전원을 끄지 마십시오.</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>대상 마우스를 움직이거나 왼쪽 버튼을 두 번 클릭합니다.</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>&quot;U&quot; 키를 두 번 눌러 대상 키보드의 펌웨어 업데이트를 활성화합니다.</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>기본 ICC 프로파일은 스마트 HDR용입니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>기본 ICC 프로파일은 스마트 HDR에 적합하지 않습니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>모니터 모델 및 설정(예: 연결 유형)에 따라 업데이트를 완료하는 데 약 10~30분 정도 걸릴 수 있습니다. 동일한 모델의 모니터를 여러 대 업데이트하는 경우 시간이 오래 걸릴 수 있습니다. 업데이트를 다운로드하는 동안 디스플레이의 전원을 끄거나 케이블을 분리하지 마십시오.</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>펌웨어 업데이트 프로세스 중 오류를 방지하려면 USB 업스트림 포트를 사용하여 모니터를 연결하십시오.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>빈 레이아웃</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>옵션 2.1: 2개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>옵션 2.1: 2개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>옵션 2.2: 2개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>옵션 2.2: 2개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>옵션 2.3: 2개의 열, 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>옵션 2.3: 2개의 행, 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>옵션 2.4: 2개의 열, 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>옵션 2.4: 2개의 행, 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>옵션 3.1: 3개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>옵션 3.1: 3개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>옵션 3.2: 3개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>옵션 3.2: 3개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>옵션 3.3: 3개의 열, 30/40/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>옵션 3.3: 3개의 행, 30/40/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>옵션 3.4: 2개의 행, 균등하게 분할합니다. 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>옵션 3.4: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>옵션 3.5: 2개의 행, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>옵션 3.5: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>옵션 3.6: 2개의 행, 균등하게 분할합니다. 1열은 30/70%로 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>옵션 3.6: 2개의 행, 70/30%로 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>옵션 3.7: 2개의 행, 균등하게 분할합니다. 1열은 70/30%로 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>옵션 3.7: 2개의 행, 30/70%로 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>옵션 3.8: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>옵션 3.8: 2개의 열, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>옵션 3.9: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>옵션 3.9: 2개의 열, 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>옵션 4.1: 4개의 사분면으로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>옵션 4.1: 4개의 사분면으로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>옵션 4.2: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>옵션 4.2: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>옵션 4.3: 2개의 열, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>옵션 4.3: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>옵션 4.4: 4개의 열을 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>옵션 4.4: 4개의 행을 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>옵션 4.5: 3개의 행을 균등하게 분할합니다. 1열은 균등하게 분할하고 2열과 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>옵션 4.5: 3개의 행, 균등하게 분할합니다. 1행과 2행은 분할하지 않고 3행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>옵션 4.6: 3개의 열, 균등하게 분할합니다. 1열과 2열은 분할하지 않고 3열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>옵션 4.6: 3개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>옵션 5.1: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>옵션 5.1: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>옵션 5.2: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>옵션 5.2: 2개의 열, 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>옵션 5.3: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>옵션 5.3: 2개의 열, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>옵션 5.4: 2개의 행, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>옵션 5.4: 2개의 열, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>옵션 5.5: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 균등하게 분할하고, 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>옵션 5.5: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>옵션 5.6: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>옵션 5.6: 2개의 행, 균등하게 분할합니다. 1행은 30/70%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>옵션 5.7: 3개의 열, 균등하게 분할합니다. 1열과 3열은 각각 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>옵션 5.7: 3개의 행, 균등하게 분할합니다. 1행과 3행은 각각 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>옵션 5.8: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>옵션 5.8: 2개의 열, 30/70%로 분할합니다. 1열은 70/30%로 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>옵션 5.9: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>옵션 5.9: 2개의 열, 70/30%로 분할합니다. 1열은 70/30%로 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>옵션 6.1: 3개의 열, 균등하게 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>옵션 6.1: 2개의 열, 균등하게 분할합니다. 1열과 2열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>옵션 6.2: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>옵션 6.2: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>옵션 6.3: 2개의 행, 30/70%로 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>옵션 6.3: 2개의 열, 30/70%로 분할합니다. 1열은 4개의 구역으로 균등하게 분할하고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>옵션 6.4: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>옵션 6.4: 2개의 열, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>옵션 6.5: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>옵션 6.5: 2개의 열, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>옵션 6.6: 2개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 1열은 균등하게 분할합니다. 2열은 분할하지 않고 1행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>옵션 6.6: 2개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>옵션 6.7: 2개의 열, 균등하게 분할합니다. 1, 2, 3열을 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>옵션 6.7: 3개의 열, 균등하게 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>옵션 6.8: 4개의 열, 균등하게 분할합니다. 1행과 4행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>옵션 6.8: 4개의 행, 균등하게 분할합니다. 1행과 4행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>옵션 6.9: 2개의 행, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>옵션 6.9: 2개의 행, 균등하게 분할합니다. 1행은 70/30%로 분할하고 1열은 분할하지 않습니다. 2열은 균등하게 분할하고 2행은 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>옵션 6.10: 2개의 열, 70/30%로 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>옵션 6.10: 2개의 행, 70/30%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>옵션 7.1: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열과 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>옵션 7.1: 3개의 행, 균등하게 분할합니다. 1행과 2행은 각각 30/70%로 분할하고 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>옵션 7.2: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할하고, 1열과 2열은 분할하지 않고, 3열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>옵션 7.2: 3개의 행, 균등하게 분할합니다. 1행과 3행은 각각 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>옵션 7.3: 2개의 행, 균등하게 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>옵션 7.3: 2개의 열, 균등하게 분할합니다. 1열은 4개의 구역으로 균등하게 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>옵션 7.4: 2개의 행, 균등하게 분할합니다. 1행과 3행은 각각 균등하게 분할하고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>옵션 7.4: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>옵션 7.5: 2개의 행, 균등하게 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 25/50/25%로 분할합니다. 1열과 3열은 각각 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>옵션 7.5: 3개의 행, 25/50/25%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고, 2열은 분할하지 않고, 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>옵션 7.6: 2개의 행, 30/70%로 분할합니다. 1행은 25/50/25%로 분할하고, 1열과 3열은 각각 균등하게 분할합니다. 2열은 분할하지 않고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>옵션 7.6: 3개의 행, 25/50/25%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고, 2행은 70/30%로 분할하고, 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>옵션 7.7: 2개의 행, 30/70%로 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 50/25/25%로 분할합니다. 1열은 분할하지 않고 2열과 3열은 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>옵션 7.7: 3개의 행, 25/25/50%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할하고 3행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>옵션 7.8: 2개의 행, 30/70%로 분할합니다. 1행과 4행은 각각 균등하게 분할하고 2행은 25/25/50%로 분할합니다. 1열과 2열은 각각 균등하게 분할하고 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>옵션 7.8: 3개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고 1열은 균등하게 분할합니다. 2열은 분할하지 않고 2행과 3행은 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>옵션 7.9: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>옵션 7.9: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4행을 각각 균등하게 분할됩니다.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>옵션 7.10: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>옵션 7.10: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>옵션 7.11: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 25/50/25%로 분할하고, 1열과 3열은 각각 균등하게 분할하고, 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>옵션 7.11: 3개의 행, 30/70%로 분할합니다. 1, 2, 3열은 25/50/25%로 분할하고, 1행과 3행은 균등하게 분할하고, 2행은 분할하지 않습니다.</value>
   </data>
 </root>

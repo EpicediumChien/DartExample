@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Не вдалося відкрити програму</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>буде оновлено до </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>може бути оновлено до</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Помилка тайм-ауту</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Перемістіть або двічі клацніть ліву кнопку цільової миші</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Для активації оновлення вбудованого програмного забезпечення цільової клавіатури двічі натисніть клавішу «U»</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Пристрій під’єднано</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock увімкнено</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock вимкнено</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Блокування в разі віддалення</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Caps Lock вимкнено</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Не вдається синхронізувати відповідний профіль ICC для</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>буде оновлено до </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock вимкнено</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Із цим користувацьким компонуванням пов’язані деякі профілі Easy Memory.\nЗбереження цього користувацького компонування оновить компонування для всіх пов’язаних із ним профілів.\nХочете зберегти компонування?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Використовує алгоритми інтелектуального аналізу сцени та відстеження обличчя для масштабування та панорамування зображення, коли ви рухаєтеся.</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Не вимикайте живлення системи до завершення оновлення</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Профіль ICC за замовчуванням використовується для Smart HDR. Неможливо змінити попередні налаштування кольорів у</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Профіль ICC за замовчуванням не підходить для Smart HDR. Неможливо змінити налаштування кольорів у</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Виявлено кілька док-станцій. Щоб запобігти пошкодженню док-станцій, не підключайте більше однієї.</value>
   </data>
@@ -524,21 +539,6 @@
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Виявлено кілька док-станцій. Щоб не допустити пошкодження док-станцій, підключайте лише одну з них за раз. Перезавантажте ПК, потім підключіть лише одну док-станцію.</value>
-  </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>Не вимикайте живлення системи до завершення оновлення</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Перемістіть або двічі клацніть ліву кнопку цільової миші</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Для активації оновлення вбудованого програмного забезпечення цільової клавіатури двічі натисніть клавішу «U»</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>Профіль ICC за замовчуванням використовується для Smart HDR. Неможливо змінити попередні налаштування кольорів у</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>Профіль ICC за замовчуванням не підходить для Smart HDR. Неможливо змінити налаштування кольорів у</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>Оновлення може зайняти орієнтовно від 10 до 30 хвилин, залежно від моделі монітора й налаштувань (наприклад, типу підключення). Якщо оновлюються кілька моніторів однієї моделі, процес може тривати довше. Не вимикайте дисплей і не від’єднуйте кабелі під час завантаження оновлення.</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Щоб уникнути помилок під час оновлення вбудованого програмного забезпечення, під’єднайте монітор через висхідний USB-порт</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Порожній макет</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Варіант 2.1: 2 колонки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Варіант 2.1: 2 рядки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Варіант 2.2: 2 рядки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Варіант 2.2: 2 колонки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Варіант 2.3: 2 колонки, розділені в пропорції 70/30%.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Варіант 2.3: 2 рядки, розділені в пропорції 30/70%.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Варіант 2.4: 2 колонки, розділені в пропорції 30/70%.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Варіант 2.4: 2 рядки, розділені в пропорції 70/30%.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Варіант 3.1: 3 рядки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Варіант 3.1: 3 колонки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Варіант 3.2: 3 колонки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Варіант 3.2: 3 рядки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Варіант 3.3: 3 колонки, розділені в пропорції 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Варіант 3.3: 3 рядки, розділені в пропорції 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Варіант 3.4: 2 рядки, розділені порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Варіант 3.4: 2 рядки, розділені порівну. Рядок 1 – без поділу. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Варіант 3.5: 2 рядки, розділені порівну. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Варіант 3.5: 2 рядки, розділені порівну. Рядок 1 – розділений порівну. Рядок 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Варіант 3.6: 2 рядки, розділені порівну. Колонка 1 – розділена у пропорції 30/70%. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Варіант 3.6: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – без поділу. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Варіант 3.7: 2 рядки, розділені порівну. Колонка 1 – розділена в пропорції 70/30%. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Варіант 3.7: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну. Рядок 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Варіант 3.8: 2 рядки, розділені порівну. Рядок 1 – без поділу. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Варіант 3.8: 2 колонки, розділені порівну. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Варіант 3.9: 2 рядки, розділені порівну. Рядок 1 – розділений порівну. Рядок 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Варіант 3.9: 2 колонки, розділені порівну. Колонка 1 – розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Варіант 4.1: розбиття на 4 квадранти.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Варіант 4.1: розбиття на 4 квадранти.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Варіант 4.2: 2 колонки, розділені порівну. Колонка 1 – розділена порівну на 3 секції. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Варіант 4.2: 2 рядки, розділені порівну. Рядок 1 – без поділу. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Варіант 4.3: 2 рядки, розділені порівну. Колонка 1 – без поділу. Колонка 2 – розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Варіант 4.3: 2 рядки, розділені порівну. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Варіант 4.4: 4 колонки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Варіант 4.4: 4 рядки, розділені порівну.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Варіант 4.5: 3 колонки, розділені порівну. Колонка 1 – розділена порівну. Колонки 2 і 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Варіант 4.5: 3 рядки, розділені порівну. Рядки 1 і 2 – без поділу. Рядок 3 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Варіант 4.6: 3 колонки, розділені порівну. Колонки 1 і 2 – без поділу. Колонка 3 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Варіант 4.6: 3 рядки, розділені порівну. Рядок 1 – розділений порівну. Рядки 2 і 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Варіант 5.1: 2 рядки, розділені порівну. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Варіант 5.1: 2 колонки, розділені порівну. Колонка 1 – розділена порівну на 3 секції. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Варіант 5.2: 2 рядки, розділені порівну. Рядок 1 – розділений порівну. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Варіант 5.2: 2 колонки, розділені порівну. Колонка 1 – розділена порівну. Колонка 2 – розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Варіант 5.3: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Варіант 5.3: 2 колонки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Варіант 5.4: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – розділений порівну. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Варіант 5.4: 2 колонки, розділені в пропорції 70/30%. Рядок 1 – розділений порівну. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Варіант 5.5: 2 рядки, розділені в пропорції 30/70%. Рядки 1 і 2 – кожен розділений порівну. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Варіант 5.5: 2 рядки, розділені порівну. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Варіант 5.6: 2 колонки, розділені порівну. Колонка 1 – розділена порівну на 3 секції. Колонка 2 – розділена в пропорції 30/70%.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Варіант 5.6: 2 рядки, розділені порівну. Рядок 1 – розділений у пропорції 30/70%. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Варіант 5.7: 3 колонки, розділені порівну. Колонки 1 і 3 – кожна розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Варіант 5.7: 3 рядки, розділені порівну. Рядки 1 і 3 – кожен розділений порівну. Рядок 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Варіант 5.8: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – розділений у пропорції 70/30%. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Варіант 5.8: 2 колонки, розділені в пропорції 30/70%. Колонка 1 – розділена у пропорції 70/30%. Колонка 2 – розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Варіант 5.9: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – розділений у пропорції 70/30%. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Варіант 5.9: 2 колонки, розділені в пропорції 70/30%. Колонка 1 – розділена у пропорції 70/30%. Колонка 2 – розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Варіант 6.1: 3 колонки, розділені порівну. Колонки 1, 2 і 3 – кожна розділена порівну.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Варіант 6.1: 2 колонки, розділені порівну. Колонки 1 і 2 – кожна розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Варіант 6.2: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – розділений у пропорції 70/30%. Рядок 2 – розділений порівну на 3 секції. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Варіант 6.2: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Варіант 6.3: 2 колонки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 4 секції. Рядок 2 – розділений порівну.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Варіант 6.3: 2 колонки, розділені в пропорції 30/70%. Колонка 1 – розділена порівну на 4 секції. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Варіант 6.4: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 70/30%. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Варіант 6.4: 2 колонки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Варіант 6.5: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Варіант 6.5: 2 колонки, розділені в пропорції 30/70%. Рядок 1 – розділений у пропорції 30/70%. Рядок 2 – розділений порівну на 3 секції. Колонка 1 – розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Варіант 6.6: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу. Рядок 1 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Варіант 6.6: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений у пропорції 30/70%. Рядок 2 – розділений порівну на 3 секції. Колонка 1 – без поділу. Колонка 2 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Варіант 6.7: 2 колонки, розділені порівну. Колонки 1, 2 і 3 – розділені порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Варіант 6.7: 3 колонки, розділені порівну. Стовпці 1, 2 і 3 – кожен розділений порівну.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Варіант 6.8: 4 колонки, розділені порівну. Рядки 1 і 4 – розділені порівну. Рядки 2 і 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Варіант 6.8: 4 рядки, розділені порівну. Рядки 1 і 4 – розділені порівну. Рядки 2 і 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Варіант 6.9: 2 рядки, розділені в пропорції 70/30%. Рядок 1 – розділений порівну. Рядок 2 – розділений порівну на 4 секції.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Варіант 6.9: 2 рядки, розділені порівну. Рядок 1 – розділений у пропорції 70/30%. Колонка 1 – без поділу, Колонка 2 – розділена порівну. Рядок 2 – розділений у пропорції 70/30%.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Варіант 6.10: 2 колонки, розділені в пропорції 70/30%. Колонки 1, 2 і 3 – кожна розділена порівну.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Варіант 6.10: 2 рядки, розділені в пропорції 70/30%. Рядки 1 і 2 – кожен розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Варіант 7.1: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонки 2 і 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Варіант 7.1: 3 рядки, розділені порівну. Рядки 1 і 2 – кожен розділений у пропорції 30/70%. Рядок 3 – розділений на 3 рівні секції.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Варіант 7.2: 2 рядки, розділені в пропорції 30/70%. Рядки 1 і 2 – кожен розділений порівну на 3 секції. Колонки 1 і 2 – без поділу. Колонка 3 – розділена порівну.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Варіант 7.2: 3 рядки, розділені порівну. Рядки 1 і 3 – кожен розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Варіант 7.3: 2 рядки, розділені порівну. Рядок 1 – розділений порівну на 4 секції. Рядок 2 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Варіант 7.3: 2 колонки, розділені порівну. Колонка 1 – розділена порівну на 4 секції. Колонка 2 – розділена порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Варіант 7.4: 2 рядки, розділені порівну. Рядки 1 і 3 – кожен розділений порівну. Рядок 2 – розділений порівну на 4 секції.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Варіант 7.4: 2 колонки, розділені порівну. Колонка 1 – розділена порівну на 3 секції. Колонка 2 – розділена порівну на 4 секції.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Варіант 7.5: 2 рядки, розділені порівну. Рядок 1 – розділений порівну на 4 секції. Рядок 2 – розділений у пропорції 25/50/25%. Колонки 1 і 3 – кожна розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Варіант 7.5: 3 рядки, розділені в пропорції 25/50/25%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу. Рядок 3 – розділений на 3 однакові секції.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Варіант 7.6: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений у пропорції 25/50/25%. Колонки 1 і 3 – кожна розділена порівну. Колонка 2 – без поділу. Рядок 2 – розділений порівну на 4 секції.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Варіант 7.6: 3 рядки, розділені в пропорції 25/50/25%. Рядок 1 – розділений порівну на 3 секції. Рядок 2 – розділений у пропорції 70/30%. Рядок 3 – розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Варіант 7.7: 2 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений порівну на 4 секції. Рядок 2 – розділений у пропорції 50/25/25%. Колонка 1 – без поділу. Колонки 2 і 3 – кожна розділена порівну.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Варіант 7.7: 3 рядки, розділені в пропорції 25/25/50%. Рядки 1 і 2 – кожен розділений порівну на 3 секції. Рядок 3 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Варіант 7.8: 2 рядки, розділені в пропорції 30/70%. Рядки 1 і 4 – кожен розділений порівну. Рядок 2 – розділений у пропорції 25/25/50%. Колонки 1 і 2 – кожна розділена порівну. Колонка 3 – без поділу.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Варіант 7.8: 3 рядки, розділені в пропорції 30/70%. Рядок 1 – розділений у пропорції 30/70%. Колонка 1 – розділена порівну. Колонка 2 – без поділу. Рядки 2 і 3 – кожен розділений порівну на 3 секції.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Варіант 7.9: 4 колонки, розділені порівну. Колонки 1, 2, 3 і 4 – кожна розділена порівну.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Варіант 7.9: 4 колонки, розділені порівну. Рядки 1, 2, 3 і 4 – кожен розділений порівну.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Варіант 7.10: 4 колонки, розділені порівну. Колонки 1, 2, 3 і 4 – кожна розділена порівну на 3 частини.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Варіант 7.10: 4 колонки, розділені порівну. Колонки 1, 2, 3 і 4 – кожна розділена порівну на 3 частини.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Варіант 7.11: 2 рядки, розділені в пропорції 30/70%. Рядки 1 і 2 – кожен розділений у пропорції 25/50/25%. Колонки 1 і 3 – кожна розділена порівну. Колонка 2 – без поділу.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Варіант 7.11: 3 колонки, розділені в пропорції 30/70%. Колонки 1, 2 і 3 – кожна розділена ув пропорції 25/50/25%. Рядки 1 і 3 – розділені порівну. Колонка 2 – без поділу.</value>
   </data>
 </root>

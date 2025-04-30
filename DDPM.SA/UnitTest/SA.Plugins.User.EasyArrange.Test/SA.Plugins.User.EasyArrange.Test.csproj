@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+		<ProjectReference Include="..\..\Common\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\..\Common\VcpCore.Common\VcpCore.Common.csproj" />
     <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
@@ -25,12 +26,6 @@
     <ProjectReference Include="..\..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
     <ProjectReference Include="..\SA.Plugins.User.DisplayManager.Test\SA.Plugins.User.DisplayManager.Test.csproj" />
   </ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="DDPM.Easy.Common">
-			<HintPath>..\..\dll\DDPM.Easy.Common.dll</HintPath>
-		</Reference>
-	</ItemGroup>	
 	
   <ItemGroup>
     <Using Include="NUnit.Framework" />

@@ -107,9 +107,11 @@ namespace NetworkKVM.Plugins
 
         private int namedpipe_Fail = 0;
 
-        private bool isMonitorUpdate = false;
+        //private bool isMonitorUpdate = false;
 
-        private string jsonstring_MonitorUpdate = string.Empty;
+        //private string jsonstring_MonitorUpdate = string.Empty;
+
+        private List<NeedUpdateMonitorInfo> updateMonitorInfos = new List<NeedUpdateMonitorInfo>(); 
 
         #endregion Private Members
 
@@ -1998,17 +2000,22 @@ namespace NetworkKVM.Plugins
                     {
                         foreach (var item in _AllInfoMonitors)
                         {
-                            if (string.IsNullOrEmpty(item.CapabilityString))
-                            {
-                                isMonitorUpdate = true;
-                                jsonstring_MonitorUpdate = jsonstring;
-                                _logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
-                                _logs.DebugMsg("[NetworkKVM] GetMonitorInfo jsonstring_MonitorUpdate : " + jsonstring_MonitorUpdate);
-                                return Task.CompletedTask;
-                            }
                             if (IsDisposed)
                             {
                                 break;
+                            }
+                            if (string.IsNullOrEmpty(item.CapabilityString))
+                            {
+                                NeedUpdateMonitorInfo needUpdate = new NeedUpdateMonitorInfo();
+                                needUpdate.Model = item.modelName;
+                                needUpdate.seviceTag = item.edid.ServiceTag;
+                                _logs.DebugMsg($"[NetworkKVM] GetMonitorInfo CapabilityString is empty : {item.modelName.ToString()}, {item.edid.ServiceTag.ToString()}.");
+                                updateMonitorInfos.Add(needUpdate);
+                                //    isMonitorUpdate = true;
+                                //    jsonstring_MonitorUpdate = jsonstring;
+                                //    _logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
+                                //    _logs.DebugMsg("[NetworkKVM] GetMonitorInfo jsonstring_MonitorUpdate : " + jsonstring_MonitorUpdate);
+                                //return Task.CompletedTask;
                             }
                             get_MonitorInfo = new DdpmJsonCommon.Monitor();
                             string capability = string.Empty;
@@ -2033,9 +2040,9 @@ namespace NetworkKVM.Plugins
                         if (get_MONITORINFO_R.ToJson() != string.Empty)
                         {
                             _ = WriteAsync(get_MONITORINFO_R.ToJson());
-                            isMonitorUpdate = false;
-                            _logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
-                            jsonstring_MonitorUpdate = string.Empty;
+                            //isMonitorUpdate = false;
+                            //_logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
+                            //jsonstring_MonitorUpdate = string.Empty;
                         }
                         return Task.CompletedTask;
                     }
@@ -2511,6 +2518,32 @@ namespace NetworkKVM.Plugins
             }
         }
 
+        private Task UpdateMonitorInfo(MonitorInfo monitorInfo)
+        {
+            if (pipeServer != null && pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] UpdateMonitorInfo....");
+                if (updateMonitorInfos != null && updateMonitorInfos.Count > 0)
+                {
+                    int index = updateMonitorInfos.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                            x.seviceTag == monitorInfo.edid.ServiceTag);
+                    if (index != -1)
+                    {
+                        _logs.DebugMsg($"[NetworkKVM][UpdateMonitorInfo] Find updateMonitorInfo count is {index.ToString()}.");
+                        //send MonitorPlug to NKVM
+                        MonitorPlug();
+                        //remove
+                        updateMonitorInfos.RemoveAt(index);
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM][UpdateMonitorInfo] updateMonitorInfos is null or count = 0.");
+                }
+            }
+            return Task.CompletedTask;
+        }
+
         #endregion Private Methods
 
         #region IDisposableObservable Support
@@ -2806,10 +2839,10 @@ namespace NetworkKVM.Plugins
         private void MonitorUpdateEvent(object sender, MonitorinfoUpdateEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] MonitorUpdateEvent...");
-            if (isMonitorUpdate && !string.IsNullOrEmpty(jsonstring_MonitorUpdate))
+            if (e.monitor != null && !string.IsNullOrEmpty(e.monitor.CapabilityString))
             {
-                _logs.DebugMsg("[NetworkKVM] MonitorUpdateEvent jsonstring_MonitorUpdate : " + jsonstring_MonitorUpdate);
-                GetMonitorInfo(jsonstring_MonitorUpdate).Wait();
+                _logs.DebugMsg("[NetworkKVM][MonitorUpdateEvent] monitor info capabilityString isn't empty.");
+                UpdateMonitorInfo(e.monitor).Wait();
             }
         }
 

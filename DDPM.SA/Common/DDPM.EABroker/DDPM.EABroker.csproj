@@ -9,14 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DDPM.Easy.Common">
-      <HintPath>..\..\dll\DDPM.Easy.Common.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

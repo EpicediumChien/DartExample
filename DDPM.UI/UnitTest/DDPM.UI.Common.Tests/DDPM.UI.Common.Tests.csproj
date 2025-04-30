@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DDPM.Easy.Common">
+      <HintPath>..\..\CommonDll\DDPM.Easy.Common.dll</HintPath>
+    </Reference>
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>

@@ -528,6 +528,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //SynchronizeBtnExpectedResult("E");
                             return Task.FromResult("E");
                         }
+                        if (((alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 2) ||
+                            (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 0)) &&
+                            (Current_ALSConfig.isAutoBrightness == true || Current_ALSConfig.isAutoColorTemp == true))
+                        {
+                            //Golden case
+                            //"Synchronize between monitors" is displayed but greyed out.
+                            return Task.FromResult("D");
+                        }
                         //else
                         //{
                         //19 Test Scenario : G series monitor and S series monitor

@@ -386,34 +386,7 @@ namespace nsWinEventHook
             MoveWindow(hWnd, rcAdiust.X, rcAdiust.Y, rcAdiust.Width, rcAdiust.Height, true);
             */
         }
-
-        //Temporary function for study issues, now we are not used any more
-        //
-        //[DllImport("user32")]
-        //static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref Win32.POINT lpRect);
-
-        //[DllImport("dwmapi.dll")]
-        //static extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE dwAttribute, out RECT pvAttribute, int cbAttribute);
-
-        //enum DWMWINDOWATTRIBUTE : uint
-        //{
-        //    NCRenderingEnabled = 1,
-        //    NCRenderingPolicy,
-        //    TransitionsForceDisabled,
-        //    AllowNCPaint,
-        //    CaptionButtonBounds,
-        //    NonClientRtlLayout,
-        //    ForceIconicRepresentation,
-        //    Flip3DPolicy,
-        //    ExtendedFrameBounds,
-        //    HasIconicBitmap,
-        //    DisallowPeek,
-        //    ExcludedFromPeek,
-        //    Cloak,
-        //    Cloaked,
-        //    FreezeRepresentation
-        //}
-        
+                
         #endregion GetProcessFromWindowHandle
 
         #region Win32 Constants
@@ -552,19 +525,6 @@ namespace nsWinEventHook
             }
             return rst;
         }
-
-        //[DllImport("dwmapi")]
-        //private static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
-
-        //[DllImport("user32")]
-        //private static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
-
-        //[DllImport("user32")]
-        //private static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
-
-        //[DllImport("user32", SetLastError = true)]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //public static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref POINT lpPoint);
 
         #endregion Win32 P-Invoke
 

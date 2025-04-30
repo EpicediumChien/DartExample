@@ -867,7 +867,7 @@ namespace VcpCore.Common
         #endregion DisplayConfig Enum/Sturct
 
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_PREFERRED_MODE deviceMode);
 
@@ -883,7 +883,7 @@ namespace VcpCore.Common
             }
 
             return rst;
-        }
+        }*/
 
         /*[Flags]
         public enum DisplaySettingsFlags
@@ -908,7 +908,7 @@ namespace VcpCore.Common
             MC_SET_PARAMETER
         }*/
 
-        public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
+        //public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
 
         /*#region Cursor
         //GetCursorPos(), Robert_Lin, 2024-12-21
