@@ -9,6 +9,7 @@
 //
 
 #endregion
+//#define SUPPORT_210
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
@@ -1214,8 +1215,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
                     //Debug.WriteLine($"{newValue}");
+#if SUPPORT_210
+
+                    //_iLogicalDeviceWebcam.ProfileManager.SetCurrentSelectedProfile(newValue);
+                    //writelog($"DTH:{nameof(SetCurrentSelectedProfile)} device({device.Name}) SetCurrentSelectedProfile:{newValue}");
+#else
                     _iLogicalDeviceWebcam.ProfileManager.SetCurrentSelectedProfile(newValue);
                     writelog($"DTH:{nameof(SetCurrentSelectedProfile)} device({device.Name}) SetCurrentSelectedProfile:{newValue}");
+#endif
                 }
             }
         }
@@ -1726,11 +1733,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
                                 info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
                                 //info.ProfileManager = new(_iLogicalDeviceWebcam.ProfileManager);
+#if SUPPORT_210
+                                //info.PresetProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.PresetProfiles);
+                                //info.CustomProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.CustomProfiles);
+                                //info.Profile = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Id;
+                                //info.ProfileDescription = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Description;
+                                //info.ProfileName = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Name;
+                                //info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
+#else
                                 info.PresetProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.PresetProfiles);
                                 info.CustomProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.CustomProfiles);
                                 info.Profile = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Id;
                                 info.ProfileDescription = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Description;
                                 info.ProfileName = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Name;
+                                info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
+#endif
                                 info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
                                 info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
                                 info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;
@@ -1738,7 +1755,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.SharpnessMin = _iLogicalDeviceWebcam.SharpnessMin;
                                 info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                                 info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
-                                info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
+
                                 info.SupportedResolutions = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.SupportedResolutions);
                                 info.SelectedResolution = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.GetSelectedResolution());
                                 info.TiltMax = _iLogicalDeviceWebcam.TiltMax;

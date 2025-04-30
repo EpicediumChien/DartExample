@@ -620,7 +620,7 @@ namespace DDPM.UI.Module.Brightness
 
         public List<int> dUration { get; } = new List<int>() { 0, 15, 30, 45, 60 };
 
-        public int dUration1
+        public int dUrationBr1
         {
             get
             {
@@ -635,11 +635,11 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Duration1 = dUration_1 };
 
-                NotifyPropertyChanged("dUration1");
+                NotifyPropertyChanged("dUrationBr1");
             }
         }
 
-        public int dUration2
+        public int dUrationBr2
         {
             get
             {
@@ -654,7 +654,45 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Duration2 = dUration_2 };
 
-                NotifyPropertyChanged("dUration2");
+                NotifyPropertyChanged("dUrationBr2");
+            }
+        }
+
+        public int dUrationLu1
+        {
+            get
+            {
+                return dUration_1;
+            }
+            set
+            {
+                dUration_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration1 = dUration_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration1 = dUration_1 };
+
+                NotifyPropertyChanged("dUrationLu1");
+            }
+        }
+
+        public int dUrationLu2
+        {
+            get
+            {
+                return dUration_2;
+            }
+            set
+            {
+                dUration_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration2 = dUration_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration2 = dUration_2 };
+
+                NotifyPropertyChanged("dUrationLu2");
             }
         }
 
@@ -680,7 +718,7 @@ namespace DDPM.UI.Module.Brightness
 
         public List<int> hOurs { get; } = Enumerable.Range(1, 12).ToList();
 
-        public int hOurs1
+        public int hOursBr1
         {
             get
             {
@@ -695,11 +733,11 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Hours1 = hOurs_1 };
 
-                NotifyPropertyChanged("hOurs1");
+                NotifyPropertyChanged("hOursBr1");
             }
         }
 
-        public int hOurs2
+        public int hOursBr2
         {
             get
             {
@@ -714,7 +752,45 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Hours2 = hOurs_2 };
 
-                NotifyPropertyChanged("hOurs2");
+                NotifyPropertyChanged("hOursBr2");
+            }
+        }
+
+        public int hOursLu1
+        {
+            get
+            {
+                return hOurs_1;
+            }
+            set
+            {
+                hOurs_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours1 = hOurs_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours1 = hOurs_1 };
+
+                NotifyPropertyChanged("hOursLu1");
+            }
+        }
+
+        public int hOursLu2
+        {
+            get
+            {
+                return hOurs_2;
+            }
+            set
+            {
+                hOurs_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours2 = hOurs_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours2 = hOurs_2 };
+
+                NotifyPropertyChanged("hOursLu2");
             }
         }
 
@@ -1174,7 +1250,7 @@ namespace DDPM.UI.Module.Brightness
 
         public List<int> mIns { get; } = Enumerable.Range(0, 60).ToList();
 
-        public int mIns1
+        public int mInsBr1
         {
             get
             {
@@ -1189,11 +1265,11 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Mins1 = mIns_1 };
 
-                NotifyPropertyChanged("mIns1");
+                NotifyPropertyChanged("mInsBr1");
             }
         }
 
-        public int mIns2
+        public int mInsBr2
         {
             get
             {
@@ -1208,7 +1284,45 @@ namespace DDPM.UI.Module.Brightness
                 else
                     ScheduleMap = new scheduleInfo() { Mins2 = mIns_2 };
 
-                NotifyPropertyChanged("mIns2");
+                NotifyPropertyChanged("mInsBr2");
+            }
+        }
+
+        public int mInsLu1
+        {
+            get
+            {
+                return mIns_1;
+            }
+            set
+            {
+                mIns_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins1 = mIns_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins1 = mIns_1 };
+
+                NotifyPropertyChanged("mInsLu1");
+            }
+        }
+
+        public int mInsLu2
+        {
+            get
+            {
+                return mIns_2;
+            }
+            set
+            {
+                mIns_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins2 = mIns_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins2 = mIns_2 };
+
+                NotifyPropertyChanged("mInsLu2");
             }
         }
 
@@ -1647,7 +1761,7 @@ namespace DDPM.UI.Module.Brightness
 
         public void CalculateNowValue()
         {
-            if (hOurs1 > -1 && hOurs2 > -1 && mIns1 > -1 && mIns2 > -1 && dUration1 > -1 && dUration2 > -1)
+            if (hOurs_1 > -1 && hOurs_2 > -1 && mIns_1 > -1 && mIns_2 > -1 && dUration_1 > -1 && dUration_2 > -1)
             {
                 var CurDateTime = DateTime.Now;
                 var Brightness_PR1 = PR1BrightnessValue;
@@ -1664,12 +1778,12 @@ namespace DDPM.UI.Module.Brightness
                 bool IsLuminancePR2Plus = Brightness_difference > 0 ? false : true;
                 bool IsContrastPR1Plus = Contrast_difference > 0 ? true : false;
                 bool IsContrastPR2Plus = Contrast_difference > 0 ? false : true;
-                var Hour_PR1 = (hOurs1 < 12) ? hOurs1 : (hOurs1 - 12);
-                var Hour_PR2 = (hOurs2 < 12) ? (hOurs2 + 12) : hOurs2;
-                var Min_PR1 = mIns1;
-                var Min_PR2 = mIns2;
-                var Duration_PR1 = dUration1;
-                var Duration_PR2 = dUration2;
+                var Hour_PR1 = (hOurs_1 < 12) ? hOurs_1 : (hOurs_1 - 12);
+                var Hour_PR2 = (hOurs_2 < 12) ? (hOurs_2 + 12) : hOurs_2;
+                var Min_PR1 = mIns_1;
+                var Min_PR2 = mIns_2;
+                var Duration_PR1 = dUration_1;
+                var Duration_PR2 = dUration_2;
                 var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
                 var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
                 var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
@@ -1961,15 +2075,15 @@ namespace DDPM.UI.Module.Brightness
         public bool CheckIsTimeOverlap()
         {
             bool rc = false;
-            if (hOurs1 > -1 && hOurs2 > -1 && mIns1 > -1 && mIns2 > -1 && dUration1 > -1 && dUration2 > -1)
+            if (hOurs_1 > -1 && hOurs_2 > -1 && mIns_1 > -1 && mIns_2 > -1 && dUration_1 > -1 && dUration_2 > -1)
             {
                 var CurDateTime = DateTime.Now;
-                var Hour_PR1 = (hOurs1 < 12) ? hOurs1 : (hOurs1 - 12);
-                var Hour_PR2 = (hOurs2 < 12) ? (hOurs2 + 12) : hOurs2;
-                var Min_PR1 = mIns1;
-                var Min_PR2 = mIns2;
-                var Duration_PR1 = dUration1;
-                var Duration_PR2 = dUration2;
+                var Hour_PR1 = (hOurs_1 < 12) ? hOurs_1 : (hOurs_1 - 12);
+                var Hour_PR2 = (hOurs_2 < 12) ? (hOurs_2 + 12) : hOurs_2;
+                var Min_PR1 = mIns_1;
+                var Min_PR2 = mIns_2;
+                var Duration_PR1 = dUration_1;
+                var Duration_PR2 = dUration_2;
                 var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
                 var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
                 var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
@@ -2077,12 +2191,18 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR1Name = ScheduleMap.Pre1Name;
                 PR2Name = ScheduleMap.Pre2Name;
-                hOurs1 = ScheduleMap.Hours1;
-                mIns1 = ScheduleMap.Mins1;
-                dUration1 = ScheduleMap.Duration1;
-                hOurs2 = ScheduleMap.Hours2;
-                mIns2 = ScheduleMap.Mins2;
-                dUration2 = ScheduleMap.Duration2;
+                hOursBr1 = ScheduleMap.Hours1;
+                mInsBr1 = ScheduleMap.Mins1;
+                dUrationBr1 = ScheduleMap.Duration1;
+                hOursBr2 = ScheduleMap.Hours2;
+                mInsBr2 = ScheduleMap.Mins2;
+                dUrationBr2 = ScheduleMap.Duration2;
+                hOursLu1 = ScheduleMap.Hours1;
+                mInsLu1 = ScheduleMap.Mins1;
+                dUrationLu1 = ScheduleMap.Duration1;
+                hOursLu2 = ScheduleMap.Hours2;
+                mInsLu2 = ScheduleMap.Mins2;
+                dUrationLu2 = ScheduleMap.Duration2;
                 PR1Brightness_Value = ScheduleMap.Brightness1;
                 PR1Contrast_Value = ScheduleMap.Contrast1;
                 PR2Brightness_Value = ScheduleMap.Brightness2;
@@ -2113,12 +2233,18 @@ namespace DDPM.UI.Module.Brightness
 
                 PR1Name = ScheduleMap.Pre1Name;
                 PR2Name = ScheduleMap.Pre2Name;
-                hOurs1 = ScheduleMap.Hours1;
-                mIns1 = ScheduleMap.Mins1;
-                dUration1 = ScheduleMap.Duration1;
-                hOurs2 = ScheduleMap.Hours2;
-                mIns2 = ScheduleMap.Mins2;
-                dUration2 = ScheduleMap.Duration2;
+                hOursBr1 = ScheduleMap.Hours1;
+                mInsBr1 = ScheduleMap.Mins1;
+                dUrationBr1 = ScheduleMap.Duration1;
+                hOursBr2 = ScheduleMap.Hours2;
+                mInsBr2 = ScheduleMap.Mins2;
+                dUrationBr2 = ScheduleMap.Duration2;
+                hOursLu1 = ScheduleMap.Hours1;
+                mInsLu1 = ScheduleMap.Mins1;
+                dUrationLu1 = ScheduleMap.Duration1;
+                hOursLu2 = ScheduleMap.Hours2;
+                mInsLu2 = ScheduleMap.Mins2;
+                dUrationLu2 = ScheduleMap.Duration2;
                 PR1Brightness_Value = ScheduleMap.Brightness1;
                 PR1Contrast_Value = ScheduleMap.Contrast1;
                 PR2Brightness_Value = ScheduleMap.Brightness2;
@@ -2129,12 +2255,18 @@ namespace DDPM.UI.Module.Brightness
 
             NotifyPropertyChanged("PR1Name");
             NotifyPropertyChanged("PR2Name");
-            NotifyPropertyChanged("hOurs1");
-            NotifyPropertyChanged("mIns1");
-            NotifyPropertyChanged("dUration1");
-            NotifyPropertyChanged("hOurs2");
-            NotifyPropertyChanged("mIns2");
-            NotifyPropertyChanged("dUration2");
+            NotifyPropertyChanged("hOursBr1");
+            NotifyPropertyChanged("mInsBr1");
+            NotifyPropertyChanged("dUrationBr1");
+            NotifyPropertyChanged("hOursBr2");
+            NotifyPropertyChanged("mInsBr2");
+            NotifyPropertyChanged("dUrationBr2");
+            NotifyPropertyChanged("hOursLu1");
+            NotifyPropertyChanged("mInsLu1");
+            NotifyPropertyChanged("dUrationLu1");
+            NotifyPropertyChanged("hOursLu2");
+            NotifyPropertyChanged("mInsLu2");
+            NotifyPropertyChanged("dUrationLu2");
             NotifyPropertyChanged("PR1BrightnessValue");
             NotifyPropertyChanged("PR1ContrastValue");
             NotifyPropertyChanged("PR2BrightnessValue");
@@ -2638,6 +2770,46 @@ namespace DDPM.UI.Module.Brightness
         {
             if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 GetScheduleInfo();
+        }
+
+        public void WriteToConfig()
+        {
+            if (hOurs_1 > -1 && hOurs_2 > -1 && mIns_1 > -1 && mIns_2 > -1 && dUration_1 > -1 && dUration_2 > -1)
+            {
+                if (ScheduleMap == null)
+                    ScheduleMap = new scheduleInfo();
+
+                ScheduleMap.IsEnable = true;
+                ScheduleMap.model = SelectedHomeDevice.MonitorInfo.modelName;
+                ScheduleMap.serviceTag = SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
+                ScheduleMap.Pre1Name = PR1Name;
+                ScheduleMap.Pre2Name = PR2Name;
+                ScheduleMap.Hours1 = hOurs_1;
+                ScheduleMap.Mins1 = mIns_1;
+                ScheduleMap.Duration1 = dUration_1;
+                ScheduleMap.Hours2 = hOurs_2;
+                ScheduleMap.Mins2 = mIns_2;
+                ScheduleMap.Duration2 = dUration_2;
+                ScheduleMap.Contrast1 = PR1ContrastValue;
+                ScheduleMap.Contrast2 = PR2ContrastValue;
+
+                if (isLuminanceSupport == Visibility.Visible)
+                {
+                    ScheduleMap.Brightness1 = PR1LuminanceValue;
+                    ScheduleMap.Brightness2 = PR2LuminanceValue;
+                }
+                else
+                {
+                    ScheduleMap.Brightness1 = PR1BrightnessValue;
+                    ScheduleMap.Brightness2 = PR2BrightnessValue;
+                }
+
+                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!CheckIsTimeOverlap()) && (!IsPR1Preview && !IsPR2Preview))
+                {
+                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
+                    StartScheduleManger(60000);
+                }
+            }
         }
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
@@ -3414,12 +3586,18 @@ namespace DDPM.UI.Module.Brightness
                     //NotifyPropertyChanged("LuminanceMaxValue");
                     NotifyPropertyChanged("PR1Name");
                     NotifyPropertyChanged("PR2Name");
-                    NotifyPropertyChanged("hOurs1");
-                    NotifyPropertyChanged("mIns1");
-                    NotifyPropertyChanged("dUration1");
-                    NotifyPropertyChanged("hOurs2");
-                    NotifyPropertyChanged("mIns2");
-                    NotifyPropertyChanged("dUration2");
+                    NotifyPropertyChanged("hOursBr1");
+                    NotifyPropertyChanged("mInsBr1");
+                    NotifyPropertyChanged("dUrationBr1");
+                    NotifyPropertyChanged("hOursBr2");
+                    NotifyPropertyChanged("mInsBr2");
+                    NotifyPropertyChanged("dUrationBr2");
+                    NotifyPropertyChanged("hOursLu1");
+                    NotifyPropertyChanged("mInsLu1");
+                    NotifyPropertyChanged("dUrationLu1");
+                    NotifyPropertyChanged("hOursLu2");
+                    NotifyPropertyChanged("mInsLu2");
+                    NotifyPropertyChanged("dUrationLu2");
                     NotifyPropertyChanged("PR1LuminanceValue");
                     NotifyPropertyChanged("PR2LuminanceValue");
                 }
@@ -3427,12 +3605,18 @@ namespace DDPM.UI.Module.Brightness
                 {
                     NotifyPropertyChanged("PR1Name");
                     NotifyPropertyChanged("PR2Name");
-                    NotifyPropertyChanged("hOurs1");
-                    NotifyPropertyChanged("mIns1");
-                    NotifyPropertyChanged("dUration1");
-                    NotifyPropertyChanged("hOurs2");
-                    NotifyPropertyChanged("mIns2");
-                    NotifyPropertyChanged("dUration2");
+                    NotifyPropertyChanged("hOursBr1");
+                    NotifyPropertyChanged("mInsBr1");
+                    NotifyPropertyChanged("dUrationBr1");
+                    NotifyPropertyChanged("hOursBr2");
+                    NotifyPropertyChanged("mInsBr2");
+                    NotifyPropertyChanged("dUrationBr2");
+                    NotifyPropertyChanged("hOursLu1");
+                    NotifyPropertyChanged("mInsLu1");
+                    NotifyPropertyChanged("dUrationLu1");
+                    NotifyPropertyChanged("hOursLu2");
+                    NotifyPropertyChanged("mInsLu2");
+                    NotifyPropertyChanged("dUrationLu2");
                     NotifyPropertyChanged("PR1BrightnessValue");
                     NotifyPropertyChanged("PR1ContrastValue");
                     NotifyPropertyChanged("PR2BrightnessValue");

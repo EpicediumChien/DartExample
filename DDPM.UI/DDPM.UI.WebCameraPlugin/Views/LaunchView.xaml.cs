@@ -201,7 +201,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.WebcamSettingChanged += WebcamSettingChanged;
                 _vm.ProfilePropertyChanged += ProfilePropertyChanged;
 
-                imgDevice.Visibility = Visibility.Hidden;
+                //imgDevice.Visibility = Visibility.Hidden;
                 Preview();
                 EnableMonitorOnEvent();
 
@@ -1240,12 +1240,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
-                        imgDevice.Visibility = Visibility.Hidden;
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
 
                         //恢復9宮格線
-                        _vm.ShowGrid = true;
+                        //_vm.ShowGrid = true;
+                        //ShowGrid(this, EventArgs.Empty);
                     });
 
                 }
@@ -1254,22 +1254,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 //if (_vm.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
-                    _ = CameraImage.Dispatcher.BeginInvoke(async () =>
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
                         _ = CleanupMediaCaptureAsync();
 
-                        //WebcamGrid_old_ststus = _vm.WebcamGrid;
                         _vm.ShowGrid = false;
 
-                        imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
                         {
                             From = 0,
                             To = 1,
                             Duration = new Duration(TimeSpan.FromSeconds(0.3))
                         };
-                        visibilityAnimation.Completed += ShowGrid;
                         imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                         if (!_vm.hdr_change)
@@ -1319,12 +1316,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private async void Preview()
         {
+            if (_vm == null)
+                return;
+
             if (_vm.MediaCapture != null)
             { _ = CleanupMediaCaptureAsync(); }
 
             try
             {
-                // jim add 20240621
+                CameraImage.Source = null;
                 var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
 
                 // 20240626  jim add to avoid exception
@@ -1344,7 +1344,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     selectedFrameSourceGroup = frameSourceGroups[index_matched_webcam];
 
-                    if (_vm != null && _vm.CurrentDeviceInfo != null)
+                    if (_vm.CurrentDeviceInfo != null)
                     {
                         if (selectedFrameSourceGroup.Id.Contains(_vm.CurrentDeviceInfo.DeviceSymbolicLink, StringComparison.CurrentCultureIgnoreCase))
                             break;
@@ -1370,7 +1370,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 try
                 {
-
                     // get mic list first
                     var audioDevices = await DeviceInformation.FindAllAsync(DeviceClass.AudioCapture);
 
@@ -1384,7 +1383,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
                     }
 
-                    DeviceInformation microphone = null;
+                    DeviceInformation microphone;
+                    string AudioDeviceId = ""; // 2024/12/31 Elie.
                     if (devices_List.Count > 0)
                     {
                         microphone = devices_List[0];
@@ -1395,18 +1395,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 microphone = device;
                             }
                         }
+                        AudioDeviceId = microphone.Id;
                     }
 
                     // 2024/12/31 Elie.
                     var captureMode = devices_List.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
-
-                    //var microphone = audioDevices.FirstOrDefault();
-
-                    string AudioDeviceId = ""; // 2024/12/31 Elie.
-                    if (microphone != null)
-                    {
-                        AudioDeviceId = microphone.Id;
-                    }
 
                     //if (audioDevices != null)
                     if (!string.IsNullOrEmpty(AudioDeviceId))
@@ -1492,6 +1485,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _vm.AlertType = WebcamAlert.Alert2;
                     _vm.AlertVisibility = Visibility.Visible;
+                    imgDevice.Visibility = Visibility.Visible;
+                    _vm.ShowGrid = false;
                     return;
                 }
 
@@ -1538,6 +1533,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 To = 1,
                 Duration = new Duration(TimeSpan.FromSeconds(0.1))
             };
+            _vm.ShowGrid = true;
             grdPreview.BeginAnimation(OpacityProperty, visibilityAnimation);
         }
 
@@ -1975,8 +1971,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             void GetBuffer(out byte* buffer, out uint capacity);
         }
-        //[DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
-        //public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
+
         int ImageBufferSize = 0;
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)

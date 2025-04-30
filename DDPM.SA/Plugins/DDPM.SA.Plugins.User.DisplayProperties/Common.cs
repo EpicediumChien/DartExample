@@ -149,7 +149,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         ModeSwitch = 245
     }
 
-    public static class CommonApi
+    /*public static class CommonApi
     {
         //[DllImport("Shcore.dll", SetLastError = true)]
         //internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
@@ -161,7 +161,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             MDT_Raw_DPI = 2,
             MDT_Default = MDT_Effective_DPI
         }
-    }
+    }*/
 
     public class DDMiMessagingMsg
     {

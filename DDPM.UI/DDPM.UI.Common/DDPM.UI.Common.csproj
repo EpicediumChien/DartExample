@@ -516,7 +516,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
 		<ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
 		<ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
 	</ItemGroup>
@@ -640,6 +639,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="DDPM.Easy.Common">
+		  <HintPath>..\CommonDll\DDPM.Easy.Common.dll</HintPath>
+		</Reference>
 		<Reference Include="DDPM.SA.Common">
 			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
 		</Reference>

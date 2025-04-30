@@ -436,20 +436,6 @@ namespace DDPM.SA.Plugins.User.Hotkey
             return CallNextHookEx(idHook, nCode, wParam, ref lParam);
         }
 
-        /*        /// <summary>
-                /// Loads the library.
-                /// </summary>
-                /// <param name="lpFileName">Name of the library</param>
-                /// <returns>A handle to the library</returns>
-                [DllImport("kernel32.dll", SetLastError = true)]
-                [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-                private static extern IntPtr LoadLibrary(string lpFileName);
-
-                public static IntPtr _LoadLibrary(string lpFileName)
-                {
-                    return LoadLibrary(lpFileName);
-                }*/
-
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
@@ -458,23 +444,6 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             return GetAsyncKeyState(vKey);
         }
-
-        /*        [DllImport("kernel32.dll")]
-                private static extern IntPtr GetModuleHandle(string lpFileName);
-
-                [DllImport("user32.dll")]
-                [return: MarshalAs(UnmanagedType.Bool)]
-                public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-                [DllImport("user32.dll")]
-                [return: MarshalAs(UnmanagedType.Bool)]
-                public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-                [DllImport("kernel32.dll")]
-                public static extern ushort GlobalAddAtom(string lpString);
-
-                [DllImport("kernel32.dll")]
-                public static extern ushort GlobalDeleteAtom(ushort nAtom);*/
 
         #endregion DLL imports
     }

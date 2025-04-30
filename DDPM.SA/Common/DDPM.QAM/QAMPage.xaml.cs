@@ -461,7 +461,7 @@ namespace DDPM.QAM
         }
 
         #region Win32API
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -477,7 +477,7 @@ namespace DDPM.QAM
             }
 
             return rst;
-        }
+        }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
