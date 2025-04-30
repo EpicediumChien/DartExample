@@ -8,6 +8,7 @@ using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,9 @@ namespace DDPM.UI.Module.DisplayWebcam
         public Thread status_thread;
         private readonly DispatcherTimer AlertTimer;
         bool is_WindwosHelloSupport = false;// DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
+        private bool IsPresetOpen = false;
+        private string EditMode = "";
+        private string EditingProfileName = "";
 
         bool AllSupportedResolutions = true;
         public DisplayWebcamLeftView(WebCameraViewModel webCameraViewModel)
@@ -1365,52 +1368,331 @@ namespace DDPM.UI.Module.DisplayWebcam
 
         private void btnFolder_Click(object sender, MouseButtonEventArgs e)
         {
-
+            Process.Start("explorer.exe", _vm.VideoCaptureFolder);
         }
 
         private void btnPause_Click(object sender, MouseButtonEventArgs e)
         {
-
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPause_Click() start");
+            try
+            {
+                PauseRecordingAsync();
+                stopwatch.Stop();
+                btnPause.Visibility = Visibility.Collapsed;
+                btnPlay.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPause_Click() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPause_Click() end");
+        }
+        private async void PauseRecordingAsync()
+        {
+            DdpmCommonHelper.WriteUILog("Pausing recording...");
+            if (_vm.MediaCapture != null)
+            {
+                _ = await _vm.MediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
+            }
+            DdpmCommonHelper.WriteUILog("Pause recording!");
         }
 
         private void btnPlay_Click(object sender, MouseButtonEventArgs e)
         {
-
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPlay_Click() start");
+            try
+            {
+                ResumeRecordingAsync();
+                stopwatch.Start();
+                btnPause.Visibility = Visibility.Visible;
+                btnPlay.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPlay_Click() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPlay_Click() end");
         }
-
+        private async void ResumeRecordingAsync()
+        {
+            DdpmCommonHelper.WriteUILog("Resuming recording...");
+            try
+            {
+                if (_vm.MediaCapture != null)
+                    await _vm.MediaCapture.ResumeRecordAsync();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView]  ResumeRecordingAsync() ex: " + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("Resume recording!");
+        }
         private void btnRecord_Click(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnRecord_Click() start");
+            try
+            {
+                bool ret = _GetDiskFreeSpaceEx(_vm.VideoCaptureFolder, out ulong freeBytesAvailable, out _, out _);
+                if (ret)
+                {
+                    DdpmCommonHelper.WriteUILog("btnRecord_Click:  DISK Free " + freeBytesAvailable / (1024 * 1024) + "MB");
+                }
 
+                PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                DdpmCommonHelper.WriteUILog("btnRecord_Click:  Mem Free " + ramCounter.NextValue() + "MB");
+
+                if (!HasEnoughSpace(_vm.VideoCaptureFolder, 20 * 1024 * 1024))
+                {
+                    return;
+                }
+                btnPause.Visibility = Visibility.Visible;
+                btnRecord.Visibility = Visibility.Collapsed;
+                btnStop.Visibility = Visibility.Visible;
+                txtTimer.Visibility = Visibility.Visible;
+                if (IsPresetOpen)
+                { btnPreset_Click(this, null); }
+                btnPreset.IsEnabled = false;
+
+                StartRecord();
+
+                //Derek 2025/02/20 for PIMS 338464
+                _vm?.SaveWALSettings();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnRecord_Click() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnRecord_Click() end");
         }
 
+        private async void StartRecord()
+        {
+            DdpmCommonHelper.WriteUILog($"StartRecord");
+
+
+            _vm.IsMicEnumerationOnEnabled = false;
+
+            if (_vm.WebcamCountdown)
+            {
+                _countdownValue = 3; // 設置倒數起始值
+                CountdownText.Text = _countdownValue.ToString();
+                CountDownBox.Visibility = Visibility.Visible;
+                _timer.Start();
+                //DdpmCommonHelper.DeviceManagerSA?.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
+            }
+            else
+            {
+                //leo fixed 2024/01/10
+                //Avoid unnecessary expectation warnings.
+                //StartRecordingAsync().RunSynchronously();
+                await StartRecordingAsync();
+            }
+
+        }
         private void btnStop_Click(object sender, MouseButtonEventArgs e)
         {
-
+            UserStopRecord();
         }
 
         private void ProfileSelected(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ProfileSelected() start");
+            try
+            {
+                var profileName = ((UXTextBlock)sender).Tag.ToString()!;
+                if (profileName != _vm.CurrentProfileName)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA?.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
+                    _vm.CurrentProfileName = profileName;
+                    isProfilePropertyChanged = false;
 
+                    _vm.AlertType = WebcamAlert.Alert1;
+                    _vm.AlertVisibility = Visibility.Visible;
+
+                    //new Thread(() =>
+                    //{
+                    //    Thread.Sleep(3000);
+                    //    _vm.AlertVisibility = Visibility.Collapsed;
+                    //}).Start();
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(3000);
+                        _vm.AlertVisibility = Visibility.Collapsed;
+                    });
+
+                    _vm.SetProfile();
+
+                    //Derek 2025/02/12 force preview refresh to apply changed settings when change profile
+                    Preview();
+
+                    //Derek 1212
+                    DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
+                }
+                btnPreset_Click(this, null);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ProfileSelected() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] ProfileSelected() end");
         }
 
         private void DeletePreset(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] DeletePreset() start");
+            try
+            {
+                var profileName = ((Image)sender).Tag.ToString()!;
+                //DdpmCommonHelper.DeviceManagerSA.DeleteProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.WebcamSettings.CustomProfiles[profileName].Id);
+                if (_vm.WebcamSettings.CustomProfiles.ContainsKey(profileName))
+                {
+                    _vm.WebcamSettings.CustomProfiles.Remove(profileName);
+                    WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
+                    _vm.PrepareProfileItems();
+                    ProfileItems.ItemsSource = null;
+                    ProfileItems.ItemsSource = _vm.ProfileItems;
+                }
 
+                if (profileName == _vm.CurrentProfileName)
+                {
+                    _vm.CurrentProfileName = "Default";
+                    _vm.SetProfile();
+                }
+                btnPreset_Click(this, null);
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] DeletePreset() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] DeletePreset() end");
         }
 
         private void EditPreset(object sender, MouseButtonEventArgs e)
         {
-
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] EditPreset() start");
+            try
+            {
+                var profileName = ((FrameworkElement)sender).Tag.ToString()!;
+                EditMode = "EDIT";
+                EditingProfileName = profileName;
+                if (profileName != _vm.CurrentProfileName)
+                {
+                    _vm.CurrentProfileName = profileName;
+                    _vm.SetProfile();
+                }
+                txbName.Text = profileName;
+                _vm.DisableVBar();
+                gdBattery.Visibility = Visibility.Collapsed;
+                gdAddProfile.Visibility = Visibility.Visible;
+                //txtCaption.Text = Strings.EditPreset;
+                _vm.TooltipVisibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] EditPreset() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] EditPreset() end");
         }
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] AddPreset() start");
+            try
+            {
+                EditMode = "ADD";
+                //txtCaption.Text = LangHelper.Instance["Camera.5"];
+                _vm.DisableVBar();
+                gdBattery.Visibility = Visibility.Collapsed;
+                gdAddProfile.Visibility = Visibility.Visible;
+                txbName.Text = "";
+                txbName.Focus();
+                _vm.TooltipVisibility = Visibility.Visible;
 
+                /*if (_vm.VbarSelectedIndex == -1)
+                {
+                    OnVbarItemClicked(_vm.VbarItems[0]);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] AddPreset() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] AddPreset() end");
         }
 
         private void btnPreset_Click(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPreset_Click() start");
+            try
+            {
+                var img = (UIElement)FindName($"imgDown");
+                DoubleAnimation rotateAnimation;
+                var AnimatedPanel = (StackPanel)FindName("spPresets");
+                if (IsPresetOpen)
+                {
+                    if (_vm.CurrentProfileName == "NONE")
+                    {
+                        txtPreset.Text = $"{Strings.Preset}: {LangHelper.Instance["None"]}";
+                    }
+                    else
+                    {
+                        var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
+                        if (PresetNames.Contains(pName))
+                        {
+                            txtPreset.Text = $"{Strings.Preset}: {pName}";
+                        }
+                        else
+                        {
+                            txtPreset.Text = Utility.CheckTextLength($"{_vm.CurrentProfileName}", 140, 14);
+                        }
+                    }
 
+                    //var pName = _vm.CurrentProfileName == "NONE" ? "NONE" : _vm.ProfileCaptions[_vm.CurrentProfileName];
+                    //var txt = $"{Strings.Preset}: {pName}";
+                    //if (!PresetNames.Contains(pName)|| pName != "NONE")
+                    //{
+                    //    txt = Utility.CheckTextLength($"{_vm.CurrentProfileName}", 140, 14);
+                    //}
+                    //txtPreset.Text = txt;
+                    rotateAnimation = new()
+                    {
+                        From = 180,
+                        To = 0,
+                        Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                    };
+                    AnimatedPanel.Visibility = Visibility.Collapsed;
+                    //_vm?.OnUpdateIsHDROn();
+                }
+                else
+                {
+                    txtPreset.Text = LangHelper.Instance["Camera.6"];
+                    rotateAnimation = new()
+                    {
+                        From = 0,
+                        To = 180,
+                        Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                    };
+                    AnimatedPanel.Visibility = Visibility.Visible;
+                    DoubleAnimation visibilityAnimation = new()
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                    };
+                    AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
+                }
+                img.RenderTransform = new RotateTransform();
+                img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+                IsPresetOpen = !IsPresetOpen;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPreset_Click() ex:" + ex.Message);
+            }
+            DdpmCommonHelper.WriteUILog("[DisplayWebcamLeftView] btnPreset_Click() end");
         }
 
         private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
