@@ -303,7 +303,7 @@
                                                 <!--  Row: Buttons  -->
                                                 <Grid>
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                                        <UXControls:UXButton
+                                                        <!--<UXControls:UXButton
                                                             Name="btnManualBrightnessContrast"
                                                             Height="40"
                                                             MinWidth="111"
@@ -319,7 +319,21 @@
                                                             <Button.Content>
                                                                 <TextBlock Padding="10,0,10,0" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </Button.Content>
-                                                        </UXControls:UXButton>
+                                                        </UXControls:UXButton> -->
+                                                        <!--Dean fix for PIMS-348377-->
+                                                        <Button Name="btnManualBrightnessContrast"
+                                                            Height="40"
+                                                            MinWidth="111"
+                                                            Margin="8,0,0,16"
+                                                            Padding="24,8"
+                                                            Click="Hotkey_Click"
+                                                            IsEnabled="{Binding ManualBCHotkeyBtn}"
+                                                            KeyboardNavigation.TabIndex="122"
+                                                            Style="{StaticResource SecondaryButtonStyle}" >
+                                                            <Button.Content>
+                                                                <TextBlock Padding="10,0,10,0" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </Button.Content>
+                                                        </Button>
                                                         <UXControls:UXButton
                                                             Height="40"
                                                             MinWidth="111"
@@ -1972,7 +1986,7 @@
                                                         </Grid.Resources>
                                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                             <!--  Elsa 20250113 For PIMS [PIMS-333699] change Width="173" to MinWidth="173"  -->
-                                                            <UXControls:UXButton
+                                                            <!--<UXControls:UXButton
                                                                 Name="PR1_Preview_UXButton"
                                                                 Height="40"
                                                                 MinWidth="173"
@@ -1985,7 +1999,20 @@
                                                                 FontSize="14"
                                                                 IsEnabled="{Binding IsPR2Preview, Converter={StaticResource boolReverseConverter}}"
                                                                 KeyboardNavigation.TabIndex="149"
-                                                                Style="{StaticResource Button_WhiteFrame}" />
+                                                                Style="{StaticResource Button_WhiteFrame}" />-->
+                                                                <Button Name="PR1_Preview_UXButton"
+                                                                    Height="40"
+                                                                    MinWidth="173"
+                                                                    Padding="31.5,8"
+                                                                    FontSize="14"
+                                                                    Click="PR1_Preview_UXButton_Click"
+                                                                    IsEnabled="{Binding IsPR2Preview, Converter={StaticResource boolReverseConverter}}"
+                                                                    KeyboardNavigation.TabIndex="149"
+                                                                    Style="{StaticResource SecondaryButtonStyle}" >
+                                                                    <Button.Content>
+                                                                        <TextBlock Margin="10,0,10,0" Text="{Binding PR1ButtonContent}"></TextBlock>
+                                                                    </Button.Content>
+                                                                </Button>
                                                         </StackPanel>
                                                     </Grid>
                                                 </StackPanel>
@@ -2486,7 +2513,7 @@
                                                         </Grid.Resources>
                                                         <!--  20250401 Chewlin change Width="173" to MinWidth="173" to keep preview 1 Same  -->
                                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                                            <UXControls:UXButton
+                                                            <!--<UXControls:UXButton
                                                                 Name="PR2_Preview_UXButton"
                                                                 Height="40"
                                                                 MinWidth="173"
@@ -2498,7 +2525,20 @@
                                                                 CornerRadius="2"
                                                                 IsEnabled="{Binding IsPR1Preview, Converter={StaticResource boolReverseConverter}}"
                                                                 KeyboardNavigation.TabIndex="169"
-                                                                Style="{StaticResource Button_WhiteFrame}" />
+                                                                Style="{StaticResource Button_WhiteFrame}" /> -->
+                                                            <Button Name="PR2_Preview_UXButton"
+                                                                Height="40"
+                                                                MinWidth="173"
+                                                                Padding="31.5,8"
+                                                                FontSize="14"
+                                                                Click="PR2_Preview_UXButton_Click"
+                                                                IsEnabled="{Binding IsPR1Preview, Converter={StaticResource boolReverseConverter}}"
+                                                                KeyboardNavigation.TabIndex="169"
+                                                                Style="{StaticResource SecondaryButtonStyle}" >
+                                                                <Button.Content>
+                                                                    <TextBlock Margin="10,0,10,0" Text="{Binding PR2ButtonContent}"></TextBlock>
+                                                                </Button.Content>
+                                                            </Button>
                                                         </StackPanel>
                                                     </Grid>
                                                 </StackPanel>
