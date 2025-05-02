@@ -64,6 +64,19 @@ namespace DDPM.CMA.Tester
             return _exitcode;
         }
 
+        private void WriteLog(string text, bool isError = false)
+        {
+            string logString = $"[CMA.Tester] {text}";
+            Console.WriteLine(text);
+            if (_Log != null)
+            {
+                if (!isError)
+                    _Log.Info(logString);
+                else
+                    _Log.Error(logString);
+            }
+        }
+
         public async Task StartAsync(string[] args)
         {
             _PluginAvailabilityTrigger_CMAManager.Reset();
@@ -77,7 +90,7 @@ namespace DDPM.CMA.Tester
                 UserProcessMutexGuid = _UserProcessMutexGuid,
                 LogPrefixName = _ServiceName,
                 AllowUnelevatedExecution = true,
-                MultiSessionAgent = true
+                MultiSessionAgent = false
             };
 
             _Agent = new Agent(agentConfig);
@@ -121,7 +134,7 @@ namespace DDPM.CMA.Tester
             else
             {
                 //Means timeout here
-                Console.WriteLine($"{"Device "} was not found after {TIMEOUT_IN_SECONDS}s.");
+                WriteLog($"{"Device "} was not found after {TIMEOUT_IN_SECONDS}s.");
 
                 return;
             }
@@ -189,7 +202,7 @@ namespace DDPM.CMA.Tester
             _CMAManagerPlugin.Notify += Notification;
             _CMAManagerPlugin.DisplayConnected += DisplayConnected;
             _CMAManagerPlugin.DisplayDisconnected += DisplayDisconnected;
-            Console.WriteLine("Subscribe Event Success");
+            WriteLog("Subscribe Event Success");
             #endregion
 
             // manager.Info(json);
@@ -283,7 +296,7 @@ namespace DDPM.CMA.Tester
                             break;
                     }
                     stopwatch.Start();
-                    Console.WriteLine($"json String = {cmaRequest.remote_request}");
+                    WriteLog($"json String = {cmaRequest.remote_request}");
                     _CMAManagerPlugin.Info(cmaRequest);
                 }
                 while (!isresponse) { }
@@ -293,8 +306,11 @@ namespace DDPM.CMA.Tester
         private void InitializeCMAManagerPlugin()
         {
             if (_CMAManagerPlugin != null)
+            {
+                WriteLog($"{nameof(PluginsStarted)} _CMAManagerPlugin still null");
                 return;
-            Console.WriteLine($"{nameof(PluginsStarted)} arrived for {nameof(IRemoteManagement)}");
+            }
+            WriteLog($"{nameof(PluginsStarted)} arrived for {nameof(IRemoteManagement)}");
 
             _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<IRemoteManagement>(PluginResolution.Dynamic);
             if (_CMAManagerPlugin is IFrameworkPluginConditionNotification condition)
@@ -316,11 +332,11 @@ namespace DDPM.CMA.Tester
 
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
+                        WriteLog($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
                     }
                     else if (pluginCondition is PluginRunningCondition)//cross subagent
                     {
-                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
+                        WriteLog($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
                         _PluginAvailabilityTrigger_CMAManager.Set();
                     }
                 }
@@ -398,30 +414,30 @@ namespace DDPM.CMA.Tester
 
         private void Notification(object? sender, NotifyArgs e)
         {
-            Console.WriteLine("CMA Notification Alert");
-            Console.WriteLine("CMA Notification Alert event type : " + e.eventType);
-            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
+            WriteLog("CMA Notification Alert");
+            WriteLog("CMA Notification Alert event type : " + e.eventType);
+            WriteLog("CMA Notification Alert notification : " + e.notification);
             isresponse = true;
             stopwatch.Stop();
-            Console.WriteLine($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
+            WriteLog($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
             PrintOptions();
         }
 
-        private static void DisplayConnected(object? sender, NotifyArgs e)
+        private void DisplayConnected(object? sender, NotifyArgs e)
         {
-            Console.WriteLine("CMA DisplayConnected Alert");
-            Console.WriteLine("CMA DisplayConnected Alert eventtype : " + e.eventType);
-            Console.WriteLine("CMA DisplayConnected Alert notification : " + e.notification);
+            WriteLog("CMA DisplayConnected Alert");
+            WriteLog("CMA DisplayConnected Alert eventtype : " + e.eventType);
+            WriteLog("CMA DisplayConnected Alert notification : " + e.notification);
 
             isresponse = true;
         }
 
-        private static void DisplayDisconnected(object? sender, NotifyArgs e)
+        private void DisplayDisconnected(object? sender, NotifyArgs e)
         {
 
-            Console.WriteLine("CMA DisplayDisconnected Alert");
-            Console.WriteLine("CMA DisplayDisconnected Alert eventtype : " + e.eventType);
-            Console.WriteLine("CMA DisplayDisconnected Alert notification : " + e.notification);
+            WriteLog("CMA DisplayDisconnected Alert");
+            WriteLog("CMA DisplayDisconnected Alert eventtype : " + e.eventType);
+            WriteLog("CMA DisplayDisconnected Alert notification : " + e.notification);
 
             isresponse = true;
         }

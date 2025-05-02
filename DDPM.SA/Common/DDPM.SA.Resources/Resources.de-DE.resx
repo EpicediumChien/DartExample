@@ -198,9 +198,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Öffnen der Anwendung ist fehlgeschlagen</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>wird aktualisiert auf </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>kann aktualisiert werden auf</value>
   </data>
@@ -230,6 +227,12 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Timeout-Fehler</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Bewegen oder klicken Sie zweimal auf die linke Maustaste der Zielmaus.</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Drücken Sie zweimal die Taste „U“, um das Firmware-Update der Zieltastatur zu aktivieren.</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Gerät verbunden</value>
@@ -420,7 +423,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Feststelltaste an</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Feststelltaste aus</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -462,9 +465,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Sperre bei Abwesenheit</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Feststelltaste aus</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -479,6 +479,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Das entsprechende ICC-Profil kann nicht synchronisiert werden für</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>wird aktualisiert auf </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Feststelltaste aus</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Diesem nutzerdefinierten Layout sind Easy Memory-Profile zugeordnet.\nWenn Sie dieses nutzerdefinierte Layout speichern, wird das Layout für alle zugehörigen Profile aktualisiert.\nMöchten Sie das Layout speichern?</value>
@@ -516,6 +522,15 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Nutzt intelligente Szenenanalyse und Gesichtsverfolgung, um die Ansicht beim Bewegen zu vergrößern und zu schwenken.</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Schalten Sie das System erst aus, wenn die Updates abgeschlossen sind</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Das Standard-ICC-Profil ist für Smart HDR. Die Farbvoreinstellung im kann nicht geändert werden.</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Das Standard-ICC-Profil ist für Smart HDR nicht geeignet. Die Farbvoreinstellung im kann nicht geändert werden.</value>
+  </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Es wurden mehrere Dockingstationen erkannt. Lassen Sie nur eine Dockingstation angeschlossen, um Schäden an Ihren Dockingstationen zu vermeiden.</value>
   </data>
@@ -524,21 +539,6 @@
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Mehrere Dockingstationen wurden erkannt. Verbinden Sie nur eine Dockingstation, um Schäden an Ihren Dockingstationen zu verhindern. Starten Sie den PC neu und verbinden Sie nur eine Dockingstation.</value>
-  </data>
-  <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>Schalten Sie das System erst aus, wenn die Updates abgeschlossen sind</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Bewegen oder klicken Sie zweimal auf die linke Maustaste der Zielmaus.</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Drücken Sie zweimal die Taste „U“, um das Firmware-Update der Zieltastatur zu aktivieren.</value>
-  </data>
-  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>Das Standard-ICC-Profil ist für Smart HDR. Die Farbvoreinstellung im kann nicht geändert werden.</value>
-  </data>
-  <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>Das Standard-ICC-Profil ist für Smart HDR nicht geeignet. Die Farbvoreinstellung im kann nicht geändert werden.</value>
   </data>
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>Je nach Monitormodell und Konfiguration (z. B. Verbindungsart) kann das Update ca. 10 bis 30 Minuten dauern. Es kann länger dauern, wenn Sie mehrere Monitore desselben Modells aktualisieren. Schalten Sie den Bildschirm nicht aus und trennen Sie keine Kabel, während das Update heruntergeladen wird.</value>
@@ -611,5 +611,302 @@
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Schließen Sie den Monitor über den vorgelagerten USB-Anschluss an, um Fehler während des Firmware-Updates zu vermeiden.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Leeres Layout</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Option 2.1: 2 Spalten, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Option 2.1: 2 Zeilen, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Option 2.2: 2 Zeilen, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Option 2.2: 2 Spalten, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Option 2.3: 2 Spalten, Aufteilung 70-30 %</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Option 2.3: 2 Zeilen, Aufteilung 30-70 %.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Option 2.4: 2 Spalten, Aufteilung 30-70 %.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Option 2.4: 2 Zeilen, Aufteilung 70-30 %.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Option 3.1: 3 Zeilen, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Option 3.1: 3 Spalten, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Option 3.2: 3 Spalten, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Option 3.2: 3 Zeilen, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Option 3.3: 3 Spalten, Aufteilung 30-40-30 %.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Option 3.3: 3 Zeilen, Aufteilung 30-40-30 %.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Option 3.4: 2 Zeilen, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Option 3.4: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, keine Teilung. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Option 3.5: 2 Zeilen, gleichmäßig aufgeteilt. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Option 3.5: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1 gleichmäßig aufgeteilt. Zeile 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Option 3.6: 2 Zeilen, gleichmäßig aufgeteilt. Spalte 1, Aufteilung 30-70 %. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Option 3.6: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, keine Teilung. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Option 3.7: 2 Zeilen, gleichmäßig aufgeteilt. Spalte 1, Aufteilung 70-30%. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Option 3.7: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Option 3.8: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, keine Teilung. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Option 3.8: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Option 3.9: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Option 3.9: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Option 4.1: Aufteilung in 4 Quadranten.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Option 4.1: Aufteilung in 4 Quadranten.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Option 4.2: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Option 4.2: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, keine Teilung. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Option 4.3: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Option 4.3: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt in drei Abschnitte. Zeile 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Option 4.4: 4 Spalten, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Option 4.4: 4 Zeilen, gleichmäßig aufgeteilt</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Option 4.5: 3 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt. Spalten 2 und 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Option 4.5: 3 Zeilen, gleichmäßig aufgeteilt. Zeilen 1 und 2, keine Teilung. Zeile 3, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Option 4.6: 3 Spalten, gleichmäßig aufgeteilt. Spalten 1 und 2, keine Teilung. Spalte 3, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Option 4.6: 3 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt. Zeilen 2 und 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Option 5.1: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Option 5.1: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Option 5.2: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Option 5.2: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Option 5.3: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Option 5.3: 2 Spalten, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Option 5.4: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Option 5.4: 2 Spalten, Aufteilung 70-30 %. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Variante 5.5: 2 Zeilen, Aufteilung 30-70 %. Zeilen 1 und 2, gleichmäßig aufgeteilt. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Option 5.5: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Option 5.6: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 2, Aufteilung 30-70 %.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Option 5.6: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, Aufteilung 30-70 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Option 5.7: 3 Spalten, gleichmäßig aufgeteilt, Spalten 1 und 3, gleichmäßig aufgeteilt, Spalte 2, keine Aufteilung.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Option 5.7: 3 Zeilen, gleichmäßig aufgeteilt, Zeilen 1 und 3, gleichmäßig aufgeteilt, Zeile 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Option 5.8: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, Aufteilung 70-30 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Option 5.8: 2 Spalten, Aufteilung 30-70 %. Spalte 1, Aufteilung 70-30 %, Spalte 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Option 5.9: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, Aufteilung 70-30 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Option 5.9: 2 Spalten, Aufteilung 70-30 %. Spalte 1, Aufteilung 70-30 %, Spalte 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Option 6.1: 3 Spalten, gleichmäßig aufgeteilt. Spalten 1, 2 und 3 jeweils gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Option 6.1: 2 Spalten, gleichmäßig aufgeteilt, Spalten 1 und 2, je gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Option 6.2: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, Aufteilung 70-30 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Option 6.2: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Option 6.3: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 4 Abschnitte. Zeile 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Option 6.3: 2 Spalten, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt in 4 Abschnitte. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Option 6.4: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 70-30 %. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Option 6.4: 2 Spalten, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Option 6.5: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Option 6.5: 2 Spalten, Aufteilung 30-70 %. Zeile 1, Aufteilung 30-70 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Option 6.6: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Option 6.6: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, Aufteilung 30-70 %. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 1, keine Teilung. Spalte 2, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Option 6.7: 2 Spalten, gleichmäßig aufgeteilt. Zeilen 1, 2 und 3, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Option 6.7: 3 Spalten, gleichmäßig aufgeteilt. Spalten 1, 2 und 3 jeweils gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Option 6.8: 4 Spalten, gleichmäßig aufgeteilt. Zeilen 1 und 4, gleichmäßig aufgeteilt. Zeilen 2 und 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Option 6.8: 4 Zeilen, gleichmäßig aufgeteilt. Zeilen 1 und 4, gleichmäßig aufgeteilt. Zeilen 2 und 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Option 6.9: 2 Zeilen, Aufteilung 70-30 %. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 4 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Option 6.9: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, Aufteilung 70-30%. Spalte 1, keine Teilung, Spalte 2, gleichmäßig aufgeteilt. Zeile 2, Aufteilung 70-30 %.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Option 6.10: 2 Spalten, Aufteilung 70-30 %. Spalten 1, 2 und 3 jeweils gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Option 6.10: 2 Zeilen, Aufteilung 70-30 %. Zeilen 1 und 2, jeweils gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Option 7.1: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalten 2 und 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Option 7.1: 3 Zeilen, gleichmäßig aufgeteilt. Zeilen 1 und 2, Aufteilung jeweils 30-70 %. Zeile 3, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Option 7.2: 2 Zeilen, Aufteilung 30-70 %. Zeilen 1 und 2, jeweils gleichmäßig aufgeteilt in 3 Abschnitte. Spalten 1 und 2, keine Teilung. Spalte 3, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Option 7.2: 3 Zeilen, gleichmäßig aufgeteilt. Zeilen 1 und 3, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Option 7.3: 2 Zeilen, gleichmäßig aufgeteilt in 4 Abschnitte. Zeile 1, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Option 7.3: 2 Spalten, gleichmäßig aufgeteilt in 4 Abschnitte. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Option 7.4: 2 Zeilen, gleichmäßig aufgeteilt. Zeilen 1 und 3, gleichmäßig aufgeteilt. Zeile 2, gleichmäßig aufgeteilt in 4 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Option 7.4: 2 Spalten, gleichmäßig aufgeteilt. Spalte 1, gleichmäßig aufgeteilt in 3 Abschnitte. Spalte 2, gleichmäßig aufgeteilt in 4 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Option 7.5: 2 Zeilen, gleichmäßig aufgeteilt. Zeile 1, gleichmäßig aufgeteilt in 4 Abschnitte. Zeile 2, aufteilung 25-50-25 %. Spalten 1 und 3, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Option 7.5: 3 Zeilen, Aufteilung 25-50-25 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung. Zeile 3, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Option 7.6: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, Aufteilung 25-50-25 %. Spalte 1 und 3, gleichmäßig aufgeteilt. Spalte 2, keine Teilung. Zeile 2, gleichmäßig aufgeteilt in 4 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Option 7.6: 3 Zeilen, Aufteilung 25-50-25 %. Zeile 1, gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 2, Aufteilung 70-30 %. Zeile 3, gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Option 7.7: 2 Zeilen, Aufteilung 30-70 %. Zeile 1, gleichmäßig aufgeteilt in 4 Abschnitte. Zeile 2, Aufteilung 25-50-25 %. Spalte 1, keine Teilung. Spalten 2 und 3, gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Option 7.7: 3 Zeilen, Aufteilung 25-25-50 %. Zeilen 1 und 2, je gleichmäßig aufgeteilt in 3 Abschnitte. Zeile 3, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Option 7.8: 2 Zeilen, Aufteilung 30-70 %. Zeilen 1 und 4, gleichmäßig aufgeteilt. Zeile 2, Aufteilung 25-25-50 %. Spalten 1 und 2, je gleichmäßig aufgeteilt. Spalte 3, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Option 7.8: 3 Zeilen, Aufteilung 30-70 %. Zeile 1, Aufteilung 30-70 %. Spalte 1, gleichmäßig aufgeteilt. Spalte 2, keine Teilung. Zeilen 2 und 3, jeweils gleichmäßig in 3 Abschnitte aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Option 7.9: 4 Spalten, gleichmäßig aufgeteilt. Spalten 1, 2, 3 und 4 jeweils gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Option 7.9: 4 Spalten, gleichmäßig aufgeteilt. Zeilen 1, 2, 3 und 4 jeweils gleichmäßig aufgeteilt.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Option 7.10: 4 Spalten, gleichmäßig aufgeteilt, Spalten 1, 2, 3 und 4, je gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Option 7.10: 4 Spalten, gleichmäßig aufgeteilt, Spalten 1, 2, 3 und 4, je gleichmäßig aufgeteilt in 3 Abschnitte.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Option 7.11: 2 Zeilen, Aufteilung 30-70 %. Zeilen 1 und 2, Aufteilung je  25-50-25 %. Spalten 1 und 3, je gleichmäßig aufgeteilt. Spalte 2, keine Teilung.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Option 7.11: 3 Spalten, Aufteilung 30-70 %. Spalten 1, 2 und 3, Aufteilung 25-50-25 %. Zeilen 1 und 3, gleichmäßig aufgeteilt. Zeile 2, keine Teilung.</value>
   </data>
 </root>

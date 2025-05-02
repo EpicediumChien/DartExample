@@ -97,6 +97,7 @@ namespace DDPM.UI.Common
         DisplayInputSource,
         DisplayEA,
         DisplayGaming,
+        DisplayMonitorAudio,
         DisplayKVM,
         DisplayOthers,
         KeyboardKeyCustom,

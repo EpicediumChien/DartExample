@@ -212,15 +212,15 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>-->
-                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                         <!-- The (i) icon 16x16 -->
                                         <ContentControl Template="{StaticResource icon_Info}"/>
                                         <!-- ToolTip -->
                                         <Button.ToolTip>
                                             <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                    <TextBlock Text="{Binding NoiseControlToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    <TextBlock Text="{Binding NoiseControlToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                 </Border>
                                             </ToolTip>
                                         </Button.ToolTip>
@@ -291,15 +291,15 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
                                                                 <Button.ToolTip>
                                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                            <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                            <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Button.ToolTip>
@@ -347,15 +347,15 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
                                                                 <Button.ToolTip>
                                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                            <TextBlock Text="{Binding TransparencyInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                            <TextBlock Text="{Binding TransparencyInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                         </Border>
                                                                     </ToolTip>
                                                                 </Button.ToolTip>
@@ -405,13 +405,13 @@
                                                                     </ToolTip>
                                                                 </Image.ToolTip>
                                                             </Image>-->
-                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                            <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                                 <!-- The (i) icon 16x16 -->
                                                                 <ContentControl Template="{StaticResource icon_Info}"/>
                                                                 <!-- ToolTip -->
                                                                 <Button.ToolTip>
                                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <TextBlock Text="{Binding NoiseOffInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                         </Border>
@@ -504,15 +504,15 @@
                                                                 </ToolTip>
                                                             </Image.ToolTip>
                                                         </Image>-->
-                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                             <!-- The (i) icon 16x16 -->
                                                             <ContentControl Template="{StaticResource icon_Info}"/>
                                                             <!-- ToolTip -->
                                                             <Button.ToolTip>
                                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                        <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                        <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                     </Border>
                                                                 </ToolTip>
                                                             </Button.ToolTip>
@@ -639,15 +639,15 @@
                                                                 </ToolTip>
                                                             </Image.ToolTip>
                                                         </Image>-->
-                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,12,12,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
                                                             <!-- The (i) icon 16x16 -->
                                                             <ContentControl Template="{StaticResource icon_Info}"/>
                                                             <!-- ToolTip -->
                                                             <Button.ToolTip>
                                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                        <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                        <TextBlock Text="{Binding NoiseCancellingInfoTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                     </Border>
                                                                 </ToolTip>
                                                             </Button.ToolTip>
@@ -788,7 +788,7 @@
                                             <!-- ToolTip -->
                                             <Button.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <TextBlock Text="{Binding AudioOutputPresetsToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                     </Border>
@@ -1080,7 +1080,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding OutgoingAudioToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -1123,7 +1123,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding IncomingAudioToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -1189,7 +1189,7 @@
                                                 <!-- ToolTip -->
                                                 <Button.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding MicNoiseCancellationToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                         </Border>
@@ -1285,9 +1285,9 @@
                                             <!-- ToolTip -->
                                             <Button.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding SidetoneToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                        <TextBlock Text="{Binding SidetoneToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                     </Border>
                                                 </ToolTip>
                                             </Button.ToolTip>

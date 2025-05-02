@@ -1,5 +1,4 @@
-﻿using DDPM.Easy.Common;
-using DDPM.UI.Common.Interfaces;
+﻿using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Moq;

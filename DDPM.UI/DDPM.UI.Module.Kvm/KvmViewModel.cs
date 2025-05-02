@@ -27,6 +27,7 @@ using Microsoft.VisualBasic.Logging;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -181,26 +182,6 @@ namespace DDPM.UI.Module.Kvm
         private bool toKVMSetPage = false;
         #endregion
 
-        #region Win32
-        /*[DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-        private static int _SetParent(IntPtr hWndChild, IntPtr hWndNewParent)
-        {
-            return SetParent(hWndChild, hWndNewParent);
-        }*/
-
-        /*[DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-        private static bool _EnableWindow(IntPtr hWnd, bool bEnable)
-        {
-            return EnableWindow(hWnd, bEnable);
-        }*/
-        #endregion Win32
-
-        //[DllImport("user32.dll", SetLastError = true)]
-        //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public readonly ILog? _log = null;
         public Guid? guid { get; set; } = null;
         public IModuleOwner? ModuleOwner { get; set; } = null;
@@ -3467,5 +3448,36 @@ namespace DDPM.UI.Module.Kvm
                 }
             }
         }
+
+        public Visibility CurrentCultureArrowRight {
+            get {
+                return CultureInfo.CurrentUICulture.Name == "ar-SA" ? Visibility.Collapsed : Visibility.Visible;
+            } 
+        }
+
+        public Visibility CurrentCultureArrowLeft
+        {
+            get
+            {
+                return CurrentCultureArrowRight == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private Visibility _fullMode { get; set; }
+
+        public Visibility FullMode
+        {
+            get
+            {
+                return _fullMode;
+            }
+
+            set {
+                _fullMode = value;
+                OnPropertyChanged("FullMode");
+            }
+        }
+
+        public Visibility ShrinkMode => FullMode == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
     }
 }

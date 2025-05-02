@@ -535,9 +535,9 @@
                                         <!-- ToolTip -->
                                         <Button.ToolTip>
                                             <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                    <TextBlock Text="{Binding [Cardi.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                    <TextBlock Text="{Binding [Cardi.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                 </Border>
                                             </ToolTip>
                                         </Button.ToolTip>
@@ -586,9 +586,9 @@
                                                         <!-- ToolTip -->
                                                         <Button.ToolTip>
                                                             <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                    <TextBlock Text="{Binding [Cardi.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                    <TextBlock Text="{Binding [Cardi.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"  MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                 </Border>
                                                             </ToolTip>
                                                         </Button.ToolTip>
@@ -672,9 +672,9 @@
                                                     <!-- ToolTip -->
                                                     <Button.ToolTip>
                                                         <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                <TextBlock Text="{Binding [Cardi.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                                <TextBlock Text="{Binding [Cardi.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </Border>
                                                         </ToolTip>
                                                     </Button.ToolTip>
@@ -774,9 +774,9 @@
                                             <!-- ToolTip -->
                                             <Button.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [Cardi.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                        <TextBlock Text="{Binding [Cardi.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                     </Border>
                                                 </ToolTip>
                                             </Button.ToolTip>
@@ -806,9 +806,9 @@
                                             <!-- ToolTip -->
                                             <Button.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
-                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                                <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" Opened="toolTip_Opened" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [Cardi.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                                        <TextBlock Text="{Binding [Cardi.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                     </Border>
                                                 </ToolTip>
                                             </Button.ToolTip>

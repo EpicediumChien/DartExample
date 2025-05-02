@@ -118,6 +118,7 @@ namespace DDPM.UI.Common
         public static readonly string VbarText_InputSource = GetString("InputSource");
         public static readonly string VbarText_EasyArrange = GetString("EasyArrange");
         public static readonly string VbarText_Gaming = GetString("Gaming");
+        public static readonly string VbarText_MonitorAudio = GetString("Audio");
         public static readonly string VbarText_KVM = GetString("KVM");
         public static readonly string VbarText_DisplayOthers = GetString("VbarText_DisplayOthers");
 
@@ -550,6 +551,18 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Sub1 = GetString("WalkThroughHeadsetWL7024_Sub.1");
         public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
+        public static readonly string WalkThroughAirAudio_Main0 = GetString("WalkThroughAirAudio_Main.0");
+        public static readonly string WalkThroughAirAudio_Main1 = GetString("WalkThroughAirAudio_Main.1");
+        public static readonly string WalkThroughAirAudio_Main2 = GetString("WalkThroughAirAudio_Main.2");
+        public static readonly string WalkThroughAirAudio_Sub0 = GetString("WalkThroughAirAudio_Sub.0");
+        public static readonly string WalkThroughAirAudio_Sub1 = GetString("WalkThroughAirAudio_Sub.1");
+        public static readonly string WalkThroughAirAudio_Sub2 = GetString("WalkThroughAirAudio_Sub.2");
+        public static readonly string WalkThroughAirAudio_Sub3 = GetString("WalkThroughAirAudio_Sub.3");
+        public static readonly string WalkThroughAirAudio_Sub4 = GetString("WalkThroughAirAudio_Sub.4");
+        public static readonly string WalkThroughAirAudio_Sub5 = GetString("WalkThroughAirAudio_Sub.5");
+        public static readonly string WalkThroughAirAudio_Sub6 = GetString("WalkThroughAirAudio_Sub.6");
+        public static readonly string WalkThroughAirAudio_Sub7 = GetString("WalkThroughAirAudio_Sub.7");
+
 
         //OpenAction
         public static readonly string AssignKeystrokeDesc = GetString("Action.1");

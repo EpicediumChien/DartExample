@@ -1,5 +1,5 @@
 ﻿#region LicenceHeader
-
+//#define SUPPORT_210
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -9,6 +9,7 @@
 //
 
 #endregion
+
 
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
@@ -82,6 +83,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private Type _webcamInterfaceType;
         private Type _dongleInterfaceType;
         private Type _airaudioInterfaceType;
+        private Type _rtkhubInterfaceType;
 
         private MethodInfo _globalperipheralMethodInfo;
         private MethodInfo _mouseMethodInfo;
@@ -93,6 +95,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private MethodInfo _webcamMethodInfo;
         private MethodInfo _dongleMethodInfo;
         private MethodInfo _airaudioMethodInfo;
+        private MethodInfo _rtkhubMethodInfo;
 
         private ItemId _itemID = null;
         private ICommodity _comdity;
@@ -105,6 +108,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string HeadsetItemID = "DellPeripheral.Headset";
         private const string SpeakerItemID = "DellPeripheral.Speaker";
         private const string AirAudioItemID = "DellPeripheral.AirAudio";
+        private const string RtkHubItemID = "DellPeripheral.RtkHub";
         private bool IsDTPReady = false;
 
         public const string PluginLogId = "DTPProxy";
@@ -153,6 +157,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             public string DeviceId { get; set; } = string.Empty;
             public string ModelNumber { get; set; } = string.Empty;
         };
+#if Support_210
+        private ICommodity _comdityRtkHub = null;
+        private List<RtkHubEventHandleObject> rtkhubList = new List<RtkHubEventHandleObject>();
+        internal class RtkHubEventHandleObject
+        {
+            public ICommodity rtkhubCommodity = null;
+            public string rtkhubIndex = string.Empty;
+            public string DeviceName { get; set; } = string.Empty;
+            public string DeviceId { get; set; } = string.Empty;
+            public string ModelNumber { get; set; } = string.Empty;
+        };
+#endif
         /// <summary>
         /// Webcam change event
         /// </summary>
@@ -9929,7 +9945,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#endif
                     _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -9965,7 +9985,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#endif
                     _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -9995,7 +10019,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
                 _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
                 _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                //_Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#else
                 _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+#endif
                 _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
                 _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
                 _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -10128,7 +10156,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
                     _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
                     _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+#if SUPPORT_210
+                    //_Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#else
                     _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+#endif
+
                     _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
                     _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
                     _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
@@ -10196,7 +10229,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Speaker] Catch event Speaker_OnInstanceNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+#if SUPPORT_210
+        //private void Speaker_OnCurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        //{
+        //    SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnCurrentSelectedProfileChanged",
+        //                            e.DeviceId, $"Speaker_OnCurrentSelectedProfileChanged:{e.ProfileId.ToString()}"));
 
+        //    writelog($"[Speaker] Catch event Speaker_OnCurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+#else
         private void Speaker_OnCurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
         {
             SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnCurrentSelectedProfileChanged",
@@ -10204,7 +10245,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Speaker] Catch event Speaker_OnCurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
-
+#endif
         private void Speaker_OnIsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
         {
             SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnIsIMicNSEnabledChanged",
@@ -10867,6 +10908,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             {
                                 writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                             }
+
+                            writelog($"Find IRtkHubCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            _rtkhubInterfaceType = FindCommodityInterfaceType("IRtkHubCommodity");
+                            if (_rtkhubInterfaceType != null)
+                            {
+                                _rtkhubMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                            .MakeGenericMethod(_rtkhubInterfaceType);
+
+                                writelog($"Find IRtkHubCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
+                            else
+                            {
+                                writelog($"Find IRtkHubCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                            }
                         }
                         DTPProxyPluginReady = true;
                         DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
@@ -11131,6 +11186,40 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                     }
                 }
+#if Support_210
+                // RtkHub rtkhub
+                _comdityRtkHub = await _commSdk.GetCommodityAsync<IRtkHubCommodity>(new ItemId("DellPeripheral.RtkHub"), CancellationToken.None);
+                if (_comdityRtkHub is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _rtkhubcom)
+                {
+                    try
+                    {
+                        _rtkhubcom.Connected += RtkHub_Connected;
+                        _rtkhubcom.Disconnected += RtkHub_Disconnected;
+                        writelog($"RtkHub Commodity event registered, connected _rtkhubcom.DeviceItems = {_rtkhubcom.DeviceItems.Length}");
+                        int i = 0;
+                        foreach (var item in _rtkhubcom.DeviceItems)
+                        {
+                            writelog($"connected _rtkhubcom.DeviceItems[{i}] = {item}");
+                            string jsonStr = _rtkhubcom.DeviceItemsEx[i++].ToString();
+                            writelog($"connected _rtkhubcom.DeviceItems, jsonStr = {jsonStr}");
+
+                            if (jsonStr != null && jsonStr != string.Empty)
+                            {
+                                RtkHubEventHandleObject jsonObject = JsonSerializer.Deserialize<RtkHubEventHandleObject>(jsonStr)!;
+                                jsonObject.rtkhubCommodity = null;
+                                jsonObject.rtkhubIndex = item;
+                                writelog($"jsonObject values: {jsonObject.rtkhubIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                                rtkhubList.Add(jsonObject);
+                            }
+                        }
+                        writelog($"connected _rtkhubcom.DeviceItemsEx.Count = {_rtkhubcom.DeviceItemsEx.Count}");
+                    }
+                    catch (Exception e)
+                    {
+                        writelog($"Find IRtkHubCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    }
+                }
+#endif
             }
             await RegisterEventsForAllConnectedWebcamsAsync();
 
@@ -11266,7 +11355,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             var headsets = await GetHeadsetDeviceItemsExAsync();
             if (headsets != null)
             {
-                Trace.WriteLine("RegisterEventsForAllHeadsetAsync ********** " + headsets.ToString() + " ********** ");
+                Trace.WriteLine("GetHeadsetDevsCountAsync ********** " + headsets.ToString() + " ********** ");
                 return headsets.Count;
             }
             else
@@ -11278,7 +11367,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             var speakers = await GetSpeakerDeviceItemsExAsync();
             if (speakers != null)
             {
-                Trace.WriteLine("RegisterEventsForAllSpeakerAsync ********** " + speakers.ToString() + " ********** ");
+                Trace.WriteLine("GetSpeakerDevsCountAsync ********** " + speakers.ToString() + " ********** ");
                 return speakers.Count;
             }
             else
@@ -11385,10 +11474,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
                     //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
                     _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+#if SUPPORT_210
+                    //_Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                    //_Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                    //_Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+#else
                     _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
                     _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
                     _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
-
+#endif
                     _Webcamcom.PriorityChanged += Webcam_PriorityChanged;
                     _Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
                     _Webcamcom.FocusChanged += Webcam_FocusChanged;
@@ -11605,9 +11699,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
                 _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+#if SUPPORT_210
+                //_Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                //_Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                //_Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+#else
                 _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
                 _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
                 _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+#endif
 
                 _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
                 _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
@@ -12311,7 +12411,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Catch event _Webcamcom_CustomProfileRemoved, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+#if SUPPORT_210
+        //private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
+        //{
+        //    SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
+        //                            e.DeviceId, $"NewValue:{e.ProfileId}"));
 
+        //    writelog($"Catch event _Webcamcom_CustomProfileAdded, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+
+        //private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        //{
+        //    SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
+        //                            e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+        //    writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+#else
         private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
         {
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
@@ -12327,7 +12443,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
-
+#endif
         private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
         {
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
@@ -12837,47 +12953,47 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //// Content is same as GetAirAudioBoomMicAsync?
-        //public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
-        //{
-        //    string guid = Guid;
+        // Content is same as GetAirAudioBoomMicAsync?
+        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        {
+            string guid = Guid;
 
-        //    try
-        //    {
-        //        if (!await GetItemIDAsync("AirAudio", guid))
-        //            return false;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
 
-        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-        //        if (commodity is ICommodity)
-        //        {
-        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
-        //            if (value == null)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
-        //                return false;
-        //            }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+                        return false;
+                    }
 
-        //            if (value is bool boolValue)
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
-        //                return boolValue;
-        //            }
-        //            else
-        //            {
-        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
-        //                return false;
-        //            }
-        //        }
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+                        return false;
+                    }
+                }
 
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
-        //        return false;
-        //    }
-        //}
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
 
         public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
         {
@@ -15119,6 +15235,130 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return -99;
             }
         }
+#if SUPPORT_210
+        public async Task<bool> GetAirAudioIsConnectedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnected");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedLeftAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnectedLeft");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedLeftAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsConnectedRightAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsConnectedRight");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsConnectedRightAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+#endif
         #endregion
 
         #region AirAudio Set
@@ -15977,6 +16217,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
+#if SUPPORT_210
+                    _AirAudiocom.BatteryLevelChanged += _AirAudiocom_BatteryLevelChanged;
+                    _AirAudiocom.BatteryStatusChanged += _AirAudiocom_BatteryStatusChanged;
+                    _AirAudiocom.IsConnectedChanged += _AirAudiocom_IsConnectedChanged;
+                    _AirAudiocom.IsConnectedLeftChanged += _AirAudiocom_IsConnectedLeftChanged;
+                    _AirAudiocom.IsConnectedRightChanged += _AirAudiocom_IsConnectedRightChanged;
+#endif
+
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
                     //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
                     //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
@@ -16017,7 +16265,48 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             return false;
         }
+#if SUPPORT_210
 
+        private void _AirAudiocom_IsConnectedRightChanged(object sender, IsConnectedRightChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedRightChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedRightChanged:{e.IsConnectedRight}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedRightChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_IsConnectedLeftChanged(object sender, IsConnectedLeftChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedLeftChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedLeftChanged:{e.IsConnectedLeft}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedLeftChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_IsConnectedChanged(object sender, IsConnectedChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_IsConnectedChanged",
+                                   e.DeviceId, $"AirAudiocom_IsConnectedChanged:{e.IsConnected}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_IsConnectedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_BatteryStatusChanged(object sender, BatteryStatusChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_BatteryStatusChanged",
+                                   e.DeviceId, $"AirAudiocom_BatteryStatusChanged:{e.BatteryStatus}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_BatteryStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void _AirAudiocom_BatteryLevelChanged(object sender, BatteryLevelChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudiocom_BatteryLevelChanged",
+                                   e.DeviceId, $"AirAudiocom_BatteryLevelChanged:{e.BatteryLevel}"));
+
+            writelog($"[AirAudio] Catch event AirAudiocom_BatteryLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+#endif
         private async Task<bool> UnregisterEventsForAirAudioAsync(int index)
         {
             if (null == _commSdk || null == _comdity || index < 0)
@@ -16598,6 +16887,351 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         #endregion AirAudio Event
 
+#if Support_210
+
+        #region RtkHub Event
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> RegisterEventsForAllRtkHubAsync()
+        {
+            bool result = false;
+            var rtkhubs = await GetRtkHubDevsCountAsync();
+            if (rtkhubs > 0)
+            {
+                writelog($"RtkHub instance count: {rtkhubs} to register");
+
+                for (int i = 0; i < rtkhubs; i++)
+                {
+                    result = await RegisterEventsForRtkHubAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"[RtkHub] Register Events For RtkHub{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForRtkHubAsync(i);
+                        result = await RegisterEventsForRtkHubAsync(i);
+                        writelog($"[RtkHub] Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"[RtkHub] No any rtkhub instance to register.");
+                return false;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task UnregisterEventsForAllRtkHubAsync()
+        {
+            bool result = false;
+            var rtkhubs = await GetRtkHubDevsCountAsync();
+            if (rtkhubs > 0)
+            {
+                writelog($"[RtkHub] instance count: {rtkhubs} to unregister.");
+
+                for (int i = rtkhubs - 1; i >= 0; i--)
+                {
+                    result = await UnregisterEventsForRtkHubAsync(i);
+                }
+            }
+            else
+                writelog($"[RtkHub] No any rtkhub instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForRtkHubAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IRtkHubCommodity>(new ItemId($"DellPeripheral.RtkHub.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _RtkHubcom)
+                {
+                    _RtkHubcom.FirmwareVersionChanged += RtkHub_FirmwareVersionChanged;
+                    writelog($"RtkHub{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[RtkHub] {index} RegisterEventsForRtkHub Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForRtkHubAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IRtkHubCommodity>(new ItemId($"DellPeripheral.RtkHub.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _RtkHubcom)
+                {
+                    _RtkHubcom.FirmwareVersionChanged -= RtkHub_FirmwareVersionChanged;
+                    writelog($"[RtkHub] RtkHub{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[RtkHub] RtkHub{index} UnregisterEventsForRtkHub Exception {e.Message}");
+                return false;
+            }
+            return false;
+        }
+
+        private bool UnregisterEventsForRtkHub(RtkHubEventHandleObject obj)
+        {
+            writelog($"[RtkHub] UnregisterEventsForRtkHub in ... ");
+            if (obj.rtkhubCommodity is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _RtkHubcom)
+            {
+                _RtkHubcom.FirmwareVersionChanged -= RtkHub_FirmwareVersionChanged;
+                writelog($"RtkHub {obj.rtkhubIndex}/{obj.ModelNumber} Commodity events unregistered successfully");
+
+                return true;
+            }
+            else
+                writelog($"obj.rtkhubCommodity is not Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity for {obj.ModelNumber}");
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForRtkHubAsync(string devcieID)
+        {
+            writelog($"[RtkHub] UnregisterEventsForRtkHubAsync in ... ");
+            if (devcieID == null || devcieID == string.Empty || rtkhubList.Count == 0)
+            {
+                writelog($"devcieID == string.Empty || devcieID == null || rtkhubList.Count == 0");
+
+                return false;
+            }
+
+            try
+            {
+                // find _comdity object for this device
+                writelog($"Search {devcieID} from rtkhubList for Unregister Events");
+
+                bool result = false;
+                foreach (var item in rtkhubList)
+                {
+                    if (item.DeviceId == devcieID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from rtkhubList for Unregister Events");
+                        result = UnregisterEventsForRtkHub(item);
+                        writelog($"UnregisterEventsForRtkHub result is {result}");
+                        result = rtkhubList.Remove(item);
+                        writelog($"rtkhubList.Remove(item) result is {result}");
+                        break;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                writelog($"RtkHub{devcieID} UnregisterEventsForRtkHubAsync Exception {e.Message}");
+
+                return false;
+            }
+        }
+
+        private void RtkHub_Disconnected(object sender, DisconnectedArgs e)
+        {
+            writelog($"[RtkHub] RtkHub_Disconnected in ... ");
+
+            Task<bool> result = UnregisterEventsForRtkHubAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateRtkHubEventMsg("RtkHub", "RtkHub_Disconnected", e.DeviceId));
+
+            writelog($"[RtkHub] Catch event RtkHub_Disconnected, unregister events result is {result.Result}, current devCount is {rtkhubList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private async Task<bool> RegisterEventsForRtkHubAsync(string deviceID)
+        {
+            writelog($"[RtkHub] RegisterEventsForRtkHubAsync in ... ");
+            if (null == _comdityRtkHub || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comdityRtkHub || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _RtkHubComObj)
+                {
+                    writelog($"connected RtkHubComObj.DeviceItems = {_RtkHubComObj.DeviceItems.Length}");
+
+                    int i = 0;
+                    foreach (var item in _RtkHubComObj.DeviceItems)
+                    {
+                        writelog($"connected RtkHubComObj.DeviceItems[{i}] = {item}");
+                        string jsonStr = _RtkHubComObj.DeviceItemsEx[i++].ToString();
+                        writelog($"connected RtkHubComObj.DeviceItems = {jsonStr}");
+
+                        RtkHubEventHandleObject jsonObject = JsonSerializer.Deserialize<RtkHubEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comdityRtkHubTmp = await _commSdk.GetCommodityAsync<IRtkHubCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForRtkHub(_comdityRtkHubTmp))
+                            {
+                                jsonObject.rtkhubIndex = item;
+                                jsonObject.rtkhubCommodity = _comdityRtkHubTmp;
+                                rtkhubList.Add(jsonObject);
+
+                                writelog($"[RtkHub] {deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"[RtkHub] {deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    writelog($"_comdityRtkHub is not Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"RtkHub{deviceID} RegisterEventsForRtkHubAsync Exception {e.Message}");
+
+                return false;
+            }
+            writelog($"[RtkHub] RegisterEventsForRtkHubAsync return false ... ");
+            return false;
+        }
+
+        private bool RegisterEventsForRtkHub(ICommodity _comdityRtkHub)
+        {
+            writelog($"[RtkHub] RegisterEventsForRtkHub in ... ");
+            if (null == _comdityRtkHub)
+            {
+                writelog($"_comdityRtkHub == null");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity _RtkHubcom)
+                {
+                    _RtkHubcom.FirmwareVersionChanged += RtkHub_FirmwareVersionChanged;
+                    writelog($"RtkHubcom Commodity {_RtkHubcom.DeviceName}/{_RtkHubcom.DeviceId}/{_RtkHubcom.ModelNumber} events registered successfully");
+
+                    return true;
+                }
+                else
+                {
+                    writelog($"_comdityRtkHub is not Dell.TechHub.Commodity.Peripheral.IRtkHubCommodity");
+
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception {e.Message} when run RegisterEventsForRtkHub");
+                return false;
+            }
+        }
+
+        private void RtkHub_Connected(object sender, ConnectedArgs e)
+        {
+            writelog($"[RtkHub] RtkHub_Connected in ... ");
+
+            Task<bool> result = RegisterEventsForRtkHubAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateRtkHubEventMsg("RtkHub", "RtkHub_Connected", e.DeviceId));
+
+            writelog($"[RtkHub] Catch event RtkHub_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void RtkHub_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateRtkHubEventMsg("RtkHub", "RtkHub_FirmwareVersionChanged",
+                                    e.DeviceId, $"RtkHub_FirmwareVersionChanged:{e.FirmwareVersion}"));
+
+            writelog($"[RtkHub] Catch event RtkHub_FirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateRtkHubEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            writelog($"[RtkHub] Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}");
+            return $"RtkHubEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        #endregion RtkHub Event
+
+        #region RtkHub Get
+
+        private async Task<int> GetRtkHubDevsCountAsync()
+        {
+            var rtkhubs = await GetRtkHubDeviceItemsExAsync();
+            if (rtkhubs != null)
+            {
+                Trace.WriteLine("GetRtkHubDevsCountAsync ********** " + rtkhubs.ToString() + " ********** ");
+                return rtkhubs.Count;
+            }
+            else
+                return 0;
+        }
+
+        public async Task<JArray> GetRtkHubDeviceItemsExAsync()
+        {
+            try
+            {
+                _itemID = new ItemId(RtkHubItemID);
+
+                if (_rtkhubMethodInfo != null)
+                {
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_rtkhubMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_rtkhubInterfaceType, commodity, "DeviceItemsEx");
+                        writelog($"[DTPProxyPlugin] [RtkHub] GetDeviceItemsExAsync succeeded");
+                        return value == null ? new JArray() : (JArray)value;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [RtkHub] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [RtkHub] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+
+        #endregion RtkHub Get
+#endif
 
         #region IDisposableObservable Support
 

@@ -190,7 +190,8 @@
                                     <Grid Margin="16,25,16,0">
                                         <StackPanel Orientation="Horizontal">
                                             <!-- Derek for PIMS-332102 -->
-                                            <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                            <!-- 20250426 Chewlin for PIMS-358677 change MaxWidth="270" to MaxWidth="220" -->
+                                            <UXControls:UXTextBlock MaxWidth="220" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" -->
                                             <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>

@@ -138,22 +138,35 @@
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Height="28"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="16,0,0,0" />
-                                <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <!--<Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
-                                        <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="18" to VerticalOffset="12", change "HorizontalOffset="8" to HorizontalOffset="2" ,add MaxWidth="272" Opened="toolTip_Opened" -->
+                                        --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="18" to VerticalOffset="12", change "HorizontalOffset="8" to HorizontalOffset="2" ,add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                         <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                 </Border.Resources>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                    --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" --><!--
                                                     <TextBlock Text="{Binding WearDetectionToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
-                                </Image>
+                                </Image>-->
+                                <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" Margin="8" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                    <!-- The (i) icon 16x16 -->
+                                    <ContentControl Template="{StaticResource icon_Info}"/>
+                                    <!-- ToolTip -->
+                                    <Button.ToolTip>
+                                        <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                        <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Text="{Binding WearDetectionToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                            </Border>
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
                                 <UXControls:UXToggleSwitch x:Name="WearDetectionToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=WearDetection_String, FallbackValue='OFF'}" IsChecked="{Binding Path=WearDetectionStatus}" IsEnabled="{Binding Path=SupportedWearDetection}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" 
                                                            Margin="8" IsTabStop="{Binding isWearTabStopped}"/>
                             </Grid>
@@ -324,22 +337,35 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
 
-                                            <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <!--<Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                                     <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                             </Border.Resources>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" --><!--
                                                                 <TextBlock Text="{Binding PauseMusicToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
-                                            </Image>
+                                            </Image>-->
+                                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" Margin="8" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                <!-- The (i) icon 16x16 -->
+                                                <ContentControl Template="{StaticResource icon_Info}"/>
+                                                <!-- ToolTip -->
+                                                <Button.ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding PauseMusicToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                            </Button>
                                             <UXControls:UXToggleSwitch x:Name="PauseMusicToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=PauseMusic_String, FallbackValue='OFF'}" IsChecked="{Binding Path=PauseMusicStatus}" 
                                                                        IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Opacity>
@@ -381,22 +407,36 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
                                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-200" -->
-                                            <Image x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <!--<Image x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                                     <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                             </Border.Resources>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" --><!--
                                                                 <TextBlock Text="{Binding MuteMicrophoneToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
-                                            </Image>
+                                            </Image>-->
+                                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" Margin="8" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                <!-- The (i) icon 16x16 -->
+                                                <ContentControl Template="{StaticResource icon_Info}"/>
+                                                <!-- ToolTip -->
+                                                <Button.ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding PauseMusicToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                            </Button>
+
                                             <UXControls:UXToggleSwitch x:Name="MuteMicrophoneToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=MuteMicrophone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteMicrophoneStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
@@ -420,7 +460,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <!--<UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.7], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
-                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Height="24" Margin="16,0,0,0">
+                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Height="24" Margin="16,0,0,0" Padding="0,2,0,0">
                                                 <UXControls:UXTextBlock.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -437,22 +477,35 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
                                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-250" -->
-                                            <Image x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <!--<Image x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    --><!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" --><!--
                                                     <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                             </Border.Resources>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                                --><!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" --><!--
                                                                 <TextBlock Text="{Binding QuickPauseToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
                                                             </StackPanel>
                                                         </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
-                                            </Image>
+                                            </Image>-->
+                                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" Margin="8,0,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                                <!-- The (i) icon 16x16 -->
+                                                <ContentControl Template="{StaticResource icon_Info}"/>
+                                                <!-- ToolTip -->
+                                                <Button.ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding QuickPauseToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                            </Button>
                                             <UXControls:UXToggleSwitch x:Name="QuickPauseToggleSwitch" FontSize="16"  Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=QuickPause_String, FallbackValue='OFF'}" IsChecked="{Binding Path=QuickPauseStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
@@ -613,7 +666,7 @@
                                 </UXControls:UXTextBlock.Text>
                             </UXControls:UXTextBlock>
                             <!--Chewlin 20250408 for PIMS-348376 change VerticalOffset="6" to "12", change HorizontalOffset="8" to "2",add MaxWidth="272" Opened="toolTip_Opened" , remove ToolTipService.HorizontalOffset="-250" -->
-                            <Image x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                            <!--<Image x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                 <Image.ToolTip>
 
                                     <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
@@ -621,14 +674,27 @@
                                             <Border.Resources>
                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                             </Border.Resources>
-                                            <!--Chewlin 20250408 for PIMS-348376 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                            --><!--Chewlin 20250408 for PIMS-348376 add MaxWidth="230" TextWrapping="WrapWithOverflow" --><!--
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{Binding AnswerCallsToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                             </StackPanel>
                                         </Border>
                                     </ToolTip>
                                 </Image.ToolTip>
-                            </Image>
+                            </Image>-->
+                            <Button Grid.Column="1" Style="{StaticResource StatelessButton}" Width="16" Height="16" Margin="8" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                <!-- The (i) icon 16x16 -->
+                                <ContentControl Template="{StaticResource icon_Info}"/>
+                                <!-- ToolTip -->
+                                <Button.ToolTip>
+                                    <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                    <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272" Opened="toolTip_Opened">
+                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                            <TextBlock Text="{Binding AnswerCallsToolTip}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
+                                        </Border>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
                             <UXControls:UXToggleSwitch x:Name="AnswerCallsToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" IsChecked="{Binding Path=AnswerCallsStatus}" IsEnabled="{Binding Path=SupportedAnswerCalls}">
                                 <!--<UXControls:UXToggleSwitch.Opacity>
                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">

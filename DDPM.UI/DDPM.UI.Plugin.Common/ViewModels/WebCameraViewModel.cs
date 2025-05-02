@@ -1090,6 +1090,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public MediaCapture? MediaCapture;
+        public LowLagMediaRecording LowLag;
         public MediaFrameReader? MediaFrameReader;
 
         // 20250425 Chewlin for PIMS-358978 add PrioritizeExternalWebcamStatus_Text property
@@ -2138,7 +2139,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
-                    _ = MediaCapture.StopRecordAsync();
+                    //_ = MediaCapture.StopRecordAsync();
+                    LowLag?.StopAsync().Wait();
+                    LowLag?.FinishAsync().Wait();
 
                     //Derek 2025/02/20 for PIMS 338464 Observe WOA occurs during Recording of DDPM (No one in Field of View)
                     RecoverWALSettings();
@@ -2227,7 +2230,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
-                    MediaCapture.StopRecordAsync().Wait();
+                    //MediaCapture.StopRecordAsync().Wait();
+                    LowLag?.StopAsync().Wait();
+                    LowLag?.FinishAsync().Wait();
                     RecoverWALSettings();
                 }
                 catch (Exception e)

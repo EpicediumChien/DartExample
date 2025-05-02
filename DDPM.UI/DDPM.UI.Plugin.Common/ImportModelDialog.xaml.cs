@@ -30,7 +30,7 @@ namespace DDPM.UI.Plugin.Common
             string title = LangHelper.Instance["ImpExp_Title.0"].Replace("%1", model);
             txtCaption.Text = title;
             txtMessage.Text = LangHelper.Instance["ImpExp_Message.1"];
-            chkIgnore.Content = LangHelper.Instance["ImpExp_CheckBox.0"];
+            //chkIgnore.Content = LangHelper.Instance["ImpExp_CheckBox.0"];
         }
         /*
         private void No_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

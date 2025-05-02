@@ -157,6 +157,7 @@
 		<None Remove="Resources\Vbar.Display.Gaming.png" />
 		<None Remove="Resources\Vbar.Display.InputSource.png" />
 		<None Remove="Resources\Vbar.Display.KVM.png" />
+		<None Remove="Resources\Vbar.Display.MonitorAudio.png" />
 		<None Remove="Resources\Vbar.Display.Others.png" />
 		<None Remove="Resources\Vbar.Display.Settings.png" />
 		<None Remove="Resources\Vbar.Keyboard.Collaboration.png" />
@@ -227,6 +228,8 @@
 		<Resource Include="Resources\Close_light.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\Headset_CNAppleStoreQR.png" />
+		<Resource Include="Resources\Headset_CNAndroidQR.png" />
 		<Resource Include="Resources\EzAdd.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
@@ -357,6 +360,10 @@
 		</Resource>
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_TencentStore.png" />
+		<Resource Include="Resources\Vbar.Display.MonitorAudio.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD19.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -509,7 +516,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
 		<ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
 		<ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
 	</ItemGroup>
@@ -633,6 +639,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="DDPM.Easy.Common">
+		  <HintPath>..\CommonDll\DDPM.Easy.Common.dll</HintPath>
+		</Reference>
 		<Reference Include="DDPM.SA.Common">
 			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
 		</Reference>

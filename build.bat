@@ -65,18 +65,18 @@ xcopy /Y ".\DDPM.SA\Decrypt\ConsoleApp2\bin\%ConfigType%\%NET%-windows10.0.19041
 :: Build DDPM.Easy.Common
 ::
 echo Clean DDPM.UI\DDPM.Easy.Common
-dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Common\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
 echo Build VCPSDK
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Common\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
 echo *************************************
 echo BUILD DDPM.Easy.Common SUCCESS
 echo BUILD DDPM.Easy.Common SUCCESS
 echo BUILD DDPM.Easy.Common SUCCESS
 echo *************************************
-xcopy /Y /S /Q ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
-xcopy /Y /S /Q ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
+xcopy /Y /S /Q ".\DDPM.SA\bin\CommonDll\%ConfigType%\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
+xcopy /Y /S /Q ".\DDPM.SA\bin\CommonDll\%ConfigType%\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
 
 
 

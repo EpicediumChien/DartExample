@@ -15,12 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DDPM.Easy.Common">
+      <HintPath>..\CommonDll\DDPM.Easy.Common.dll</HintPath>
+    </Reference>
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>

@@ -700,7 +700,34 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Settings.
+        ///   查詢類似 Audio 的當地語系化字串。
+        /// </summary>
+        internal static string Audio {
+            get {
+                return ResourceManager.GetString("Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Audio Profiles 的當地語系化字串。
+        /// </summary>
+        internal static string Audio_Profiles {
+            get {
+                return ResourceManager.GetString("Audio_Profiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Audio Source 的當地語系化字串。
+        /// </summary>
+        internal static string Audio_Source {
+            get {
+                return ResourceManager.GetString("Audio_Source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Audio Settings 的當地語系化字串。
         /// </summary>
         internal static string AudioSettings {
             get {
@@ -871,7 +898,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors.
+        ///   Looks up a localized string similar to Synchronizes the brightness, contrast, color preset and color temperature from the primary monitor with other ALS monitors.
         /// </summary>
         internal static string Brightness_13 {
             get {
@@ -979,7 +1006,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply the above brightness/luminance, contrast, and color preset controls to your connected monitors..
+        ///   Looks up a localized string similar to Applies the above brightness/luminance, contrast, and color preset controls to your connected monitors.
         /// </summary>
         internal static string Brightness_5 {
             get {
@@ -1015,7 +1042,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low).
+        ///   Looks up a localized string similar to Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/Mid/Low).
         /// </summary>
         internal static string Brightness_9 {
             get {
@@ -2365,7 +2392,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The monitor is currently busy. You can only control limited functions..
+        ///   查詢類似 Display Speaker 的當地語系化字串。
+        /// </summary>
+        internal static string Display_Speaker {
+            get {
+                return ResourceManager.GetString("Display_Speaker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Switch monitor audio path based on system audio source selection 的當地語系化字串。
+        /// </summary>
+        internal static string Display_Speaker_Tooltips {
+            get {
+                return ResourceManager.GetString("Display_Speaker_Tooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 The monitor is currently busy. You can only control limited functions. 的當地語系化字串。
         /// </summary>
         internal static string DisplayAlert {
             get {
@@ -2509,7 +2554,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export a configuration and important to another monitor of the same model.
+        ///   Looks up a localized string similar to Export a configuration and import to another monitor of the same model.
         /// </summary>
         internal static string DisplayOthers_7 {
             get {
@@ -4444,7 +4489,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game Enhance Mode.
+        ///   查詢類似 Game 的當地語系化字串。
+        /// </summary>
+        internal static string Game {
+            get {
+                return ResourceManager.GetString("Game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Game Enhance Mode 的當地語系化字串。
         /// </summary>
         internal static string Game_Enhance_Mode {
             get {
@@ -6055,7 +6109,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manual.
+        ///   查詢類似 Main 的當地語系化字串。
+        /// </summary>
+        internal static string Main {
+            get {
+                return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Manual 的當地語系化字串。
         /// </summary>
         internal static string Manual {
             get {
@@ -6397,7 +6460,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movie HDR.
+        ///   查詢類似 Movie 的當地語系化字串。
+        /// </summary>
+        internal static string Movie {
+            get {
+                return ResourceManager.GetString("Movie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Movie HDR 的當地語系化字串。
         /// </summary>
         internal static string Movie_HDR {
             get {
@@ -6496,7 +6568,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Home.
+        ///   查詢類似 Music 的當地語系化字串。
+        /// </summary>
+        internal static string Music {
+            get {
+                return ResourceManager.GetString("Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 My Home 的當地語系化字串。
         /// </summary>
         internal static string MyHome {
             get {
@@ -6937,7 +7018,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pen Settings.
+        ///   查詢類似 PBP Audio 的當地語系化字串。
+        /// </summary>
+        internal static string PBP_Audio {
+            get {
+                return ResourceManager.GetString("PBP_Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Prioritizes the audio of this input source when utilizing PBP mode 的當地語系化字串。
+        /// </summary>
+        internal static string PBP_Audio_Tooltips {
+            get {
+                return ResourceManager.GetString("PBP_Audio_Tooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Pen Settings 的當地語系化字串。
         /// </summary>
         internal static string Pen_0 {
             get {
@@ -8188,7 +8287,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Preset.
+        ///   查詢類似 Spatial Audio 的當地語系化字串。
+        /// </summary>
+        internal static string Spatial_Audio {
+            get {
+                return ResourceManager.GetString("Spatial_Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Creates an immersive sound experience 的當地語系化字串。
+        /// </summary>
+        internal static string Spatial_Audio_Tooltips {
+            get {
+                return ResourceManager.GetString("Spatial_Audio_Tooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Audio Preset 的當地語系化字串。
         /// </summary>
         internal static string SpeakerAudioPreset_0 {
             get {
@@ -8359,7 +8476,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steady Vision.
+        ///   查詢類似 Standard 的當地語系化字串。
+        /// </summary>
+        internal static string Standard {
+            get {
+                return ResourceManager.GetString("Standard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Steady Vision 的當地語系化字串。
         /// </summary>
         internal static string Steady_Vision {
             get {
@@ -8386,7 +8512,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Success.
+        ///   查詢類似 Sub 的當地語系化字串。
+        /// </summary>
+        internal static string Sub {
+            get {
+                return ResourceManager.GetString("Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Success 的當地語系化字串。
         /// </summary>
         internal static string Success {
             get {
@@ -8891,7 +9026,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to USB-C.
+        ///   查詢類似 USB only 的當地語系化字串。
+        /// </summary>
+        internal static string USB_only {
+            get {
+                return ResourceManager.GetString("USB_only", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB-C 的當地語系化字串。
         /// </summary>
         internal static string USBC {
             get {
@@ -9026,7 +9170,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to DDPM Subagent....
+        ///   查詢類似 Voice 的當地語系化字串。
+        /// </summary>
+        internal static string Voice {
+            get {
+                return ResourceManager.GetString("Voice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Volume 的當地語系化字串。
+        /// </summary>
+        internal static string Volume {
+            get {
+                return ResourceManager.GetString("Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Connecting to DDPM Subagent... 的當地語系化字串。
         /// </summary>
         internal static string Wait_DevMgr {
             get {
@@ -9080,7 +9242,115 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to\r\nDell Display and Peripheral Manager.
+        ///   Looks up a localized string similar to Mic Noise \nCancellation.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Main_0 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Main.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multimedia Presets.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Main_1 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Main.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell Audio.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Main_2 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Main.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mic Noise \nCancellation.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Main_3 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Main.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Improve the audio experience of others by limiting the noise you transmit and improve your own audio experience by limiting the noise you hear from others.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_0 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose the preset that you want to apply while listening to multimedia (such as music, movies, or podcasts) or create a custom preset in the app.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_1 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Dell Audio to optimize and personalize your speakerphone’s  settings from the convenience of your iPhone or Android device.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_2 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan to download the Dell Audio app to customize your speakerphone.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_3 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View QR codes to download Dell Audio from China’s App store.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_4 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Dell Audio China’s App.
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_5 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 View QR codes to download Dell Audio from Global App store 的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_6 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Download Dell Audio Global App 的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughAirAudio_Sub_7 {
+            get {
+                return ResourceManager.GetString("WalkThroughAirAudio_Sub.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Welcome to\r\nDell Display and Peripheral Manager 的當地語系化字串。
         /// </summary>
         internal static string WalkThroughDDPM_Main_0 {
             get {

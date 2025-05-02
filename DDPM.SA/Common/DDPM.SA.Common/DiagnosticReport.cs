@@ -23,14 +23,13 @@ namespace DDPM.SA.Common
             log.Info($"{nameof(SaveLogFile)} WTSFunction._WTSGetActiveConsoleSessionId() : {WTSFunction._WTSGetActiveConsoleSessionId()}");
             if (WTSFunction._WTSGetActiveConsoleSessionId() >= 1)
             {
+                string startTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 string fail_info = string.Empty;
-                string success_info = string.Empty;
+                string success_info = "[*****************StartTime] : " + startTimestamp + ", ";
                 string path_info = "[************SaveFolderPath] = " + saveFolderPath + ", ";
                 if (!string.IsNullOrEmpty(saveFolderPath))
                 {
                     log.Info($"{nameof(SaveLogFile)} saveFolderPath : {saveFolderPath}");
-
-
                     //DDPM.SA.Common.Method.Method method = new Method.Method(log);
                     using (DDPM.SA.Common.Method.Method method = new Method.Method(log))
                     {
@@ -567,6 +566,99 @@ namespace DDPM.SA.Common
                                 log.Error($"SaveLogFile - Dell Reg.log : {ex.Message}");
                             }
                             // Dell registry record end
+
+                            // Wayn add Dell DDPM file name record
+                            try
+                            {
+                                string ddpmFileFolder = Path.Combine(saveFolderPath, "DDPM_File");
+                                Directory.CreateDirectory(ddpmFileFolder);
+                                log.Info($"SaveLogFile - Created DDPM_File folder: {ddpmFileFolder}");
+
+                                string rootPath = AppDomain.CurrentDomain.BaseDirectory;
+                                //string rootPath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager"; //For Test
+                                string recordFile = Path.Combine(ddpmFileFolder, "FileName_Record.txt");
+
+                                using (var writer = new StreamWriter(recordFile, false))
+                                {
+                                    void WriteEntries(string path, int level)
+                                    {
+                                        string indent = new string(' ', level * 4); // 階層空格
+                                        writer.WriteLine($"{indent}[{path}]");
+                                        log.Info($"SaveLogFile - DDPM_File {indent}[{path}]");
+                                        string[] files;
+                                        try
+                                        {
+                                            files = Directory.GetFiles(path);
+                                            log.Info($"SaveLogFile - DDPM_File GetFiles path, {files}");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            log.Error($"SaveLogFile - Failed to record files in '{path}': {ex.Message}");
+                                            return;
+                                        }
+                                        foreach (var file in files)
+                                        {
+                                            var fileName = Path.GetFileName(file);
+                                            string versionInfo;
+                                            try
+                                            {
+                                                // 取檔案版本
+                                                var vInfo = FileVersionInfo.GetVersionInfo(file);
+                                                versionInfo = string.IsNullOrEmpty(vInfo.FileVersion) ? "None" : vInfo.FileVersion;
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                versionInfo = $"Exception: {ex.Message}";
+                                            }
+                                            writer.WriteLine($"{indent}    {fileName}    Version: {versionInfo}");
+                                        }
+
+                                        //foreach (var file in files) 
+                                        //{
+                                        //    // 只取檔名
+                                        //    writer.WriteLine($"{indent}    {Path.GetFileName(file)}");
+                                        //    log.Error($"SaveLogFile - DDPM_File : {indent}    {Path.GetFileName(file)}");
+                                        //}
+
+                                        // 遞迴子資料夾
+                                        string[] dirs;
+                                        try
+                                        {
+                                            dirs = Directory.GetDirectories(path);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            log.Error($"SaveLogFile - Failed to record directories in '{path}': {ex.Message}");
+                                            return;
+                                        }
+                                        foreach (var dir in dirs)
+                                        {
+                                            WriteEntries(dir, level + 1);
+                                        }
+                                    }
+
+                                    // 遞迴
+                                    if (Directory.Exists(rootPath))
+                                    {
+                                        WriteEntries(rootPath, 0);
+                                        success_info += "[*****************DDPM_File] : Success, ";
+                                        log.Info($"SaveLogFile - FileName_Record generated: {recordFile}");
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine($"Log path not found: {rootPath}");
+                                        fail_info += "[*****************DDPM_File] : Log folder not found, ";
+                                        log.Error($"SaveLogFile - DDPM log folder does not exist: {rootPath}");
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                fail_info += "[*****************DDPM_File] : Exception Fail, ";
+                                log.Error($"SaveLogFile - DDPM_File record exception: {ex.Message}");
+                            }
+                            // Wayn add Dell DDPM file name end
+
 
                             // Install Shell and DCS Log
                             try

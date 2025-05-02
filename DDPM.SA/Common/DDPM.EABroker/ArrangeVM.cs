@@ -488,12 +488,18 @@ namespace DDPM.EABroker
             {
                 //We will prevent to set a null value
                 if (value == null)
+                {
+                    OnPropertyChanged("WorkScreenName");
+                    OnPropertyChanged("WorkScreenInfoText");
+                    OnPropertyChanged("IsWorkScreenVertical");
                     return;
+                }
 
                 bool isEqualed = (value.Equals(_workScreen));
                 SetProperty(ref _workScreen, value);
                 OnPropertyChanged("WorkScreenName");
                 OnPropertyChanged("WorkScreenInfoText");
+                OnPropertyChanged("IsWorkScreenVertical");
                 if (!isEqualed && WorkScreenChanged != null)
                 {
                     Task.Run(() => WorkScreenChanged.Invoke(this, _workScreen));
@@ -535,6 +541,25 @@ namespace DDPM.EABroker
         public void RefreshWorkScreen()
         {
             WorkScreen = GetScreenFromCursor();
+        }
+
+        public bool IsWorkScreenVertical
+        {
+            get
+            {
+                if (WorkScreen != null)
+                {
+                    if (WorkScreen.Bounds.Height > WorkScreen.Bounds.Width)
+                    {
+                        ArrangeVM.cxIcon = 90;
+                        ArrangeVM.cyIcon = 120;
+                        return true;
+                    }
+                }
+                ArrangeVM.cxIcon = 120;
+                ArrangeVM.cyIcon = 90;
+                return false;
+            }
         }
         #endregion
 
@@ -1399,8 +1424,8 @@ namespace DDPM.EABroker
         #endregion
 
         #region AWS Icons
-        public static double cxIcon => 120;
-        public static double cyIcon => 90;
+        public static double cxIcon { get; set; } = 120;
+        public static double cyIcon { get; set; } = 90;
 
         public ISplitCtrl? AwsIcon0
         {
@@ -1549,6 +1574,11 @@ namespace DDPM.EABroker
 
             if (splitCtrl == null)
                 return null;
+
+            if (splitMode == eSplitModes.AWS)
+            {
+                splitCtrl.IsVertical = IsWorkScreenVertical;
+            }
 
             if (spJson.Settings != null)
             {

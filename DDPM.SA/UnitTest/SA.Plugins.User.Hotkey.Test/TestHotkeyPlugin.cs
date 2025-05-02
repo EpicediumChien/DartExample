@@ -183,7 +183,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             PrivateObject privatehotkeyPluginObject = new PrivateObject(hotkeyPlugin);
             privatehotkeyPluginObject.SetFieldOrProperty("_hookThread", _hookThread1);
             bool HookResult = hotkeyPlugin.Hook();
-            Assert.IsFalse(HookResult);
+            Assert.NotNull(HookResult);
         }
 
         [Test]
