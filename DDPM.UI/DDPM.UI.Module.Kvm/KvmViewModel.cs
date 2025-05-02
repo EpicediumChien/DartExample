@@ -27,6 +27,7 @@ using Microsoft.VisualBasic.Logging;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -3447,5 +3448,36 @@ namespace DDPM.UI.Module.Kvm
                 }
             }
         }
+
+        public Visibility CurrentCultureArrowRight {
+            get {
+                return CultureInfo.CurrentUICulture.Name == "ar-SA" ? Visibility.Collapsed : Visibility.Visible;
+            } 
+        }
+
+        public Visibility CurrentCultureArrowLeft
+        {
+            get
+            {
+                return CurrentCultureArrowRight == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private Visibility _fullMode { get; set; }
+
+        public Visibility FullMode
+        {
+            get
+            {
+                return _fullMode;
+            }
+
+            set {
+                _fullMode = value;
+                OnPropertyChanged("FullMode");
+            }
+        }
+
+        public Visibility ShrinkMode => FullMode == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
     }
 }

@@ -172,7 +172,7 @@
                 <StackPanel Orientation="Horizontal">
                     <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                                 Style="{StaticResource ModelNumberTextStyle}" />
-                    <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+                    <!--<Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
                         <Image.InputBindings>
                             <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
@@ -190,7 +190,21 @@
                                 </Border>
                             </ToolTip>
                         </Image.ToolTip>
-                    </Image>
+                    </Image>-->
+
+                    <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Top" Margin="9,22.5,0,0" KeyboardNavigation.TabIndex="14" AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                        <!-- The (i) icon 16x16 -->
+                        <ContentControl Template="{StaticResource icon_Info}"/>
+                        <!-- ToolTip -->
+                        <Button.ToolTip>
+                            <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                            <ToolTip BorderThickness="0" Background="Transparent" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
+                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                    <TextBlock Text="{Binding FirmwareVersion2}" Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                </Border>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </Grid>

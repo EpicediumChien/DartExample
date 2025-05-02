@@ -2613,11 +2613,12 @@
                                                 <Button.ToolTip>
                                                     <!--  Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2"  -->
                                                     <ToolTip
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        HorizontalOffset="2"
-                                                        Placement="Top"
-                                                        VerticalOffset="12">
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    HorizontalOffset="2"
+                                                    Placement="Top"
+                                                    VerticalOffset="12"
+                                                    Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock
                                                                 LineHeight="20"
